@@ -7,7 +7,9 @@ Q ?= @
 
 BINDIR := $(BUILDDIR)/$(CFG)
 BIN    := $(BINDIR)/$(NAME)
-SRC    := $(sort $(wildcard $(SRCDIR)/*.cc))
+
+PWD		:= $(shell pwd)
+SRC		 := $(sort $(subst $(PWD), ".", $(shell find $(SRCDIR)/ -name '*.cc')))
 OBJ    := $(SRC:$(SRCDIR)/%.cc=$(BINDIR)/%.o)
 DEP    := $(OBJ:%.o=%.d)
 
@@ -34,5 +36,5 @@ $(BIN): $(OBJ)
 	$(Q)$(CXX) -o $(BIN) $(OBJ)
 
 $(BINDIR)/%.o: $(SRCDIR)/%.cc
-	@echo "===> CXX $<"
+	@echo "===> CXX $< -> $@"
 	$(Q)$(CXX) $(CXXFLAGS) -MMD -c -o $@ $<
