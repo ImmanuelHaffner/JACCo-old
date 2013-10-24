@@ -2,6 +2,7 @@ BUILDDIR ?= build
 CFG      ?= default
 NAME     ?= c4
 SRCDIR   ?= src
+DOCSDIR	 ?= doc
 
 Q ?= @
 
@@ -19,7 +20,7 @@ CXXFLAGS += $(CFLAGS) -std=c++11
 
 DUMMY := $(shell mkdir -p $(sort $(dir $(OBJ))))
 
-.PHONY: all clean
+.PHONY: all clean cleanall doxy
 
 all: $(BIN)
 
@@ -29,7 +30,15 @@ all: $(BIN)
 
 clean:
 	@echo "===> CLEAN"
-	$(Q)rm -fr $(BINDIR)
+	$(Q)rm -fr $(BINDIR)/
+
+cleanall: clean
+	@echo "===> CLEANALL"
+	$(Q)rm -fr $(DOCSDIR)/
+
+doxy:
+	@echo "===> DOXYGEN"
+	$(Q)doxygen
 
 $(BIN): $(OBJ)
 	@echo "===> LD $@"
