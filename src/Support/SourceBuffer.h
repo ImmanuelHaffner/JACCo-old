@@ -24,14 +24,13 @@ namespace C4{
 			size_t getSize() const;
 			std::vector<char>::iterator getBufStart();
 			std::vector<char>::iterator getBufEnd();
-			std::vector<char>::iterator getBufStart() const;
-			std::vector<char>::iterator getBufEnd() const;
+			std::vector<char>::const_iterator getBufStart() const;
+			std::vector<char>::const_iterator getBufEnd() const;
 			bool isBufEnd( std::vector<char>::iterator &it ) const;
 
 		private:
 			bool initialized;
 			FILE *file;
-			size_t size;
 			std::vector<char> *Buffer;
 	};
 }

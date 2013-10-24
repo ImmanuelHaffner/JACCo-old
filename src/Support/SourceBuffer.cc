@@ -1,4 +1,4 @@
-//===--- SourceBuffer.h ---------------------------------------------------===//
+//===--- SourceBuffer.cc --------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -13,14 +13,14 @@
 
 using namespace C4;
 
-SourceBuffer::SourceBuffer( FILE *file ) : initialized(false), file(file),
-	size(0)
+SourceBuffer::SourceBuffer( FILE *file ) : initialized(false), file(file)
 {
 	assert( file != NULL && "file must not be NULL" );
 }
 
 SourceBuffer::~SourceBuffer()
 {
+	delete Buffer;
 }
 
 void SourceBuffer::init()
@@ -29,10 +29,7 @@ void SourceBuffer::init()
 
 	int c;
 	while ( (c = getc( file )) != EOF )
-	{
-		++size;
 		Buffer->push_back( c );
-	}
 
 	initialized = true;
 }
@@ -44,7 +41,7 @@ bool SourceBuffer::isInitialized() const
 
 size_t SourceBuffer::getSize() const
 {
-	return size;
+	return Buffer->size();
 }
 
 std::vector<char>::iterator SourceBuffer::getBufStart()
@@ -57,12 +54,12 @@ std::vector<char>::iterator SourceBuffer::getBufEnd()
 	return Buffer->end();
 }
 
-std::vector<char>::iterator SourceBuffer::getBufStart() const
+std::vector<char>::const_iterator SourceBuffer::getBufStart() const
 {
 	return Buffer->begin();
 }
 
-std::vector<char>::iterator SourceBuffer::getBufEnd() const
+std::vector<char>::const_iterator SourceBuffer::getBufEnd() const
 {
 	return Buffer->end();
 }
