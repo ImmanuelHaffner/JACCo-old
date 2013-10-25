@@ -39,6 +39,9 @@ void Token::dump() const
 		case TokenKind::IllegalIdentifier:
 			std::cout << "illegal-identifier";
 			break;
+		case TokenKind::IllegalCharacter:
+			std::cout << "illegal-chararacter";
+			break;
 	}
 
 	std::cout << " '" << text << "'" << std::endl;

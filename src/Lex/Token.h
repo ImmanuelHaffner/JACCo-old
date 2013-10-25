@@ -26,7 +26,8 @@ namespace C4{
       Constant,
       StringLiteral,
       Punctuator,
-      IllegalIdentifier
+      IllegalIdentifier,
+      IllegalCharacter
     };
 
 

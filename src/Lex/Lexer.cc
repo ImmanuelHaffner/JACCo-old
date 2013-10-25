@@ -49,15 +49,16 @@ Token * Lexer::getToken()
 	TokenKind kind = TokenKind::IllegalIdentifier;
 
 	if ( isNonDigit( lastChar ) )
-	{	// KEYWORD or IDENTIFIER
+	{
+		/*
+		 * KEYWORD or IDENTIFIER
+		 */
 
-		step( lastChar );
-		
 		// Read in the rest of the identifier string
-		while ( isNonDigit( lastChar ) || isDigit( lastChar ) )
+		while ( isNonDigit( *it ) || isDigit( *it ) )
 		{
-			TokenText += lastChar;
 			step( lastChar );
+			TokenText += lastChar;
 		}
 
 		// Compare the identifier string to the keywords
@@ -71,27 +72,29 @@ Token * Lexer::getToken()
 
 	}
 	else if ( isDigit( lastChar ) )
-	{	// CONSTANT or ILLEGAL IDENTIFIER
+	{
+		/*
+		 * CONSTANT or ILLEGAL IDENTIFIER
+		 */
 		
-		step( lastChar );
-
 		bool illegal = false;
 
 		// Read in the rest of the digit string
-		while ( isDigit( lastChar ) || isNonDigit( lastChar ) )
+		while ( isDigit( *it ) || isNonDigit( *it ) )
 		{
-
-			illegal |= isNonDigit( lastChar );
-			TokenText += lastChar;
-
 			step( lastChar );
+			TokenText += lastChar;
+			illegal |= isNonDigit( lastChar );
 		}
 
 		if ( ! illegal )
 			kind = TokenKind::Constant;
 	}
 	else
-	{	// PUNTUATORS
+	{
+		/*
+		 * PUNCTUATORS
+		 */
 
 		switch ( lastChar )
 		{
@@ -293,8 +296,13 @@ Token * Lexer::getToken()
 				}
 				kind = TokenKind::Punctuator;
 				break;
-		}
-	}
+
+			default:
+				// if we reach this point, we have found an illegal sequence of
+				// characters
+				kind = TokenKind::IllegalCharacter;
+		} // end switch-case
+	} // end PUNCTUATORS
 
 
 	/*
