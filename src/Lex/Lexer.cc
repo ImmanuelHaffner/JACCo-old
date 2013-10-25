@@ -17,7 +17,7 @@ using namespace C4;
 using namespace Lex;
 
 Lexer::Lexer( SourceBuffer &buf ) : tokenCount(0), buf(buf),
-	pos( buf.getSourceFileName(), 1, 1 ), it( buf.getBufStart() )
+	pos( buf.getSourceFileName(), 1, 0 ), it( buf.getBufStart() )
 {}
 
 Lexer::~Lexer() {}
@@ -28,11 +28,13 @@ Token * Lexer::getToken()
 	if ( buf.isBufEnd( it ) )
 		return NULL;
 
+	char lastChar = ' ';
+
 	// skip whitespaces
-	while ( isWhiteSpace( *it ) )
+	while ( isWhiteSpace( lastChar ) )
 	{
 		// update Pos
-		if ( isNewLine( *it ) )
+		if ( isNewLine( lastChar ) )
 		{
 			pos.column = 1;
 			++pos.line;
@@ -41,6 +43,7 @@ Token * Lexer::getToken()
 			++pos.column;
 
 		// go to next character
+		lastChar = *it;
 		++it;
 
 		if ( buf.isBufEnd( it ) )
@@ -48,22 +51,29 @@ Token * Lexer::getToken()
 	}
 
 	Pos start(pos);
-	auto index(it);
+	auto index((--it)++); // need to get the position right before it
+
 	std::string TokenText = "";
-	TokenText += *it;
+	TokenText += lastChar;
+	assert( *index == lastChar && "wrong index" );
+
 	TokenKind kind = TokenKind::IllegalIdentifier;
 
-	if ( isNonDigit( *it ) )
+	if ( isNonDigit( lastChar ) )
 	{	// KEYWORD or IDENTIFIER
+
+		lastChar = *it;
 		++it;
 		++pos.column;
-
+		
 		// Read in the rest of the identifier string
-		while ( isNonDigit( *it ) || isDigit( *it ) )
+		while ( isNonDigit( lastChar ) || isDigit( lastChar ) )
 		{
-			TokenText += *it;
-			++pos.column;
+			TokenText += lastChar;
+
+			lastChar = *it;
 			++it;
+			++pos.column;
 		}
 
 		// Compare the identifier string to the keywords
@@ -76,24 +86,37 @@ Token * Lexer::getToken()
 			kind = TokenKind::Identifier;
 
 	}
-	else if ( isDigit( *it ) )
+	else if ( isDigit( lastChar ) )
 	{	// CONSTANT or ILLEGAL IDENTIFIER
+		
+		lastChar = *it;
 		++it;
 		++pos.column;
 
 		bool illegal = false;
 
 		// Read in the rest of the digit string
-		while ( isDigit( *it ) || isNonDigit( *it ) )
+		while ( isDigit( lastChar ) || isNonDigit( lastChar ) )
 		{
-			illegal |= isNonDigit( *it );
-			TokenText += *it;
-			++pos.column;
+			illegal |= isNonDigit( lastChar );
+			TokenText += lastChar;
+
+			lastChar = *it;
 			++it;
+			++pos.column;
 		}
 
 		if ( ! illegal )
 			kind = TokenKind::Constant;
+	}
+
+	if ( isNewLine( lastChar ) )
+	{
+		// Reset the pos column to 0 (see Lexer constructor)
+		// We need to do this, since every time we invoke getToken(), a whitespace
+		// is prepended, and the column is increased by one
+		pos.column = 0;
+		++pos.line;
 	}
 
 	// Create the token with the given type
