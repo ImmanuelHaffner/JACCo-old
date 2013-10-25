@@ -9,6 +9,9 @@
 #ifndef CHAR_UTILS_H
 #define CHAR_UTILS_H
 
+#include <iostream>
+#include <string>
+
 inline bool isWhiteSpace( char const chr )
 {
 	switch ( chr )
@@ -126,8 +129,18 @@ inline char const * visualizeChar( char const chr )
 {
 	switch ( chr )
 	{
+		case '\?':
+			return "\\?";
+		case '\a':
+			return "\\a";
+		case '\b':
+			return "\\b";
+		case '\f':
+			return "\\f";
 		case '\n':
 			return "\\n";
+		case '\r':
+			return "\\r";
 		case '\t':
 			return "\\t";
 		case '\v':
