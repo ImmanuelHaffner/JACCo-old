@@ -43,6 +43,11 @@ namespace C4
 					return ++tokenCount;
 				}
 
+				/// Steps one character forward in the buffer and updates 'it' and
+				/// 'pos'.
+				/// Immediately skips escaped newlines
+				void step( char &lastChar);
+
 				/// This methods skips the '\' follwed by a newline
 				void skipEscapedNewline( char &lastChar );
 

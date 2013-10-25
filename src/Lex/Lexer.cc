@@ -33,19 +33,7 @@ Token * Lexer::getToken()
 	// skip whitespaces
 	while ( isWhiteSpace( lastChar ) )
 	{
-		// update Pos
-		if ( isNewLine( lastChar ) )
-		{
-			pos.column = 1;
-			++pos.line;
-		}
-		else
-			++pos.column;
-
-		// go to next character
-		lastChar = *it;
-		++it;
-		skipEscapedNewline( lastChar );
+		step( lastChar );
 
 		if ( buf.isBufEnd( it ) )
 			return NULL;
@@ -63,21 +51,13 @@ Token * Lexer::getToken()
 	if ( isNonDigit( lastChar ) )
 	{	// KEYWORD or IDENTIFIER
 
-		lastChar = *it;
-		++it;
-		++pos.column;
-		skipEscapedNewline( lastChar );
+		step( lastChar );
 		
 		// Read in the rest of the identifier string
 		while ( isNonDigit( lastChar ) || isDigit( lastChar ) )
 		{
-
 			TokenText += lastChar;
-
-			lastChar = *it;
-			++it;
-			++pos.column;
-			skipEscapedNewline( lastChar );
+			step( lastChar );
 		}
 
 		// Compare the identifier string to the keywords
@@ -93,10 +73,7 @@ Token * Lexer::getToken()
 	else if ( isDigit( lastChar ) )
 	{	// CONSTANT or ILLEGAL IDENTIFIER
 		
-		lastChar = *it;
-		++it;
-		++pos.column;
-		skipEscapedNewline( lastChar );
+		step( lastChar );
 
 		bool illegal = false;
 
@@ -107,10 +84,7 @@ Token * Lexer::getToken()
 			illegal |= isNonDigit( lastChar );
 			TokenText += lastChar;
 
-			lastChar = *it;
-			++it;
-			++pos.column;
-			skipEscapedNewline( lastChar );
+			step( lastChar );
 		}
 
 		if ( ! illegal )
@@ -119,10 +93,7 @@ Token * Lexer::getToken()
 	else
 	{	// PUNTUATORS
 
-		lastChar = *it;
-		++it;
-		++pos.column;
-		skipEscapedNewline( lastChar );
+		step( lastChar );
 
 	}
 
@@ -140,6 +111,24 @@ Token * Lexer::getToken()
 			TokenText.c_str(),
 			kind,
 			*( new SourceLocation( start, index ) ) );
+}
+
+void Lexer::step( char &lastChar )
+{
+	// update Pos
+	if ( isNewLine( lastChar ) )
+	{
+		pos.column = 1;
+		++pos.line;
+	}
+	else
+		++pos.column;
+
+	// go to next character
+	lastChar = *it;
+	++it;
+
+	skipEscapedNewline( lastChar );
 }
 
 void Lexer::skipEscapedNewline( char &lastChar )
