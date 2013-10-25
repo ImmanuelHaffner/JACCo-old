@@ -93,10 +93,214 @@ Token * Lexer::getToken()
 	else
 	{	// PUNTUATORS
 
-		step( lastChar );
+		switch ( lastChar )
+		{
+			case '(':
+			case ')':
+			case ',':
+			case ':':
+			case ';':
+			case '?':
+			case '[':
+			case ']':
+			case '{':
+			case '}':
+			case '~':
+				kind = TokenKind::Punctuator;
+				break;
 
+			case '!':
+				if ( *it == '=' )
+				{ // !=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '#':
+				if ( *it == '#' )
+				{ // ##
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '%':
+				if ( *it == '=' )
+				{
+					// %=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '&':
+				if ( *it == '&' )
+				{ // &&
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				else if ( *it == '=' )
+				{ // &=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '*':
+				if ( *it == '=' )
+				{ // *=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '+':
+				if ( *it == '+' )
+				{ // ++
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				else if ( *it == '=' )
+				{ // +=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '-':
+				if ( *it == '-' )
+				{ // --
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				else if ( *it == '=' )
+				{ // -=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				else if ( *it == '>' )
+				{ // ->
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '.':
+				/*
+				 * Note: for this special case we have to do backtracking
+				 */
+				if ( *it == '.' )
+				{
+					if ( *(++it) == '.' )
+					{ // ...
+						--it;
+						step( lastChar );
+						TokenText += lastChar;
+						step( lastChar );
+						TokenText += lastChar;
+					}
+					else
+						--it;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '/':
+				if ( *it == '=' )
+				{ // /=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '<':
+				if ( *it == '=' )
+				{ // <=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				else if ( *it == '<' )
+				{ // <<
+					step( lastChar );
+					TokenText += lastChar;
+
+					if ( *it == '=' )
+					{ // <<=
+						step( lastChar );
+						TokenText += lastChar;
+					}
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '=':
+				if ( *it == '=' )
+				{ // ==
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '>':
+				if ( *it == '=' )
+				{ // >=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				else if ( *it == '>' )
+				{ // >>
+					step( lastChar );
+					TokenText += lastChar;
+
+					if ( *it == '=' )
+					{ // >>=
+						step( lastChar );
+						TokenText += lastChar;
+					}
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '^':
+				if ( *it == '=' )
+				{ // ^=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+
+			case '|':
+				if ( *it == '=' )
+				{ // |=
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				else if ( *it == '|' )
+				{ // ||
+					step( lastChar );
+					TokenText += lastChar;
+				}
+				kind = TokenKind::Punctuator;
+				break;
+		}
 	}
 
+
+	/*
+	 * Ok, we have read a token!
+	 * Lets just handle the last remaining character
+	 */
 	if ( isNewLine( lastChar ) )
 	{
 		// Reset the pos column to 0 (see Lexer constructor)
