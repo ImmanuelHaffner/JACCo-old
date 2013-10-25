@@ -16,11 +16,11 @@ namespace C4
 {
 	struct SourceLocation
 	{
-		SourceLocation( Pos const &pos, std::vector<char>::iterator index ) :
+		SourceLocation( Pos pos, std::vector<char>::const_iterator index ) :
 			pos(pos), index(index) {}
 
-		Pos const &pos;
-		std::vector<char>::iterator const index;
+		Pos const pos;
+		std::vector<char>::const_iterator const index;
 	};
 }
 
