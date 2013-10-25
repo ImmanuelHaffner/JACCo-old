@@ -43,6 +43,9 @@ namespace C4
 					return ++tokenCount;
 				}
 
+				/// This methods skips the '\' follwed by a newline
+				void skipEscapedNewline( char &lastChar );
+
 				unsigned tokenCount;
 				SourceBuffer &buf;
 				Pos pos;
