@@ -60,10 +60,11 @@ namespace C4
 				/// Reads and returns the next token on the input stream.
 				///
 				/// \return the next token from the input stream
-				Token getToken();
+				Token * getToken();
 
 			private:
 				SourceBuffer &buf;
+				Pos pos;
 				std::vector<char>::const_iterator it;
 		};
 	} // end namespace Lex
