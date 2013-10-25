@@ -9,32 +9,30 @@
 #include "Lexer.h"
 
 #include <iostream>
+#include <string>
+#include "Token.h"
 #include "../Support/CharUtils.h"
 
 using namespace C4;
 using namespace Lex;
 
-Lexer::Lexer( SourceBuffer &buf ) :
-	buf(buf), pos( buf.getSourceFileName(), 1, 0 ), it( buf.getBufStart() )
+Lexer::Lexer( SourceBuffer &buf ) : tokenCount(0), buf(buf),
+	pos( buf.getSourceFileName(), 1, 1 ), it( buf.getBufStart() )
 {}
 
 Lexer::~Lexer() {}
 
 Token * Lexer::getToken()
 {
-	char lastChar = ' '; // look-ahead of 1
+	// if we already reached the end of the line, return NULL
+	if ( buf.isBufEnd( it ) )
+		return NULL;
 
-	// Skip whitespaces
-	while ( isWhiteSpace( lastChar ) )
+	// skip whitespaces
+	while ( isWhiteSpace( *it ) )
 	{
-		if ( buf.isBufEnd( it ) )
-			return NULL;
-
-		// read next character
-		char nextChar = *(it++);
-
 		// update Pos
-		if ( isNewLine( nextChar ) )
+		if ( isNewLine( *it ) )
 		{
 			pos.column = 1;
 			++pos.line;
@@ -42,12 +40,65 @@ Token * Lexer::getToken()
 		else
 			++pos.column;
 
-		lastChar = nextChar;
+		// go to next character
+		++it;
+
+		if ( buf.isBufEnd( it ) )
+			return NULL;
 	}
 
-	std::cout << "Pos( \"" << pos.name << "\", " << pos.line << ", "
-		<< pos.column << " ) - " << visualizeChar( lastChar ) << std::endl;
+	Pos start(pos);
+	auto index(it);
+	std::string TokenText = "";
+	TokenText += *it;
+	TokenKind kind = TokenKind::IllegalIdentifier;
 
-	return new Token( 0, "token", TokenKind::Keyword, *( new SourceLocation(
-						pos, it ) ) );
+	if ( isNonDigit( *it ) )
+	{	// KEYWORD or IDENTIFIER
+		++it;
+		++pos.column;
+
+		// Read in the rest of the identifier string
+		while ( isNonDigit( *it ) || isDigit( *it ) )
+		{
+			TokenText += *it;
+			++pos.column;
+			++it;
+		}
+
+		// Compare the identifier string to the keywords
+		auto elem = Keywords.find( TokenText );
+		if ( elem != Keywords.end() )
+			// KEYWORD
+			kind = TokenKind::Keyword;
+		else
+			// IDENTIFIER
+			kind = TokenKind::Identifier;
+
+	}
+	else if ( isDigit( *it ) )
+	{	// CONSTANT or ILLEGAL IDENTIFIER
+		++it;
+		++pos.column;
+
+		bool illegal = false;
+
+		// Read in the rest of the digit string
+		while ( isDigit( *it ) || isNonDigit( *it ) )
+		{
+			illegal |= isNonDigit( *it );
+			TokenText += *it;
+			++pos.column;
+			++it;
+		}
+
+		if ( ! illegal )
+			kind = TokenKind::Constant;
+	}
+
+	// Create the token with the given type
+	return new Token( getTokenID(),
+			TokenText.c_str(),
+			kind,
+			*( new SourceLocation( start, index ) ) );
 }

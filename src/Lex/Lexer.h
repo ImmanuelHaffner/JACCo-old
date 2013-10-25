@@ -9,6 +9,7 @@
 #ifndef C4_LEXER_H
 #define C4_LEXER_H
 
+#include "Token.h"
 #include "../pos.h"
 #include "../util.h"
 #include "../Support/SourceBuffer.h"
@@ -22,32 +23,6 @@ namespace C4
 	/// tokens.
 	namespace Lex
 	{
-		/// The kind of a token.
-		enum class TokenKind
-		{
-			Keyword,
-			Identifier,
-			Constant,
-			StringLiteral,
-			Punctuator
-		};
-
-		/// A token...
-		///
-		/// TODO
-		struct Token
-		{
-			Token( unsigned id, char const * text, TokenKind kind,
-					SourceLocation const &loc ) :
-				id(id), text(nonNull(text)), kind(kind), loc(loc)
-			{}
-
-			unsigned const id;
-			char const * const text;
-			TokenKind const kind;
-			SourceLocation const &loc;
-		};
-
 		/// \brief The lexer.
 		///
 		///
@@ -63,6 +38,12 @@ namespace C4
 				Token * getToken();
 
 			private:
+				inline unsigned getTokenID()
+				{
+					return ++tokenCount;
+				}
+
+				unsigned tokenCount;
 				SourceBuffer &buf;
 				Pos pos;
 				std::vector<char>::const_iterator it;

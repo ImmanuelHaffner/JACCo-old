@@ -5,6 +5,7 @@
 #include "util.h"
 #include "Support/SourceBuffer.h"
 #include "Lex/Lexer.h"
+#include "Lex/Token.h"
 #include "Support/CharUtils.h"
 
 enum class Mode {
@@ -67,13 +68,13 @@ int main(int, char** const argv)
 							C4::SourceBuffer buf( name );
               C4::SourceLocation loc( pos, buf.getBufStart() );
               buf.init();
-              //buf.dump();
 
-              C4::Lex::Token Token( 0, "token_name",
-                  C4::Lex::TokenKind::Keyword, loc );
               C4::Lex::Lexer Lexer(buf);
 
-              while ( Lexer.getToken() );
+              while ( C4::Lex::Token const * tok = Lexer.getToken() )
+              {
+                tok->dump();
+              }
 
 							break;
 						}
