@@ -1,4 +1,4 @@
-//===--- Lexer.cc ---------------------------------------------------------===//
+//===--- Lexer.h ----------------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -35,7 +35,18 @@ namespace C4
 		/// A token...
 		///
 		/// TODO
-		struct Token;
+		struct Token
+		{
+			Token( unsigned id, char const * text, TokenKind kind,
+					SourceLocation const &loc ) :
+				id(id), text(nonNull(text)), kind(kind), loc(loc)
+			{}
+
+			unsigned const id;
+			char const * const text;
+			TokenKind const kind;
+			SourceLocation const &loc;
+		};
 
 		/// \brief The lexer.
 		///
