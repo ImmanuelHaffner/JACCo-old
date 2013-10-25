@@ -74,7 +74,7 @@ Token * Lexer::getToken()
 	else if ( isDigit( lastChar ) )
 	{
 		/*
-		 * CONSTANT or ILLEGAL IDENTIFIER
+		 * DIGITAL CONSTANT or ILLEGAL IDENTIFIER
 		 */
 		
 		bool illegal = false;
@@ -89,6 +89,73 @@ Token * Lexer::getToken()
 
 		if ( ! illegal )
 			kind = TokenKind::Constant;
+	}
+	else if ( lastChar == '\'' )
+	{
+		/*
+		 * CHARACTER CONSTANT or ILLEGAL CHARACTER CONSTANT
+		 */
+
+		if ( *it == '\\' /* '\ */ )
+		{ // escape-sequence
+			step( lastChar );
+			TokenText += lastChar;
+
+			switch ( *it )
+			{
+				case '\'':
+				case '\"':
+				case '\?':
+				case '\\':
+				case '\a':
+				case '\b':
+				case '\f':
+				case '\n':
+				case '\r':
+				case '\t':
+				case '\v':
+					step( lastChar );
+					TokenText += lastChar;
+
+					if ( *it == '\'' )
+					{
+						step( lastChar );
+						TokenText += lastChar;
+						kind = TokenKind::Constant;
+					}
+					else
+						kind = TokenKind::IllegalCharacterConstant;
+
+					break;
+
+				default:
+					kind = TokenKind::IllegalCharacterConstant;
+			}
+		} // end escape-sequence
+		else
+		{
+			// read the next char
+			step( lastChar );
+			TokenText += lastChar;
+
+			if ( *it == '\'' )
+			{
+				step( lastChar );
+				TokenText += lastChar;
+				kind = TokenKind::Constant;
+			}
+			else
+				kind = TokenKind::IllegalCharacterConstant;
+		}
+	}
+	else if ( lastChar == '\"' )
+	{
+		/*
+		 * STRING-LITERAL
+		 */
+		step( lastChar );
+		TokenText += lastChar;
+
 	}
 	else
 	{
