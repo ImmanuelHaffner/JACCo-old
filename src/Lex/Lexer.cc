@@ -94,7 +94,8 @@ Token * Lexer::getToken()
         TokenText += lastChar;
       }
 
-      ERROR( pos, "illegal character sequence: ", TokenText );
+      ERROR( pos, "illegal character sequence: ", TokenText, " - ",
+          "identifiers must start with an alphabetical char or an underscore" );
     }
     else
       kind = TokenKind::Constant;
@@ -211,7 +212,6 @@ Token * Lexer::getToken()
             // ILLEGAL CHARACTER
             // illegal escape-sequence
             illegalEscapeSequence = true;
-            kind = TokenKind::Illegal;
         }
       }
       step( lastChar );
@@ -228,6 +228,7 @@ Token * Lexer::getToken()
 
       if ( illegalEscapeSequence )
       {
+        kind = TokenKind::Illegal;
         ERROR( pos, "illegal string-literal: ", TokenText, " - ",
             "illegal escape-sequence" );
       }
