@@ -8,10 +8,10 @@
 
 #include "Lexer.h"
 
-#include <iostream>
 #include <string>
 #include "Token.h"
 #include "../Support/CharUtils.h"
+#include "../Support/Diagnostic.h"
 
 using namespace C4;
 using namespace Lex;
@@ -24,7 +24,7 @@ Lexer::~Lexer() {}
 
 Token * Lexer::getToken()
 {
-	// if we already reached the end of the line, return NULL
+	// if we already reached the end of the file, return NULL
 	if ( buf.isBufEnd( it ) )
 		return NULL;
 
@@ -46,7 +46,7 @@ Token * Lexer::getToken()
 	TokenText += lastChar;
 	assert( *index == lastChar && "wrong index" );
 
-	TokenKind kind = TokenKind::IllegalIdentifier;
+	TokenKind kind = TokenKind::Illegal;
 
 	if ( isNonDigit( lastChar ) )
 	{
@@ -69,93 +69,178 @@ Token * Lexer::getToken()
 		else
 			// IDENTIFIER
 			kind = TokenKind::Identifier;
-
 	}
 	else if ( isDigit( lastChar ) )
 	{
 		/*
-		 * DIGITAL CONSTANT or ILLEGAL IDENTIFIER
+		 * DIGITAL CONSTANT
 		 */
 		
-		bool illegal = false;
-
 		// Read in the rest of the digit string
-		while ( isDigit( *it ) || isNonDigit( *it ) )
+		while ( isDigit( *it ) )
 		{
 			step( lastChar );
 			TokenText += lastChar;
-			illegal |= isNonDigit( lastChar );
 		}
 
-		if ( ! illegal )
-			kind = TokenKind::Constant;
+    if ( isNonDigit( *it ) )
+    {
+      // Illegal Identifier
+
+      // Read in the rest of the identifier string
+      while ( isNonDigit( *it ) || isDigit( *it ) )
+      {
+        step( lastChar );
+        TokenText += lastChar;
+      }
+
+      ERROR( pos, "illegal character sequence: ", TokenText );
+    }
+    else
+      kind = TokenKind::Constant;
 	}
 	else if ( lastChar == '\'' )
 	{
 		/*
-		 * CHARACTER CONSTANT or ILLEGAL CHARACTER CONSTANT
+		 * CHARACTER CONSTANT
 		 */
 
-		if ( *it == '\\' /* '\ */ )
-		{ // escape-sequence
-			step( lastChar );
-			TokenText += lastChar;
+    kind = TokenKind::Constant;
+    bool illegalEscapeSequence = false;
+    unsigned length = 0;
 
-			switch ( *it )
-			{
-				case '\'':
-				case '\"':
-				case '\?':
-				case '\\':
-				case '\a':
-				case '\b':
-				case '\f':
-				case '\n':
-				case '\r':
-				case '\t':
-				case '\v':
-					step( lastChar );
-					TokenText += lastChar;
+    while ( *it != '\'' ) // read until the terminating apostrophe
+    {
+      if ( *it == '\n' ) // look-ahead for newline
+        break;
 
-					if ( *it == '\'' )
-					{
-						step( lastChar );
-						TokenText += lastChar;
-						kind = TokenKind::Constant;
-					}
-					else
-						kind = TokenKind::IllegalCharacterConstant;
-
-					break;
+      if ( *it == '\\' )
+      { // check for escaped characters
+        step( lastChar );
+        TokenText += lastChar;
+        switch ( *it )
+        {
+          case '\"':
+          case '\'':
+          case '?':
+          case '\\':
+          case 'a':
+          case 'b':
+          case 'f':
+          case 'n':
+          case 'r':
+          case 't':
+          case 'v':
+            break;
 
 				default:
-					kind = TokenKind::IllegalCharacterConstant;
-			}
-		} // end escape-sequence
-		else
-		{
-			// read the next char
-			step( lastChar );
-			TokenText += lastChar;
+            // ILLEGAL CHARACTER
+            // illegal escape-sequence
+            illegalEscapeSequence = true;
+        }
+      }
+      ++length;
+      step( lastChar );
+      TokenText += lastChar;
+    } // end while
 
-			if ( *it == '\'' )
-			{
-				step( lastChar );
-				TokenText += lastChar;
-				kind = TokenKind::Constant;
-			}
-			else
-				kind = TokenKind::IllegalCharacterConstant;
-		}
-	}
-	else if ( lastChar == '\"' )
-	{
-		/*
-		 * STRING-LITERAL
-		 */
-		step( lastChar );
-		TokenText += lastChar;
+    // read terminating apostrophe
+    if ( *it != '\n' )
+    {
+      assert( *it == '\'' && "wrong character-constant terminator" );
 
+      step( lastChar );
+      TokenText += lastChar;
+
+      if ( illegalEscapeSequence )
+      {
+        kind = TokenKind::Illegal;
+        ERROR( pos, "illegal character-constant: ", TokenText, " - ",
+            "illegal escape-sequence" );
+      }
+      else if ( length > 0 )
+      {
+        kind = TokenKind::Illegal;
+        ERROR( pos, "illegal character-constant: ", TokenText, " - ",
+            "character-constant with multiple characters" );
+      }
+    }
+    else
+    {
+      // ILLEGAL CHARACTER
+      // missing terminating apostrophe
+      ++it;
+      kind = TokenKind::Illegal;
+      ERROR( pos, "illegal escape sequence: ", TokenText, " - ",
+          "missing terminating apostrophe" );
+    }
+  }
+  else if ( lastChar == '\"' )
+  {
+    /*
+     * STRING-LITERAL
+     */
+    kind = TokenKind::StringLiteral;
+    bool illegalEscapeSequence = false;
+
+    while ( *it != '\"' ) // read until the terminating queote
+    {
+      if ( *it == '\n' ) // look-ahead for newline
+        break;
+
+      if ( *it == '\\' )
+      { // check for escaped characters
+        step( lastChar );
+        TokenText += lastChar;
+        switch ( *it )
+        {
+          case '\"':
+          case '\'':
+          case '?':
+          case '\\':
+          case 'a':
+          case 'b':
+          case 'f':
+          case 'n':
+          case 'r':
+          case 't':
+          case 'v':
+            break;
+
+				default:
+            // ILLEGAL CHARACTER
+            // illegal escape-sequence
+            illegalEscapeSequence = true;
+            kind = TokenKind::Illegal;
+        }
+      }
+      step( lastChar );
+      TokenText += lastChar;
+    } // end while
+
+    // read terminating quote
+    if ( *it != '\n' )
+    {
+      assert( *it == '\"' && "wrong string-literal terminator" );
+
+      step( lastChar );
+      TokenText += lastChar;
+
+      if ( illegalEscapeSequence )
+      {
+        ERROR( pos, "illegal string-literal: ", TokenText, " - ",
+            "illegal escape-sequence" );
+      }
+    }
+    else
+    {
+      // ILLEGAL CHARACTER
+      // missing terminating apostrophe
+      ++it;
+      kind = TokenKind::Illegal;
+      ERROR( pos, "illegal string-literal: ", TokenText, " - ",
+          "missing terminating quote" );
+    }
 	}
 	else
 	{
@@ -365,9 +450,11 @@ Token * Lexer::getToken()
 				break;
 
 			default:
+        // ILLEGAL SEQUENCE OF CHARACTERS
 				// if we reach this point, we have found an illegal sequence of
 				// characters
-				kind = TokenKind::IllegalCharacter;
+        ERROR( pos, "illegal character sequence: ", TokenText );
+
 		} // end switch-case
 	} // end PUNCTUATORS
 
@@ -441,4 +528,3 @@ void Lexer::skipEscapedNewline( char &lastChar )
 		}
 	}
 }
-

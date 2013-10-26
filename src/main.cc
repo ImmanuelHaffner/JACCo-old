@@ -73,7 +73,8 @@ int main(int, char** const argv)
 
               while ( C4::Lex::Token const * tok = Lexer.getToken() )
               {
-                tok->dump();
+                if ( tok->kind != C4::Lex::TokenKind::Illegal )
+                  tok->dump();
               }
 
 							break;

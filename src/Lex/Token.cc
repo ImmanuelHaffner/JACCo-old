@@ -28,14 +28,8 @@ void Token::dump() const
 		case TokenKind::Identifier:
 			std::cout << "identifier";
 			break;
-		case TokenKind::IllegalIdentifier:
-			std::cout << "illegal-identifier";
-			break;
 		case TokenKind::Constant:
 			std::cout << "constant";
-			break;
-		case TokenKind::IllegalCharacterConstant:
-			std::cout << "illegal-char-constant";
 			break;
 		case TokenKind::StringLiteral:
 			std::cout << "string-literal";
@@ -43,8 +37,8 @@ void Token::dump() const
 		case TokenKind::Punctuator:
 			std::cout << "punctuator";
 			break;
-		case TokenKind::IllegalCharacter:
-			std::cout << "illegal-chararacter";
+		case TokenKind::Illegal:
+			std::cout << "illegal";
 			break;
 	}
 

@@ -23,12 +23,10 @@ namespace C4{
     {
       Keyword,
       Identifier,
-      IllegalIdentifier,
       Constant,
-      IllegalCharacterConstant,
       StringLiteral,
       Punctuator,
-      IllegalCharacter
+      Illegal
     };
 
 
