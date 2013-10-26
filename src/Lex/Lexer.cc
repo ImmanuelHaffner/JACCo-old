@@ -480,8 +480,11 @@ Token * Lexer::getToken()
 			*( new SourceLocation( start, index ) ) );
 }
 
-void Lexer::step( char &lastChar )
+bool Lexer::step( char &lastChar )
 {
+  if ( buf.isBufEnd( it ) )
+    return false;
+
 	// update Pos
 	if ( isNewLine( lastChar ) )
 	{
@@ -495,37 +498,87 @@ void Lexer::step( char &lastChar )
 	lastChar = *it;
 	++it;
 
-	skipEscapedNewline( lastChar );
+	return skipEscapedNewline( lastChar );
 }
 
-void Lexer::skipEscapedNewline( char &lastChar )
+bool Lexer::skip( char &lastChar )
 {
+  while ( true )
+  {
+    if ( buf.isBufEnd( it ) )
+      return false;
+
+    if ( isWhiteSpace( lastChar ) )
+    {
+      if ( ! step( lastChar ) )
+        return false;
+    }
+    else if ( lastChar == '/' )
+    {
+      if ( *it == '/' )
+      {
+        // single-line comment
+        // read until the end of the line
+        if ( ! step( lastChar ) )
+          return false;
+        if ( ! step( lastChar ) )
+          return false;
+
+        while ( ! isNewLine( lastChar ) )
+        {
+          if ( ! step( lastChar ) )
+            return false;
+        }
+      }
+      else if ( *it == '*' )
+      {
+        // comment-block
+        // read until first */
+        //
+        // CARE for /*/
+        if ( ! step( lastChar ) )
+          return false;
+        if ( ! step( lastChar ) )
+          return false;
+
+        while ( lastChar != '*' || *it != '/' )
+        {
+          if ( ! step( lastChar ) )
+            return false;
+        }
+      }
+      else
+        return true;
+    } // end if lastChar == '/'
+    else
+      return true;
+  } // end while
+  return true;
+}
+
+bool Lexer::skipEscapedNewline( char &lastChar )
+{
+  if ( buf.isBufEnd( it ) )
+    return false;
+
 	if ( lastChar == '\\' && isNewLine( *it ) )
 	{
+    ++pos.line;
+    pos.column = 1;
+
+    // set lastChar to the next char behind \ + Newline
 		++it;
+    if ( buf.isBufEnd( it ) )
+      return false;
+
 		lastChar = *it;
 		++it;
-		skipEscapedNewline( lastChar );
+    if ( buf.isBufEnd( it ) )
+      return false;
 
-		// skip whitespaces
-		while ( isWhiteSpace( lastChar ) )
-		{
-			if ( buf.isBufEnd( it ) )
-				break;
-
-			// update Pos
-			if ( isNewLine( lastChar ) )
-			{
-				pos.column = 1;
-				++pos.line;
-			}
-			else
-				++pos.column;
-
-			// go to next character
-			lastChar = *it;
-			++it;
-			skipEscapedNewline( lastChar );
-		}
+    // skip following whitespaces and comments
+    return skip( lastChar );
 	}
+
+  return true;
 }

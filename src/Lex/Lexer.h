@@ -46,10 +46,20 @@ namespace C4
 				/// Steps one character forward in the buffer and updates 'it' and
 				/// 'pos'.
 				/// Immediately skips escaped newlines
-				void step( char &lastChar);
+        ///
+        /// \return false, iff the end of the buffer is reached, true otherwise
+				bool step( char &lastChar);
+
+        /// This method skips until the first non-whitespace character, that
+        /// is not part of a comment
+        ///
+        /// \return false, iff the end of the buffer is reached, true otherwise
+        bool skip( char &lastChar );
 
 				/// This methods skips the '\' follwed by a newline
-				void skipEscapedNewline( char &lastChar );
+        ///
+        /// \return false, iff the end of the buffer is reached, true otherwise
+				bool skipEscapedNewline( char &lastChar );
 
 				unsigned tokenCount;
 				SourceBuffer &buf;
