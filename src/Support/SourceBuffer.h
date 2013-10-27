@@ -11,6 +11,7 @@
 
 #include <cstdio>
 #include <vector>
+#include <string>
 
 namespace C4
 {
@@ -18,6 +19,7 @@ namespace C4
 	{
 		public:
 			SourceBuffer( char const * const fileName );
+			SourceBuffer( std::string const &fileName );
 			~SourceBuffer();
 
       /// Opens the file specified by <i>fileName<\i> and reads every single
@@ -25,19 +27,19 @@ namespace C4
       /// Afterwards, the file is closed.
 			void init();
 			bool isInitialized() const;
-      char const * getSourceFileName() const;
-			size_t getSize() const;
-			std::vector<char>::iterator getBufStart();
-			std::vector<char>::iterator getBufEnd();
-			std::vector<char>::const_iterator getBufStart() const;
-			std::vector<char>::const_iterator getBufEnd() const;
-			bool isBufEnd( std::vector<char>::iterator const &it ) const;
-			bool isBufEnd( std::vector<char>::const_iterator const &it ) const;
+			std::string const & getFileName() const;
+			size_t size() const;
+			char & operator[]( size_t n );
+			char const & operator[]( size_t n ) const;
+			std::vector<char>::iterator begin();
+			std::vector<char>::const_iterator begin() const;
+			std::vector<char>::iterator end();
+			std::vector<char>::const_iterator end() const;
       void dump() const;
 
 		private:
 			bool initialized;
-      char const * const fileName;
+			std::string const fileName;
 			std::vector<char> *Buffer;
 	};
 }

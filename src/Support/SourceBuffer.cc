@@ -11,40 +11,48 @@
 #include <cassert>
 #include <iostream>
 #include <cstdio>
+#include "Diagnostic.h"
 #include "../pos.h"
-#include "../diagnostic.h"
 
 using namespace C4;
 
 SourceBuffer::SourceBuffer( char const * const fileName ) :
-  initialized(false), fileName(fileName)
+  initialized(false), fileName(fileName), Buffer(NULL)
 {
 	assert( fileName != NULL && "fileName must not be NULL" );
 }
 
+SourceBuffer::SourceBuffer( std::string const &fileName ) :
+  initialized(false), fileName(fileName), Buffer(NULL)
+{}
+
 SourceBuffer::~SourceBuffer()
 {
-	delete Buffer;
+	if ( initialized )
+		delete Buffer;
 }
 
 void SourceBuffer::init()
 {
   FILE * file = NULL;
-  if ( strEq( "<stdin>", fileName ) )
+  if ( fileName == "<stdin>" )
   {
     file = stdin;
   }
   else
-    file = fopen( fileName, "rb" );
+    file = fopen( fileName.c_str(), "rb" );
 
   if ( ! file )
-    errorErrno( Pos( fileName ) );
+		ERROR( Pos( fileName.c_str() ), "file does not exist" );
 
 	Buffer = new std::vector<char>();
 
 	int c;
 	while ( (c = getc( file )) != EOF )
 		Buffer->push_back( c );
+
+	// EOF hack
+	Buffer->pop_back();
 
   fclose ( file );
 	initialized = true;
@@ -55,44 +63,44 @@ bool SourceBuffer::isInitialized() const
 	return initialized;
 }
 
-char const * SourceBuffer::getSourceFileName() const
+std::string const & SourceBuffer::getFileName() const
 {
   return fileName;
 }
 
-size_t SourceBuffer::getSize() const
+size_t SourceBuffer::size() const
 {
 	return Buffer->size();
 }
 
-std::vector<char>::iterator SourceBuffer::getBufStart()
+char & SourceBuffer::operator[]( size_t n )
+{
+	return (*Buffer)[n];
+}
+
+char const & SourceBuffer::operator[]( size_t n ) const
+{
+	return (*Buffer)[n];
+}
+
+std::vector<char>::iterator SourceBuffer::begin()
 {
 	return Buffer->begin();
 }
 
-std::vector<char>::iterator SourceBuffer::getBufEnd()
+std::vector<char>::iterator SourceBuffer::end()
 {
 	return Buffer->end();
 }
 
-std::vector<char>::const_iterator SourceBuffer::getBufStart() const
+std::vector<char>::const_iterator SourceBuffer::begin() const
 {
 	return Buffer->begin();
 }
 
-std::vector<char>::const_iterator SourceBuffer::getBufEnd() const
+std::vector<char>::const_iterator SourceBuffer::end() const
 {
 	return Buffer->end();
-}
-
-bool SourceBuffer::isBufEnd( std::vector<char>::iterator const &it ) const
-{
-	return it == Buffer->end();
-}
-
-bool SourceBuffer::isBufEnd( std::vector<char>::const_iterator const &it ) const
-{
-	return it == Buffer->end();
 }
 
 void SourceBuffer::dump() const
@@ -104,7 +112,7 @@ void SourceBuffer::dump() const
     std::cout << "\tnot initialized";
   }
 
-  for ( auto it = getBufStart(); ! isBufEnd( it ); ++it )
+  for ( auto it = begin(); it != end(); ++it )
   {
     std::cout << *it;
   }

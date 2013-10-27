@@ -64,11 +64,7 @@ int main(int, char** const argv)
 				switch (mode) {
 					case Mode::TOKENIZE:
 						{
-              Pos pos( "pos_name" );
 							C4::SourceBuffer buf( name );
-              C4::SourceLocation loc( pos, buf.getBufStart() );
-              buf.init();
-
               C4::Lex::Lexer Lexer(buf);
 
               while ( C4::Lex::Token const * tok = Lexer.getToken() )

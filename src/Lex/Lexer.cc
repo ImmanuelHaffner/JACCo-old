@@ -17,8 +17,11 @@ using namespace C4;
 using namespace Lex;
 
 Lexer::Lexer( SourceBuffer &buf ) : tokenCount(0), buf(buf),
-	pos( buf.getSourceFileName(), 1, 0 ), it( buf.getBufStart() )
-{}
+	pos( buf.getFileName().c_str(), 1, 0 ), it( buf.begin() )
+{
+	if ( ! buf.isInitialized() )
+		buf.init();
+}
 
 Lexer::~Lexer() {}
 
@@ -497,7 +500,7 @@ Token * Lexer::getToken()
 
 bool Lexer::step( char &lastChar )
 {
-  if ( buf.isBufEnd( it ) )
+  if ( it == buf.end() )
     return false;
 
 	// update Pos
@@ -520,7 +523,7 @@ bool Lexer::skip( char &lastChar )
 {
   while ( true )
   {
-    if ( buf.isBufEnd( it ) )
+    if ( it == buf.end() )
       return false;
 
     if ( isWhiteSpace( lastChar ) )
@@ -573,7 +576,7 @@ bool Lexer::skip( char &lastChar )
 
 bool Lexer::skipEscapedNewline( char &lastChar )
 {
-  if ( buf.isBufEnd( it ) )
+  if ( it == buf.end() )
     return false;
 
 	if ( lastChar == '\\' && isNewLine( *it ) )
@@ -583,12 +586,12 @@ bool Lexer::skipEscapedNewline( char &lastChar )
 
     // set lastChar to the next char behind \ + Newline
 		++it;
-    if ( buf.isBufEnd( it ) )
+    if ( it == buf.end() )
       return false;
 
 		lastChar = *it;
 		++it;
-    if ( buf.isBufEnd( it ) )
+    if ( it == buf.end() )
       return false;
 
     // skip following whitespaces and comments
