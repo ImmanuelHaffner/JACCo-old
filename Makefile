@@ -44,6 +44,7 @@ CXXFLAGS += $(CFLAGS) -std=c++11
 all: $(BIN)
 
 check: $(TESTBIN)
+	$(TESTBIN)
 
 clean:
 	@echo "===> CLEAN"
