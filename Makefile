@@ -22,7 +22,8 @@ SRC				:= $(sort $(subst $(PWD), ".", $(shell find $(SRCDIR)/ -name '*.cc')))
 OBJ				:= $(SRC:$(SRCDIR)/%.cc=$(BINDIR)/%.o)
 DEP				:= $(OBJ:%.o=%.d)
 
-TEST_SRC	:= $(sort $(subst $(PWD), ".", $(shell find $(TESTDIR)/ -name '*.cc')))
+TEST_SRC	:= $(shell echo $(SRC) | sed 's/src\/main.cc/ /')
+TEST_SRC	+= $(sort $(subst $(PWD), ".", $(shell find $(TESTDIR)/ -name '*.cc')))
 TEST_OBJ	:= $(TEST_SRC:$(TESTDIR)/%.cc=$(TESTBINDIR)/%.o)
 TEST_DEP	:= $(TEST_OBJ:%.o=%.d)
 
@@ -43,8 +44,8 @@ CXXFLAGS += $(CFLAGS) -std=c++11
 
 all: $(BIN)
 
-check: $(TESTBIN)
-	$(TESTBIN)
+check: all $(TESTBIN)
+	- $(TESTBIN)
 
 clean:
 	@echo "===> CLEAN"
@@ -61,11 +62,11 @@ doxy:
 
 $(BIN): $(OBJ)
 	@echo "===> LD $@"
-	$(Q)$(CXX) -o $(BIN) $(OBJ)
+	$(Q)$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ)
 
 $(TESTBIN): $(TEST_OBJ)
 	@echo "===> LD $@"
-	$(Q)$(CXX) -o $(TESTBIN) $(TEST_OBJ) -L${CPPUNIT_PATH}/lib -lstdc++ -lcppunit -ldl
+	$(Q)$(CXX) $(CXXFLAGS) -o $(TESTBIN) $(TEST_OBJ) -L${CPPUNIT_PATH}/lib -lstdc++ -lcppunit -ldl
 
 $(BINDIR)/%.o: $(SRCDIR)/%.cc
 	@echo "===> CXX $<   ->   $@"
