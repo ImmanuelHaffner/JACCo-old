@@ -10,12 +10,12 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "../src/Support/SourceBuffer.h"
-
 class SourceBufferTest : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE ( SourceBufferTest );
-	CPPUNIT_TEST ( test );
+	CPPUNIT_TEST ( testConstructor );
+	CPPUNIT_TEST ( testInit );
+	CPPUNIT_TEST ( testIterator );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -23,7 +23,9 @@ class SourceBufferTest : public CPPUNIT_NS::TestFixture
   void tearDown();
 
   protected:
-  void test();
+  void testConstructor();
+  void testInit();
+	void testIterator();
 
 };
 
