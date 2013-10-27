@@ -14,7 +14,6 @@ SRC		 := $(sort $(subst $(PWD), ".", $(shell find $(SRCDIR)/ -name '*.cc')))
 OBJ    := $(SRC:$(SRCDIR)/%.cc=$(BINDIR)/%.o)
 DEP    := $(OBJ:%.o=%.d)
 
-CXX				= clang++
 CFLAGS   += -Wall -W# -Werror
 CXXFLAGS += $(CFLAGS) -std=c++11
 

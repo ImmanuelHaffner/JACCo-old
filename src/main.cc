@@ -1,7 +1,12 @@
 #include <stdexcept>
+#include <iostream>
 
 #include "diagnostic.h"
 #include "util.h"
+#include "Support/SourceBuffer.h"
+#include "Lex/Lexer.h"
+#include "Lex/Token.h"
+#include "Support/CharUtils.h"
 
 enum class Mode {
 	TOKENIZE,
@@ -50,21 +55,40 @@ int main(int, char** const argv)
 					f = fopen(name, "rb");
 					if (!f)
 						errorErrno(Pos(name));
+          fclose( f );
 				}
 
 				if (hasNewErrors())
 					continue;
 
 				switch (mode) {
-				case Mode::TOKENIZE:
-				case Mode::PARSE:
-				case Mode::PRINT_AST:
-				case Mode::COMPILE:
-					PANIC("TODO implement");
-				}
+					case Mode::TOKENIZE:
+						{
+              Pos pos( "pos_name" );
+							C4::SourceBuffer buf( name );
+              C4::SourceLocation loc( pos, buf.getBufStart() );
+              buf.init();
 
-				if (f != stdin)
-					fclose(f);
+              C4::Lex::Lexer Lexer(buf);
+
+              while ( C4::Lex::Token const * tok = Lexer.getToken() )
+              {
+                if ( tok->kind != C4::Lex::TokenKind::Illegal )
+                  tok->dump();
+              }
+
+							break;
+						}
+
+					case Mode::PARSE:
+						{}
+					case Mode::PRINT_AST:
+						{}
+					case Mode::COMPILE:
+						{
+							PANIC("TODO implement");
+						}
+				}
 			}
 		}
 	} catch (std::exception const& e) {
