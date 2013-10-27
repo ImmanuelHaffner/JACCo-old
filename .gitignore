@@ -1,5 +1,8 @@
 doc/
-/*.cfg
-/build
+*.cfg
+build/
+test/default
 .*.swp
 cleanup.sh
+*.tar
+*.tar.gz
