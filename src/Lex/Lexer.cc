@@ -90,7 +90,7 @@ Token * Lexer::getToken()
         TokenText += lastChar;
       }
 
-      ERROR( start, "illegal character sequence: ", TokenText, " - ",
+      ERROR( start, "illegal character sequence\n", TokenText, "    - ",
           "identifiers must start with an alphabetical char or an underscore" );
     }
     else
@@ -153,13 +153,13 @@ Token * Lexer::getToken()
       if ( length <= 1 )
       {
         ERROR( pos,
-            "illegal character-constant: ", TokenText, " - ",
+            "illegal character-constant\n", TokenText, "    - ",
             "missing terminating apostrophe" );
       }
       else
       {
         ERROR( Pos( start.name, start.line, start.column + 2 ),
-            "illegal character-constant: ", TokenText, " - ",
+            "illegal character-constant\n", TokenText, "    - ",
             "missing terminating apostrophe" );
       }
     }
@@ -171,13 +171,13 @@ Token * Lexer::getToken()
       if ( length > 1 )
       {
         kind = TokenKind::Illegal;
-        ERROR( start, "illegal character-constant: ", TokenText, " - ",
+        ERROR( start, "illegal character-constant\n", TokenText, "    - ",
             "character-constant with multiple characters" );
       }
       else if ( illegalEscapeSequence )
       {
         kind = TokenKind::Illegal;
-        ERROR( start, "illegal character-constant: ", TokenText, " - ",
+        ERROR( start, "illegal character-constant\n", TokenText, "    - ",
             "illegal escape-sequence" );
       }
     }
@@ -221,7 +221,8 @@ Token * Lexer::getToken()
           default:
             // ILLEGAL CHARACTER
             // illegal escape-sequence
-            illegalEscapePos = new Pos(pos);
+						if ( ! illegalEscapePos )
+							illegalEscapePos = new Pos(pos);
         }
       }
       TokenText += lastChar;
@@ -235,7 +236,7 @@ Token * Lexer::getToken()
       // missing terminating quote
       kind = TokenKind::Illegal;
       ERROR( pos,
-          "illegal string-literal: ", TokenText, " - ",
+          "illegal string-literal\n", TokenText, "    - ",
           "missing terminating quote" );
     }
     else
@@ -247,9 +248,13 @@ Token * Lexer::getToken()
 
       if ( illegalEscapePos )
       {
+				assert( illegalEscapePos && "no position set" );
+
         kind = TokenKind::Illegal;
-        ERROR( start, "illegal string-literal: ", TokenText, " - ",
-            "illegal escape-sequence" );
+        ERROR( *illegalEscapePos, "illegal string-literal\n", TokenText,
+						"    - ", "illegal escape-sequence" );
+
+				delete illegalEscapePos;
       }
     }
 	}
@@ -464,7 +469,7 @@ Token * Lexer::getToken()
         // ILLEGAL SEQUENCE OF CHARACTERS
 				// if we reach this point, we have found an illegal sequence of
 				// characters
-        ERROR( start, "illegal character sequence: ", TokenText );
+        ERROR( start, "illegal character sequence\n", TokenText );
 
 		} // end switch-case
 	} // end PUNCTUATORS
