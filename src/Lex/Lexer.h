@@ -37,7 +37,8 @@ namespace C4
         /// \return the next token from the input stream
         Token * getToken();
 
-      private:
+        Pos getPos() const;
+
         /// Steps one character forward in the file and updates 'pos'.
         /// Immediately skips escaped newlines.
         ///
@@ -53,8 +54,10 @@ namespace C4
         ///
         Token * readKeywordOrIdentifier( int &current );
 
-        FILE * file;
         std::string const fileName;
+
+      private:
+        FILE * file;
         Pos pos;
     };
   } // end namespace Lex

@@ -16,12 +16,12 @@
 using namespace C4;
 using namespace Lex;
 
-Lexer::Lexer( char const * const fileName, FILE * file ) : file(file),
-  fileName(fileName), pos(fileName, 1, 0)
+Lexer::Lexer( char const * const fileName, FILE * file ) : fileName(fileName),
+  file(file), pos(fileName, 1, 0)
 {}
 
-Lexer::Lexer( std::string const &fileName, FILE * file ) : file(file),
-  fileName(fileName), pos(fileName.c_str(), 1, 0)
+Lexer::Lexer( std::string const &fileName, FILE * file ) : fileName(fileName),
+  file(file), pos(fileName.c_str(), 1, 0)
 {}
 
 Lexer::~Lexer() {}
@@ -480,6 +480,11 @@ Token * Lexer::getToken()
   //kind,
   //*( new SourceLocation( start, index ) ) );
   return NULL;
+}
+
+Pos Lexer::getPos() const
+{
+  return Pos( this->pos );
 }
 
 /// Steps one character forward in the buffer and updates 'it' and
