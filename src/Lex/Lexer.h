@@ -12,61 +12,52 @@
 #include "Token.h"
 #include "../pos.h"
 #include "../util.h"
-#include "../Support/SourceBuffer.h"
-#include "../Support/SourceLocation.h"
 
 namespace C4
 {
-	/// \brief Defines the interface for the lexer.
-	///
-	/// The lexer reads in a stream of characters and generates a stream of
-	/// tokens.
-	namespace Lex
-	{
-		/// \brief The lexer.
-		///
-		///
-		class Lexer
-		{
-			public:
-				Lexer( SourceBuffer &buf );
-				~Lexer();
+  /// \brief Defines the interface for the lexer.
+  ///
+  /// The lexer reads in a stream of characters and generates a stream of
+  /// tokens.
+  namespace Lex
+  {
+    /// \brief The lexer.
+    ///
+    ///
+    class Lexer
+    {
+      public:
+        Lexer( char const * const fileName, FILE * file );
+        Lexer( std::string const &fileName, FILE * file );
 
-				/// Reads and returns the next token on the input stream.
-				///
-				/// \return the next token from the input stream
-				Token * getToken();
+        ~Lexer();
 
-			private:
-				inline unsigned getTokenID()
-				{
-					return ++tokenCount;
-				}
+        /// Reads and returns the next token on the input stream.
+        ///
+        /// \return the next token from the input stream
+        Token * getToken();
 
-				/// Steps one character forward in the buffer and updates 'it' and
-				/// 'pos'.
-				/// Immediately skips escaped newlines
+      private:
+        /// Steps one character forward in the file and updates 'pos'.
+        /// Immediately skips escaped newlines.
         ///
         /// \return false, iff the end of the buffer is reached, true otherwise
-				bool step( char &lastChar);
+        bool step( int &current);
 
         /// This method skips until the first non-whitespace character, that
-        /// is not part of a comment
+        /// is not part of a comment.
         ///
         /// \return false, iff the end of the buffer is reached, true otherwise
-        bool skip( char &lastChar );
+        bool skip( int &current );
 
-				/// This methods skips the '\' follwed by a newline
         ///
-        /// \return false, iff the end of the buffer is reached, true otherwise
-				bool skipEscapedNewline( char &lastChar );
+        Token * readKeywordOrIdentifier( int &current );
 
-				unsigned tokenCount;
-				SourceBuffer &buf;
-				Pos pos;
-				std::vector<char>::const_iterator it;
-		};
-	} // end namespace Lex
+        FILE * file;
+        std::string const fileName;
+        Pos pos;
+    };
+  } // end namespace Lex
 } // end namespace C4
 
 #endif
