@@ -18,18 +18,9 @@ inline bool isWhiteSpace( char const chr )
 	{
 		case ' ':
 		case '\n':
+    case '\r':
 		case '\t':
 		case '\v':
-			return true;
-	}
-	return false;
-}
-
-inline bool isNewLine( char const chr )
-{
-	switch ( chr )
-	{
-		case '\n':
 			return true;
 	}
 	return false;
