@@ -3,10 +3,9 @@
 
 #include "diagnostic.h"
 #include "util.h"
-#include "Support/SourceBuffer.h"
 #include "Lex/Lexer.h"
-#include "Lex/Token.h"
 #include "Support/CharUtils.h"
+#include "Support/Diagnostic.h"
 
 enum class Mode {
 	TOKENIZE,
@@ -55,7 +54,6 @@ int main(int, char** const argv)
 					f = fopen(name, "rb");
 					if (!f)
 						errorErrno(Pos(name));
-          fclose( f );
 				}
 
 				if (hasNewErrors())
@@ -64,14 +62,14 @@ int main(int, char** const argv)
 				switch (mode) {
 					case Mode::TOKENIZE:
 						{
-							C4::SourceBuffer buf( name );
-              C4::Lex::Lexer Lexer(buf);
-
-              while ( C4::Lex::Token const * tok = Lexer.getToken() )
-              {
-                if ( tok->kind != C4::Lex::TokenKind::Illegal )
-                  tok->dump();
-              }
+              //buf.init();
+              //C4::Lex::Lexer Lexer(buf);
+              //
+              //while ( C4::Lex::Token const * tok = Lexer.getToken() )
+              //{
+              //if ( tok->kind != C4::Lex::TokenKind::Illegal )
+              //tok->dump();
+              //}
 
 							break;
 						}
@@ -85,6 +83,7 @@ int main(int, char** const argv)
 							PANIC("TODO implement");
 						}
 				}
+        fclose ( f );
 			}
 		}
 	} catch (std::exception const& e) {
