@@ -44,7 +44,7 @@ CXXFLAGS += $(CFLAGS) -std=c++11
 
 all: $(BIN)
 
-check: all $(TESTBIN)
+check: $(TESTBIN)
 	- $(TESTBIN)
 
 clean:
