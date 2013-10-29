@@ -378,7 +378,7 @@ void LexerTest::testReadCharacterConstant()
 
 
   // a
-  token = & lexer.readCharacterConstant();
+  token = & lexer.readCharacterConstantOrStringLiteral();
   CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -387,7 +387,7 @@ void LexerTest::testReadCharacterConstant()
   lexer.skip();
 
   // b
-  token = & lexer.readCharacterConstant();
+  token = & lexer.readCharacterConstantOrStringLiteral();
   CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
@@ -396,7 +396,7 @@ void LexerTest::testReadCharacterConstant()
   lexer.skip();
 
   // c
-  token = & lexer.readCharacterConstant();
+  token = & lexer.readCharacterConstantOrStringLiteral();
   CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -405,7 +405,7 @@ void LexerTest::testReadCharacterConstant()
   lexer.skip();
 
   // d
-  token = & lexer.readCharacterConstant();
+  token = & lexer.readCharacterConstantOrStringLiteral();
   CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
@@ -414,7 +414,7 @@ void LexerTest::testReadCharacterConstant()
   lexer.skip();
 
   // e
-  token = & lexer.readCharacterConstant();
+  token = & lexer.readCharacterConstantOrStringLiteral();
   CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -423,7 +423,7 @@ void LexerTest::testReadCharacterConstant()
   lexer.skip();
 
   // \n
-  token = & lexer.readCharacterConstant();
+  token = & lexer.readCharacterConstantOrStringLiteral();
   CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
@@ -432,7 +432,7 @@ void LexerTest::testReadCharacterConstant()
   lexer.skip();
 
   // \\ (text to avoid two-line comment)
-  token = & lexer.readCharacterConstant();
+  token = & lexer.readCharacterConstantOrStringLiteral();
   CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );

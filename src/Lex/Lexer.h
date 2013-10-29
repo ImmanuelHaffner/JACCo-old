@@ -58,13 +58,14 @@ namespace C4
         /// \return a Numerical CONSTANT, or an ILLEGAL Token
         Token & readNumericalConstant();
 
-        /// Reads a character constant.
-        /// Stops at the first character not part of the character constant,
-        /// such that file.peek() would return that character.
+        /// Reads a character constant or a string literal.
+        /// Stops at the first character not part of the character constant
+        /// or the string literal, such that file.peek() would return that
+        /// character.
         /// Reads at least one character.
         ///
-        /// \return a Character CONSTANT, or an ILLEGAL Token
-        Token & readCharacterConstant();
+        /// \return a Character CONSTANT, a STRING LITERAL, or an ILLEGAL Token
+        Token & readCharacterConstantOrStringLiteral();
 
         std::string const fileName;
 

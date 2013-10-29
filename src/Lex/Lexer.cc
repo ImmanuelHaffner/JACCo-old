@@ -58,14 +58,10 @@ Token & Lexer::getToken()
     // Numerical Constant
     return readNumericalConstant();
   }
-  else if ( file.peek() == '\'' )
+  else if ( file.peek() == '\'' || file.peek() == '"' )
   {
-    // Character Constant
-    return readCharacterConstant();
-  }
-  else if ( file.peek() == '\"' )
-  {
-    // String Literal
+    // Character Constant or String Literal
+    return readCharacterConstantOrStringLiteral();
   }
   //ERROR( pos,
   //"illegal character-constant\n", TokenText, "    - ",
@@ -392,13 +388,15 @@ Token & Lexer::readNumericalConstant()
   return *( new ConstantToken( start, text ) );
 }
 
-Token & Lexer::readCharacterConstant()
+Token & Lexer::readCharacterConstantOrStringLiteral()
 {
   /*
-   * Character CONSTANT
+   * Character CONSTANT or STRING LITERAL
    */
   Pos start(pos);
   std::string text = "";
+
+  bool isCharConst = file.peek() == '\'';
 
   // read first character
   updatePos( file.peek() );
@@ -408,7 +406,9 @@ Token & Lexer::readCharacterConstant()
   bool illegalEscapeSequence = false;
   bool newLine = false;
 
-  while ( file.good() && file.peek() != '\'' )
+  int terminator = ( isCharConst ? '\'' : '"' );
+
+  while ( file.good() && file.peek() != terminator )
   {
     if ( file.peek() == '\n' || file.peek() == '\r' )
     {
@@ -445,14 +445,14 @@ Token & Lexer::readCharacterConstant()
     ++length;
   }
 
-  if ( file.peek() == '\'' )
+  if ( file.peek() == terminator )
   {
-    // read terminating apostrophe
+    // read terminating apostrophe or quote
     updatePos( file.peek() );
     text += file.get();
   }
   
-  if ( length > 1 )
+  if ( isCharConst && length > 1 )
   {
     return *( new IllegalToken( start,
           IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS, text ) );
@@ -468,7 +468,9 @@ Token & Lexer::readCharacterConstant()
           text ) );
   }
 
-  return *( new ConstantToken( start, text ) );
+  if ( isCharConst )
+    return *( new ConstantToken( start, text ) );
+  return *( new StringLiteralToken( start, text ) );
 }
 
 
