@@ -20,7 +20,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testReadIdentifier );
   CPPUNIT_TEST ( testReadKeywords );
   CPPUNIT_TEST ( testReadNumericalConstant );
-  CPPUNIT_TEST ( testReadCharacterConstant );
+  CPPUNIT_TEST ( testReadStringLiteral );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -34,6 +34,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   void testReadKeywords();
   void testReadNumericalConstant();
   void testReadCharacterConstant();
+  void testReadStringLiteral();
 };
 
 #endif

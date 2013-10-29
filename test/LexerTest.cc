@@ -444,3 +444,54 @@ void LexerTest::testReadCharacterConstant()
   // restode stdin
   std::cin.rdbuf( cin_bak );
 }
+
+void LexerTest::testReadStringLiteral()
+{
+  std::istringstream stream( "\"a\" \n \"bc\"\r\n\"d e \" \"\\n bla\"" );
+
+  // redirect stdin
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+  Token * token;
+
+  // "a"
+  token = & lexer.readCharacterConstantOrStringLiteral();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::STRING_LITERAL );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "\"a\"" );
+  delete token;
+  lexer.skip();
+
+  // "bc"
+  token = & lexer.readCharacterConstantOrStringLiteral();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::STRING_LITERAL );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "\"bc\"" );
+  delete token;
+  lexer.skip();
+
+  // "d e "
+  token = & lexer.readCharacterConstantOrStringLiteral();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::STRING_LITERAL );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "\"d e \"" );
+  delete token;
+  lexer.skip();
+
+  // "\n bla"
+  token = & lexer.readCharacterConstantOrStringLiteral();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::STRING_LITERAL );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 8u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "\"\\n bla\"" );
+  delete token;
+  lexer.skip();
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
