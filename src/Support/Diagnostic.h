@@ -68,6 +68,7 @@ namespace C4
 				str += ":";
 			}
 		}
+    str += " ";
 	}
 
 	static inline void append( std::string &str, std::string const &s )
@@ -122,23 +123,23 @@ namespace C4
 		}
 
     std::string str = "";
-		append( str, pos, " " );
+		append( str, pos );
 		++posLength;
 
 		switch ( type )
 		{
 			case DiagType::ERROR:
-				append( str, "ERROR: " );
+        str += "ERROR ";
 				posLength += 7; // length of "ERROR: "
 				break;
 
 			case DiagType::WARNING:
-				append( str, "WARNING: " );
+        str += "WARNING: ";
 				posLength += 9; // length of "WARNING: "
 				break;
 
 			case DiagType::NOTE:
-				append( str, "NOTE: " );
+        str += "NOTE: ";
 				posLength += 6; // length of "NOTE: "
 				break;
 
@@ -146,20 +147,6 @@ namespace C4
 		}
 
 		append( str, args... );
-
-		if ( pos.column )
-		{
-			/*
-			 * Insert marker
-			 */
-			append( str, "\n" );
-			unsigned col = pos.column;
-
-			while ( --col )
-				append( str, " " );
-
-			append( str, "^" );
-		}
 
 		/*
 		 * Replace Newlines

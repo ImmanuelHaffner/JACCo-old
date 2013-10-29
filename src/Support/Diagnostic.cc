@@ -11,5 +11,3 @@
 #include "../diagnostic.h"
 
 using namespace C4;
-
-
