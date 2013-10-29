@@ -40,8 +40,8 @@ Lexer::~Lexer() {}
 
 Token & Lexer::getToken()
 {
-  if ( ! file.good() )
-    return *( new EofToken( pos ) );
+  //if ( ! file.good() )
+  //return *( new EofToken( pos ) );
 
   skip();
 
@@ -63,30 +63,6 @@ Token & Lexer::getToken()
     // Character Constant or String Literal
     return readCharacterConstantOrStringLiteral();
   }
-  //ERROR( pos,
-  //"illegal character-constant\n", TokenText, "    - ",
-  //"missing terminating apostrophe" );
-  //
-  //ERROR( Pos( start.name, start.line, start.column + 2 ),
-  //"illegal character-constant\n", TokenText, "    - ",
-  //"missing terminating apostrophe" );
-  //
-  //ERROR( start, "illegal character-constant\n", TokenText, "    - ",
-  //"character-constant with multiple characters" );
-  //
-  //ERROR( start, "illegal character-constant\n", TokenText, "    - ",
-  //"illegal escape-sequence" );
-  ///*
-  //* STRING-LITERAL
-  //*/
-  //
-  //ERROR( pos,
-  //"illegal string-literal\n", TokenText, "    - ",
-  //"missing terminating quote" );
-  //
-  //ERROR( *illegalEscapePos, "illegal string-literal\n", TokenText,
-  //"    - ", "illegal escape-sequence" );
-  //
   ///*
   //* PUNCTUATORS
   //*/
