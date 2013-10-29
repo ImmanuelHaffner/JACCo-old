@@ -15,8 +15,9 @@
 class LexerTest : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE ( LexerTest );
-  CPPUNIT_TEST ( testLexerConstructor );
-  CPPUNIT_TEST ( testStep );
+  CPPUNIT_TEST ( testConstructor );
+  CPPUNIT_TEST ( testSkip );
+  CPPUNIT_TEST ( testReadIdentifier );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -24,11 +25,9 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   void tearDown();
 
   protected:
-	void testLexerConstructor();
-  void testStep();
-
-	private:
-	FILE * file;
+	void testConstructor();
+  void testSkip();
+  void testReadIdentifier();
 };
 
 #endif

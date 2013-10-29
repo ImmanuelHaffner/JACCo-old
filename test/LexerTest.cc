@@ -21,28 +21,168 @@ void LexerTest::setUp()
 
 void LexerTest::tearDown()
 {
-	if ( file )
-		fclose( file );
 }
 
 
-void LexerTest::testLexerConstructor()
+void LexerTest::testConstructor()
 {
 	char const * const fileName = "resource/allowedCharacters.c";
-	file = fopen( fileName, "rb" );
 
-	Lexer lexer( fileName, file );
+	Lexer lexer( fileName );
 
 	// check file name
-	CPPUNIT_ASSERT( strcmp( fileName, lexer.fileName.c_str() ) == 0 );
+	CPPUNIT_ASSERT( lexer.fileName.compare( fileName ) == 0 );
 
 	// check pos
 	CPPUNIT_ASSERT( strcmp( fileName, lexer.getPos().name ) == 0 );
 	CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().line );
-	CPPUNIT_ASSERT_EQUAL( 0u, lexer.getPos().column );
+	CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().column );
+
+  Lexer lexer2;
+	// check file name
+	CPPUNIT_ASSERT( lexer2.fileName.compare( "<stdin>" ) == 0 );
+
+	// check pos
+	CPPUNIT_ASSERT_EQUAL( 1u, lexer2.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 1u, lexer2.getPos().column );
 }
 
-void LexerTest::testStep()
+void LexerTest::testSkip()
 {
-	file = fopen( "resource/allowedCharacters.c", "rb" );
+  std::istringstream stream( "a  b\nc \n d\r\ne _f1" );
+
+  // redirect stdin
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+
+	// a
+  CPPUNIT_ASSERT_EQUAL( 'a', lexer.current() );
+	CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().column );
+
+	// b
+	lexer.skip();
+
+  CPPUNIT_ASSERT_EQUAL( 'b', lexer.current() );
+	CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 4u, lexer.getPos().column );
+
+	// c
+	lexer.skip();
+
+	CPPUNIT_ASSERT_EQUAL( 2u, lexer.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().column );
+
+	// d
+	lexer.skip();
+
+	CPPUNIT_ASSERT_EQUAL( 3u, lexer.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 2u, lexer.getPos().column );
+
+	// e
+	lexer.skip();
+
+	CPPUNIT_ASSERT_EQUAL( 4u, lexer.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().column );
+
+	// _
+	lexer.skip();
+
+	CPPUNIT_ASSERT_EQUAL( 4u, lexer.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 3u, lexer.getPos().column );
+
+	// f
+	lexer.skip();
+
+	CPPUNIT_ASSERT_EQUAL( 4u, lexer.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 4u, lexer.getPos().column );
+
+	// 1
+	lexer.skip();
+
+	CPPUNIT_ASSERT_EQUAL( 4u, lexer.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 5u, lexer.getPos().column );
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
+void LexerTest::testReadIdentifier()
+{
+  std::istringstream stream( "a b\nc \n d\r\ne f1 _f2" );
+
+  // redirect stdin
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+  Token * token;
+
+  // a
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "a" );
+  delete token;
+  lexer.skip();
+
+  // b
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "b" );
+  delete token;
+  lexer.skip();
+
+  // c
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "c" );
+  delete token;
+  lexer.skip();
+
+  // d
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "d" );
+  delete token;
+  lexer.skip();
+
+  // e
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "e" );
+  delete token;
+  lexer.skip();
+
+  // f1
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "f1" );
+  delete token;
+  lexer.skip();
+
+  // _f2
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 6u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "_f2" );
+  delete token;
+  lexer.skip();
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
 }
