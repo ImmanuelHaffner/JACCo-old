@@ -7,6 +7,10 @@
 #include "Support/CharUtils.h"
 #include "Support/Diagnostic.h"
 
+
+using namespace C4;
+using namespace Lex;
+
 enum class Mode {
   TOKENIZE,
   PARSE,
@@ -63,14 +67,22 @@ int main(int, char** const argv)
         switch (mode) {
           case Mode::TOKENIZE:
             {
-              //buf.init();
-              //C4::Lex::Lexer Lexer(buf);
-              //
-              //while ( C4::Lex::Token const * tok = Lexer.getToken() )
-              //{
-              //if ( tok->kind != C4::Lex::TokenKind::Illegal )
-              //tok->dump();
-              //}
+              C4::Lex::Lexer * lex;
+              if ( f == stdin )
+                lex = new Lexer;
+              else
+                lex = new Lexer( name );
+
+              while ( true )
+              {
+                Token const & tok = lex->getToken();
+                if ( tok.kind == TokenKind::END_OF_FILE )
+                  break;
+
+                tok.dump();
+              }
+
+              delete lex;
 
               break;
             }
