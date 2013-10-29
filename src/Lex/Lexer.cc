@@ -9,243 +9,88 @@
 #include "Lexer.h"
 
 #include <string>
+#include <cctype>
 #include "Token.h"
+#include "EofToken.h"
+#include "IllegalToken.h"
+#include "KeywordToken.h"
+#include "IdentifierToken.h"
+#include "ConstantToken.h"
+#include "StringLiteralToken.h"
+#include "PunctuatorToken.h"
 #include "../Support/CharUtils.h"
 #include "../Support/Diagnostic.h"
 
 using namespace C4;
 using namespace Lex;
 
-Lexer::Lexer( char const * const fileName, FILE * file ) : fileName(fileName),
-  file(file), pos(fileName, 1, 0)
+Lexer::Lexer() : fileName("<stdin>"), file( std::cin ), pos("<stdin>", 1, 1)
 {}
 
-Lexer::Lexer( std::string const &fileName, FILE * file ) : fileName(fileName),
-  file(file), pos(fileName.c_str(), 1, 0)
+Lexer::Lexer( char const * const fileName ) : fileName(fileName),
+  file( * new std::ifstream( fileName ) ), pos(fileName, 1, 1)
+{}
+
+Lexer::Lexer( std::string const &fileName ) : fileName(fileName),
+  file( * new std::ifstream( fileName ) ),
+  pos(fileName.c_str(), 1, 1)
 {}
 
 Lexer::~Lexer() {}
 
-Token * Lexer::getToken()
+Token & Lexer::getToken()
 {
-  //int current = ' ';
-  //
-  //// skip whitespaces and comments
-  //if ( ! skip( current ) )
-  //return NULL;
-  //
-  //Pos const start( pos );
-  //auto index( (--it)++ ); // need to get the position right before it
-  //
-  //std::string TokenText = "";
-  //TokenText += current;
-  //TokenKind kind = TokenKind::Illegal;
-  //
-  //if ( isNonDigit( current ) )
-  //{
-  ///*
-  //* KEYWORD or IDENTIFIER
-  //*/
-  //return readKeywordOrIdentifier( current );
-  //}
-  //else if ( isDigit( current ) )
-  //{
-  ///*
-  //* DIGITAL CONSTANT
-  //*/
-  //
-  //// Read in the rest of the digit string
-  //while ( isDigit( *it ) )
-  //{
-  //if ( ! step( current ) )
-  //break;
-  //
-  //TokenText += current;
-  //}
-  //
-  //if ( isNonDigit( *it ) )
-  //{
-  //// Illegal Identifier
-  //
-  //// Read in the rest of the identifier string
-  //while ( isNonDigit( *it ) || isDigit( *it ) )
-  //{
-  //if ( ! step( current ) )
-  //break;
-  //
-  //TokenText += current;
-  //}
-  //
-  //ERROR( start, "illegal character sequence\n", TokenText, "    - ",
-  //"identifiers must start with an alphabetical char or an underscore" );
-  //}
-  //else
-  //kind = TokenKind::Constant;
-  //}
-  //else if ( current == '\'' )
-  //{
-  ///*
-  //* CHARACTER CONSTANT
-  //*/
-  //step ( current );
-  //
-  //kind = TokenKind::Constant;
-  //bool illegalEscapeSequence = false;
-  //unsigned length = 0;
-  //
-  //while ( current != '\'' ) // read until the terminating apostrophe
-  //{
-  //if ( isNewLine( current ) )
-  //{
-  //break;
-  //}
-  //
-  //if ( current == '\\' )
-  //{ // check for escaped characters
-  //TokenText += current;
-  //step( current );
-  //switch ( current )
-  //{
-  //case '\"':
-  //case '\'':
-  //case '?':
-  //case '\\':
-  //case 'a':
-  //case 'b':
-  //case 'f':
-  //case 'n':
-  //case 'r':
-  //case 't':
-  //case 'v':
-  //break;
-  //
-  //default:
-  //// ILLEGAL CHARACTER
-  //// illegal escape-sequence
-  //illegalEscapeSequence = true;
-  //}
-  //}
-  //TokenText += current;
-  //step( current );
-  //++length;
-  //} // end while
-  //
-  //// read terminating apostrophe
-  //if ( isNewLine( current ) )
-  //{
-  //// ILLEGAL CHARACTER
-  //// missing terminating apostrophe
-  //kind = TokenKind::Illegal;
-  //if ( length <= 1 )
-  //{
+  if ( ! file.good() )
+    return *( new EofToken( pos ) );
+
+  skip();
+
+  if ( ! file.good() )
+    return *( new EofToken( pos ) );
+
+  if ( isalpha( file.peek() ) || file.peek() == '_' )
+  {
+    // Keyword or Identifier
+    return readKeywordOrIdentifier();
+  }
+  else if ( isdigit( file.peek() ) )
+  {
+    // Numerical Constant
+    return readNumericalConstant();
+  }
+  else if ( file.peek() == '\'' )
+  {
+    // Character Constant
+    return readCharacterConstant();
+  }
+  else if ( file.peek() == '\"' )
+  {
+    // String Literal
+  }
   //ERROR( pos,
   //"illegal character-constant\n", TokenText, "    - ",
   //"missing terminating apostrophe" );
-  //}
-  //else
-  //{
+  //
   //ERROR( Pos( start.name, start.line, start.column + 2 ),
   //"illegal character-constant\n", TokenText, "    - ",
   //"missing terminating apostrophe" );
-  //}
-  //}
-  //else  //( current == '\'' )
-  //{
-  //assert( current == '\'' && "missing terminating apostrophe" );
-  //TokenText += current;
   //
-  //if ( length > 1 )
-  //{
-  //kind = TokenKind::Illegal;
   //ERROR( start, "illegal character-constant\n", TokenText, "    - ",
   //"character-constant with multiple characters" );
-  //}
-  //else if ( illegalEscapeSequence )
-  //{
-  //kind = TokenKind::Illegal;
+  //
   //ERROR( start, "illegal character-constant\n", TokenText, "    - ",
   //"illegal escape-sequence" );
-  //}
-  //}
-  //} // end CHARACTER-CONSTANT
-  //else if ( current == '\"' )
-  //{
   ///*
   //* STRING-LITERAL
   //*/
-  //step( current );
   //
-  //kind = TokenKind::StringLiteral;
-  //Pos * illegalEscapePos = NULL;
-  //
-  //while ( current != '\"' ) // read until the terminating quote
-  //{
-  //if ( isNewLine( current ) )
-  //{
-  //break;
-  //}
-  //
-  //if ( current == '\\' )
-  //{ // check for escaped characters
-  //TokenText += current;
-  //step( current );
-  //switch ( current )
-  //{
-  //case '\"':
-  //case '\'':
-  //case '?':
-  //case '\\':
-  //case 'a':
-  //case 'b':
-  //case 'f':
-  //case 'n':
-  //case 'r':
-  //case 't':
-  //case 'v':
-  //break;
-  //
-  //default:
-  //// ILLEGAL CHARACTER
-  //// illegal escape-sequence
-  //if ( ! illegalEscapePos )
-  //illegalEscapePos = new Pos(pos);
-  //}
-  //}
-  //TokenText += current;
-  //step( current );
-  //} // end while
-  //
-  //// read terminating quote
-  //if ( isNewLine( current ) )
-  //{
-  //// ILLEGAL CHARACTER
-  //// missing terminating quote
-  //kind = TokenKind::Illegal;
   //ERROR( pos,
   //"illegal string-literal\n", TokenText, "    - ",
   //"missing terminating quote" );
-  //}
-  //else
-  //{
-  //assert( current == '\"' && "missing terminating quote" );
   //
-  //TokenText += current;
-  //step( current );
-  //
-  //if ( illegalEscapePos )
-  //{
-  //assert( illegalEscapePos && "no position set" );
-  //
-  //kind = TokenKind::Illegal;
   //ERROR( *illegalEscapePos, "illegal string-literal\n", TokenText,
   //"    - ", "illegal escape-sequence" );
   //
-  //delete illegalEscapePos;
-  //}
-  //}
-  //}
-  //else
-  //{
   ///*
   //* PUNCTUATORS
   //*/
@@ -479,7 +324,7 @@ Token * Lexer::getToken()
   //TokenText.c_str(),
   //kind,
   //*( new SourceLocation( start, index ) ) );
-  return NULL;
+  return *( new IllegalToken( pos, IllegalTokenKind::UNKNOWN, "" ) );
 }
 
 Pos Lexer::getPos() const
@@ -487,183 +332,224 @@ Pos Lexer::getPos() const
   return Pos( this->pos );
 }
 
-/// Steps one character forward in the buffer and updates 'it' and
-/// 'pos'.
-/// Immediately skips escaped newlines
-///
-/// \return false, iff the end of the buffer is reached, true otherwise
-bool Lexer::step( int &current )
+char Lexer::current() const
 {
-  // update Pos
-  if ( current == '\n' )
-  {
-    // UNIX Newline
-    pos.column = 1;
-    ++pos.line;
-
-  } // end UNIX Newline
-  else if ( current == '\r' )
-  {
-    if ( ! feof( file ) )
-    {
-      if ( ( current = fgetc( file ) ) == '\n' )
-      {
-        // Windows Newline
-        // nothing to do here
-        // overread the \r, such that the \n will be handled by the next
-        // invokation of step(..)
-      }
-      else
-      {
-        // single '\r'
-        WARNING( pos, "a wild \\r appeared!" );
-
-        ungetc( current, file );
-        current = '\r';
-      }
-    }
-    else
-    {
-      // single '\r'
-      WARNING( pos, "a wild \\r appeared!" );
-    }
-  } // end '\r'
-  else if ( current == '\\' )
-  {
-    // Check for escaped Newline
-
-    if ( ! feof( file ) )
-    {
-      if ( ( current = fgetc( file ) ) == '\r' )
-      {
-        if ( ! feof( file ) )
-        {
-          if ( ( current = fgetc( file ) ) == '\n' )
-          {
-            // Windows Newline
-          }
-          else{
-            // single '\r'
-            WARNING( pos, "a wild \\r appeared!" );
-
-            ungetc( current, file );
-            current = '\r';
-          }
-        }
-        else
-        {
-          // single '\r'
-          WARNING( pos, "a wild \\r appeared!" );
-        }
-      } // end '\r'
-
-      if ( current == '\n' )
-      {
-        // Escaped Newline
-        if ( ! feof( file ) )
-        {
-          // Skip until first non-whitespace character, that is not part of a
-          // comment
-          current = fgetc( file );
-          skip( current );
-
-          // push back the last character
-          ungetc( current, file );
-        }
-      } // end '\n'
-      else
-      {
-        ungetc( current, file );
-        current = '\\';
-      }
-    }
-  } // end '/'
-  else
-    // Other character
-    ++pos.column;
-
-  current = fgetc( file );
-  
-  return ! feof( file );
+  return file.peek();
 }
 
-/// This method skips until the first non-whitespace character, that
-/// is not part of a comment
-///
-/// \return false, iff the end of the buffer is reached, true otherwise
-bool Lexer::skip( int &current )
+Token & Lexer::readKeywordOrIdentifier()
 {
-  while ( true )
+  /*
+   * KEYWORD or IDENTIFIER
+   */
+  Pos start( pos );
+  std::string text = "";
+  updatePos( file.peek() );
+  text += file.get();
+
+  while ( file.good() && ( isalnum( file.peek() ) || file.peek() == '_' ) )
   {
-    if ( isWhiteSpace( current ) )
+    updatePos( file.peek() );
+    text += file.get();
+  }
+
+  auto it = Keywords.find( text );
+
+  if ( it != Keywords.end() )
+  {
+    return *( new KeywordToken( start, it->second, text ) );
+  }
+
+  return *( new IdentifierToken( start, text ) );
+}
+
+Token & Lexer::readNumericalConstant()
+{
+  /*
+   * Numerical CONSTANT
+   */
+  Pos start( pos );
+  std::string text = "";
+  updatePos( file.peek() );
+  text += file.get();
+
+  Pos * err = NULL;
+
+  while ( file.good() && isalnum( file.peek() ) )
+  {
+    if ( isalpha( file.peek() ) )
     {
-      if ( ! step( current ) )
-        return false;
+      err = new Pos( pos );
     }
-    else if ( current == '/' )
+
+    updatePos( file.peek() );
+    text += file.get();
+  }
+
+  if ( err )
+  {
+    // ILLEGAL Identifier
+    return *( new IllegalToken( start, IllegalTokenKind::IDENTIFIER,
+          text ) );
+  }
+
+  return *( new ConstantToken( start, text ) );
+}
+
+Token & Lexer::readCharacterConstant()
+{
+  /*
+   * Character CONSTANT
+   */
+  Pos start(pos);
+  std::string text = "";
+  text += file.get();
+
+  unsigned length = 0;
+  bool illegalEscapeSequence = false;
+  bool newLine = false;
+
+  while ( file.good() && file.peek() != '\'' )
+  {
+    if ( file.peek() == '\n' || file.peek() == '\r' )
     {
-      if ( ! feof( file ) )
-      {
-        if ( ( current = fgetc( file ) ) == '/' )
-        {
-          // line-comment
-          while ( step( current ) && current != '\n' );
-        }
-        else if ( current == '*' )
-        {
-          // block-comment
-        }
-        else
-        {
-          ungetc( current, file );
-          current = '/';
-        }
-      } // end !feof( file )
-    } // end if current == '/'
-    else
-      // non-whitespace character
+      newLine = true;
       break;
+    }
+    else if ( file.peek() == '\\' )
+    {
+      // Escape Sequence
+      text += file.get();
 
-    if ( feof( file ) )
-      return false;
+      switch ( file.peek() )
+      {
+        case '\"':
+        case '\'':
+        case '?':
+        case '\\':
+        case 'a':
+        case 'b':
+        case 'f':
+        case 'n':
+        case 'r':
+        case 't':
+        case 'v':
+          break;
 
-  } // end while
-  return true;
+        default:
+          illegalEscapeSequence = true;
+      }
+    }
+    text += file.get();
+    ++length;
+  }
+  
+  if ( length > 1 )
+  {
+    return *( new IllegalToken( start,
+          IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS, text ) );
+  }
+  else if ( illegalEscapeSequence )
+  {
+    return *( new IllegalToken( start, IllegalTokenKind::ESCAPE_SEQUENCE,
+          text ) );
+  }
+
+  return *( new ConstantToken( start, text ) );
 }
 
-Token * Lexer::readKeywordOrIdentifier( int &current )
+
+void Lexer::skip()
 {
-  ///*
-  //* KEYWORD or IDENTIFIER
-  //*/
-  //Pos const start( pos );
-  //auto index( (--it)++ ); // need to get the position right before it
-  //std::string TokenText = "";
-  //TokenText += current;
-  //TokenKind kind = TokenKind::Illegal;
-  //
-  //// Read in the rest of the identifier string
-  //while ( isNonDigit( *it ) || isDigit( *it ) )
-  //{
-  //if ( ! step( current ) )
-  //break;
-  //
-  //TokenText += current;
-  //}
-  //
-  //// Compare the identifier string to the keywords
-  //auto elem = Keywords.find( TokenText );
-  //if ( elem != Keywords.end() )
-  //// KEYWORD
-  //kind = TokenKind::Keyword;
-  //else
-  //// IDENTIFIER
-  //kind = TokenKind::Identifier;
-  //
-  //// Create the token with the given type
-  //return new Token( getTokenID(),
-  //TokenText.c_str(),
-  //kind,
-  //*( new SourceLocation( start, index ) ) );
-  return NULL;
+  int c;
+  if ( file.good() )
+  {
+    c = file.get();
+    updatePos( c );
+  }
+
+  while ( file.good() )
+  {
+    c = file.peek();
+
+    if ( isspace( c ) )
+    {
+      file.get();
+      updatePos( c );
+      continue;
+    }
+    else if ( c == '\\' )
+    {
+      file.get();
+      if ( file.peek() == '\n' )
+      {
+        // escaped newline
+        continue;
+      }
+      else
+      {
+        // non-whitespace
+        file.unget();
+        break;
+      }
+    }
+    else if ( c == '/' )
+    {
+      file.get();
+      if ( file.peek() == '/' )
+      {
+        // comment line
+        updatePos( c );
+        while ( c == '\\' || file.peek() != '\n' )
+        {
+          c = file.get();
+          updatePos( c );
+        }
+        continue;
+      }
+      else if ( file.peek() == '*' )
+      {
+        // comment block
+        updatePos( c );
+        file.get(); // read the *
+        updatePos( c );
+        c = file.get(); // read the next char, skip previous * to prevent /*/
+        updatePos( c );
+
+        if ( ! file.good() )
+          return;
+
+        while ( c != '*' || file.peek() != '/' )
+        {
+          c = file.get();
+          updatePos( c );
+        }
+
+        c = file.get(); // read last /
+        updatePos( c );
+
+        continue;
+      }
+      else
+      {
+        // non-whitespace
+        file.unget(); // wrte back the /
+        break;
+      }
+    }
+    else
+      // non-whitespace
+      break;
+  }
+}
+
+void Lexer::updatePos( int c )
+{
+  if ( c == '\n' )
+  {
+    ++pos.line;
+    pos.column = 1;
+  }
+  else
+    ++pos.column;
 }

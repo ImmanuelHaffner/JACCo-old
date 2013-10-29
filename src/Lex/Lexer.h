@@ -9,9 +9,9 @@
 #ifndef C4_LEXER_H
 #define C4_LEXER_H
 
+#include <fstream>
 #include "Token.h"
 #include "../pos.h"
-#include "../util.h"
 
 namespace C4
 {
@@ -27,37 +27,41 @@ namespace C4
     class Lexer
     {
       public:
-        Lexer( char const * const fileName, FILE * file );
-        Lexer( std::string const &fileName, FILE * file );
+        Lexer();
+        Lexer( char const * const fileName );
+        Lexer( std::string const &fileName );
 
         ~Lexer();
 
         /// Reads and returns the next token on the input stream.
         ///
         /// \return the next token from the input stream
-        Token * getToken();
+        Token & getToken();
 
         Pos getPos() const;
 
-        /// Steps one character forward in the file and updates 'pos'.
-        /// Immediately skips escaped newlines.
-        ///
-        /// \return false, iff the end of the buffer is reached, true otherwise
-        bool step( int &current);
+        char current() const;
 
-        /// This method skips until the first non-whitespace character, that
-        /// is not part of a comment.
-        ///
-        /// \return false, iff the end of the buffer is reached, true otherwise
-        bool skip( int &current );
+        /// \return a KEYWORD or IDENTIFIER
+        Token & readKeywordOrIdentifier();
 
-        ///
-        Token * readKeywordOrIdentifier( int &current );
+        /// \return a Numerical CONSTANT, or an ILLEGAL Token
+        Token & readNumericalConstant();
+
+        /// \return a Character CONSTANT, or an ILLEGAL Token
+        Token & readCharacterConstant();
 
         std::string const fileName;
 
+        /// Skips until the next non-whitespace character, that is not part of
+        /// a comment.
+        /// Reads at least one character.
+        void skip();
+
+        void updatePos( int c );
+
       private:
-        FILE * file;
+        std::istream &file;
         Pos pos;
     };
   } // end namespace Lex
