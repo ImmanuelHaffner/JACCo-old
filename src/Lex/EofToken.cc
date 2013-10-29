@@ -1,4 +1,4 @@
-//===--- ConstantToken.cc -------------------------------------------------===//
+//===--- EofToken.cc ------------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -6,14 +6,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "ConstantToken.h"
+#include "EofToken.h"
 
 #include "../Support/Diagnostic.h"
 
 using namespace C4;
 using namespace Lex;
 
-void ConstantToken::dump() const
+void EofToken::dump() const
 {
-  OUT( this->pos, "constant: ", this->text );
+  OUT( this->pos, "end-of-file" );
 }

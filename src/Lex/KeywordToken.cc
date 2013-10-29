@@ -15,5 +15,5 @@ using namespace Lex;
 
 void KeywordToken::dump() const
 {
-  OUT( this->pos, " keyword: ", this->text );
+  OUT( this->pos, "keyword: ", this->text );
 }

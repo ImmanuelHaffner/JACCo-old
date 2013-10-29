@@ -25,6 +25,8 @@ namespace C4
         Token( pos, TokenKind::IDENTIFIER, text )
       {}
 
+      virtual ~IdentifierToken() {}
+
       void dump() const;
     };
   } // end namespace Lex

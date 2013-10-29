@@ -82,6 +82,8 @@ namespace C4
         Token( pos, TokenKind::PUNCTUATOR, text ), punctuator(punctuator)
       {}
 
+      virtual ~PunctuatorToken() {}
+
       void dump() const;
 
       PunctuatorKind const punctuator;

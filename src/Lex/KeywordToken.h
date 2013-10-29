@@ -107,6 +107,8 @@ namespace C4
         Token( pos, TokenKind::KEYWORD, text ), keyword(keyword)
       {}
 
+      virtual ~KeywordToken() {}
+
       void dump() const;
 
       KeywordKind const keyword;

@@ -27,7 +27,8 @@ namespace C4
       CONSTANT,
       STRING_LITERAL,
       PUNCTUATOR,
-      ILLEGAL
+      ILLEGAL,
+      END_OF_FILE
     };
 
 
@@ -41,6 +42,8 @@ namespace C4
       Token( Pos const &pos, TokenKind kind, std::string const &text ) :
         pos(pos), kind(kind), text(text)
       {}
+
+      virtual ~Token() {}
 
       virtual void dump() const;
 

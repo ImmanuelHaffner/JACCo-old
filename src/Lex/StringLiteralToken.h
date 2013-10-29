@@ -25,6 +25,8 @@ namespace C4
         Token( pos, TokenKind::STRING_LITERAL, text )
       {}
 
+      virtual ~StringLiteralToken() {}
+
       void dump() const;
     };
   } // end namespace Lex
