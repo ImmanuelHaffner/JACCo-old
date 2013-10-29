@@ -21,6 +21,8 @@ class TokenTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testConstantToken );
   CPPUNIT_TEST ( testStringLiteralToken );
   CPPUNIT_TEST ( testPunctuatorToken );
+  CPPUNIT_TEST ( testEofToken );
+  CPPUNIT_TEST ( testIllegalToken );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -34,6 +36,8 @@ class TokenTest : public CPPUNIT_NS::TestFixture
   void testConstantToken();
   void testStringLiteralToken();
   void testPunctuatorToken();
+  void testEofToken();
+  void testIllegalToken();
 
   private:
   Pos * pos;
