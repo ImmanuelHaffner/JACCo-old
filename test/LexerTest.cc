@@ -368,13 +368,77 @@ void LexerTest::testReadNumericalConstant()
 
 void LexerTest::testReadCharacterConstant()
 {
-  std::istringstream stream( "auto break\nconst \n int\r\ncontinue while for" );
+  std::istringstream stream( "'a' 'b'\n'c' \n 'd'\r\n'e' '\\n' '\\\\'" );
 
   // redirect stdin
   std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
 
   Lexer lexer;
   Token * token;
+
+
+  // a
+  token = & lexer.readCharacterConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "'a'" );
+  delete token;
+  lexer.skip();
+
+  // b
+  token = & lexer.readCharacterConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "'b'" );
+  delete token;
+  lexer.skip();
+
+  // c
+  token = & lexer.readCharacterConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "'c'" );
+  delete token;
+  lexer.skip();
+
+  // d
+  token = & lexer.readCharacterConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "'d'" );
+  delete token;
+  lexer.skip();
+
+  // e
+  token = & lexer.readCharacterConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "'e'" );
+  delete token;
+  lexer.skip();
+
+  // \n
+  token = & lexer.readCharacterConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "'\\n'" );
+  delete token;
+  lexer.skip();
+
+  // \\ (text to avoid two-line comment)
+  token = & lexer.readCharacterConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "'\\\\'" );
+  delete token;
+  lexer.skip();
 
 
   // restode stdin

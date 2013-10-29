@@ -399,6 +399,9 @@ Token & Lexer::readCharacterConstant()
    */
   Pos start(pos);
   std::string text = "";
+
+  // read first character
+  updatePos( file.peek() );
   text += file.get();
 
   unsigned length = 0;
@@ -415,11 +418,12 @@ Token & Lexer::readCharacterConstant()
     else if ( file.peek() == '\\' )
     {
       // Escape Sequence
+      updatePos( file.peek() );
       text += file.get();
 
       switch ( file.peek() )
       {
-        case '\"':
+        case '"':
         case '\'':
         case '?':
         case '\\':
@@ -436,14 +440,27 @@ Token & Lexer::readCharacterConstant()
           illegalEscapeSequence = true;
       }
     }
+    updatePos( file.peek() );
     text += file.get();
     ++length;
+  }
+
+  if ( file.peek() == '\'' )
+  {
+    // read terminating apostrophe
+    updatePos( file.peek() );
+    text += file.get();
   }
   
   if ( length > 1 )
   {
     return *( new IllegalToken( start,
           IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS, text ) );
+  }
+  else if ( newLine )
+  {
+    return *( new IllegalToken( start, IllegalTokenKind::MISSING_TERMINATOR,
+          text ) );
   }
   else if ( illegalEscapeSequence )
   {
