@@ -70,11 +70,11 @@ doxy:
 
 $(BIN): $(OBJ)
 	@echo "===> LD $@"
-	$(Q)$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJ)
+	$(Q)$(CXX) $(CXXFLAGS) -o $(BIN) $^
 
 $(TESTBIN): $(TEST_OBJ)
 	@echo "===> LD $@"
-	$(Q)$(CXX) $(CXXFLAGS) -o $(TESTBIN) $(TEST_OBJ) -L${CPPUNIT_PATH}/lib -lstdc++ -lcppunit -ldl
+	$(Q)$(CXX) $(CXXFLAGS) -o $(TESTBIN) $^ -L${CPPUNIT_PATH}/lib -lstdc++ -lcppunit -ldl
 
 $(BINDIR)/%.o: $(SRCDIR)/%.cc
 	@echo "===> CXX $<   ->   $@"
