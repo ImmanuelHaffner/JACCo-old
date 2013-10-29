@@ -373,20 +373,17 @@ Token & Lexer::readNumericalConstant()
   updatePos( file.peek() );
   text += file.get();
 
-  Pos * err = NULL;
+  bool illegalIdentifier = false;
 
-  while ( file.good() && isalnum( file.peek() ) )
+  while ( file.good() && ( isalnum( file.peek() ) || file.peek() == '_' ) )
   {
-    if ( isalpha( file.peek() ) )
-    {
-      err = new Pos( pos );
-    }
+    illegalIdentifier = isalpha( file.peek() ) || file.peek() == '_';
 
     updatePos( file.peek() );
     text += file.get();
   }
 
-  if ( err )
+  if ( illegalIdentifier )
   {
     // ILLEGAL Identifier
     return *( new IllegalToken( start, IllegalTokenKind::IDENTIFIER,

@@ -7,6 +7,7 @@
 #include "LexerTest.h"
 
 #include "../src/Lex/Lexer.h"
+#include "../src/Lex/KeywordToken.h"
 
 
 // register this test 
@@ -179,6 +180,99 @@ void LexerTest::testReadIdentifier()
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "_f2" );
+  delete token;
+  lexer.skip();
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
+void LexerTest::testReadKeywords()
+{
+  std::istringstream stream( "auto break\nconst \n int\r\ncontinue while for" );
+
+  // redirect stdin
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+  Token * token;
+  KeywordToken * keyword;
+
+  // auto
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "auto" );
+  keyword = dynamic_cast< KeywordToken* >( token );
+  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::AUTO );
+  delete token;
+  lexer.skip();
+
+  // break
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 6u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "break" );
+  keyword = dynamic_cast< KeywordToken* >( token );
+  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::BREAK );
+  delete token;
+  lexer.skip();
+
+  // const
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "const" );
+  keyword = dynamic_cast< KeywordToken* >( token );
+  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::CONST );
+  delete token;
+  lexer.skip();
+
+  // int
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "int" );
+  keyword = dynamic_cast< KeywordToken* >( token );
+  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::INT );
+  delete token;
+  lexer.skip();
+
+  // continue
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "continue" );
+  keyword = dynamic_cast< KeywordToken* >( token );
+  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::CONTINUE );
+  delete token;
+  lexer.skip();
+
+  // while
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "while" );
+  keyword = dynamic_cast< KeywordToken* >( token );
+  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::WHILE );
+  delete token;
+  lexer.skip();
+
+  // for
+  token = & lexer.readKeywordOrIdentifier();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 16u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "for" );
+  keyword = dynamic_cast< KeywordToken* >( token );
+  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::FOR );
   delete token;
   lexer.skip();
 
