@@ -42,12 +42,27 @@ namespace C4
 
         char current() const;
 
+        /// Reads a keyword or an identifier.
+        /// Stops at the first character not part of the keyword or the
+        /// identifier, such that file.peek() would return that character.
+        /// Reads at least one character.
+        ///
         /// \return a KEYWORD or IDENTIFIER
         Token & readKeywordOrIdentifier();
 
+        /// Reads a numerical constant.
+        /// Stops at the first character not part of the numerical constant,
+        /// such that file.peek() would return that character.
+        /// Reads at least one character.
+        ///
         /// \return a Numerical CONSTANT, or an ILLEGAL Token
         Token & readNumericalConstant();
 
+        /// Reads a character constant.
+        /// Stops at the first character not part of the character constant,
+        /// such that file.peek() would return that character.
+        /// Reads at least one character.
+        ///
         /// \return a Character CONSTANT, or an ILLEGAL Token
         Token & readCharacterConstant();
 
@@ -55,8 +70,12 @@ namespace C4
 
         /// Skips until the next non-whitespace character, that is not part of
         /// a comment.
-        /// Reads at least one character.
+        /// Stops at the first non-whitespace character not part of a comment,
+        /// such that file.peek() would return that character.
         void skip();
+
+        /// Reads exactly one character and updates the position.
+        void step();
 
         void updatePos( int c );
 

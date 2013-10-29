@@ -344,6 +344,8 @@ Token & Lexer::readKeywordOrIdentifier()
    */
   Pos start( pos );
   std::string text = "";
+
+  // read first character
   updatePos( file.peek() );
   text += file.get();
 
@@ -353,8 +355,7 @@ Token & Lexer::readKeywordOrIdentifier()
     text += file.get();
   }
 
-  auto it = Keywords.find( text );
-
+  auto it = Keywords.find( text ) ;
   if ( it != Keywords.end() )
   {
     return *( new KeywordToken( start, it->second, text ) );
@@ -370,8 +371,6 @@ Token & Lexer::readNumericalConstant()
    */
   Pos start( pos );
   std::string text = "";
-  updatePos( file.peek() );
-  text += file.get();
 
   bool illegalIdentifier = false;
 
@@ -459,12 +458,6 @@ Token & Lexer::readCharacterConstant()
 void Lexer::skip()
 {
   int c;
-  if ( file.good() )
-  {
-    c = file.get();
-    updatePos( c );
-  }
-
   while ( file.good() )
   {
     c = file.peek();
@@ -538,6 +531,12 @@ void Lexer::skip()
       // non-whitespace
       break;
   }
+}
+
+void Lexer::step()
+{
+  updatePos( file.peek() );
+  file.get();
 }
 
 void Lexer::updatePos( int c )
