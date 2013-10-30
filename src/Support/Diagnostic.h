@@ -163,7 +163,7 @@ namespace C4
 		}
 		// end replace Newlines
 
-		std::cerr << str << std::endl;
+		std::cout << str << std::endl;
   }
 
   template< typename... Args >
