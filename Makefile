@@ -77,9 +77,9 @@ $(TESTBIN): $(TEST_OBJ)
 	$(Q)$(CXX) $(CXXFLAGS) -o $(TESTBIN) $^ -L${CPPUNIT_PATH}/lib -lstdc++ -lcppunit -ldl
 
 $(BINDIR)/%.o: $(SRCDIR)/%.cc
-	@echo "===> CXX $<   ->   $@"
+	@echo "===> $(CXX) $<   ->   $@"
 	$(Q)$(CXX) $(CXXFLAGS) -MMD -c -o $@ $<
 
 $(TESTBINDIR)/%.o: $(TESTDIR)/%.cc
-	@echo "===> CXX $<   ->   $@"
+	@echo "===> $(CXX) $<   ->   $@"
 	$(Q)$(CXX) $(CXXFLAGS) -MMD -c -o $@ $< -I${CPPUNIT_INCLUDE}
