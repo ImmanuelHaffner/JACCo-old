@@ -1,3 +1,10 @@
+.SUFFIXES:
+	%:: SCCS/s.%
+	%:: RCS/%
+	%:: RCS/%,v
+	%:: %,v
+	%:: s.%
+
 BUILDDIR		?= build
 CFG					?= default
 NAME				?= c4
@@ -10,10 +17,10 @@ CPPUNIT_INCLUDE	?= /usr/include/cppunit/
 
 Q						?= @
 
-BINDIR 			:= $(BUILDDIR)/$(CFG)
+BINDIR			:= $(BUILDDIR)/$(CFG)
 TESTBINDIR	:= $(TESTDIR)/$(CFG)
 
-BIN    			:= $(BINDIR)/$(NAME)
+BIN					:= $(BINDIR)/$(NAME)
 TESTBIN			:= $(TESTBINDIR)/$(NAME)
 
 PWD					:= $(shell pwd)
@@ -22,11 +29,11 @@ SRC					:= $(sort $(subst $(PWD), ".", $(shell find $(SRCDIR)/ -name '*.cc')))
 OBJ					:= $(SRC:$(SRCDIR)/%.cc=$(BINDIR)/%.o)
 DEP					:= $(OBJ:%.o=%.d)
 
-TEST_SRC		+= $(sort $(subst $(PWD), ".", $(shell find $(TESTDIR)/ -name '*.cc')))
+TEST_SRC		:= $(sort $(subst $(PWD), ".", $(shell find $(TESTDIR)/ -name '*.cc')))
 TEST_SRC2		:= $(shell echo $(SRC) | sed 's/src\/main.cc/ /')
 TEST_OBJ		:= $(TEST_SRC:$(TESTDIR)/%.cc=$(TESTBINDIR)/%.o)
 TEST_OBJ2		:= $(TEST_SRC2:$(SRCDIR)/%.cc=$(BINDIR)/%.o)
-TEST_SRC		+= $(TEST_SRC2)
+#TEST_SRC		+= $(TEST_SRC2)
 TEST_OBJ		+= $(TEST_OBJ2)
 TEST_DEP		:= $(TEST_OBJ:%.o=%.d)
 
@@ -39,6 +46,10 @@ CXXFLAGS		+= $(CFLAGS) -std=c++11
 
 ifeq ($(DEBUG), 1)
 	CXXFLAGS	+= -g -DDEBUG
+endif
+
+ifeq ($(VERBOSE), 1)
+	CXXFLAGS	+= -v
 endif
 
 -include $(CFG).cfg
