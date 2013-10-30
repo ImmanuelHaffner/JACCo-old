@@ -15,5 +15,5 @@ using namespace Lex;
 
 void PunctuatorToken::dump() const
 {
-  OUT( this->pos, "punctuator: ", this->text );
+  OUT( this->pos, "punctuator ", this->text );
 }

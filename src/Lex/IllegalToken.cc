@@ -20,15 +20,15 @@ void IllegalToken::dump() const
   switch ( this->iKind )
   {
     case IllegalTokenKind::UNKNOWN:
-      str = "unknwon token\n";
+      str = "unknwon token";
       break;
 
     case IllegalTokenKind::IDENTIFIER:
-      str = "illegal identifier\n";
+      str = "illegal identifier";
       break;
 
     case IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS:
-      str = "illegal character-constant\n";
+      str = "illegal character-constant";
 
     case IllegalTokenKind::MISSING_TERMINATOR:
       if ( kind == TokenKind::CONSTANT )
@@ -39,8 +39,8 @@ void IllegalToken::dump() const
         str += "missing unknown terminator";
 
     case IllegalTokenKind::ESCAPE_SEQUENCE:
-      str = "illegal escape sequence\n";
+      str = "illegal escape sequence";
   }
 
-  OUT( this->pos, str, this->text );
+  OUT( this->pos, str, "\n", this->text );
 }

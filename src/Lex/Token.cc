@@ -43,5 +43,5 @@ void Token::dump() const
 			type = "illegal";
 	}
 
-  OUT( this->pos, type, ": ", this->text );
+  OUT( this->pos, type, " ", this->text );
 }

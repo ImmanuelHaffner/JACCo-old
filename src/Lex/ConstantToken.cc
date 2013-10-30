@@ -15,5 +15,5 @@ using namespace Lex;
 
 void ConstantToken::dump() const
 {
-  OUT( this->pos, "constant: ", this->text );
+  OUT( this->pos, "constant ", this->text );
 }

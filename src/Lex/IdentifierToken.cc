@@ -15,5 +15,5 @@ using namespace Lex;
 
 void IdentifierToken::dump() const
 {
-  OUT( this->pos, "identifier: ", this->text );
+  OUT( this->pos, "identifier ", this->text );
 }
