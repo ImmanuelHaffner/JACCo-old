@@ -54,17 +54,17 @@ endif
 
 -include $(CFG).cfg
 
--include $(DEP)
-
--include $(TEST_DEP)
-
 
 .PHONY: all check clean cleanall doxy
 
 all: $(BIN)
 
+-include $(DEP)
+
 check: $(TESTBIN)
 	-	$(TESTBIN)
+
+-include $(TEST_DEP)
 
 clean:
 	@echo "===> CLEAN"
