@@ -2,45 +2,46 @@
 //
 //	~~~ The C4 Compiler ~~~
 //
-//	This file implements the token.
+//	This file defines the tokens.
 //
 //===----------------------------------------------------------------------===//
 
 #include "Token.h"
 
-#include <iostream>
-#include "../Support/CharUtils.h"
+#include "../Support/Diagnostic.h"
 
-using namespace C4::Lex;
+using namespace C4;
+using namespace Lex;
 
 void Token::dump() const
 {
-	std::cout
-		<< loc.pos.name << ":"
-		<< loc.pos.line << ":"
-		<< loc.pos.column << " ";
+	std::string type;
 
 	switch ( kind )
 	{
-		case TokenKind::Keyword:
-			std::cout << "keyword";
+		case TokenKind::KEYWORD:
+			type = "keyword";
 			break;
-		case TokenKind::Identifier:
-			std::cout << "identifier";
+
+		case TokenKind::IDENTIFIER:
+			type = "identifier";
 			break;
-		case TokenKind::Constant:
-			std::cout << "constant";
+
+		case TokenKind::CONSTANT:
+			type = "constant";
 			break;
-		case TokenKind::StringLiteral:
-			std::cout << "string-literal";
+
+		case TokenKind::STRING_LITERAL:
+			type = "string-literal";
 			break;
-		case TokenKind::Punctuator:
-			std::cout << "punctuator";
+
+		case TokenKind::PUNCTUATOR:
+			type = "punctuator";
 			break;
-		case TokenKind::Illegal:
-			std::cout << "illegal";
-			break;
+
+		default:
+			type = "illegal";
 	}
 
-	std::cout << " " << text << std::endl;
+  OUT( this->pos, " ", type, ": ", this->text );
 }

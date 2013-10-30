@@ -9,591 +9,508 @@
 #include "Lexer.h"
 
 #include <string>
+#include <cctype>
 #include "Token.h"
+#include "EofToken.h"
+#include "IllegalToken.h"
+#include "KeywordToken.h"
+#include "IdentifierToken.h"
+#include "ConstantToken.h"
+#include "StringLiteralToken.h"
+#include "PunctuatorToken.h"
 #include "../Support/CharUtils.h"
 #include "../Support/Diagnostic.h"
 
 using namespace C4;
 using namespace Lex;
 
-Lexer::Lexer( SourceBuffer &buf ) : tokenCount(0), buf(buf),
-	pos( buf.getSourceFileName(), 1, 0 ), it( buf.getBufStart() )
+Lexer::Lexer() : fileName("<stdin>"), file( std::cin ), pos("<stdin>", 1, 1)
+{}
+
+Lexer::Lexer( char const * const fileName ) : fileName(fileName),
+  file( * new std::ifstream( fileName ) ), pos(fileName, 1, 1)
+{}
+
+Lexer::Lexer( std::string const &fileName ) : fileName(fileName),
+  file( * new std::ifstream( fileName ) ),
+  pos(fileName.c_str(), 1, 1)
 {}
 
 Lexer::~Lexer() {}
 
-Token * Lexer::getToken()
+Token & Lexer::getToken()
 {
-	char lastChar = ' ';
+  //if ( ! file.good() )
+  //return *( new EofToken( pos ) );
 
-	// skip whitespaces and comments
-  if ( ! skip( lastChar ) )
-    return NULL;
+  skip();
 
-	Pos const start( pos );
-	auto index( (--it)++ ); // need to get the position right before it
-	assert( *index == lastChar && "wrong index" );
+  if ( ! file.good() )
+    return *( new EofToken( pos ) );
 
-	std::string TokenText = "";
-	TokenText += lastChar;
-	TokenKind kind = TokenKind::Illegal;
+  if ( isalpha( file.peek() ) || file.peek() == '_' )
+  {
+    // Keyword or Identifier
+    return readKeywordOrIdentifier();
+  }
+  else if ( isdigit( file.peek() ) )
+  {
+    // Numerical Constant
+    return readNumericalConstant();
+  }
+  else if ( file.peek() == '\'' || file.peek() == '"' )
+  {
+    // Character Constant or String Literal
+    return readCharacterConstantOrStringLiteral();
+  }
+  else
+  {
+    // Punctuator
+    return readPunctuator();
+  }
+}
 
-  if ( isNonDigit( lastChar ) )
-	{
-		/*
-		 * KEYWORD or IDENTIFIER
-		 */
+Pos Lexer::getPos() const
+{
+  return Pos( this->pos );
+}
 
-		// Read in the rest of the identifier string
-		while ( isNonDigit( *it ) || isDigit( *it ) )
-		{
-			if ( ! step( lastChar ) )
-        break;
+char Lexer::current() const
+{
+  return file.peek();
+}
 
-			TokenText += lastChar;
-		}
+Token & Lexer::readKeywordOrIdentifier()
+{
+  /*
+   * KEYWORD or IDENTIFIER
+   */
+  Pos start( pos );
+  std::string text = "";
 
-		// Compare the identifier string to the keywords
-		auto elem = Keywords.find( TokenText );
-		if ( elem != Keywords.end() )
-			// KEYWORD
-			kind = TokenKind::Keyword;
-		else
-			// IDENTIFIER
-			kind = TokenKind::Identifier;
-	}
-	else if ( isDigit( lastChar ) )
-	{
-		/*
-		 * DIGITAL CONSTANT
-		 */
-		
-		// Read in the rest of the digit string
-		while ( isDigit( *it ) )
-		{
-			if ( ! step( lastChar ) )
-        break;
+  if ( ! file.good() || ! ( isalpha( file.peek() ) || file.peek() == '_' ) )
+  {
+    // read first character
+    updatePos( file.peek() );
+    text += file.get();
 
-			TokenText += lastChar;
-		}
+    return *( new IllegalToken( start, IllegalTokenKind::IDENTIFIER, text ) );
+  }
 
-    if ( isNonDigit( *it ) )
+  while ( file.good() && ( isalnum( file.peek() ) || file.peek() == '_' ) )
+  {
+    updatePos( file.peek() );
+    text += file.get();
+  }
+
+  auto it = Keywords.find( text ) ;
+  if ( it != Keywords.end() )
+  {
+    return *( new KeywordToken( start, it->second, text ) );
+  }
+
+  return *( new IdentifierToken( start, text ) );
+}
+
+Token & Lexer::readNumericalConstant()
+{
+  /*
+   * Numerical CONSTANT
+   */
+  Pos start( pos );
+  std::string text = "";
+
+  bool illegalIdentifier = false;
+
+  while ( file.good() && ( isalnum( file.peek() ) || file.peek() == '_' ) )
+  {
+    illegalIdentifier = isalpha( file.peek() ) || file.peek() == '_';
+
+    updatePos( file.peek() );
+    text += file.get();
+  }
+
+  if ( illegalIdentifier )
+  {
+    // ILLEGAL Identifier
+    return *( new IllegalToken( start, IllegalTokenKind::IDENTIFIER,
+          text ) );
+  }
+
+  return *( new ConstantToken( start, text ) );
+}
+
+Token & Lexer::readCharacterConstantOrStringLiteral()
+{
+  /*
+   * Character CONSTANT or STRING LITERAL
+   */
+  Pos start(pos);
+  std::string text = "";
+
+  bool isCharConst = file.peek() == '\'';
+
+  // read first character
+  updatePos( file.peek() );
+  text += file.get();
+
+  unsigned length = 0;
+  bool illegalEscapeSequence = false;
+  bool newLine = false;
+
+  int terminator = ( isCharConst ? '\'' : '"' );
+
+  while ( file.good() && file.peek() != terminator )
+  {
+    if ( file.peek() == '\n' || file.peek() == '\r' )
     {
-      // Illegal Identifier
+      newLine = true;
+      break;
+    }
+    else if ( file.peek() == '\\' )
+    {
+      // Escape Sequence
+      updatePos( file.peek() );
+      text += file.get();
 
-      // Read in the rest of the identifier string
-      while ( isNonDigit( *it ) || isDigit( *it ) )
+      switch ( file.peek() )
       {
-        if ( ! step( lastChar ) )
+        case '"':
+        case '\'':
+        case '?':
+        case '\\':
+        case 'a':
+        case 'b':
+        case 'f':
+        case 'n':
+        case 'r':
+        case 't':
+        case 'v':
           break;
 
-        TokenText += lastChar;
+        default:
+          illegalEscapeSequence = true;
       }
-
-      ERROR( start, "illegal character sequence\n", TokenText, "    - ",
-          "identifiers must start with an alphabetical char or an underscore" );
     }
-    else
-      kind = TokenKind::Constant;
-	}
-	else if ( lastChar == '\'' )
-	{
-		/*
-		 * CHARACTER CONSTANT
-		 */
-    step ( lastChar );
+    updatePos( file.peek() );
+    text += file.get();
+    ++length;
+  }
 
-    kind = TokenKind::Constant;
-    bool illegalEscapeSequence = false;
-    unsigned length = 0;
+  if ( file.peek() == terminator )
+  {
+    // read terminating apostrophe or quote
+    updatePos( file.peek() );
+    text += file.get();
+  }
+  
+  if ( isCharConst && length > 1 )
+  {
+    return *( new IllegalToken( start,
+          IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS, text ) );
+  }
+  else if ( newLine )
+  {
+    return *( new IllegalToken( start, IllegalTokenKind::MISSING_TERMINATOR,
+          text ) );
+  }
+  else if ( illegalEscapeSequence )
+  {
+    return *( new IllegalToken( start, IllegalTokenKind::ESCAPE_SEQUENCE,
+          text ) );
+  }
 
-    while ( lastChar != '\'' ) // read until the terminating apostrophe
-    {
-      if ( isNewLine( lastChar ) )
+  if ( isCharConst )
+    return *( new ConstantToken( start, text ) );
+  return *( new StringLiteralToken( start, text ) );
+}
+
+Token & Lexer::readPunctuator()
+{
+  /*
+   * Punctuator
+   */
+  Pos start(pos);
+  std::string text = "";
+
+#define PUNCTUATOR( kind ) \
+  return *( new PunctuatorToken( start, ( kind ), text ) );
+
+#define PUNCTUATOR_GET( kind ) \
+  { \
+  updatePos( file.peek() ); \
+  text += file.get(); \
+  PUNCTUATOR( kind ); \
+  }
+
+#define PUNCTUATOR_GET_IF( chr, kind ) \
+  if ( file.peek() == ( chr ) ) \
+  PUNCTUATOR_GET( kind );
+    
+
+  switch ( file.peek() )
+  {
+    // Punctuators that consist of a single character
+    case '(':
+      PUNCTUATOR_GET( PunctuatorKind::LPAR );
+    case ')':
+      PUNCTUATOR_GET( PunctuatorKind::RPAR );
+    case ',':
+      PUNCTUATOR_GET( PunctuatorKind::COMMA );
+    case ':':
+      PUNCTUATOR_GET( PunctuatorKind::COLON );
+    case ';':
+      PUNCTUATOR_GET( PunctuatorKind::SEMICOLON );
+    case '?':
+      PUNCTUATOR_GET( PunctuatorKind::QMARK );
+    case '[':
+      PUNCTUATOR_GET( PunctuatorKind::LBRACKET );
+    case ']':
+      PUNCTUATOR_GET( PunctuatorKind::RBRACKET );
+    case '{':
+      PUNCTUATOR_GET( PunctuatorKind::LBRACE );
+    case '}':
+      PUNCTUATOR_GET( PunctuatorKind::RBRACE );
+    case '~':
+      PUNCTUATOR_GET( PunctuatorKind::NEG );
+
+      // Punctuators that can have more than one character
+    case '!':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::NE );
+      PUNCTUATOR( PunctuatorKind::NOT );
+
+    case '#':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '#', PunctuatorKind::DHASH );
+      PUNCTUATOR( PunctuatorKind::HASH );
+
+    case '%':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::MODASSIGN );
+      PUNCTUATOR( PunctuatorKind::MOD );
+
+    case '&':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '&', PunctuatorKind::LAND );
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::ANDASSIGN );
+      PUNCTUATOR( PunctuatorKind::AND );
+
+    case '*':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::MULASSIGN );
+      PUNCTUATOR( PunctuatorKind::MUL );
+
+    case '+':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '+', PunctuatorKind::INC );
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::ADDASSIGN );
+      PUNCTUATOR( PunctuatorKind::PLUS );
+
+    case '-':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '-', PunctuatorKind::DEC );
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::SUBASSIGN );
+      PUNCTUATOR_GET_IF( '>', PunctuatorKind::ARROW );
+      PUNCTUATOR( PunctuatorKind::MINUS );
+
+    case '.':
+      updatePos( file.peek() );
+      text += file.get();
+
+      if ( file.peek() == '.' )
       {
-        break;
+        updatePos( file.peek() );
+        text += file.get();
+
+        // ...
+        PUNCTUATOR_GET_IF( '.', PunctuatorKind::LDOTS );
+        // ..
+        return *( new IllegalToken( start, IllegalTokenKind::UNKNOWN, text ) );
       }
+      PUNCTUATOR( PunctuatorKind::DOT );
 
-      if ( lastChar == '\\' )
-      { // check for escaped characters
-        TokenText += lastChar;
-        step( lastChar );
-        switch ( lastChar )
-        {
-          case '\"':
-          case '\'':
-          case '?':
-          case '\\':
-          case 'a':
-          case 'b':
-          case 'f':
-          case 'n':
-          case 'r':
-          case 't':
-          case 'v':
-            break;
+    case '/':
+      updatePos( file.peek() );
+      text += file.get();
 
-				default:
-            // ILLEGAL CHARACTER
-            // illegal escape-sequence
-            illegalEscapeSequence = true;
-        }
-      }
-      TokenText += lastChar;
-      step( lastChar );
-      ++length;
-    } // end while
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::DIVASSIGN );
+      PUNCTUATOR( PunctuatorKind::DIV );
 
-    // read terminating apostrophe
-    if ( isNewLine( lastChar ) )
-    {
-      // ILLEGAL CHARACTER
-      // missing terminating apostrophe
-      kind = TokenKind::Illegal;
-      if ( length <= 1 )
+    case '<':
+      updatePos( file.peek() );
+      text += file.get();
+
+      // <=
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::LEQ );
+      if ( file.peek() == '<' )
       {
-        ERROR( pos,
-            "illegal character-constant\n", TokenText, "    - ",
-            "missing terminating apostrophe" );
+        updatePos( file.peek() );
+        text += file.get();
+
+        // <<=
+        PUNCTUATOR_GET_IF( '=', PunctuatorKind::LSHIFTASSIGN );
+        // <<
+        PUNCTUATOR( PunctuatorKind::LSHIFT );
+      }
+      // <
+      PUNCTUATOR( PunctuatorKind::LE );
+
+    case '=':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::EQ );
+      PUNCTUATOR( PunctuatorKind::ASSIGN );
+
+    case '>':
+      updatePos( file.peek() );
+      text += file.get();
+
+      // >=
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::GEQ );
+      if ( file.peek() == '>' )
+      {
+        updatePos( file.peek() );
+        text += file.get();
+
+        // >>=
+        PUNCTUATOR_GET_IF( '=', PunctuatorKind::RSHIFTASSIGN );
+        // >>
+        PUNCTUATOR( PunctuatorKind::RSHIFT );
+      }
+      // >
+      PUNCTUATOR( PunctuatorKind::GR );
+
+    case '^':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::XORASSIGN );
+      PUNCTUATOR( PunctuatorKind::XOR );
+
+    case '|':
+      updatePos( file.peek() );
+      text += file.get();
+
+      PUNCTUATOR_GET_IF( '=', PunctuatorKind::ORASSIGN );
+      PUNCTUATOR_GET_IF( '|', PunctuatorKind::LOR );
+      PUNCTUATOR( PunctuatorKind::OR );
+
+    default:
+      // Illegal Punctuator
+      updatePos( file.peek() );
+      text += file.get();
+      return *( new IllegalToken( start, IllegalTokenKind::UNKNOWN, text ) );
+  }
+}
+
+
+void Lexer::skip()
+{
+  int c;
+  while ( file.good() )
+  {
+    c = file.peek();
+
+    if ( isspace( c ) )
+    {
+      file.get();
+      updatePos( c );
+      continue;
+    }
+    else if ( c == '\\' )
+    {
+      file.get();
+      if ( file.peek() == '\n' )
+      {
+        // escaped newline
+        continue;
       }
       else
       {
-        ERROR( Pos( start.name, start.line, start.column + 2 ),
-            "illegal character-constant\n", TokenText, "    - ",
-            "missing terminating apostrophe" );
-      }
-    }
-    else  //( lastChar == '\'' )
-    {
-      assert( lastChar == '\'' && "missing terminating apostrophe" );
-      TokenText += lastChar;
-
-      if ( length > 1 )
-      {
-        kind = TokenKind::Illegal;
-        ERROR( start, "illegal character-constant\n", TokenText, "    - ",
-            "character-constant with multiple characters" );
-      }
-      else if ( illegalEscapeSequence )
-      {
-        kind = TokenKind::Illegal;
-        ERROR( start, "illegal character-constant\n", TokenText, "    - ",
-            "illegal escape-sequence" );
-      }
-    }
-  } // end CHARACTER-CONSTANT
-  else if ( lastChar == '\"' )
-  {
-    /*
-     * STRING-LITERAL
-     */
-    step( lastChar );
-
-    kind = TokenKind::StringLiteral;
-    Pos * illegalEscapePos = NULL;
-
-    while ( lastChar != '\"' ) // read until the terminating quote
-    {
-      if ( isNewLine( lastChar ) )
-      {
+        // non-whitespace
+        file.unget();
         break;
       }
-
-      if ( lastChar == '\\' )
-      { // check for escaped characters
-        TokenText += lastChar;
-        step( lastChar );
-        switch ( lastChar )
-        {
-          case '\"':
-          case '\'':
-          case '?':
-          case '\\':
-          case 'a':
-          case 'b':
-          case 'f':
-          case 'n':
-          case 'r':
-          case 't':
-          case 'v':
-            break;
-
-          default:
-            // ILLEGAL CHARACTER
-            // illegal escape-sequence
-						if ( ! illegalEscapePos )
-							illegalEscapePos = new Pos(pos);
-        }
-      }
-      TokenText += lastChar;
-      step( lastChar );
-    } // end while
-
-    // read terminating quote
-    if ( isNewLine( lastChar ) )
-    {
-      // ILLEGAL CHARACTER
-      // missing terminating quote
-      kind = TokenKind::Illegal;
-      ERROR( pos,
-          "illegal string-literal\n", TokenText, "    - ",
-          "missing terminating quote" );
     }
-    else
+    else if ( c == '/' )
     {
-      assert( lastChar == '\"' && "missing terminating quote" );
-
-      TokenText += lastChar;
-      step( lastChar );
-
-      if ( illegalEscapePos )
+      file.get();
+      if ( file.peek() == '/' )
       {
-				assert( illegalEscapePos && "no position set" );
-
-        kind = TokenKind::Illegal;
-        ERROR( *illegalEscapePos, "illegal string-literal\n", TokenText,
-						"    - ", "illegal escape-sequence" );
-
-				delete illegalEscapePos;
-      }
-    }
-	}
-	else
-	{
-		/*
-		 * PUNCTUATORS
-		 */
-
-		switch ( lastChar )
-		{
-			case '(':
-			case ')':
-			case ',':
-			case ':':
-			case ';':
-			case '?':
-			case '[':
-			case ']':
-			case '{':
-			case '}':
-			case '~':
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '!':
-				if ( *it == '=' )
-				{ // !=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '#':
-				if ( *it == '#' )
-				{ // ##
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '%':
-				if ( *it == '=' )
-				{
-					// %=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '&':
-				if ( *it == '&' )
-				{ // &&
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				else if ( *it == '=' )
-				{ // &=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '*':
-				if ( *it == '=' )
-				{ // *=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '+':
-				if ( *it == '+' )
-				{ // ++
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				else if ( *it == '=' )
-				{ // +=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '-':
-				if ( *it == '-' )
-				{ // --
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				else if ( *it == '=' )
-				{ // -=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				else if ( *it == '>' )
-				{ // ->
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '.':
-				/*
-				 * Note: for this special case we have to do backtracking
-				 */
-				if ( *it == '.' )
-				{
-					if ( *(++it) == '.' )
-					{ // ...
-						--it;
-						step( lastChar );
-						TokenText += lastChar;
-						step( lastChar );
-						TokenText += lastChar;
-					}
-					else
-						--it;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '/':
-				if ( *it == '=' )
-				{ // /=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '<':
-				if ( *it == '=' )
-				{ // <=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				else if ( *it == '<' )
-				{ // <<
-					step( lastChar );
-					TokenText += lastChar;
-
-					if ( *it == '=' )
-					{ // <<=
-						step( lastChar );
-						TokenText += lastChar;
-					}
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '=':
-				if ( *it == '=' )
-				{ // ==
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '>':
-				if ( *it == '=' )
-				{ // >=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				else if ( *it == '>' )
-				{ // >>
-					step( lastChar );
-					TokenText += lastChar;
-
-					if ( *it == '=' )
-					{ // >>=
-						step( lastChar );
-						TokenText += lastChar;
-					}
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '^':
-				if ( *it == '=' )
-				{ // ^=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			case '|':
-				if ( *it == '=' )
-				{ // |=
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				else if ( *it == '|' )
-				{ // ||
-					step( lastChar );
-					TokenText += lastChar;
-				}
-				kind = TokenKind::Punctuator;
-				break;
-
-			default:
-        // ILLEGAL SEQUENCE OF CHARACTERS
-				// if we reach this point, we have found an illegal sequence of
-				// characters
-        ERROR( start, "illegal character sequence\n", TokenText );
-
-		} // end switch-case
-	} // end PUNCTUATORS
-
-
-	/*
-	 * Ok, we have read a token!
-	 * Lets just handle the last remaining character
-	 */
-	if ( isNewLine( lastChar ) )
-	{
-		// Reset the pos column to 0 (see Lexer constructor)
-		// We need to do this, since every time we invoke getToken(), a whitespace
-		// is prepended, and the column is increased by one
-		pos.column = 0;
-		++pos.line;
-	}
-
-	// Create the token with the given type
-	return new Token( getTokenID(),
-			TokenText.c_str(),
-			kind,
-			*( new SourceLocation( start, index ) ) );
-}
-
-bool Lexer::step( char &lastChar )
-{
-  if ( buf.isBufEnd( it ) )
-    return false;
-
-	// update Pos
-	if ( isNewLine( lastChar ) )
-	{
-		pos.column = 1;
-		++pos.line;
-	}
-	else
-		++pos.column;
-
-	// go to next character
-	lastChar = *it;
-	++it;
-
-	return skipEscapedNewline( lastChar );
-}
-
-bool Lexer::skip( char &lastChar )
-{
-  while ( true )
-  {
-    if ( buf.isBufEnd( it ) )
-      return false;
-
-    if ( isWhiteSpace( lastChar ) )
-    {
-      if ( ! step( lastChar ) )
-        return false;
-    }
-    else if ( lastChar == '/' )
-    {
-      if ( *it == '/' )
-      {
-        // single-line comment
-        // read until the end of the line
-        if ( ! step( lastChar ) )
-          return false;
-        if ( ! step( lastChar ) )
-          return false;
-
-        while ( ! isNewLine( lastChar ) )
+        // comment line
+        updatePos( c );
+        while ( c == '\\' || file.peek() != '\n' )
         {
-          if ( ! step( lastChar ) )
-            return false;
+          c = file.get();
+          updatePos( c );
         }
+        continue;
       }
-      else if ( *it == '*' )
+      else if ( file.peek() == '*' )
       {
-        // comment-block
-        // read until first */
-        //
-        // CARE for /*/
-        if ( ! step( lastChar ) )
-          return false;
-        if ( ! step( lastChar ) )
-          return false;
+        // comment block
+        updatePos( c );
+        file.get(); // read the *
+        updatePos( c );
+        c = file.get(); // read the next char, skip previous * to prevent /*/
+        updatePos( c );
 
-        while ( lastChar != '*' || *it != '/' )
+        if ( ! file.good() )
+          return;
+
+        while ( c != '*' || file.peek() != '/' )
         {
-          if ( ! step( lastChar ) )
-            return false;
+          c = file.get();
+          updatePos( c );
         }
+
+        c = file.get(); // read last /
+        updatePos( c );
+
+        continue;
       }
       else
-        return true;
-    } // end if lastChar == '/'
+      {
+        // non-whitespace
+        file.unget(); // wrte back the /
+        break;
+      }
+    }
     else
-      return true;
-  } // end while
-  return true;
+      // non-whitespace
+      break;
+  }
 }
 
-bool Lexer::skipEscapedNewline( char &lastChar )
+void Lexer::step()
 {
-  if ( buf.isBufEnd( it ) )
-    return false;
+  updatePos( file.peek() );
+  file.get();
+}
 
-	if ( lastChar == '\\' && isNewLine( *it ) )
-	{
+void Lexer::updatePos( int c )
+{
+  if ( c == '\n' )
+  {
     ++pos.line;
     pos.column = 1;
-
-    // set lastChar to the next char behind \ + Newline
-		++it;
-    if ( buf.isBufEnd( it ) )
-      return false;
-
-		lastChar = *it;
-		++it;
-    if ( buf.isBufEnd( it ) )
-      return false;
-
-    // skip following whitespaces and comments
-    return skip( lastChar );
-	}
-
-  return true;
+  }
+  else
+    ++pos.column;
 }
