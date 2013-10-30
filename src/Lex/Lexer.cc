@@ -124,7 +124,7 @@ Token & Lexer::readNumericalConstant()
 
   while ( file.good() && ( isalnum( file.peek() ) || file.peek() == '_' ) )
   {
-    illegalIdentifier = isalpha( file.peek() ) || file.peek() == '_';
+    illegalIdentifier |= isalpha( file.peek() ) || file.peek() == '_';
 
     updatePos( file.peek() );
     text += file.get();
@@ -203,7 +203,7 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
     updatePos( file.peek() );
     text += file.get();
   }
-  
+
   if ( isCharConst && length > 1 )
   {
     return *( new IllegalToken( start,
@@ -246,7 +246,7 @@ Token & Lexer::readPunctuator()
 #define PUNCTUATOR_GET_IF( chr, kind ) \
   if ( file.peek() == ( chr ) ) \
   PUNCTUATOR_GET( kind );
-    
+
 
   switch ( file.peek() )
   {
