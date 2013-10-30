@@ -611,3 +611,229 @@ void LexerTest::testReadPunctuator()
   // restode stdin
   std::cin.rdbuf( cin_bak );
 }
+
+void LexerTest::testHelloWorld()
+{
+  // #include <stdio>
+  // int main()
+  // {
+  //  printf( "Hello World!\n" );
+  //  return 0;
+  // }
+  std::istringstream stream( "\
+#include <stdio.h>\n\
+\n\
+int main()\n\
+{\n\
+  printf( \"Hello World!\\n\" );\n\
+  return 0;\n\
+}" );
+
+  // redirect stdin
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+  Token * token;
+  PunctuatorToken * punctuator;
+  KeywordToken * keyword;
+
+  // #
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "#" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::HASH );
+  delete token;
+
+  // include
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "include" );
+  delete token;
+
+  // <
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "<" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LE );
+  delete token;
+
+  // stdio
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 11u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "stdio" );
+  delete token;
+
+  // .
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 16u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "." );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::DOT );
+  delete token;
+
+  // h
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 17u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "h" );
+  delete token;
+
+  // >
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 18u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == ">" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::GR );
+  delete token;
+
+  // int
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "int" );
+  keyword = dynamic_cast< KeywordToken* >( token );
+  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::INT );
+  delete token;
+
+  // main
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "main" );
+  delete token;
+
+  // (
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 9u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "(" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LPAR );
+  delete token;
+
+  // )
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == ")" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RPAR );
+  delete token;
+
+  // {
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "{" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACE );
+  delete token;
+
+  // printf
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "printf" );
+  delete token;
+
+  // (
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 9u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "(" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LPAR );
+  delete token;
+
+  // "Hello World!\n"
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::STRING_LITERAL );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 11u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "\"Hello World!\\n\"" );
+  delete token;
+
+  // )
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 28u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == ")" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RPAR );
+  delete token;
+
+  // ;
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 29u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == ";" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::SEMICOLON );
+  delete token;
+
+  // return
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 6u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "return" );
+  keyword = dynamic_cast< KeywordToken* >( token );
+  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::RETURN );
+  delete token;
+
+  // 0
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 6u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "0" );
+  delete token;
+
+  // ;
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 6u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 11u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == ";" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::SEMICOLON );
+  delete token;
+
+  // }
+  token = & lexer.getToken();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 7u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "}" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RBRACE );
+  delete token;
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}

@@ -22,6 +22,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testReadNumericalConstant );
   CPPUNIT_TEST ( testReadStringLiteral );
   CPPUNIT_TEST ( testReadPunctuator );
+  CPPUNIT_TEST ( testHelloWorld );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -37,6 +38,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   void testReadCharacterConstant();
   void testReadStringLiteral();
   void testReadPunctuator();
+  void testHelloWorld();
 };
 
 #endif
