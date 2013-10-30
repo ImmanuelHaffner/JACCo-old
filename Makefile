@@ -52,12 +52,12 @@ ifeq ($(VERBOSE), 1)
 	CXXFLAGS	+= -v
 endif
 
--include $(CFG).cfg
-
 
 .PHONY: all check clean cleanall doxy
 
 all: $(BIN)
+
+-include $(CFG).cfg
 
 -include $(DEP)
 
