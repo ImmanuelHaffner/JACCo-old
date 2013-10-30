@@ -55,7 +55,7 @@ namespace C4
         /// such that file.peek() would return that character.
         /// Reads at least one character.
         ///
-        /// \return a Numerical CONSTANT, or an ILLEGAL Token
+        /// \return a Numerical CONSTANT or an ILLEGAL Token
         Token & readNumericalConstant();
 
         /// Reads a character constant or a string literal.
@@ -64,8 +64,16 @@ namespace C4
         /// character.
         /// Reads at least one character.
         ///
-        /// \return a Character CONSTANT, a STRING LITERAL, or an ILLEGAL Token
+        /// \return a Character CONSTANT, a STRING LITERAL or an ILLEGAL Token
         Token & readCharacterConstantOrStringLiteral();
+
+        /// Reads a punctuator.
+        /// Stops at the first character not part of the punctuator, such that
+        /// file.peek() would return that character.
+        /// Reads at least one character.
+        ///
+        /// \return a PUNCTUATOR or an ILLEGAL Token
+        Token & readPunctuator();
 
         std::string const fileName;
 
