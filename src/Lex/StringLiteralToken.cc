@@ -15,5 +15,5 @@ using namespace Lex;
 
 void StringLiteralToken::dump() const
 {
-  OUT( this->pos, " string-literal: ", this->text );
+  OUT( this->pos, "string-literal: ", this->text );
 }
