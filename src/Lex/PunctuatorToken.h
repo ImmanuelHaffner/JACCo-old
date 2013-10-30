@@ -22,54 +22,54 @@ namespace C4
     //===----------------------------------------------------------------------
 		enum class PunctuatorKind
 		{
-			LBRACKET,
-			RBRACKET,
-			LPAR,
-			RPAR,
-			LBRACE,
-			RBRACE,
-			DOT,
-			LARROW,
-			INC,
-			DEC,
-			AND,
-			MUL,
-			PLUS,
-			MINUS,
-			NEG,
-			NOT,
-			DIV,
-			PERC,
-			LSHIFT,
-			RSHIFT,
-			LE,
-			GR,
-			LEQ,
-			GEQ,
-			EQ,
-			NEQ,
-			XOR,
-			OR,
-			LAND,
-			LOR,
-			CONDITIONAL,
-			COL,
-			SCOL,
-			LDOTS,
-			ASSIGN,
-			MULASSIGN,
-			DIVASSIGN,
-			MODASSIGN,
-			ADDASSIGN,
-			SUBASSIGN,
-			LSHIFTASSIGN,
-			RSHIFTASSIGN,
-			ANDASSIGN,
-			XORASSIGN,
-			ORASSIGN,
-			COMMA,
-			HASH,
-			DHASH
+			LBRACKET,     // [
+			RBRACKET,     // ]
+			LPAR,         // (
+			RPAR,         // )
+			LBRACE,       // {
+			RBRACE,       // }
+			DOT,          // .
+			ARROW,        // ->
+			INC,          // ++
+			DEC,          // --
+			AND,          // &
+			MUL,          // *
+			PLUS,         // +
+			MINUS,        // -
+			NEG,          // ~
+			NOT,          // !
+			DIV,          // /
+			MOD,          // %
+			LSHIFT,       // <<
+			RSHIFT,       // >>
+			LE,           // <
+			GR,           // >
+			LEQ,          // <=
+			GEQ,          // >=
+			EQ,           // ==
+			NE,           // !=
+			XOR,          // ^
+			OR,           // |
+			LAND,         // &&
+			LOR,          // ||
+			QMARK,        // ?
+			COLON,        // :
+			SEMICOLON,    // ;
+			LDOTS,        // ...
+			ASSIGN,       // =
+			MULASSIGN,    // *=
+			DIVASSIGN,    // /=
+			MODASSIGN,    // %=
+			ADDASSIGN,    // +=
+			SUBASSIGN,    // -=
+			LSHIFTASSIGN, // <<=
+			RSHIFTASSIGN, // >>=
+			ANDASSIGN,    // &=
+			XORASSIGN,    // ^=
+			ORASSIGN,     // |=
+			COMMA,        // ,
+			HASH,         // #
+			DHASH         // ##
 		};
 
     struct PunctuatorToken : Token
