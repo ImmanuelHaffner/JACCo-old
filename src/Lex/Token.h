@@ -9,10 +9,11 @@
 #ifndef C4_TOKEN_H
 #define C4_TOKEN_H
 
-#include "../pos.h"
-#include "../util.h"
+#include <iostream>
 #include <map>
 #include <string>
+#include "../pos.h"
+#include "../util.h"
 
 namespace C4
 {
@@ -45,13 +46,14 @@ namespace C4
 
       virtual ~Token() {}
 
+      friend std::ostream & operator<<( std::ostream &out, Token const &tok );
+
       virtual void dump() const;
 
       Pos const pos;
       TokenKind const kind;
       std::string const text;
     };
-
   } // end namespace Lex
 } // end namespace C4
 

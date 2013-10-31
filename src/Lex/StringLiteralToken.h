@@ -9,6 +9,7 @@
 #ifndef C4_STRING_LITERAL_TOKEN_H
 #define C4_STRING_LITERAL_TOKEN_H
 
+#include <iostream>
 #include "Token.h"
 
 namespace C4
@@ -26,6 +27,9 @@ namespace C4
       {}
 
       virtual ~StringLiteralToken() {}
+
+      friend std::ostream & operator<<( std::ostream &out,
+          StringLiteralToken const &tok );
 
       void dump() const;
     };

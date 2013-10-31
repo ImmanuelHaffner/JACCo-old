@@ -9,6 +9,7 @@
 #ifndef C4_IDENTIFIER_TOKEN_H
 #define C4_IDENTIFIER_TOKEN_H
 
+#include <iostream>
 #include "Token.h"
 
 namespace C4
@@ -26,6 +27,9 @@ namespace C4
       {}
 
       virtual ~IdentifierToken() {}
+
+      friend std::ostream & operator<<( std::ostream &out,
+          IdentifierToken const &tok );
 
       void dump() const;
     };

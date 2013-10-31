@@ -13,6 +13,12 @@
 using namespace C4;
 using namespace Lex;
 
+std::ostream & Lex::operator<<( std::ostream &out, EofToken const &tok )
+{
+  out << tok.pos << " end of file";
+  return out;
+}
+
 void EofToken::dump() const
 {
   OUT( this->pos, "end-of-file" );

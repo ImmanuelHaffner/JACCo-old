@@ -9,6 +9,7 @@
 #ifndef C4_PUNCTUATOR_TOKEN_H
 #define C4_PUNCTUATOR_TOKEN_H
 
+#include <iostream>
 #include "Token.h"
 
 namespace C4
@@ -84,11 +85,13 @@ namespace C4
 
       virtual ~PunctuatorToken() {}
 
+      friend std::ostream & operator<<( std::ostream &out,
+          PunctuatorToken const &tok );
+
       void dump() const;
 
       PunctuatorKind const punctuator;
     };
-
   } // end namespace Lex
 } // end namespace C4
 

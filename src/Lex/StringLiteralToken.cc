@@ -13,7 +13,13 @@
 using namespace C4;
 using namespace Lex;
 
+std::ostream & Lex::operator<<( std::ostream &out, StringLiteralToken const &tok )
+{
+  out << tok.pos << " string-literal " << tok.text;
+  return out;
+}
+
 void StringLiteralToken::dump() const
 {
-  OUT( this->pos, "string-literal ", this->text );
+  std::cout << *this;
 }

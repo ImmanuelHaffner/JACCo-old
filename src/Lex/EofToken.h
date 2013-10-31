@@ -23,6 +23,9 @@ namespace C4
 
       virtual ~EofToken() {}
 
+      friend std::ostream & operator<<( std::ostream &out,
+          EofToken const &tok );
+
       void dump() const;
     };
   } // end namespace Lex

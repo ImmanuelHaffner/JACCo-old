@@ -9,6 +9,7 @@
 #ifndef C4_KEYWORD_TOKEN_H
 #define C4_KEYWORD_TOKEN_H
 
+#include <iostream>
 #include "Token.h"
 
 namespace C4
@@ -129,11 +130,13 @@ namespace C4
 
       virtual ~KeywordToken() {}
 
+      friend std::ostream & operator<<( std::ostream &out,
+          KeywordToken const &tok );
+
       void dump() const;
 
       KeywordKind const keyword;
     };
-
   } // end namespace Lex
 } // end namespace C4
 

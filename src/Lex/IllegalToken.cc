@@ -13,43 +13,45 @@
 using namespace C4;
 using namespace Lex;
 
-void IllegalToken::dump() const
+std::ostream & Lex::operator<<( std::ostream &out, IllegalToken const &tok )
 {
-  std::string str;
-
-  switch ( this->iKind )
+  out << tok.pos;
+  out << " illegal token: " << tok.text << " - ";
+  switch ( tok.iKind )
   {
     case IllegalTokenKind::UNKNOWN:
-      str = "unknwon token";
+      out << "unknown token";
       break;
 
     case IllegalTokenKind::IDENTIFIER:
-      str = "illegal identifier";
+      out << "illegal identifier";
       break;
 
     case IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS:
-      str = "illegal character-constant";
+      out << "character constant with multiple characters";
       break;
 
     case IllegalTokenKind::MISSING_APOSTROPHE:
-      str = "missing terminating apostrophe";
+      out << "missing terminating apostrophe";
       break;
 
     case IllegalTokenKind::MISSING_QUOTE:
-      str = "missing terminating quote";
+      out << "missing terminating quote";
       break;
 
     case IllegalTokenKind::MISSING_COMMENT_TERMINATOR:
-      str = "missing terminator of comment block";
+      out << "unterminated comment block";
       break;
 
     case IllegalTokenKind::ESCAPE_SEQUENCE:
-      str = "illegal escape sequence";
+      out << "illegal escape sequence";
       break;
   }
 
-  if ( this->text.empty() )
-    OUT( this->pos, str );
-  else
-    OUT( this->pos, str, "\n", this->text );
+  return out;
+}
+
+void IllegalToken::dump() const
+{
+  std::cout << *this;
 }

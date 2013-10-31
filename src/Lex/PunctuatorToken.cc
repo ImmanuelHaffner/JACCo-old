@@ -13,7 +13,13 @@
 using namespace C4;
 using namespace Lex;
 
+std::ostream & Lex::operator<<( std::ostream &out, PunctuatorToken const &tok )
+{
+  out << tok.pos << " punctuator " << tok.text;
+  return out;
+}
+
 void PunctuatorToken::dump() const
 {
-  OUT( this->pos, "punctuator ", this->text );
+  std::cout << *this;
 }

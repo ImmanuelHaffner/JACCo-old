@@ -40,6 +40,9 @@ namespace C4
 
       virtual ~IllegalToken() {}
 
+      friend std::ostream & operator<<( std::ostream &out,
+          IllegalToken const &tok );
+
       void dump() const;
 
       IllegalTokenKind const iKind;

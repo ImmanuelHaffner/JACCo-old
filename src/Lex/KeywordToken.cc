@@ -13,7 +13,13 @@
 using namespace C4;
 using namespace Lex;
 
+std::ostream & Lex::operator<<( std::ostream &out, KeywordToken const &tok )
+{
+  out << tok.pos << " keyword " << tok.text;
+  return out;
+}
+
 void KeywordToken::dump() const
 {
-  OUT( this->pos, "keyword ", this->text );
+  std::cout << *this;
 }

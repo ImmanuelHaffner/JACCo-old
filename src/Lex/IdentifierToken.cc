@@ -13,7 +13,13 @@
 using namespace C4;
 using namespace Lex;
 
+std::ostream & Lex::operator<<( std::ostream &out, IdentifierToken const &tok )
+{
+  out << tok.pos << " identifier " << tok.text;
+  return out;
+}
+
 void IdentifierToken::dump() const
 {
-  OUT( this->pos, "identifier ", this->text );
+  std::cout << *this;
 }
