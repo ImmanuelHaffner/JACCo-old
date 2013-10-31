@@ -262,8 +262,6 @@ Token & Lexer::readPunctuator()
       PUNCTUATOR_GET( PunctuatorKind::RPAR );
     case ',':
       PUNCTUATOR_GET( PunctuatorKind::COMMA );
-    case ':':
-      PUNCTUATOR_GET( PunctuatorKind::COLON );
     case ';':
       PUNCTUATOR_GET( PunctuatorKind::SEMICOLON );
     case '?':
@@ -280,6 +278,15 @@ Token & Lexer::readPunctuator()
       PUNCTUATOR_GET( PunctuatorKind::NEG );
 
       // Punctuators that can have more than one character
+    case ':':
+      updatePos( file.peek() );
+      text += file.get();
+
+      // :>
+      PUNCTUATOR_GET_IF( '>', PunctuatorKind::RBRACKET );
+      // :
+      PUNCTUATOR( PunctuatorKind::COLON );
+
     case '!':
       updatePos( file.peek() );
       text += file.get();
@@ -298,7 +305,29 @@ Token & Lexer::readPunctuator()
       updatePos( file.peek() );
       text += file.get();
 
+      // %=
       PUNCTUATOR_GET_IF( '=', PunctuatorKind::MODASSIGN );
+      // %>
+      PUNCTUATOR_GET_IF( '>', PunctuatorKind::RBRACE );
+      // %:
+      if ( file.peek() == ':' )
+      {
+        updatePos( file.peek() );
+        text += file.get();
+
+        if ( file.peek() == '%' )
+        {
+          updatePos( file.peek() );
+          text += file.get();
+
+          // %:%:
+          PUNCTUATOR_GET_IF( ':', PunctuatorKind::DHASH );
+
+          file.unget();
+        }
+        PUNCTUATOR( PunctuatorKind::HASH );
+      }
+      // %
       PUNCTUATOR( PunctuatorKind::MOD );
 
     case '&':
@@ -362,6 +391,11 @@ Token & Lexer::readPunctuator()
 
       // <=
       PUNCTUATOR_GET_IF( '=', PunctuatorKind::LEQ );
+      // <:
+      PUNCTUATOR_GET_IF( ':', PunctuatorKind::LBRACKET );
+      // <%
+      PUNCTUATOR_GET_IF( '%', PunctuatorKind::LBRACE );
+      // <<
       if ( file.peek() == '<' )
       {
         updatePos( file.peek() );
