@@ -455,7 +455,7 @@ void Lexer::skip()
       {
         // comment line
         updatePos( c );
-        while ( c == '\\' || file.peek() != '\n' )
+        while ( file.good() && ( c == '\\' || file.peek() != '\n' ) )
         {
           c = file.get();
           updatePos( c );
@@ -474,7 +474,7 @@ void Lexer::skip()
         if ( ! file.good() )
           return;
 
-        while ( c != '*' || file.peek() != '/' )
+        while ( file.good() && ( c != '*' || file.peek() != '/' ) )
         {
           c = file.get();
           updatePos( c );
@@ -488,7 +488,7 @@ void Lexer::skip()
       else
       {
         // non-whitespace
-        file.unget(); // wrte back the /
+        file.unget(); // write back the /
         break;
       }
     }
