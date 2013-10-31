@@ -55,10 +55,12 @@ static void verrorf(Pos const* const pos, char const* fmt, va_list ap)
 	auto const out = stderr;
 
 	if (pos) {
-		if (pos->column) {
+		if (pos->line && pos->column) {
 			fprintf(out, "%s:%u:%u:", pos->name, pos->line, pos->column);
 		} else if (pos->line) {
 			fprintf(out, "%s:%u:", pos->name, pos->line);
+		} else if (pos->column) {
+			fprintf(out, "%s:%u:", pos->name, pos->column);
 		} else {
 			fprintf(out, "%s:", pos->name);
 		}
