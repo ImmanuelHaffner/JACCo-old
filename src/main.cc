@@ -72,18 +72,17 @@ int main(int, char** const argv)
                 lex = new Lexer;
               else
                 lex = new Lexer( name );
+              C4::Lex::Lexer lexer( *lex );
+              delete lex;
 
               while ( true )
               {
-                Token const & tok = lex->getToken();
+                Token const & tok = lexer.getToken();
                 if ( tok.kind == TokenKind::END_OF_FILE )
                   break;
 
                 tok.dump();
               }
-
-              delete lex;
-
               break;
             }
 
