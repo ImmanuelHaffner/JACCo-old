@@ -612,6 +612,89 @@ void LexerTest::testReadPunctuator()
   std::cin.rdbuf( cin_bak );
 }
 
+void LexerTest::testReadPunctuatorDigraph()
+{
+  std::istringstream stream( "<::><%%>%: %:%:" );
+
+  // redirect stdin
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+  Token * token;
+  PunctuatorToken * punctuator;
+
+
+  // <:
+  token = & lexer.readPunctuator();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "<:" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACKET );
+  delete token;
+  lexer.skip();
+
+  // :>
+  token = & lexer.readPunctuator();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == ":>" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RBRACKET );
+  delete token;
+  lexer.skip();
+
+  // <%
+  token = & lexer.readPunctuator();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "<%" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACE );
+  delete token;
+  lexer.skip();
+
+  // %>
+  token = & lexer.readPunctuator();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 7u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "%>" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RBRACE );
+  delete token;
+  lexer.skip();
+
+  // %:
+  token = & lexer.readPunctuator();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 9u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "%:" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::HASH );
+  delete token;
+  lexer.skip();
+
+  // %:%:
+  token = & lexer.readPunctuator();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 12u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "%:%:" );
+  punctuator = dynamic_cast< PunctuatorToken* >( token );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::DHASH );
+  delete token;
+  lexer.skip();
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
 void LexerTest::testHelloWorld()
 {
   // #include <stdio>
