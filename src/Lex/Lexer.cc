@@ -517,7 +517,7 @@ Token & Lexer::skip()
         }
 
         if ( ! file.good() )
-          return *(new IllegalToken( pos,
+          return *(new IllegalToken( start,
                 IllegalTokenKind::MISSING_COMMENT_TERMINATOR, "" ) );
 
         c = file.get(); // read last /
