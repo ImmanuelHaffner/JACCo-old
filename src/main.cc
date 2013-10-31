@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <iostream>
+#include <sstream>
 
 #include "diagnostic.h"
 #include "util.h"
@@ -75,19 +76,20 @@ int main(int, char** const argv)
               C4::Lex::Lexer lexer( *lex );
               delete lex;
 
-              bool reject = false;
               while ( true )
               {
                 Token const & tok = lexer.getToken();
                 if ( tok.kind == TokenKind::END_OF_FILE )
                   break;
-                if ( tok.kind == TokenKind::ILLEGAL )
-                  reject = true;
 
-                tok.dump();
+                std::ostringstream oss;
+                oss << tok << std::endl;
+
+                if ( tok.kind == TokenKind::ILLEGAL )
+                  errorf( "%s", oss.str().c_str() );
+                else
+                  std::cout << oss.str();
               }
-              if ( reject )
-                return 1;
               break;
             }
 
