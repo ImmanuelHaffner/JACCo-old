@@ -504,6 +504,7 @@ Token & Lexer::skip()
       else if ( file.peek() == '*' )
       {
         // comment block
+        Pos start( pos.name, pos.line, pos.column - 1 );
         updatePos( c );
         file.get(); // read the *
 
@@ -517,7 +518,7 @@ Token & Lexer::skip()
         }
 
         if ( ! file.good() )
-          return *(new IllegalToken( start,
+          return *( new IllegalToken( start,
                 IllegalTokenKind::MISSING_COMMENT_TERMINATOR, "" ) );
 
         c = file.get(); // read last /
