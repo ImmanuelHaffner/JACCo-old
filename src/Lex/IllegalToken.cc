@@ -29,18 +29,27 @@ void IllegalToken::dump() const
 
     case IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS:
       str = "illegal character-constant";
+      break;
 
-    case IllegalTokenKind::MISSING_TERMINATOR:
-      if ( kind == TokenKind::CONSTANT )
-        str += "missing terminating apostrophe";
-      else if ( kind == TokenKind::STRING_LITERAL )
-        str += "missing terminating quote";
-      else
-        str += "missing unknown terminator";
+    case IllegalTokenKind::MISSING_APOSTROPHE:
+      str = "missing terminating apostrophe";
+      break;
+
+    case IllegalTokenKind::MISSING_QUOTE:
+      str = "missing terminating quote";
+      break;
+
+    case IllegalTokenKind::MISSING_COMMENT_TERMINATOR:
+      str = "missing terminator of comment block";
+      break;
 
     case IllegalTokenKind::ESCAPE_SEQUENCE:
       str = "illegal escape sequence";
+      break;
   }
 
-  OUT( this->pos, str, "\n", this->text );
+  if ( this->text.empty() )
+    OUT( this->pos, str );
+  else
+    OUT( this->pos, str, "\n", this->text );
 }
