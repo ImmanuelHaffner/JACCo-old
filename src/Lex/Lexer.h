@@ -81,7 +81,10 @@ namespace C4
         /// a comment.
         /// Stops at the first non-whitespace character not part of a comment,
         /// such that file.peek() would return that character.
-        void skip();
+        /// 
+        /// \return an IllegalToken, if an error occured, or an EofToken
+        /// otherwise
+        Token & skip();
 
         /// Reads exactly one character and updates the position.
         void step();

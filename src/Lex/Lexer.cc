@@ -40,10 +40,14 @@ Lexer::~Lexer() {}
 
 Token & Lexer::getToken()
 {
-  //if ( ! file.good() )
-  //return *( new EofToken( pos ) );
+  if ( ! file.good() )
+    return *( new EofToken( pos ) );
 
-  skip();
+  Token &t = skip();
+  
+  // Hack for the unterminated comment block
+  if ( t.kind != TokenKind::END_OF_FILE )
+    return t;
 
   if ( ! file.good() )
     return *( new EofToken( pos ) );
@@ -148,7 +152,8 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
   Pos start(pos);
   std::string text = "";
 
-  bool isCharConst = file.peek() == '\'';
+  int terminator = file.peek();
+  bool isCharConst = terminator == '\'';
 
   // read first character
   updatePos( file.peek() );
@@ -157,8 +162,6 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
   unsigned length = 0;
   bool illegalEscapeSequence = false;
   bool newLine = false;
-
-  int terminator = ( isCharConst ? '\'' : '"' );
 
   while ( file.good() && file.peek() != terminator )
   {
@@ -211,7 +214,9 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
   }
   else if ( newLine )
   {
-    return *( new IllegalToken( start, IllegalTokenKind::MISSING_TERMINATOR,
+    return *( new IllegalToken( start,
+          ( isCharConst ? IllegalTokenKind::MISSING_APOSTROPHE :
+            IllegalTokenKind::MISSING_QUOTE ),
           text ) );
   }
   else if ( illegalEscapeSequence )
@@ -420,7 +425,7 @@ Token & Lexer::readPunctuator()
 }
 
 
-void Lexer::skip()
+Token & Lexer::skip()
 {
   int c;
   while ( file.good() )
@@ -467,18 +472,19 @@ void Lexer::skip()
         // comment block
         updatePos( c );
         file.get(); // read the *
+
         updatePos( c );
         c = file.get(); // read the next char, skip previous * to prevent /*/
-        updatePos( c );
-
-        if ( ! file.good() )
-          return;
 
         while ( file.good() && ( c != '*' || file.peek() != '/' ) )
         {
-          c = file.get();
           updatePos( c );
+          c = file.get();
         }
+
+        if ( ! file.good() )
+          return *(new IllegalToken( pos,
+                IllegalTokenKind::MISSING_COMMENT_TERMINATOR, "" ) );
 
         c = file.get(); // read last /
         updatePos( c );
@@ -496,6 +502,7 @@ void Lexer::skip()
       // non-whitespace
       break;
   }
+  return *( new EofToken( pos ) );
 }
 
 void Lexer::step()
