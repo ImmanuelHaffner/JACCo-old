@@ -75,14 +75,19 @@ int main(int, char** const argv)
               C4::Lex::Lexer lexer( *lex );
               delete lex;
 
+              bool reject = false;
               while ( true )
               {
                 Token const & tok = lexer.getToken();
                 if ( tok.kind == TokenKind::END_OF_FILE )
                   break;
+                if ( tok.kind == TokenKind::ILLEGAL )
+                  reject = true;
 
                 tok.dump();
               }
+              if ( reject )
+                return 1;
               break;
             }
 
