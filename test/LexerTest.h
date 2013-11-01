@@ -20,6 +20,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testReadIdentifier );
   CPPUNIT_TEST ( testReadKeywords );
   CPPUNIT_TEST ( testReadNumericalConstant );
+  CPPUNIT_TEST ( testReadCharacterConstant );
   CPPUNIT_TEST ( testReadStringLiteral );
   CPPUNIT_TEST ( testReadPunctuator );
   CPPUNIT_TEST ( testReadPunctuatorDigraph );
