@@ -1,0 +1,5 @@
+resource/ExSh1_example.c:1:1 constant 42
+resource/ExSh1_example.c:1:5 keyword if
+resource/ExSh1_example.c:2:2 string-literal "bla\n"
+resource/ExSh1_example.c:2:9 identifier x
+resource/ExSh1_example.c:2:10 punctuator +
