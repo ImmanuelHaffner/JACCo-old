@@ -1,0 +1,21 @@
+resource/hello_world.c:1:1: punctuator #
+resource/hello_world.c:1:2: identifier include
+resource/hello_world.c:1:10: punctuator <
+resource/hello_world.c:1:11: identifier stdio
+resource/hello_world.c:1:16: punctuator .
+resource/hello_world.c:1:17: identifier h
+resource/hello_world.c:1:18: punctuator >
+resource/hello_world.c:3:1: keyword int
+resource/hello_world.c:3:5: identifier main
+resource/hello_world.c:3:9: punctuator (
+resource/hello_world.c:3:10: punctuator )
+resource/hello_world.c:4:1: punctuator {
+resource/hello_world.c:5:3: identifier printf
+resource/hello_world.c:5:9: punctuator (
+resource/hello_world.c:5:11: string-literal "Hello World!\n"
+resource/hello_world.c:5:28: punctuator )
+resource/hello_world.c:5:29: punctuator ;
+resource/hello_world.c:6:3: keyword return
+resource/hello_world.c:6:10: constant 0
+resource/hello_world.c:6:11: punctuator ;
+resource/hello_world.c:7:1: punctuator }
