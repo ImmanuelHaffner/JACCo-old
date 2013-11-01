@@ -27,6 +27,10 @@ std::ostream & Lex::operator<<( std::ostream &out, IllegalToken const &tok )
       out << "illegal identifier";
       break;
 
+    case IllegalTokenKind::EMPTY_CHARACTER_CONSTANT:
+      out << "empty character constant";
+      break;
+
     case IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS:
       out << "character constant with multiple characters";
       break;

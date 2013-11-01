@@ -207,6 +207,9 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
     text += file.get();
   }
 
+	if ( isCharConst && length == 0 )
+		return *( new IllegalToken( start,
+					IllegalTokenKind::EMPTY_CHARACTER_CONSTANT, text ) );
   if ( isCharConst && length > 1 )
   {
     return *( new IllegalToken( start,
