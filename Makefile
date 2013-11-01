@@ -53,7 +53,7 @@ ifeq ($(VERBOSE), 1)
 endif
 
 
-.PHONY: all check clean cleanall doxy
+.PHONY: all check check-all clean cleanall doxy
 
 all: $(BIN)
 
@@ -65,6 +65,10 @@ check: $(TESTBIN)
 	-	$(TESTBIN)
 
 -include $(TEST_DEP)
+
+check-all: check
+	@echo ""
+	./test/test.sh
 
 clean:
 	@echo "===> CLEAN"
