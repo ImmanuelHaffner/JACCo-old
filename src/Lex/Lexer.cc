@@ -366,16 +366,21 @@ Token & Lexer::readPunctuator()
       updatePos( file.peek() );
       text += file.get();
 
-      if ( file.peek() == '.' )
+      if ( file.peek() == '.' ) // 2nd .
       {
-        updatePos( file.peek() );
-        text += file.get();
-
-        // ...
-        PUNCTUATOR_GET_IF( '.', PunctuatorKind::LDOTS );
+        file.get();
+        if ( file.peek() == '.' ) // 3rd .
+        {
+          // ...
+          updatePos( '.' );
+          text += ".";
+          PUNCTUATOR_GET( PunctuatorKind::LDOTS );
+        }
         // ..
-        return *( new IllegalToken( start, IllegalTokenKind::UNKNOWN, text ) );
+        file.unget();
+        PUNCTUATOR( PunctuatorKind::DOT );
       }
+      // .
       PUNCTUATOR( PunctuatorKind::DOT );
 
     case '/':
