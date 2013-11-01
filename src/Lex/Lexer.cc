@@ -509,7 +509,7 @@ Token & Lexer::skip()
       else if ( file.peek() == '*' )
       {
         // comment block
-        Pos start( pos.name, pos.line, pos.column - 1 );
+        Pos start( pos );
         updatePos( c );
         file.get(); // read the *
 
