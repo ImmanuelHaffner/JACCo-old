@@ -1,29 +1,29 @@
-error: resource/allowedCharacters.c:4:13: illegal token: \ - unknown token
+error: resource/allowedCharacters.c:4:13 illegal token: \ - unknown token
 
 1 error(s)
-resource/allowedCharacters.c:1:1: identifier abcdefghijklmnopqrstuvwxyz
-resource/allowedCharacters.c:2:1: identifier ABCDEFGHIJKLMNOPQRSTUVWXYZ
-resource/allowedCharacters.c:3:1: constant 1234567890
-resource/allowedCharacters.c:4:2: punctuator [
-resource/allowedCharacters.c:4:3: punctuator ]
-resource/allowedCharacters.c:4:4: punctuator (
-resource/allowedCharacters.c:4:5: punctuator )
-resource/allowedCharacters.c:4:6: punctuator {
-resource/allowedCharacters.c:4:7: punctuator }
-resource/allowedCharacters.c:4:8: punctuator .
-resource/allowedCharacters.c:4:9: punctuator +
-resource/allowedCharacters.c:4:10: punctuator -
-resource/allowedCharacters.c:4:11: punctuator *
-resource/allowedCharacters.c:4:12: punctuator /
-resource/allowedCharacters.c:4:14: punctuator %
-resource/allowedCharacters.c:4:15: punctuator ~
-resource/allowedCharacters.c:4:16: punctuator !
-resource/allowedCharacters.c:4:17: punctuator &
-resource/allowedCharacters.c:4:18: punctuator |
-resource/allowedCharacters.c:4:19: punctuator ^
-resource/allowedCharacters.c:4:20: punctuator <
-resource/allowedCharacters.c:4:21: punctuator >=
-resource/allowedCharacters.c:4:23: punctuator #
-resource/allowedCharacters.c:4:24: punctuator ?
-resource/allowedCharacters.c:4:25: punctuator :
-resource/allowedCharacters.c:4:26: punctuator ;
+resource/allowedCharacters.c:1:1 identifier abcdefghijklmnopqrstuvwxyz
+resource/allowedCharacters.c:2:1 identifier ABCDEFGHIJKLMNOPQRSTUVWXYZ
+resource/allowedCharacters.c:3:1 constant 1234567890
+resource/allowedCharacters.c:4:2 punctuator [
+resource/allowedCharacters.c:4:3 punctuator ]
+resource/allowedCharacters.c:4:4 punctuator (
+resource/allowedCharacters.c:4:5 punctuator )
+resource/allowedCharacters.c:4:6 punctuator {
+resource/allowedCharacters.c:4:7 punctuator }
+resource/allowedCharacters.c:4:8 punctuator .
+resource/allowedCharacters.c:4:9 punctuator +
+resource/allowedCharacters.c:4:10 punctuator -
+resource/allowedCharacters.c:4:11 punctuator *
+resource/allowedCharacters.c:4:12 punctuator /
+resource/allowedCharacters.c:4:14 punctuator %
+resource/allowedCharacters.c:4:15 punctuator ~
+resource/allowedCharacters.c:4:16 punctuator !
+resource/allowedCharacters.c:4:17 punctuator &
+resource/allowedCharacters.c:4:18 punctuator |
+resource/allowedCharacters.c:4:19 punctuator ^
+resource/allowedCharacters.c:4:20 punctuator <
+resource/allowedCharacters.c:4:21 punctuator >=
+resource/allowedCharacters.c:4:23 punctuator #
+resource/allowedCharacters.c:4:24 punctuator ?
+resource/allowedCharacters.c:4:25 punctuator :
+resource/allowedCharacters.c:4:26 punctuator ;
