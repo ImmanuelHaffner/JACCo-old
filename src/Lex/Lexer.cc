@@ -165,7 +165,7 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
 
   while ( file.good() && file.peek() != terminator )
   {
-    if ( file.peek() == '\n' || file.peek() == '\r' )
+    if ( file.peek() == '\n' )
     {
       newLine = true;
       break;
