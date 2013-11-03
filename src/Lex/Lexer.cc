@@ -124,17 +124,88 @@ Token & Lexer::readNumericalConstant()
   Pos start( pos );
   std::string text = "";
 
-  bool illegalIdentifier = false;
+  bool isIllegalIdentifier = false;
 
-  while ( file.good() && ( isalnum( file.peek() ) || file.peek() == '_' ) )
+  // Hex and Oct support
+  bool isHex = false;
+  bool isOct = false;
+  if ( file.peek() == '0' )
   {
-    illegalIdentifier |= isalpha( file.peek() ) || file.peek() == '_';
+    updatePos( file.peek() );
+    text += file.get();
+    if ( file.peek() == 'x' || file.peek() == 'X' )
+    {
+      isHex = true;
+      updatePos( file.peek() );
+      text += file.get();
+
+      if ( ! isxdigit( file.peek() ) )
+        isIllegalIdentifier = true;
+    }
+    else
+      isOct = true;
+  }
+
+  while ( file.good() )
+  {
+    if ( isHex )
+    {
+      if ( ! isxdigit( file.peek() ) )
+        break;
+    }
+    else if ( isOct )
+    {
+      if ( ! ( '0' <= file.peek() && file.peek() < '8' ) )
+        break;
+    }
+    else if ( ! isdigit( file.peek() ) )
+      break;
 
     updatePos( file.peek() );
     text += file.get();
   }
 
-  if ( illegalIdentifier )
+  // support for 1u 1U 1l 1L 1ll 1LL
+  bool isLong = false;
+  bool isUnsigned = false;
+  while ( file.good() && ( isalnum( file.peek() ) || file.peek() == '_' ) )
+  {
+    if ( ! isIllegalIdentifier )
+    {
+      // 1u 1U
+      if ( ! isUnsigned && ( file.peek() == 'u' || file.peek() == 'U' ) )
+      {
+        isUnsigned = true;
+        updatePos( file.peek() );
+        text += file.get();
+        continue;
+      }
+      // 1l 1L 1ll 1LL
+      else if ( ! isLong && ( file.peek() == 'l' || file.peek() == 'L' ) )
+      {
+        isLong = true;
+        char suf = file.peek();
+        updatePos( file.peek() );
+        text += file.get();
+
+        // 1ll 1LL
+        if ( file.peek() == suf )
+        {
+          updatePos( file.peek() );
+          text += file.get();
+        }
+
+        continue;
+      }
+      else
+        isIllegalIdentifier = true;
+    }
+
+    updatePos( file.peek() );
+    text += file.get();
+  }
+
+  if ( isIllegalIdentifier )
   {
     // ILLEGAL Identifier
     return *( new IllegalToken( start, IllegalTokenKind::IDENTIFIER,
