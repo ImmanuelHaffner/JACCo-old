@@ -1,0 +1,14 @@
+0
+xneg.c:1:1 identifier foo
+xneg.c:1:5 punctuator (
+xneg.c:1:6 identifier a
+xneg.c:1:7 punctuator )
+xneg.c:2:6 keyword double
+xneg.c:2:13 identifier a
+xneg.c:2:14 punctuator ;
+xneg.c:3:1 punctuator {
+xneg.c:4:3 keyword return
+xneg.c:4:10 punctuator -
+xneg.c:4:11 identifier a
+xneg.c:4:12 punctuator ;
+xneg.c:5:1 punctuator }

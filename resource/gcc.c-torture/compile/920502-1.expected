@@ -1,0 +1,21 @@
+0
+920502-1.c:1:1 keyword extern
+920502-1.c:1:8 keyword void
+920502-1.c:1:12 punctuator *
+920502-1.c:1:13 identifier t
+920502-1.c:1:14 punctuator [
+920502-1.c:1:15 punctuator ]
+920502-1.c:1:16 punctuator ;
+920502-1.c:1:17 identifier x
+920502-1.c:1:18 punctuator (
+920502-1.c:1:19 identifier i
+920502-1.c:1:20 punctuator )
+920502-1.c:1:21 punctuator {
+920502-1.c:1:22 keyword goto
+920502-1.c:1:26 punctuator *
+920502-1.c:1:27 identifier t
+920502-1.c:1:28 punctuator [
+920502-1.c:1:29 identifier i
+920502-1.c:1:30 punctuator ]
+920502-1.c:1:31 punctuator ;
+920502-1.c:1:32 punctuator }

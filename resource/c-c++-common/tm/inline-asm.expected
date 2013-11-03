@@ -1,0 +1,27 @@
+0
+inline-asm.c:4:1 keyword static
+inline-asm.c:4:8 keyword inline
+inline-asm.c:4:15 keyword void
+inline-asm.c:5:1 identifier inline_death
+inline-asm.c:5:14 punctuator (
+inline-asm.c:5:15 punctuator )
+inline-asm.c:6:1 punctuator {
+inline-asm.c:7:3 identifier __asm__
+inline-asm.c:7:11 punctuator (
+inline-asm.c:7:12 string-literal ""
+inline-asm.c:7:14 punctuator )
+inline-asm.c:7:15 punctuator ;
+inline-asm.c:8:1 punctuator }
+inline-asm.c:10:1 keyword void
+inline-asm.c:11:1 identifier tranfunction
+inline-asm.c:11:14 punctuator (
+inline-asm.c:11:15 punctuator )
+inline-asm.c:12:1 punctuator {
+inline-asm.c:13:3 identifier __transaction_atomic
+inline-asm.c:14:5 punctuator {
+inline-asm.c:15:7 identifier inline_death
+inline-asm.c:15:20 punctuator (
+inline-asm.c:15:21 punctuator )
+inline-asm.c:15:22 punctuator ;
+inline-asm.c:16:5 punctuator }
+inline-asm.c:17:1 punctuator }

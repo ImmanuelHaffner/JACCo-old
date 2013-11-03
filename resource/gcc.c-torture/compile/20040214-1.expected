@@ -1,0 +1,26 @@
+0
+20040214-1.c:1:1 keyword void
+20040214-1.c:1:6 identifier foo
+20040214-1.c:1:9 punctuator (
+20040214-1.c:1:10 keyword void
+20040214-1.c:1:14 punctuator )
+20040214-1.c:2:1 punctuator {
+20040214-1.c:3:3 keyword char
+20040214-1.c:3:8 identifier c
+20040214-1.c:3:9 punctuator ;
+20040214-1.c:5:3 keyword for
+20040214-1.c:5:7 punctuator (
+20040214-1.c:5:8 identifier c
+20040214-1.c:5:10 punctuator =
+20040214-1.c:5:12 punctuator -
+20040214-1.c:5:13 constant 75
+20040214-1.c:5:15 punctuator ;
+20040214-1.c:5:17 identifier c
+20040214-1.c:5:19 punctuator <=
+20040214-1.c:5:22 constant 75
+20040214-1.c:5:24 punctuator ;
+20040214-1.c:5:26 identifier c
+20040214-1.c:5:27 punctuator ++
+20040214-1.c:5:29 punctuator )
+20040214-1.c:6:5 punctuator ;
+20040214-1.c:7:1 punctuator }

@@ -1,0 +1,26 @@
+0
+asmgoto-3.c:4:1 keyword int
+asmgoto-3.c:4:5 identifier foo
+asmgoto-3.c:4:9 punctuator (
+asmgoto-3.c:4:10 punctuator )
+asmgoto-3.c:5:1 punctuator {
+asmgoto-3.c:6:3 identifier asm
+asmgoto-3.c:6:7 keyword goto
+asmgoto-3.c:6:12 punctuator (
+asmgoto-3.c:6:13 string-literal ""
+asmgoto-3.c:6:16 punctuator :
+asmgoto-3.c:6:18 punctuator :
+asmgoto-3.c:6:20 punctuator :
+asmgoto-3.c:6:22 punctuator :
+asmgoto-3.c:6:24 identifier label
+asmgoto-3.c:6:29 punctuator )
+asmgoto-3.c:6:30 punctuator ;
+asmgoto-3.c:7:3 keyword return
+asmgoto-3.c:7:10 constant 1
+asmgoto-3.c:7:11 punctuator ;
+asmgoto-3.c:8:2 identifier label
+asmgoto-3.c:8:7 punctuator :
+asmgoto-3.c:9:3 keyword return
+asmgoto-3.c:9:10 constant 0
+asmgoto-3.c:9:11 punctuator ;
+asmgoto-3.c:10:1 punctuator }

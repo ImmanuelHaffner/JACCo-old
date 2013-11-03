@@ -1,0 +1,17 @@
+0
+pr35468.c:3:1 keyword void
+pr35468.c:4:1 identifier foo
+pr35468.c:4:5 punctuator (
+pr35468.c:4:6 keyword void
+pr35468.c:4:10 punctuator )
+pr35468.c:5:1 punctuator {
+pr35468.c:6:3 punctuator *
+pr35468.c:6:4 punctuator (
+pr35468.c:6:5 keyword char
+pr35468.c:6:10 punctuator *
+pr35468.c:6:11 punctuator )
+pr35468.c:6:13 string-literal "c"
+pr35468.c:6:17 punctuator =
+pr35468.c:6:19 constant 'x'
+pr35468.c:6:22 punctuator ;
+pr35468.c:7:1 punctuator }

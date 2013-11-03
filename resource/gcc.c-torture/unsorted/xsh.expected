@@ -1,0 +1,25 @@
+0
+xsh.c:1:1 identifier foo
+xsh.c:1:5 punctuator (
+xsh.c:1:6 identifier a
+xsh.c:1:7 punctuator ,
+xsh.c:1:9 identifier b
+xsh.c:1:10 punctuator )
+xsh.c:2:1 punctuator {
+xsh.c:3:3 identifier a
+xsh.c:3:5 punctuator =
+xsh.c:3:7 identifier b
+xsh.c:3:9 punctuator +
+xsh.c:3:11 identifier b
+xsh.c:3:12 punctuator ;
+xsh.c:4:3 keyword if
+xsh.c:4:6 punctuator (
+xsh.c:4:7 identifier a
+xsh.c:4:8 punctuator )
+xsh.c:5:5 keyword return
+xsh.c:5:12 identifier a
+xsh.c:5:13 punctuator ;
+xsh.c:6:3 keyword return
+xsh.c:6:10 identifier b
+xsh.c:6:11 punctuator ;
+xsh.c:7:1 punctuator }

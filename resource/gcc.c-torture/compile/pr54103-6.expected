@@ -1,0 +1,17 @@
+0
+pr54103-6.c:1:1 keyword void
+pr54103-6.c:2:1 identifier f
+pr54103-6.c:2:3 punctuator (
+pr54103-6.c:2:4 keyword void
+pr54103-6.c:2:8 punctuator )
+pr54103-6.c:3:1 punctuator {
+pr54103-6.c:4:3 constant 0
+pr54103-6.c:4:5 punctuator ||
+pr54103-6.c:4:8 constant 65536
+pr54103-6.c:4:13 punctuator *
+pr54103-6.c:4:14 constant 65536
+pr54103-6.c:4:20 punctuator ?
+pr54103-6.c:4:22 punctuator :
+pr54103-6.c:4:24 constant 0
+pr54103-6.c:4:25 punctuator ;
+pr54103-6.c:5:1 punctuator }

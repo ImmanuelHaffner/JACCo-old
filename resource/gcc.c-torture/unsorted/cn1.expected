@@ -1,0 +1,10 @@
+0
+cn1.c:1:1 keyword int
+cn1.c:2:1 identifier foo
+cn1.c:2:5 punctuator (
+cn1.c:2:6 punctuator )
+cn1.c:3:1 punctuator {
+cn1.c:4:3 keyword return
+cn1.c:4:10 constant 7561
+cn1.c:4:14 punctuator ;
+cn1.c:5:1 punctuator }

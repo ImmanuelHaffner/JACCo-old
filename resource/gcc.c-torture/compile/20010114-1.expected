@@ -1,0 +1,19 @@
+0
+20010114-1.c:4:1 keyword typedef
+20010114-1.c:4:9 keyword int
+20010114-1.c:4:13 identifier x
+20010114-1.c:4:14 punctuator ;
+20010114-1.c:5:1 keyword void
+20010114-1.c:5:6 identifier proc
+20010114-1.c:5:10 punctuator (
+20010114-1.c:5:11 keyword int
+20010114-1.c:5:15 punctuator (
+20010114-1.c:5:16 punctuator *
+20010114-1.c:5:17 identifier x
+20010114-1.c:5:18 punctuator )
+20010114-1.c:5:19 punctuator (
+20010114-1.c:5:20 keyword void
+20010114-1.c:5:24 punctuator )
+20010114-1.c:5:25 punctuator )
+20010114-1.c:5:27 punctuator {
+20010114-1.c:5:28 punctuator }

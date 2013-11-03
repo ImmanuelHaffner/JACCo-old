@@ -1,0 +1,19 @@
+0
+lop.c:1:1 identifier lop
+lop.c:1:5 punctuator (
+lop.c:1:6 identifier a
+lop.c:1:7 punctuator )
+lop.c:2:1 punctuator {
+lop.c:3:3 keyword do
+lop.c:4:5 identifier a
+lop.c:4:6 punctuator --
+lop.c:4:8 punctuator ;
+lop.c:5:3 keyword while
+lop.c:5:9 punctuator (
+lop.c:5:10 identifier a
+lop.c:5:12 punctuator >=
+lop.c:5:15 punctuator -
+lop.c:5:16 constant 1
+lop.c:5:17 punctuator )
+lop.c:5:18 punctuator ;
+lop.c:6:1 punctuator }

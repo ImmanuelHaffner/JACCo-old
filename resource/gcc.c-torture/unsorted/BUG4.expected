@@ -1,0 +1,23 @@
+0
+BUG4.c:1:1 keyword int
+BUG4.c:1:5 identifier foo
+BUG4.c:1:8 punctuator (
+BUG4.c:1:9 punctuator )
+BUG4.c:2:1 punctuator {
+BUG4.c:3:2 keyword char
+BUG4.c:3:7 identifier c
+BUG4.c:3:8 punctuator ;
+BUG4.c:5:3 keyword return
+BUG4.c:5:10 punctuator (
+BUG4.c:5:11 identifier c
+BUG4.c:5:13 punctuator ^
+BUG4.c:5:15 constant 30
+BUG4.c:5:18 punctuator )
+BUG4.c:5:20 punctuator >
+BUG4.c:5:22 punctuator (
+BUG4.c:5:23 identifier c
+BUG4.c:5:25 punctuator ^
+BUG4.c:5:27 constant 40
+BUG4.c:5:30 punctuator )
+BUG4.c:5:31 punctuator ;
+BUG4.c:6:1 punctuator }

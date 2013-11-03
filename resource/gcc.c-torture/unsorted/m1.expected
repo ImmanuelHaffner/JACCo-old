@@ -1,0 +1,16 @@
+0
+m1.c:1:1 identifier foo
+m1.c:1:5 punctuator (
+m1.c:1:6 identifier p
+m1.c:1:7 punctuator )
+m1.c:2:6 keyword int
+m1.c:2:10 punctuator *
+m1.c:2:11 identifier p
+m1.c:2:12 punctuator ;
+m1.c:3:1 punctuator {
+m1.c:4:3 punctuator *
+m1.c:4:4 identifier p
+m1.c:4:6 punctuator =
+m1.c:4:8 constant 1234
+m1.c:4:12 punctuator ;
+m1.c:5:1 punctuator }

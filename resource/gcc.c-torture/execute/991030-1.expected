@@ -1,0 +1,27 @@
+0
+991030-1.c:1:1 keyword double
+991030-1.c:1:8 identifier x
+991030-1.c:1:10 punctuator =
+991030-1.c:1:12 constant 0x1.fp1
+991030-1.c:1:19 punctuator ;
+991030-1.c:2:1 keyword int
+991030-1.c:2:5 identifier main
+991030-1.c:2:9 punctuator (
+991030-1.c:2:10 punctuator )
+991030-1.c:3:1 punctuator {
+991030-1.c:4:3 keyword if
+991030-1.c:4:6 punctuator (
+991030-1.c:4:7 identifier x
+991030-1.c:4:9 punctuator !=
+991030-1.c:4:12 constant 3.875
+991030-1.c:4:17 punctuator )
+991030-1.c:5:5 identifier abort
+991030-1.c:5:11 punctuator (
+991030-1.c:5:12 punctuator )
+991030-1.c:5:13 punctuator ;
+991030-1.c:6:3 identifier exit
+991030-1.c:6:8 punctuator (
+991030-1.c:6:9 constant 0
+991030-1.c:6:10 punctuator )
+991030-1.c:6:11 punctuator ;
+991030-1.c:7:1 punctuator }

@@ -1,0 +1,25 @@
+0
+trxn-expr-3.c:4:1 keyword int
+trxn-expr-3.c:4:5 identifier global
+trxn-expr-3.c:4:11 punctuator ;
+trxn-expr-3.c:6:1 keyword int
+trxn-expr-3.c:6:5 identifier f2
+trxn-expr-3.c:6:7 punctuator (
+trxn-expr-3.c:6:8 punctuator )
+trxn-expr-3.c:7:1 punctuator {
+trxn-expr-3.c:8:3 keyword return
+trxn-expr-3.c:8:10 identifier __transaction_atomic
+trxn-expr-3.c:8:31 punctuator (
+trxn-expr-3.c:8:32 identifier global
+trxn-expr-3.c:8:39 punctuator +
+trxn-expr-3.c:8:41 constant 3
+trxn-expr-3.c:8:42 punctuator )
+trxn-expr-3.c:9:10 punctuator +
+trxn-expr-3.c:9:12 identifier __transaction_atomic
+trxn-expr-3.c:9:33 punctuator (
+trxn-expr-3.c:9:34 identifier global
+trxn-expr-3.c:9:41 punctuator +
+trxn-expr-3.c:9:43 constant 4
+trxn-expr-3.c:9:44 punctuator )
+trxn-expr-3.c:9:45 punctuator ;
+trxn-expr-3.c:10:1 punctuator }

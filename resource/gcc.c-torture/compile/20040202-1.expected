@@ -1,0 +1,23 @@
+0
+20040202-1.c:4:1 keyword void
+20040202-1.c:4:6 punctuator *
+20040202-1.c:4:7 identifier foo
+20040202-1.c:4:11 punctuator (
+20040202-1.c:4:12 keyword void
+20040202-1.c:4:17 punctuator *
+20040202-1.c:4:18 identifier c
+20040202-1.c:4:19 punctuator )
+20040202-1.c:5:1 punctuator {
+20040202-1.c:6:3 keyword void
+20040202-1.c:6:8 punctuator *
+20040202-1.c:6:9 identifier a
+20040202-1.c:6:11 punctuator =
+20040202-1.c:6:13 identifier __builtin_extract_return_addr
+20040202-1.c:6:43 punctuator (
+20040202-1.c:6:44 identifier c
+20040202-1.c:6:45 punctuator )
+20040202-1.c:6:46 punctuator ;
+20040202-1.c:7:3 keyword return
+20040202-1.c:7:10 identifier a
+20040202-1.c:7:11 punctuator ;
+20040202-1.c:8:1 punctuator }

@@ -1,0 +1,17 @@
+0
+atomic-1.c:3:1 keyword int
+atomic-1.c:3:5 identifier g
+atomic-1.c:3:6 punctuator ;
+atomic-1.c:4:1 keyword void
+atomic-1.c:4:6 identifier f
+atomic-1.c:4:7 punctuator (
+atomic-1.c:4:8 keyword void
+atomic-1.c:4:12 punctuator )
+atomic-1.c:5:1 punctuator {
+atomic-1.c:6:3 identifier __transaction_atomic
+atomic-1.c:6:24 punctuator {
+atomic-1.c:7:5 identifier g
+atomic-1.c:7:6 punctuator ++
+atomic-1.c:7:8 punctuator ;
+atomic-1.c:8:3 punctuator }
+atomic-1.c:9:1 punctuator }

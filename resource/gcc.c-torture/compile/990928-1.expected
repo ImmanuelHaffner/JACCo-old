@@ -1,0 +1,27 @@
+0
+990928-1.c:4:1 keyword inline
+990928-1.c:4:8 keyword int
+990928-1.c:4:12 identifier foo
+990928-1.c:4:16 punctuator (
+990928-1.c:4:17 keyword void
+990928-1.c:4:21 punctuator )
+990928-1.c:5:1 punctuator {
+990928-1.c:6:4 keyword struct
+990928-1.c:6:11 identifier imcomplete1
+990928-1.c:6:23 punctuator *
+990928-1.c:6:25 identifier ptr1
+990928-1.c:6:29 punctuator ;
+990928-1.c:7:4 keyword union
+990928-1.c:7:10 identifier incomplete2
+990928-1.c:7:22 punctuator *
+990928-1.c:7:24 identifier ptr2
+990928-1.c:7:28 punctuator ;
+990928-1.c:8:4 keyword enum
+990928-1.c:8:9 identifier incomplete3
+990928-1.c:8:21 punctuator *
+990928-1.c:8:23 identifier ptr3
+990928-1.c:8:27 punctuator ;
+990928-1.c:9:4 keyword return
+990928-1.c:9:11 constant 1
+990928-1.c:9:12 punctuator ;
+990928-1.c:10:1 punctuator }

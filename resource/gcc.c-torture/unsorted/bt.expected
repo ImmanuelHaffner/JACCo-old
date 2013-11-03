@@ -1,0 +1,20 @@
+0
+bt.c:1:1 identifier main
+bt.c:1:6 punctuator (
+bt.c:1:7 punctuator )
+bt.c:2:1 punctuator {
+bt.c:3:3 keyword int
+bt.c:3:7 identifier i
+bt.c:3:8 punctuator ;
+bt.c:5:3 keyword for
+bt.c:5:7 punctuator (
+bt.c:5:8 identifier i
+bt.c:5:10 punctuator =
+bt.c:5:12 constant 1000000
+bt.c:5:19 punctuator ;
+bt.c:5:21 punctuator --
+bt.c:5:23 identifier i
+bt.c:5:24 punctuator ;
+bt.c:5:25 punctuator )
+bt.c:6:5 punctuator ;
+bt.c:7:1 punctuator }

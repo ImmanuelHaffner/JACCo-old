@@ -1,0 +1,21 @@
+0
+add.c:1:1 identifier foo
+add.c:1:5 punctuator (
+add.c:1:6 identifier a
+add.c:1:7 punctuator ,
+add.c:1:9 identifier b
+add.c:1:10 punctuator ,
+add.c:1:12 identifier p
+add.c:1:13 punctuator )
+add.c:2:6 keyword int
+add.c:2:10 punctuator *
+add.c:2:11 identifier p
+add.c:2:12 punctuator ;
+add.c:3:1 punctuator {
+add.c:4:3 keyword return
+add.c:4:10 constant 34
+add.c:4:13 punctuator +
+add.c:4:15 punctuator *
+add.c:4:16 identifier p
+add.c:4:17 punctuator ;
+add.c:5:1 punctuator }

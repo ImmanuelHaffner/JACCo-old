@@ -1,0 +1,20 @@
+0
+raw-string-8.c:6:1 keyword const
+raw-string-8.c:6:7 keyword char
+raw-string-8.c:6:12 identifier a
+raw-string-8.c:6:13 punctuator [
+raw-string-8.c:6:14 punctuator ]
+raw-string-8.c:6:16 punctuator =
+raw-string-8.c:6:18 identifier R
+raw-string-8.c:6:19: warning: missing terminating " character [enabled by default]
+ const char a[] = R"(
+                   ^
+raw-string-8.c:6:19 unknown "(
+raw-string-8.c:8:1 punctuator )
+raw-string-8.c:8:2: warning: missing terminating " character [enabled by default]
+ )";
+  ^
+raw-string-8.c:8:2 unknown ";
+raw-string-8.c:10:1 identifier T
+raw-string-8.c:10:3 identifier t
+raw-string-8.c:10:4 punctuator ;

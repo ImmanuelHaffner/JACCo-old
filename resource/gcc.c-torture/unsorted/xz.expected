@@ -1,0 +1,19 @@
+0
+xz.c:1:1 identifier foo
+xz.c:1:5 punctuator (
+xz.c:1:6 keyword int
+xz.c:1:10 punctuator *
+xz.c:1:11 identifier p
+xz.c:1:12 punctuator )
+xz.c:2:1 punctuator {
+xz.c:3:3 punctuator *
+xz.c:3:4 identifier p
+xz.c:3:6 punctuator =
+xz.c:3:8 punctuator (
+xz.c:3:9 keyword unsigned
+xz.c:3:18 keyword short
+xz.c:3:23 punctuator )
+xz.c:3:25 punctuator *
+xz.c:3:26 identifier p
+xz.c:3:27 punctuator ;
+xz.c:4:1 punctuator }

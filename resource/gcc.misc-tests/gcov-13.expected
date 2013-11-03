@@ -1,0 +1,27 @@
+0
+gcov-13.c:1:1 keyword int
+gcov-13.c:1:5 identifier __attribute__
+gcov-13.c:1:19 punctuator (
+gcov-13.c:1:20 punctuator (
+gcov-13.c:1:21 identifier weak
+gcov-13.c:1:25 punctuator )
+gcov-13.c:1:26 punctuator )
+gcov-13.c:1:28 identifier weak
+gcov-13.c:1:33 punctuator (
+gcov-13.c:1:34 punctuator )
+gcov-13.c:2:1 punctuator {
+gcov-13.c:3:3 keyword return
+gcov-13.c:3:10 constant 1
+gcov-13.c:3:11 punctuator ;
+gcov-13.c:4:1 punctuator }
+gcov-13.c:6:1 keyword int
+gcov-13.c:6:5 identifier main
+gcov-13.c:6:10 punctuator (
+gcov-13.c:6:11 punctuator )
+gcov-13.c:7:1 punctuator {
+gcov-13.c:8:3 keyword return
+gcov-13.c:8:10 identifier weak
+gcov-13.c:8:15 punctuator (
+gcov-13.c:8:16 punctuator )
+gcov-13.c:8:17 punctuator ;
+gcov-13.c:9:1 punctuator }

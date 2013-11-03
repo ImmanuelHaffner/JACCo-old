@@ -1,0 +1,22 @@
+0
+20040901-1.c:1:1 keyword typedef
+20040901-1.c:1:9 keyword enum
+20040901-1.c:1:14 punctuator {
+20040901-1.c:1:15 identifier a
+20040901-1.c:1:16 punctuator ,
+20040901-1.c:1:18 identifier b
+20040901-1.c:1:19 punctuator }
+20040901-1.c:1:21 identifier __attribute__
+20040901-1.c:1:34 punctuator (
+20040901-1.c:1:35 punctuator (
+20040901-1.c:1:36 identifier __mode__
+20040901-1.c:1:44 punctuator (
+20040901-1.c:1:45 identifier __QI__
+20040901-1.c:1:51 punctuator )
+20040901-1.c:1:52 punctuator )
+20040901-1.c:1:53 punctuator )
+20040901-1.c:1:55 identifier x
+20040901-1.c:1:56 punctuator ;
+20040901-1.c:2:1 identifier x
+20040901-1.c:2:3 identifier foo
+20040901-1.c:2:6 punctuator ;

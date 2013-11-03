@@ -1,0 +1,19 @@
+0
+dic.c:1:1 keyword unsigned
+dic.c:1:10 keyword long
+dic.c:1:15 keyword long
+dic.c:2:1 identifier main
+dic.c:2:6 punctuator (
+dic.c:2:7 punctuator )
+dic.c:3:1 punctuator {
+dic.c:4:3 keyword return
+dic.c:4:10 punctuator (
+dic.c:4:11 keyword unsigned
+dic.c:4:20 keyword long
+dic.c:4:25 keyword long
+dic.c:4:29 punctuator )
+dic.c:4:31 constant 7816234
+dic.c:4:39 punctuator <<
+dic.c:4:42 constant 671111
+dic.c:4:48 punctuator ;
+dic.c:5:1 punctuator }

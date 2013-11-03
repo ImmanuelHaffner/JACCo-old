@@ -1,0 +1,17 @@
+0
+uninit-F.c:5:1 keyword int
+uninit-F.c:5:5 identifier f
+uninit-F.c:5:6 punctuator (
+uninit-F.c:5:7 punctuator )
+uninit-F.c:6:1 punctuator {
+uninit-F.c:7:3 keyword int
+uninit-F.c:7:7 identifier i
+uninit-F.c:7:9 punctuator =
+uninit-F.c:7:11 identifier i
+uninit-F.c:7:13 punctuator +
+uninit-F.c:7:15 constant 1
+uninit-F.c:7:16 punctuator ;
+uninit-F.c:8:3 keyword return
+uninit-F.c:8:10 identifier i
+uninit-F.c:8:11 punctuator ;
+uninit-F.c:9:1 punctuator }

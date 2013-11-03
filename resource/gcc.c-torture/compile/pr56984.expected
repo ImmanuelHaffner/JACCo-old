@@ -1,0 +1,26 @@
+0
+pr56984.c:3:1 keyword int
+pr56984.c:4:1 identifier foo
+pr56984.c:4:5 punctuator (
+pr56984.c:4:6 keyword int
+pr56984.c:4:10 identifier x
+pr56984.c:4:11 punctuator )
+pr56984.c:5:1 punctuator {
+pr56984.c:6:3 keyword if
+pr56984.c:6:6 punctuator (
+pr56984.c:6:7 punctuator (
+pr56984.c:6:8 identifier x
+pr56984.c:6:10 punctuator >>
+pr56984.c:6:13 constant 31
+pr56984.c:6:15 punctuator )
+pr56984.c:6:17 punctuator <
+pr56984.c:6:19 punctuator -
+pr56984.c:6:20 constant 1
+pr56984.c:6:21 punctuator )
+pr56984.c:7:5 identifier x
+pr56984.c:7:6 punctuator ++
+pr56984.c:7:8 punctuator ;
+pr56984.c:8:3 keyword return
+pr56984.c:8:10 identifier x
+pr56984.c:8:11 punctuator ;
+pr56984.c:9:1 punctuator }

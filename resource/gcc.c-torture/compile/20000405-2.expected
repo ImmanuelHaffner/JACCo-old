@@ -1,0 +1,24 @@
+0
+20000405-2.c:1:1 keyword extern
+20000405-2.c:1:8 keyword void
+20000405-2.c:1:13 identifier foo
+20000405-2.c:1:17 punctuator (
+20000405-2.c:1:18 keyword int
+20000405-2.c:1:21 punctuator )
+20000405-2.c:1:22 punctuator ;
+20000405-2.c:3:1 keyword void
+20000405-2.c:3:6 identifier bar
+20000405-2.c:3:10 punctuator (
+20000405-2.c:3:11 keyword unsigned
+20000405-2.c:3:20 keyword long
+20000405-2.c:3:25 identifier l
+20000405-2.c:3:26 punctuator )
+20000405-2.c:4:1 punctuator {
+20000405-2.c:5:3 identifier foo
+20000405-2.c:5:6 punctuator (
+20000405-2.c:5:7 identifier l
+20000405-2.c:5:9 punctuator ==
+20000405-2.c:5:12 constant 0
+20000405-2.c:5:13 punctuator )
+20000405-2.c:5:14 punctuator ;
+20000405-2.c:6:1 punctuator }

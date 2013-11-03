@@ -1,0 +1,25 @@
+0
+bb1.c:1:1 identifier foo
+bb1.c:1:5 punctuator (
+bb1.c:1:6 identifier a
+bb1.c:1:7 punctuator )
+bb1.c:2:1 punctuator {
+bb1.c:3:3 keyword int
+bb1.c:3:7 identifier b
+bb1.c:3:9 punctuator =
+bb1.c:3:11 constant 32
+bb1.c:3:13 punctuator ;
+bb1.c:4:3 keyword if
+bb1.c:4:6 punctuator (
+bb1.c:4:7 identifier b
+bb1.c:4:9 punctuator &
+bb1.c:4:11 identifier a
+bb1.c:4:12 punctuator )
+bb1.c:5:5 keyword return
+bb1.c:5:12 constant 1
+bb1.c:5:13 punctuator ;
+bb1.c:6:3 keyword else
+bb1.c:7:5 keyword return
+bb1.c:7:12 constant 0
+bb1.c:7:13 punctuator ;
+bb1.c:8:1 punctuator }

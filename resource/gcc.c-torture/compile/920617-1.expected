@@ -1,0 +1,21 @@
+0
+920617-1.c:1:1 identifier f
+920617-1.c:1:2 punctuator (
+920617-1.c:1:3 punctuator )
+920617-1.c:1:4 punctuator {
+920617-1.c:1:5 keyword double
+920617-1.c:1:11 punctuator *
+920617-1.c:1:12 identifier xp
+920617-1.c:1:14 punctuator ,
+920617-1.c:1:15 identifier y
+920617-1.c:1:16 punctuator ;
+920617-1.c:1:17 punctuator *
+920617-1.c:1:18 identifier xp
+920617-1.c:1:20 punctuator ++
+920617-1.c:1:22 punctuator =
+920617-1.c:1:23 identifier sqrt
+920617-1.c:1:27 punctuator (
+920617-1.c:1:28 identifier y
+920617-1.c:1:29 punctuator )
+920617-1.c:1:30 punctuator ;
+920617-1.c:1:31 punctuator }

@@ -1,0 +1,24 @@
+0
+951220-1.c:1:1 identifier f
+951220-1.c:1:3 punctuator (
+951220-1.c:1:4 keyword char
+951220-1.c:1:9 punctuator *
+951220-1.c:1:10 identifier x
+951220-1.c:1:11 punctuator )
+951220-1.c:2:1 punctuator {
+951220-1.c:3:3 keyword return
+951220-1.c:3:10 punctuator (
+951220-1.c:3:11 punctuator *
+951220-1.c:3:12 identifier x
+951220-1.c:3:14 punctuator &
+951220-1.c:3:16 constant 2
+951220-1.c:3:17 punctuator )
+951220-1.c:3:19 punctuator ||
+951220-1.c:3:22 punctuator (
+951220-1.c:3:23 punctuator *
+951220-1.c:3:24 identifier x
+951220-1.c:3:26 punctuator &
+951220-1.c:3:28 constant 3
+951220-1.c:3:29 punctuator )
+951220-1.c:3:30 punctuator ;
+951220-1.c:4:1 punctuator }

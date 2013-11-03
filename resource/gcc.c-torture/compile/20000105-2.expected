@@ -1,0 +1,16 @@
+0
+20000105-2.c:1:1 identifier foo
+20000105-2.c:1:5 punctuator (
+20000105-2.c:1:6 punctuator )
+20000105-2.c:2:1 punctuator {
+20000105-2.c:3:3 keyword long
+20000105-2.c:3:8 keyword long
+20000105-2.c:3:13 keyword int
+20000105-2.c:3:17 identifier i
+20000105-2.c:3:19 punctuator =
+20000105-2.c:3:21 punctuator (
+20000105-2.c:3:22 keyword int
+20000105-2.c:3:25 punctuator )
+20000105-2.c:3:27 string-literal ""
+20000105-2.c:3:29 punctuator ;
+20000105-2.c:4:1 punctuator }

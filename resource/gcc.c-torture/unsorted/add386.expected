@@ -1,0 +1,12 @@
+0
+add386.c:1:1 identifier main
+add386.c:1:6 punctuator (
+add386.c:1:7 identifier a
+add386.c:1:8 punctuator )
+add386.c:2:1 punctuator {
+add386.c:3:3 keyword return
+add386.c:3:10 identifier a
+add386.c:3:12 punctuator +
+add386.c:3:14 constant 128
+add386.c:3:17 punctuator ;
+add386.c:4:1 punctuator }

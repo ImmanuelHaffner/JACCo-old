@@ -1,0 +1,23 @@
+0
+20011114-1.c:1:1 keyword extern
+20011114-1.c:1:8 keyword void
+20011114-1.c:1:13 identifier _text
+20011114-1.c:1:18 punctuator ;
+20011114-1.c:2:1 keyword static
+20011114-1.c:2:8 keyword long
+20011114-1.c:2:13 keyword unsigned
+20011114-1.c:2:22 keyword int
+20011114-1.c:2:26 identifier x
+20011114-1.c:2:28 punctuator =
+20011114-1.c:2:30 punctuator (
+20011114-1.c:2:31 keyword long
+20011114-1.c:2:36 keyword unsigned
+20011114-1.c:2:45 keyword int
+20011114-1.c:2:48 punctuator )
+20011114-1.c:2:50 punctuator &
+20011114-1.c:2:51 identifier _text
+20011114-1.c:2:57 punctuator -
+20011114-1.c:2:59 constant 0x10000000L
+20011114-1.c:2:71 punctuator -
+20011114-1.c:2:73 constant 1
+20011114-1.c:2:74 punctuator ;

@@ -1,0 +1,19 @@
+0
+Wint-to-pointer-cast-2.c:6:1 keyword char
+Wint-to-pointer-cast-2.c:6:6 identifier c
+Wint-to-pointer-cast-2.c:6:7 punctuator ;
+Wint-to-pointer-cast-2.c:8:1 keyword void
+Wint-to-pointer-cast-2.c:8:6 punctuator *
+Wint-to-pointer-cast-2.c:9:1 identifier f
+Wint-to-pointer-cast-2.c:9:3 punctuator (
+Wint-to-pointer-cast-2.c:9:4 keyword void
+Wint-to-pointer-cast-2.c:9:8 punctuator )
+Wint-to-pointer-cast-2.c:10:1 punctuator {
+Wint-to-pointer-cast-2.c:11:3 keyword return
+Wint-to-pointer-cast-2.c:11:10 punctuator (
+Wint-to-pointer-cast-2.c:11:11 keyword void
+Wint-to-pointer-cast-2.c:11:16 punctuator *
+Wint-to-pointer-cast-2.c:11:17 punctuator )
+Wint-to-pointer-cast-2.c:11:19 identifier c
+Wint-to-pointer-cast-2.c:11:20 punctuator ;
+Wint-to-pointer-cast-2.c:12:1 punctuator }

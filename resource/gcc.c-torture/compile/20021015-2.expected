@@ -1,0 +1,27 @@
+0
+20021015-2.c:3:1 keyword int
+20021015-2.c:3:5 identifier f
+20021015-2.c:3:7 punctuator (
+20021015-2.c:3:8 keyword char
+20021015-2.c:3:13 punctuator *
+20021015-2.c:3:14 identifier p
+20021015-2.c:3:15 punctuator ,
+20021015-2.c:3:17 keyword char
+20021015-2.c:3:22 punctuator *
+20021015-2.c:3:23 identifier q
+20021015-2.c:3:24 punctuator ,
+20021015-2.c:3:26 keyword int
+20021015-2.c:3:30 identifier i
+20021015-2.c:3:31 punctuator )
+20021015-2.c:4:1 punctuator {
+20021015-2.c:5:3 keyword return
+20021015-2.c:5:10 identifier bcmp
+20021015-2.c:5:15 punctuator (
+20021015-2.c:5:16 identifier p
+20021015-2.c:5:17 punctuator ,
+20021015-2.c:5:19 identifier q
+20021015-2.c:5:20 punctuator ,
+20021015-2.c:5:22 identifier i
+20021015-2.c:5:23 punctuator )
+20021015-2.c:5:24 punctuator ;
+20021015-2.c:6:1 punctuator }

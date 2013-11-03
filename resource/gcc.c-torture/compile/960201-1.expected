@@ -1,0 +1,21 @@
+0
+960201-1.c:1:1 keyword union
+960201-1.c:1:7 identifier foo
+960201-1.c:2:1 punctuator {
+960201-1.c:3:3 keyword char
+960201-1.c:3:8 identifier a
+960201-1.c:3:9 punctuator ;
+960201-1.c:4:3 keyword int
+960201-1.c:4:7 identifier x
+960201-1.c:4:8 punctuator [
+960201-1.c:4:9 constant 2
+960201-1.c:4:10 punctuator ]
+960201-1.c:4:11 punctuator ;
+960201-1.c:5:1 punctuator }
+960201-1.c:5:3 identifier __attribute__
+960201-1.c:5:17 punctuator (
+960201-1.c:5:18 punctuator (
+960201-1.c:5:19 identifier transparent_union
+960201-1.c:5:36 punctuator )
+960201-1.c:5:37 punctuator )
+960201-1.c:5:38 punctuator ;

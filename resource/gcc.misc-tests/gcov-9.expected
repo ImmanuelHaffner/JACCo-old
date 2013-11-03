@@ -1,0 +1,24 @@
+0
+gcov-9.c:6:1 keyword int
+gcov-9.c:6:5 identifier main
+gcov-9.c:6:10 punctuator (
+gcov-9.c:6:11 punctuator )
+gcov-9.c:7:1 punctuator {
+gcov-9.c:8:3 keyword unsigned
+gcov-9.c:8:12 identifier ix
+gcov-9.c:8:14 punctuator ;
+gcov-9.c:10:3 keyword for
+gcov-9.c:10:7 punctuator (
+gcov-9.c:10:8 identifier ix
+gcov-9.c:10:11 punctuator =
+gcov-9.c:10:13 constant 10
+gcov-9.c:10:15 punctuator ;
+gcov-9.c:10:17 identifier ix
+gcov-9.c:10:19 punctuator --
+gcov-9.c:10:21 punctuator ;
+gcov-9.c:10:22 punctuator )
+gcov-9.c:10:23 punctuator ;
+gcov-9.c:12:3 keyword return
+gcov-9.c:12:10 constant 0
+gcov-9.c:12:11 punctuator ;
+gcov-9.c:13:1 punctuator }

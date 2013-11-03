@@ -1,0 +1,27 @@
+0
+20031102-1.c:5:1 keyword int
+20031102-1.c:5:5 identifier foo
+20031102-1.c:5:8 punctuator (
+20031102-1.c:5:9 keyword int
+20031102-1.c:5:13 identifier t
+20031102-1.c:5:14 punctuator )
+20031102-1.c:6:1 punctuator {
+20031102-1.c:7:3 keyword int
+20031102-1.c:7:7 identifier result
+20031102-1.c:7:14 punctuator =
+20031102-1.c:7:16 constant 0
+20031102-1.c:7:17 punctuator ;
+20031102-1.c:8:3 keyword if
+20031102-1.c:8:6 punctuator (
+20031102-1.c:8:7 identifier t
+20031102-1.c:8:9 punctuator !=
+20031102-1.c:8:12 constant 0
+20031102-1.c:8:13 punctuator )
+20031102-1.c:9:5 identifier result
+20031102-1.c:9:12 punctuator =
+20031102-1.c:9:14 identifier t
+20031102-1.c:9:15 punctuator ;
+20031102-1.c:10:3 keyword return
+20031102-1.c:10:10 identifier result
+20031102-1.c:10:16 punctuator ;
+20031102-1.c:11:1 punctuator }

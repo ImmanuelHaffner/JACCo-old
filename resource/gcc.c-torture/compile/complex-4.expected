@@ -1,0 +1,20 @@
+0
+complex-4.c:5:1 keyword void
+complex-4.c:5:6 identifier f
+complex-4.c:5:7 punctuator (
+complex-4.c:5:8 keyword void
+complex-4.c:5:12 punctuator )
+complex-4.c:6:1 punctuator {
+complex-4.c:7:3 keyword double
+complex-4.c:7:10 identifier _Complex
+complex-4.c:7:19 identifier Res
+complex-4.c:7:22 punctuator ;
+complex-4.c:8:3 identifier __real__
+complex-4.c:8:12 identifier Res
+complex-4.c:8:16 punctuator =
+complex-4.c:8:18 identifier __imag__
+complex-4.c:8:27 identifier Res
+complex-4.c:8:31 punctuator =
+complex-4.c:8:33 constant 0.0
+complex-4.c:8:36 punctuator ;
+complex-4.c:9:1 punctuator }

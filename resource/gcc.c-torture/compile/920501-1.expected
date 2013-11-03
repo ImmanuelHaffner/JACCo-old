@@ -1,0 +1,21 @@
+0
+920501-1.c:2:1 identifier a
+920501-1.c:2:2 punctuator (
+920501-1.c:2:3 punctuator )
+920501-1.c:2:4 punctuator {
+920501-1.c:2:5 keyword int
+920501-1.c:2:8 punctuator *
+920501-1.c:2:9 punctuator *
+920501-1.c:2:10 identifier b
+920501-1.c:2:11 punctuator [
+920501-1.c:2:12 punctuator ]
+920501-1.c:2:13 punctuator =
+920501-1.c:2:14 punctuator {
+920501-1.c:2:15 punctuator &&
+920501-1.c:2:17 identifier c
+920501-1.c:2:18 punctuator }
+920501-1.c:2:19 punctuator ;
+920501-1.c:2:20 identifier c
+920501-1.c:2:21 punctuator :
+920501-1.c:2:22 punctuator ;
+920501-1.c:2:23 punctuator }

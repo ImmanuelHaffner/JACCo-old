@@ -1,0 +1,26 @@
+0
+ll1.c:1:1 keyword long
+ll1.c:1:6 keyword long
+ll1.c:2:1 identifier foo
+ll1.c:2:5 punctuator (
+ll1.c:2:6 keyword long
+ll1.c:2:11 keyword long
+ll1.c:2:16 identifier a
+ll1.c:2:17 punctuator )
+ll1.c:3:1 punctuator {
+ll1.c:4:3 keyword return
+ll1.c:4:10 identifier a
+ll1.c:4:12 punctuator +
+ll1.c:4:14 punctuator (
+ll1.c:4:15 punctuator (
+ll1.c:4:16 keyword long
+ll1.c:4:21 keyword long
+ll1.c:4:25 punctuator )
+ll1.c:4:27 constant 10230101
+ll1.c:4:36 punctuator <<
+ll1.c:4:39 constant 32
+ll1.c:4:41 punctuator )
+ll1.c:4:43 punctuator +
+ll1.c:4:45 constant 7561
+ll1.c:4:49 punctuator ;
+ll1.c:5:1 punctuator }

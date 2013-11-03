@@ -1,0 +1,20 @@
+0
+20020106-1.c:3:1 keyword int
+20020106-1.c:4:1 identifier foo
+20020106-1.c:4:5 punctuator (
+20020106-1.c:4:6 punctuator )
+20020106-1.c:5:1 punctuator {
+20020106-1.c:6:3 keyword extern
+20020106-1.c:6:10 keyword long
+20020106-1.c:6:15 keyword long
+20020106-1.c:6:20 identifier Y
+20020106-1.c:6:21 punctuator ;
+20020106-1.c:7:3 keyword return
+20020106-1.c:7:10 punctuator (
+20020106-1.c:7:11 constant 0
+20020106-1.c:7:13 punctuator >
+20020106-1.c:7:15 identifier Y
+20020106-1.c:7:16 punctuator ++
+20020106-1.c:7:18 punctuator )
+20020106-1.c:7:19 punctuator ;
+20020106-1.c:8:1 punctuator }

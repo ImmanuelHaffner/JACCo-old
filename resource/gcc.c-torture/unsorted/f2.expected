@@ -1,0 +1,19 @@
+0
+f2.c:1:1 identifier foo
+f2.c:1:5 punctuator (
+f2.c:1:6 keyword double
+f2.c:1:13 punctuator *
+f2.c:1:14 identifier p
+f2.c:1:15 punctuator )
+f2.c:2:1 punctuator {
+f2.c:3:3 identifier p
+f2.c:3:4 punctuator [
+f2.c:3:5 constant 0
+f2.c:3:6 punctuator ]
+f2.c:3:8 punctuator =
+f2.c:3:10 identifier p
+f2.c:3:11 punctuator [
+f2.c:3:12 constant 1
+f2.c:3:13 punctuator ]
+f2.c:3:14 punctuator ;
+f2.c:4:1 punctuator }

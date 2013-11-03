@@ -1,0 +1,27 @@
+0
+storecc.c:1:1 identifier foo
+storecc.c:1:5 punctuator (
+storecc.c:1:6 keyword char
+storecc.c:1:11 punctuator *
+storecc.c:1:12 identifier p
+storecc.c:1:13 punctuator ,
+storecc.c:1:15 keyword int
+storecc.c:1:19 identifier a
+storecc.c:1:20 punctuator )
+storecc.c:2:1 punctuator {
+storecc.c:3:3 punctuator *
+storecc.c:3:4 identifier p
+storecc.c:3:6 punctuator =
+storecc.c:3:8 identifier a
+storecc.c:3:9 punctuator ;
+storecc.c:4:3 keyword if
+storecc.c:4:6 punctuator (
+storecc.c:4:7 punctuator (
+storecc.c:4:8 keyword char
+storecc.c:4:12 punctuator )
+storecc.c:4:14 identifier a
+storecc.c:4:15 punctuator )
+storecc.c:5:5 keyword return
+storecc.c:5:12 constant 1
+storecc.c:5:13 punctuator ;
+storecc.c:6:1 punctuator }

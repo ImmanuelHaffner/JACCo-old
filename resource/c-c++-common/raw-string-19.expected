@@ -1,0 +1,39 @@
+0
+raw-string-19.c:6:1 keyword const
+raw-string-19.c:6:7 keyword char
+raw-string-19.c:6:12 identifier x
+raw-string-19.c:6:13 punctuator [
+raw-string-19.c:6:14 punctuator ]
+raw-string-19.c:6:16 punctuator =
+raw-string-19.c:6:18 identifier R
+raw-string-19.c:6:19: warning: missing terminating " character [enabled by default]
+ const char x[] = R"(
+                   ^
+raw-string-19.c:6:19 unknown "(
+raw-string-19.c:7:1 identifier abc
+raw-string-19.c:8:1 identifier def
+raw-string-19.c:9:1 identifier ghi
+raw-string-19.c:10:1 punctuator )
+raw-string-19.c:10:2: warning: missing terminating " character [enabled by default]
+ )";
+  ^
+raw-string-19.c:10:2 unknown ";
+raw-string-19.c:12:1 keyword int
+raw-string-19.c:13:1 identifier main
+raw-string-19.c:13:6 punctuator (
+raw-string-19.c:13:7 punctuator )
+raw-string-19.c:14:1 punctuator {
+raw-string-19.c:15:3 keyword extern
+raw-string-19.c:15:10 keyword void
+raw-string-19.c:15:15 identifier foo
+raw-string-19.c:15:19 punctuator (
+raw-string-19.c:15:20 punctuator )
+raw-string-19.c:15:21 punctuator ;
+raw-string-19.c:15:23 identifier foo
+raw-string-19.c:15:27 punctuator (
+raw-string-19.c:15:28 punctuator )
+raw-string-19.c:15:29 punctuator ;
+raw-string-19.c:16:3 keyword return
+raw-string-19.c:16:10 constant 0
+raw-string-19.c:16:11 punctuator ;
+raw-string-19.c:17:1 punctuator }

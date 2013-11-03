@@ -1,0 +1,17 @@
+0
+msp.c:6:1 identifier foo
+msp.c:6:5 punctuator (
+msp.c:6:6 punctuator )
+msp.c:7:1 punctuator {
+msp.c:8:3 keyword int
+msp.c:8:7 identifier a
+msp.c:8:8 punctuator [
+msp.c:8:9 constant 16384
+msp.c:8:14 punctuator ]
+msp.c:8:15 punctuator ;
+msp.c:9:3 identifier bar
+msp.c:9:7 punctuator (
+msp.c:9:8 identifier a
+msp.c:9:9 punctuator )
+msp.c:9:10 punctuator ;
+msp.c:10:1 punctuator }

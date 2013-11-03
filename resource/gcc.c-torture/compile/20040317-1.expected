@@ -1,0 +1,22 @@
+0
+20040317-1.c:1:1 keyword int
+20040317-1.c:1:5 identifier String2Array
+20040317-1.c:1:17 punctuator (
+20040317-1.c:1:18 keyword int
+20040317-1.c:1:22 identifier len
+20040317-1.c:1:25 punctuator ,
+20040317-1.c:1:27 keyword char
+20040317-1.c:1:32 identifier strarr
+20040317-1.c:1:38 punctuator [
+20040317-1.c:1:39 punctuator ]
+20040317-1.c:1:40 punctuator [
+20040317-1.c:1:41 identifier len
+20040317-1.c:1:44 punctuator ]
+20040317-1.c:1:45 punctuator )
+20040317-1.c:2:1 punctuator {
+20040317-1.c:3:3 identifier strarr
+20040317-1.c:3:9 punctuator [
+20040317-1.c:3:10 constant 0
+20040317-1.c:3:11 punctuator ]
+20040317-1.c:3:12 punctuator ;
+20040317-1.c:4:1 punctuator }

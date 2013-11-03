@@ -1,0 +1,19 @@
+0
+20010209-1.c:1:1 keyword short
+20010209-1.c:1:7 keyword int
+20010209-1.c:1:11 identifier a
+20010209-1.c:1:12 punctuator ;
+20010209-1.c:3:1 keyword int
+20010209-1.c:3:5 identifier main
+20010209-1.c:3:10 punctuator (
+20010209-1.c:3:11 keyword void
+20010209-1.c:3:15 punctuator )
+20010209-1.c:4:1 punctuator {
+20010209-1.c:5:3 identifier a
+20010209-1.c:5:5 punctuator =
+20010209-1.c:5:7 constant 65535.0
+20010209-1.c:5:14 punctuator ;
+20010209-1.c:6:3 keyword return
+20010209-1.c:6:10 constant 0
+20010209-1.c:6:11 punctuator ;
+20010209-1.c:7:1 punctuator }

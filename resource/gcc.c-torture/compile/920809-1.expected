@@ -1,0 +1,20 @@
+0
+920809-1.c:1:1 identifier f
+920809-1.c:1:2 punctuator (
+920809-1.c:1:3 identifier x
+920809-1.c:1:4 punctuator ,
+920809-1.c:1:5 identifier y
+920809-1.c:1:6 punctuator )
+920809-1.c:1:7 punctuator {
+920809-1.c:1:8 identifier memcpy
+920809-1.c:1:15 punctuator (
+920809-1.c:1:16 punctuator &
+920809-1.c:1:17 identifier x
+920809-1.c:1:18 punctuator ,
+920809-1.c:1:19 punctuator &
+920809-1.c:1:20 identifier y
+920809-1.c:1:21 punctuator ,
+920809-1.c:1:22 constant 8192
+920809-1.c:1:26 punctuator )
+920809-1.c:1:27 punctuator ;
+920809-1.c:1:28 punctuator }

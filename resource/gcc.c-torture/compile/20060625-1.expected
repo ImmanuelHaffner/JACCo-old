@@ -1,0 +1,24 @@
+0
+20060625-1.c:4:1 identifier _Complex
+20060625-1.c:4:10 keyword float
+20060625-1.c:4:16 identifier b
+20060625-1.c:4:17 punctuator ;
+20060625-1.c:6:1 keyword void
+20060625-1.c:6:6 identifier foo
+20060625-1.c:6:10 punctuator (
+20060625-1.c:6:11 keyword void
+20060625-1.c:6:15 punctuator )
+20060625-1.c:7:1 punctuator {
+20060625-1.c:8:3 identifier _Complex
+20060625-1.c:8:12 keyword float
+20060625-1.c:8:18 identifier a
+20060625-1.c:8:20 punctuator =
+20060625-1.c:8:22 constant 3.40282346638528859812e+38F
+20060625-1.c:8:49 punctuator ;
+20060625-1.c:9:3 identifier b
+20060625-1.c:9:5 punctuator =
+20060625-1.c:9:7 constant 3.40282346638528859812e+38F
+20060625-1.c:9:35 punctuator +
+20060625-1.c:9:37 identifier a
+20060625-1.c:9:38 punctuator ;
+20060625-1.c:10:1 punctuator }

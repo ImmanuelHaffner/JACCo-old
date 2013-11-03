@@ -1,0 +1,23 @@
+0
+20030910-1.c:4:1 keyword void
+20030910-1.c:4:6 identifier test
+20030910-1.c:4:10 punctuator (
+20030910-1.c:4:11 punctuator )
+20030910-1.c:5:1 punctuator {
+20030910-1.c:6:3 identifier __complex
+20030910-1.c:6:13 keyword double
+20030910-1.c:6:20 identifier dc
+20030910-1.c:6:22 punctuator ;
+20030910-1.c:7:3 keyword double
+20030910-1.c:7:10 identifier d
+20030910-1.c:7:11 punctuator ;
+20030910-1.c:9:3 identifier d
+20030910-1.c:9:5 punctuator =
+20030910-1.c:9:7 identifier __real
+20030910-1.c:9:14 punctuator (
+20030910-1.c:9:15 identifier dc
+20030910-1.c:9:18 punctuator *
+20030910-1.c:9:20 identifier dc
+20030910-1.c:9:22 punctuator )
+20030910-1.c:9:23 punctuator ;
+20030910-1.c:10:1 punctuator }

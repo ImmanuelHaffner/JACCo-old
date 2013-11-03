@@ -1,0 +1,21 @@
+0
+20081119-1.c:1:1 keyword unsigned
+20081119-1.c:1:10 keyword long
+20081119-1.c:1:15 keyword long
+20081119-1.c:2:1 identifier f
+20081119-1.c:2:3 punctuator (
+20081119-1.c:2:4 identifier __builtin_va_list
+20081119-1.c:2:22 identifier ap
+20081119-1.c:2:24 punctuator )
+20081119-1.c:3:1 punctuator {
+20081119-1.c:4:3 keyword return
+20081119-1.c:4:10 identifier __builtin_va_arg
+20081119-1.c:4:27 punctuator (
+20081119-1.c:4:28 identifier ap
+20081119-1.c:4:30 punctuator ,
+20081119-1.c:4:32 keyword unsigned
+20081119-1.c:4:41 keyword long
+20081119-1.c:4:46 keyword long
+20081119-1.c:4:50 punctuator )
+20081119-1.c:4:51 punctuator ;
+20081119-1.c:5:1 punctuator }

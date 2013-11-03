@@ -1,0 +1,15 @@
+0
+dead.c:1:1 identifier foo
+dead.c:1:5 punctuator (
+dead.c:1:6 identifier a
+dead.c:1:7 punctuator )
+dead.c:2:1 punctuator {
+dead.c:3:3 punctuator ++
+dead.c:3:5 identifier a
+dead.c:3:6 punctuator ;
+dead.c:4:3 keyword return
+dead.c:4:10 identifier a
+dead.c:4:12 punctuator ==
+dead.c:4:15 constant 0
+dead.c:4:16 punctuator ;
+dead.c:5:1 punctuator }

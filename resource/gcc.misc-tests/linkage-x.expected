@@ -1,0 +1,9 @@
+0
+linkage-x.c:3:1 keyword const
+linkage-x.c:3:7 keyword char
+linkage-x.c:3:12 identifier s
+linkage-x.c:3:13 punctuator [
+linkage-x.c:3:14 punctuator ]
+linkage-x.c:3:15 punctuator =
+linkage-x.c:3:16 string-literal "foo"
+linkage-x.c:3:21 punctuator ;

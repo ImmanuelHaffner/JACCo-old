@@ -1,0 +1,22 @@
+0
+dimul.c:1:1 keyword long
+dimul.c:1:6 keyword long
+dimul.c:2:1 identifier foo
+dimul.c:2:5 punctuator (
+dimul.c:2:6 identifier a
+dimul.c:2:7 punctuator ,
+dimul.c:2:9 identifier b
+dimul.c:2:10 punctuator )
+dimul.c:3:6 keyword long
+dimul.c:3:11 keyword long
+dimul.c:3:16 identifier a
+dimul.c:3:17 punctuator ,
+dimul.c:3:19 identifier b
+dimul.c:3:20 punctuator ;
+dimul.c:4:1 punctuator {
+dimul.c:5:3 keyword return
+dimul.c:5:10 identifier a
+dimul.c:5:12 punctuator *
+dimul.c:5:14 identifier b
+dimul.c:5:15 punctuator ;
+dimul.c:6:1 punctuator }

@@ -1,0 +1,21 @@
+0
+pr53418-2.c:1:1 keyword void
+pr53418-2.c:2:1 identifier f
+pr53418-2.c:2:3 punctuator (
+pr53418-2.c:2:4 keyword void
+pr53418-2.c:2:8 punctuator )
+pr53418-2.c:3:1 punctuator {
+pr53418-2.c:4:3 keyword int
+pr53418-2.c:4:7 identifier i
+pr53418-2.c:4:9 punctuator =
+pr53418-2.c:4:11 punctuator (
+pr53418-2.c:4:12 constant 1
+pr53418-2.c:4:14 punctuator ?
+pr53418-2.c:4:16 constant 0U
+pr53418-2.c:4:19 punctuator /
+pr53418-2.c:4:21 constant 0
+pr53418-2.c:4:23 punctuator :
+pr53418-2.c:4:25 constant 1
+pr53418-2.c:4:26 punctuator )
+pr53418-2.c:4:27 punctuator ;
+pr53418-2.c:5:1 punctuator }

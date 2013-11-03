@@ -1,0 +1,18 @@
+0
+linkage-y.c:3:1 keyword extern
+linkage-y.c:3:8 keyword const
+linkage-y.c:3:14 keyword char
+linkage-y.c:3:19 identifier s
+linkage-y.c:3:20 punctuator [
+linkage-y.c:3:21 punctuator ]
+linkage-y.c:3:22 punctuator ;
+linkage-y.c:5:1 identifier main
+linkage-y.c:5:5 punctuator (
+linkage-y.c:5:6 punctuator )
+linkage-y.c:6:1 punctuator {
+linkage-y.c:7:2 identifier puts
+linkage-y.c:7:6 punctuator (
+linkage-y.c:7:7 identifier s
+linkage-y.c:7:8 punctuator )
+linkage-y.c:7:9 punctuator ;
+linkage-y.c:8:1 punctuator }

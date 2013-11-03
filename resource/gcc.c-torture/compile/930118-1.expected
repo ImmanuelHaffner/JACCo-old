@@ -1,0 +1,15 @@
+0
+930118-1.c:1:1 identifier f
+930118-1.c:1:2 punctuator (
+930118-1.c:1:3 punctuator )
+930118-1.c:2:1 punctuator {
+930118-1.c:3:1 identifier __label__
+930118-1.c:3:11 identifier l
+930118-1.c:3:12 punctuator ;
+930118-1.c:4:1 identifier l
+930118-1.c:4:2 punctuator :
+930118-1.c:4:3 identifier p
+930118-1.c:4:4 punctuator (
+930118-1.c:4:5 punctuator )
+930118-1.c:4:6 punctuator ;
+930118-1.c:5:1 punctuator }

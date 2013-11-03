@@ -1,0 +1,26 @@
+0
+pr38771.c:3:1 keyword unsigned
+pr38771.c:3:10 keyword long
+pr38771.c:3:15 keyword long
+pr38771.c:4:1 identifier foo
+pr38771.c:4:5 punctuator (
+pr38771.c:4:6 keyword long
+pr38771.c:4:11 keyword long
+pr38771.c:4:16 identifier x
+pr38771.c:4:17 punctuator )
+pr38771.c:5:1 punctuator {
+pr38771.c:6:3 keyword return
+pr38771.c:6:10 punctuator -
+pr38771.c:6:11 punctuator (
+pr38771.c:6:12 keyword unsigned
+pr38771.c:6:21 keyword long
+pr38771.c:6:26 keyword long
+pr38771.c:6:30 punctuator )
+pr38771.c:6:32 punctuator (
+pr38771.c:6:33 identifier x
+pr38771.c:6:35 punctuator ?
+pr38771.c:6:37 punctuator :
+pr38771.c:6:39 identifier x
+pr38771.c:6:40 punctuator )
+pr38771.c:6:41 punctuator ;
+pr38771.c:7:1 punctuator }

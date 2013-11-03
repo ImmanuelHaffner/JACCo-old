@@ -1,0 +1,20 @@
+0
+20020210-1.c:2:1 keyword void
+20020210-1.c:2:6 identifier f
+20020210-1.c:2:7 punctuator (
+20020210-1.c:2:8 keyword int
+20020210-1.c:2:12 identifier a
+20020210-1.c:2:13 punctuator ,
+20020210-1.c:2:15 keyword struct
+20020210-1.c:2:22 punctuator {
+20020210-1.c:2:23 keyword int
+20020210-1.c:2:27 identifier b
+20020210-1.c:2:28 punctuator [
+20020210-1.c:2:29 identifier a
+20020210-1.c:2:30 punctuator ]
+20020210-1.c:2:31 punctuator ;
+20020210-1.c:2:32 punctuator }
+20020210-1.c:2:34 identifier c
+20020210-1.c:2:35 punctuator )
+20020210-1.c:2:37 punctuator {
+20020210-1.c:2:38 punctuator }

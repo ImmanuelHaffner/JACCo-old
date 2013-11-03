@@ -1,0 +1,27 @@
+0
+convert-vec-1.c:2:1 keyword typedef
+convert-vec-1.c:2:9 keyword float
+convert-vec-1.c:2:15 identifier v2sf
+convert-vec-1.c:2:20 identifier __attribute__
+convert-vec-1.c:2:34 punctuator (
+convert-vec-1.c:2:35 punctuator (
+convert-vec-1.c:2:36 identifier vector_size
+convert-vec-1.c:2:48 punctuator (
+convert-vec-1.c:2:49 constant 8
+convert-vec-1.c:2:50 punctuator )
+convert-vec-1.c:2:51 punctuator )
+convert-vec-1.c:2:52 punctuator )
+convert-vec-1.c:2:53 punctuator ;
+convert-vec-1.c:3:1 identifier v2sf
+convert-vec-1.c:3:6 identifier sub
+convert-vec-1.c:3:10 punctuator (
+convert-vec-1.c:3:11 keyword void
+convert-vec-1.c:3:15 punctuator )
+convert-vec-1.c:3:17 punctuator {
+convert-vec-1.c:3:19 keyword return
+convert-vec-1.c:3:26 punctuator (
+convert-vec-1.c:3:27 identifier v2sf
+convert-vec-1.c:3:31 punctuator )
+convert-vec-1.c:3:33 constant 0.0
+convert-vec-1.c:3:36 punctuator ;
+convert-vec-1.c:3:38 punctuator }

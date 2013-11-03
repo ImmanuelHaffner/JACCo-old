@@ -1,0 +1,20 @@
+0
+20030821-1.c:1:1 keyword unsigned
+20030821-1.c:1:10 keyword char
+20030821-1.c:2:1 identifier foo
+20030821-1.c:2:5 punctuator (
+20030821-1.c:2:6 keyword unsigned
+20030821-1.c:2:15 keyword char
+20030821-1.c:2:20 identifier a
+20030821-1.c:2:21 punctuator )
+20030821-1.c:3:1 punctuator {
+20030821-1.c:4:3 keyword return
+20030821-1.c:4:10 punctuator (
+20030821-1.c:4:11 identifier a
+20030821-1.c:4:13 punctuator &
+20030821-1.c:4:15 constant 1
+20030821-1.c:4:16 punctuator )
+20030821-1.c:4:18 punctuator >
+20030821-1.c:4:20 constant 0
+20030821-1.c:4:21 punctuator ;
+20030821-1.c:5:1 punctuator }

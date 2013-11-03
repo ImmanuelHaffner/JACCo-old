@@ -1,0 +1,23 @@
+0
+lbug.c:1:1 keyword long
+lbug.c:1:6 keyword long
+lbug.c:1:11 identifier x
+lbug.c:1:13 punctuator =
+lbug.c:1:15 constant 0
+lbug.c:1:16 punctuator ;
+lbug.c:2:1 identifier main
+lbug.c:2:5 punctuator (
+lbug.c:2:6 punctuator )
+lbug.c:3:1 punctuator {
+lbug.c:4:3 keyword if
+lbug.c:4:6 punctuator (
+lbug.c:4:7 identifier x
+lbug.c:4:8 punctuator --
+lbug.c:4:10 punctuator )
+lbug.c:5:5 keyword return
+lbug.c:5:12 constant 255
+lbug.c:5:15 punctuator ;
+lbug.c:6:3 keyword return
+lbug.c:6:10 constant 0
+lbug.c:6:11 punctuator ;
+lbug.c:7:1 punctuator }

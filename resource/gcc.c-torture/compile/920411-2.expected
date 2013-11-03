@@ -1,0 +1,24 @@
+0
+920411-2.c:1:1 identifier x
+920411-2.c:1:2 punctuator (
+920411-2.c:1:3 punctuator )
+920411-2.c:1:4 punctuator {
+920411-2.c:1:5 keyword int
+920411-2.c:1:9 identifier n
+920411-2.c:1:10 punctuator ;
+920411-2.c:1:11 keyword double
+920411-2.c:1:18 identifier x
+920411-2.c:1:19 punctuator ;
+920411-2.c:1:20 identifier n
+920411-2.c:1:21 punctuator =
+920411-2.c:1:22 identifier x
+920411-2.c:1:23 punctuator <
+920411-2.c:1:24 constant 1
+920411-2.c:1:25 punctuator ?
+920411-2.c:1:26 identifier n
+920411-2.c:1:27 punctuator :
+920411-2.c:1:28 identifier n
+920411-2.c:1:29 punctuator +
+920411-2.c:1:30 constant 1
+920411-2.c:1:31 punctuator ;
+920411-2.c:1:32 punctuator }

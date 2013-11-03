@@ -1,0 +1,26 @@
+0
+pr22589-1.c:1:1 keyword int
+pr22589-1.c:1:5 identifier bar
+pr22589-1.c:1:9 punctuator (
+pr22589-1.c:1:10 keyword char
+pr22589-1.c:1:15 punctuator *
+pr22589-1.c:1:16 identifier foo
+pr22589-1.c:1:19 punctuator )
+pr22589-1.c:2:1 punctuator {
+pr22589-1.c:3:3 keyword return
+pr22589-1.c:3:10 punctuator (
+pr22589-1.c:3:11 keyword long
+pr22589-1.c:3:16 keyword long
+pr22589-1.c:3:20 punctuator )
+pr22589-1.c:3:22 punctuator (
+pr22589-1.c:3:23 punctuator (
+pr22589-1.c:3:24 keyword int
+pr22589-1.c:3:27 punctuator )
+pr22589-1.c:3:29 identifier foo
+pr22589-1.c:3:33 punctuator +
+pr22589-1.c:3:35 constant 0
+pr22589-1.c:3:36 punctuator )
+pr22589-1.c:3:38 punctuator <
+pr22589-1.c:3:40 constant 0
+pr22589-1.c:3:41 punctuator ;
+pr22589-1.c:4:1 punctuator }

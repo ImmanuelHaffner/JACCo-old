@@ -1,0 +1,24 @@
+0
+fold-divmul-1.c:4:1 keyword int
+fold-divmul-1.c:4:5 punctuator *
+fold-divmul-1.c:5:1 identifier fx
+fold-divmul-1.c:5:4 punctuator (
+fold-divmul-1.c:5:5 keyword int
+fold-divmul-1.c:5:9 punctuator *
+fold-divmul-1.c:5:10 identifier b
+fold-divmul-1.c:5:11 punctuator ,
+fold-divmul-1.c:5:13 keyword int
+fold-divmul-1.c:5:17 punctuator *
+fold-divmul-1.c:5:18 identifier e
+fold-divmul-1.c:5:19 punctuator )
+fold-divmul-1.c:6:1 punctuator {
+fold-divmul-1.c:7:3 keyword return
+fold-divmul-1.c:7:10 identifier b
+fold-divmul-1.c:7:12 punctuator +
+fold-divmul-1.c:7:14 punctuator (
+fold-divmul-1.c:7:15 identifier e
+fold-divmul-1.c:7:17 punctuator -
+fold-divmul-1.c:7:19 identifier b
+fold-divmul-1.c:7:20 punctuator )
+fold-divmul-1.c:7:21 punctuator ;
+fold-divmul-1.c:8:1 punctuator }

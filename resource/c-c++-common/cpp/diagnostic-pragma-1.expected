@@ -1,0 +1,13 @@
+0
+diagnostic-pragma-1.c:7:1 keyword char
+diagnostic-pragma-1.c:7:6 identifier a
+diagnostic-pragma-1.c:7:7 punctuator [
+diagnostic-pragma-1.c:8:2 constant 1
+diagnostic-pragma-1.c:8:3 punctuator ]
+diagnostic-pragma-1.c:8:4 punctuator ;
+diagnostic-pragma-1.c:9:1 keyword char
+diagnostic-pragma-1.c:9:6 identifier b
+diagnostic-pragma-1.c:9:7 punctuator [
+diagnostic-pragma-1.c:10:2 constant 2
+diagnostic-pragma-1.c:10:3 punctuator ]
+diagnostic-pragma-1.c:10:4 punctuator ;

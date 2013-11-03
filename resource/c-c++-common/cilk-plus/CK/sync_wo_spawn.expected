@@ -1,0 +1,13 @@
+0
+sync_wo_spawn.c:4:1 keyword int
+sync_wo_spawn.c:4:5 identifier main
+sync_wo_spawn.c:4:10 punctuator (
+sync_wo_spawn.c:4:11 keyword void
+sync_wo_spawn.c:4:15 punctuator )
+sync_wo_spawn.c:5:1 punctuator {
+sync_wo_spawn.c:6:3 identifier _Cilk_sync
+sync_wo_spawn.c:6:13 punctuator ;
+sync_wo_spawn.c:7:3 keyword return
+sync_wo_spawn.c:7:10 constant 0
+sync_wo_spawn.c:7:11 punctuator ;
+sync_wo_spawn.c:8:1 punctuator }

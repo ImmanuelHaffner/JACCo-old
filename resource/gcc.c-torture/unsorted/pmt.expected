@@ -1,0 +1,20 @@
+0
+pmt.c:1:1 keyword long
+pmt.c:1:6 keyword long
+pmt.c:2:1 identifier foo
+pmt.c:2:5 punctuator (
+pmt.c:2:6 identifier a
+pmt.c:2:7 punctuator ,
+pmt.c:2:9 identifier b
+pmt.c:2:10 punctuator )
+pmt.c:3:6 keyword long
+pmt.c:3:11 keyword long
+pmt.c:3:16 identifier a
+pmt.c:3:17 punctuator ,
+pmt.c:3:19 identifier b
+pmt.c:3:20 punctuator ;
+pmt.c:4:1 punctuator {
+pmt.c:5:3 keyword return
+pmt.c:5:10 identifier a
+pmt.c:5:11 punctuator ;
+pmt.c:6:1 punctuator }

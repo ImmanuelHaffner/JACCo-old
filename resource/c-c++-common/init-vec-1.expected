@@ -1,0 +1,19 @@
+0
+init-vec-1.c:3:1 keyword typedef
+init-vec-1.c:3:9 keyword float
+init-vec-1.c:3:15 identifier v2sf
+init-vec-1.c:3:20 identifier __attribute__
+init-vec-1.c:3:34 punctuator (
+init-vec-1.c:3:35 punctuator (
+init-vec-1.c:3:36 identifier vector_size
+init-vec-1.c:3:48 punctuator (
+init-vec-1.c:3:49 constant 8
+init-vec-1.c:3:50 punctuator )
+init-vec-1.c:3:51 punctuator )
+init-vec-1.c:3:52 punctuator )
+init-vec-1.c:3:53 punctuator ;
+init-vec-1.c:4:1 identifier v2sf
+init-vec-1.c:4:6 identifier a
+init-vec-1.c:4:8 punctuator =
+init-vec-1.c:4:10 constant 0.0
+init-vec-1.c:4:13 punctuator ;

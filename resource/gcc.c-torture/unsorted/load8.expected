@@ -1,0 +1,14 @@
+0
+load8.c:1:1 identifier foo
+load8.c:1:5 punctuator (
+load8.c:1:6 punctuator )
+load8.c:2:1 punctuator {
+load8.c:3:3 keyword return
+load8.c:3:10 punctuator *
+load8.c:3:11 punctuator (
+load8.c:3:12 keyword short
+load8.c:3:18 punctuator *
+load8.c:3:19 punctuator )
+load8.c:3:21 constant 126
+load8.c:3:24 punctuator ;
+load8.c:4:1 punctuator }

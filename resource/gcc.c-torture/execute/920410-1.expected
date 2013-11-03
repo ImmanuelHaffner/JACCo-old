@@ -1,0 +1,24 @@
+0
+920410-1.c:5:1 identifier main
+920410-1.c:5:5 punctuator (
+920410-1.c:5:6 punctuator )
+920410-1.c:5:7 punctuator {
+920410-1.c:5:8 keyword int
+920410-1.c:5:12 identifier d
+920410-1.c:5:13 punctuator [
+920410-1.c:5:14 constant 40000
+920410-1.c:5:19 punctuator ]
+920410-1.c:5:20 punctuator ;
+920410-1.c:5:21 identifier d
+920410-1.c:5:22 punctuator [
+920410-1.c:5:23 constant 0
+920410-1.c:5:24 punctuator ]
+920410-1.c:5:25 punctuator =
+920410-1.c:5:26 constant 0
+920410-1.c:5:27 punctuator ;
+920410-1.c:5:28 identifier exit
+920410-1.c:5:32 punctuator (
+920410-1.c:5:33 constant 0
+920410-1.c:5:34 punctuator )
+920410-1.c:5:35 punctuator ;
+920410-1.c:5:36 punctuator }

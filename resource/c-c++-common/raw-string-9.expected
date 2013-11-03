@@ -1,0 +1,74 @@
+0
+raw-string-9.c:7:1 keyword const
+raw-string-9.c:7:7 keyword char
+raw-string-9.c:7:12 identifier b
+raw-string-9.c:7:13 punctuator [
+raw-string-9.c:7:14 punctuator ]
+raw-string-9.c:7:16 punctuator =
+raw-string-9.c:7:18 string-literal "??>"
+raw-string-9.c:7:19: warning: trigraph ??> ignored, use -trigraphs to enable [-Wtrigraphs]
+ const char b[] = "??>";
+ ^
+raw-string-9.c:7:23 punctuator ;
+raw-string-9.c:8:1 keyword const
+raw-string-9.c:8:7 keyword char
+raw-string-9.c:8:12 identifier a
+raw-string-9.c:8:13 punctuator [
+raw-string-9.c:8:14 punctuator ]
+raw-string-9.c:8:16 punctuator =
+raw-string-9.c:8:18 identifier R
+raw-string-9.c:8:19: warning: missing terminating " character [enabled by default]
+ const char a[] = R"(??>??)??/
+                   ^
+raw-string-9.c:8:19 unknown "(??>??)??/
+raw-string-9.c:8:21: warning: trigraph ??> ignored, use -trigraphs to enable [-Wtrigraphs]
+ const char a[] = R"(??>??)??/
+ ^
+raw-string-9.c:8:24: warning: trigraph ??) ignored, use -trigraphs to enable [-Wtrigraphs]
+raw-string-9.c:8:27: warning: trigraph ??/ ignored, use -trigraphs to enable [-Wtrigraphs]
+raw-string-9.c:9:1: warning: trigraph ??) ignored, use -trigraphs to enable [-Wtrigraphs]
+ ??)";
+ ^
+raw-string-9.c:9:1 punctuator ?
+raw-string-9.c:9:2 punctuator ?
+raw-string-9.c:9:3 punctuator )
+raw-string-9.c:9:4: warning: missing terminating " character [enabled by default]
+ ??)";
+    ^
+raw-string-9.c:9:4 unknown ";
+raw-string-9.c:16:1 keyword int
+raw-string-9.c:16:5 identifier main
+raw-string-9.c:16:9 punctuator (
+raw-string-9.c:16:10 punctuator )
+raw-string-9.c:17:1 punctuator {
+raw-string-9.c:18:3 keyword if
+raw-string-9.c:18:6 punctuator (
+raw-string-9.c:18:7 keyword sizeof
+raw-string-9.c:18:14 punctuator (
+raw-string-9.c:18:15 identifier a
+raw-string-9.c:18:16 punctuator )
+raw-string-9.c:18:18 punctuator !=
+raw-string-9.c:18:21 keyword sizeof
+raw-string-9.c:18:28 punctuator (
+raw-string-9.c:18:29 string-literal "?\?>?\?)?\?/\n?\?"
+raw-string-9.c:18:48 punctuator )
+raw-string-9.c:18:50 punctuator ||
+raw-string-9.c:18:53 identifier __builtin_memcmp
+raw-string-9.c:18:70 punctuator (
+raw-string-9.c:18:71 identifier a
+raw-string-9.c:18:72 punctuator ,
+raw-string-9.c:18:74 string-literal "?\?>?\?)?\?/\n?\?"
+raw-string-9.c:18:93 punctuator ,
+raw-string-9.c:18:95 keyword sizeof
+raw-string-9.c:18:102 punctuator (
+raw-string-9.c:18:103 identifier a
+raw-string-9.c:18:104 punctuator )
+raw-string-9.c:18:105 punctuator )
+raw-string-9.c:18:107 punctuator !=
+raw-string-9.c:18:110 constant 0
+raw-string-9.c:18:111 punctuator )
+raw-string-9.c:18:113 identifier __builtin_abort
+raw-string-9.c:18:129 punctuator (
+raw-string-9.c:18:130 punctuator )
+raw-string-9.c:18:131 punctuator ;
+raw-string-9.c:19:1 punctuator }

@@ -1,0 +1,23 @@
+0
+fdmul.c:1:1 keyword double
+fdmul.c:2:1 identifier foo
+fdmul.c:2:5 punctuator (
+fdmul.c:2:6 keyword float
+fdmul.c:2:12 identifier a
+fdmul.c:2:13 punctuator ,
+fdmul.c:2:15 keyword float
+fdmul.c:2:21 identifier b
+fdmul.c:2:22 punctuator )
+fdmul.c:2:24 punctuator {
+fdmul.c:2:26 keyword return
+fdmul.c:2:33 punctuator (
+fdmul.c:2:34 keyword double
+fdmul.c:2:40 punctuator )
+fdmul.c:2:42 identifier a
+fdmul.c:2:44 punctuator *
+fdmul.c:2:46 punctuator (
+fdmul.c:2:47 keyword double
+fdmul.c:2:53 punctuator )
+fdmul.c:2:55 identifier b
+fdmul.c:2:56 punctuator ;
+fdmul.c:2:58 punctuator }

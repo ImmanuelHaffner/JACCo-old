@@ -1,0 +1,21 @@
+0
+transparent-union-1.c:3:1 keyword typedef
+transparent-union-1.c:3:9 keyword union
+transparent-union-1.c:3:15 punctuator {
+transparent-union-1.c:3:16 punctuator }
+transparent-union-1.c:3:18 identifier U
+transparent-union-1.c:3:20 identifier __attribute__
+transparent-union-1.c:3:33 punctuator (
+transparent-union-1.c:3:34 punctuator (
+transparent-union-1.c:3:35 identifier transparent_union
+transparent-union-1.c:3:52 punctuator )
+transparent-union-1.c:3:53 punctuator )
+transparent-union-1.c:3:54 punctuator ;
+transparent-union-1.c:5:1 keyword void
+transparent-union-1.c:5:6 identifier foo
+transparent-union-1.c:5:9 punctuator (
+transparent-union-1.c:5:10 identifier U
+transparent-union-1.c:5:12 identifier u
+transparent-union-1.c:5:13 punctuator )
+transparent-union-1.c:5:15 punctuator {
+transparent-union-1.c:5:16 punctuator }

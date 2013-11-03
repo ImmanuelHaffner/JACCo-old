@@ -1,0 +1,20 @@
+0
+991208-1.c:1:1 keyword void
+991208-1.c:1:6 identifier fn
+991208-1.c:1:9 punctuator (
+991208-1.c:1:10 keyword char
+991208-1.c:1:15 punctuator *
+991208-1.c:1:16 identifier ptr
+991208-1.c:1:19 punctuator )
+991208-1.c:2:1 punctuator {
+991208-1.c:3:3 keyword void
+991208-1.c:3:8 punctuator *
+991208-1.c:3:9 identifier p
+991208-1.c:3:11 punctuator =
+991208-1.c:3:13 identifier ptr
+991208-1.c:3:17 punctuator -
+991208-1.c:3:19 constant 8
+991208-1.c:3:21 punctuator -
+991208-1.c:3:23 constant 4
+991208-1.c:3:24 punctuator ;
+991208-1.c:4:1 punctuator }

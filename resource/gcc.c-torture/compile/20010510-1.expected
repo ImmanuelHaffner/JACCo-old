@@ -1,0 +1,9 @@
+0
+20010510-1.c:1:1 keyword typedef
+20010510-1.c:1:9 keyword char
+20010510-1.c:1:14 punctuator *
+20010510-1.c:1:15 identifier ident
+20010510-1.c:1:20 punctuator ;
+20010510-1.c:2:1 identifier ident
+20010510-1.c:2:7 identifier i
+20010510-1.c:2:8 punctuator ;

@@ -1,0 +1,14 @@
+0
+20081108-2.c:4:1 identifier _Bool
+20081108-2.c:4:7 identifier f
+20081108-2.c:4:8 punctuator (
+20081108-2.c:4:9 keyword unsigned
+20081108-2.c:4:18 identifier a
+20081108-2.c:4:19 punctuator )
+20081108-2.c:4:21 punctuator {
+20081108-2.c:4:23 keyword return
+20081108-2.c:4:30 identifier a
+20081108-2.c:4:32 punctuator &
+20081108-2.c:4:34 constant 1
+20081108-2.c:4:35 punctuator ;
+20081108-2.c:4:37 punctuator }

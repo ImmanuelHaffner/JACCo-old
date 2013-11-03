@@ -1,0 +1,19 @@
+0
+BUG17.c:1:1 keyword double
+BUG17.c:1:8 identifier d
+BUG17.c:1:9 punctuator ;
+BUG17.c:3:1 identifier main
+BUG17.c:3:5 punctuator (
+BUG17.c:3:6 punctuator )
+BUG17.c:4:1 punctuator {
+BUG17.c:5:3 keyword int
+BUG17.c:5:7 identifier i
+BUG17.c:5:8 punctuator ;
+BUG17.c:7:3 identifier i
+BUG17.c:7:5 punctuator =
+BUG17.c:7:7 punctuator (
+BUG17.c:7:8 keyword int
+BUG17.c:7:11 punctuator )
+BUG17.c:7:13 identifier d
+BUG17.c:7:14 punctuator ;
+BUG17.c:8:1 punctuator }

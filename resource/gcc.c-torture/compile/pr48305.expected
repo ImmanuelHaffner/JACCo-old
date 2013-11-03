@@ -1,0 +1,22 @@
+0
+pr48305.c:3:1 keyword int
+pr48305.c:4:1 identifier foo
+pr48305.c:4:5 punctuator (
+pr48305.c:4:6 keyword int
+pr48305.c:4:10 identifier x
+pr48305.c:4:11 punctuator )
+pr48305.c:5:1 punctuator {
+pr48305.c:6:3 keyword return
+pr48305.c:6:10 punctuator (
+pr48305.c:6:11 identifier x
+pr48305.c:6:13 punctuator ^
+pr48305.c:6:15 constant 1
+pr48305.c:6:16 punctuator )
+pr48305.c:6:18 punctuator ==
+pr48305.c:6:21 punctuator (
+pr48305.c:6:22 identifier x
+pr48305.c:6:24 punctuator ^
+pr48305.c:6:26 constant 1U
+pr48305.c:6:28 punctuator )
+pr48305.c:6:29 punctuator ;
+pr48305.c:7:1 punctuator }

@@ -1,0 +1,15 @@
+0
+20030415-1.c:1:1 keyword float
+20030415-1.c:1:7 identifier g
+20030415-1.c:1:8 punctuator (
+20030415-1.c:1:9 keyword float
+20030415-1.c:1:15 identifier f
+20030415-1.c:1:16 punctuator )
+20030415-1.c:2:1 punctuator {
+20030415-1.c:3:3 keyword return
+20030415-1.c:3:10 identifier fabs
+20030415-1.c:3:14 punctuator (
+20030415-1.c:3:15 identifier f
+20030415-1.c:3:16 punctuator )
+20030415-1.c:3:17 punctuator ;
+20030415-1.c:4:1 punctuator }

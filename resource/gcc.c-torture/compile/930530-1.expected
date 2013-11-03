@@ -1,0 +1,27 @@
+0
+930530-1.c:1:1 identifier f
+930530-1.c:1:3 punctuator (
+930530-1.c:1:4 punctuator )
+930530-1.c:2:1 punctuator {
+930530-1.c:3:3 keyword struct
+930530-1.c:3:10 punctuator {
+930530-1.c:3:12 keyword char
+930530-1.c:3:17 identifier a
+930530-1.c:3:18 punctuator ,
+930530-1.c:3:20 identifier b
+930530-1.c:3:21 punctuator ;
+930530-1.c:3:23 punctuator }
+930530-1.c:3:25 identifier x
+930530-1.c:3:26 punctuator ;
+930530-1.c:4:3 identifier g
+930530-1.c:4:5 punctuator (
+930530-1.c:4:6 identifier x
+930530-1.c:4:7 punctuator ,
+930530-1.c:4:9 identifier x
+930530-1.c:4:10 punctuator ,
+930530-1.c:4:12 identifier x
+930530-1.c:4:13 punctuator ,
+930530-1.c:4:15 identifier x
+930530-1.c:4:16 punctuator )
+930530-1.c:4:17 punctuator ;
+930530-1.c:5:1 punctuator }

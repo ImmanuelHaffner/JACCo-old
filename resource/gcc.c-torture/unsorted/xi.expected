@@ -1,0 +1,23 @@
+0
+xi.c:1:1 identifier foo
+xi.c:1:5 punctuator (
+xi.c:1:6 identifier a
+xi.c:1:7 punctuator )
+xi.c:2:1 punctuator {
+xi.c:3:3 keyword int
+xi.c:3:7 identifier r
+xi.c:3:9 punctuator =
+xi.c:3:11 constant 0
+xi.c:3:12 punctuator ;
+xi.c:4:3 keyword if
+xi.c:4:6 punctuator (
+xi.c:4:7 identifier a
+xi.c:4:8 punctuator )
+xi.c:5:5 identifier r
+xi.c:5:7 punctuator =
+xi.c:5:9 constant 1
+xi.c:5:10 punctuator ;
+xi.c:6:3 keyword return
+xi.c:6:10 identifier r
+xi.c:6:11 punctuator ;
+xi.c:7:1 punctuator }

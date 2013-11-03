@@ -1,0 +1,19 @@
+0
+20031203-2.c:3:1 keyword int
+20031203-2.c:3:5 identifier foo
+20031203-2.c:3:8 punctuator (
+20031203-2.c:3:9 keyword int
+20031203-2.c:3:13 identifier bar
+20031203-2.c:3:16 punctuator )
+20031203-2.c:4:1 punctuator {
+20031203-2.c:5:3 keyword return
+20031203-2.c:5:10 punctuator (
+20031203-2.c:5:11 punctuator &
+20031203-2.c:5:12 identifier bar
+20031203-2.c:5:15 punctuator )
+20031203-2.c:5:16 punctuator [
+20031203-2.c:5:17 punctuator -
+20031203-2.c:5:18 constant 1
+20031203-2.c:5:19 punctuator ]
+20031203-2.c:5:20 punctuator ;
+20031203-2.c:6:1 punctuator }

@@ -1,0 +1,26 @@
+0
+20031112-1.c:1:1 keyword extern
+20031112-1.c:1:8 identifier __inline
+20031112-1.c:1:17 keyword int
+20031112-1.c:1:21 identifier __finite
+20031112-1.c:1:30 punctuator (
+20031112-1.c:1:31 keyword double
+20031112-1.c:1:38 identifier __value
+20031112-1.c:1:45 punctuator )
+20031112-1.c:1:47 punctuator {
+20031112-1.c:1:49 keyword return
+20031112-1.c:1:56 constant 0
+20031112-1.c:1:57 punctuator ;
+20031112-1.c:1:59 punctuator }
+20031112-1.c:2:1 keyword extern
+20031112-1.c:2:8 identifier __typeof
+20031112-1.c:2:17 punctuator (
+20031112-1.c:2:18 identifier __finite
+20031112-1.c:2:26 punctuator )
+20031112-1.c:2:28 identifier __finite
+20031112-1.c:2:37 identifier __asm__
+20031112-1.c:2:45 punctuator (
+20031112-1.c:2:46 string-literal ""
+20031112-1.c:2:49 string-literal "__GI___finite"
+20031112-1.c:2:64 punctuator )
+20031112-1.c:2:65 punctuator ;

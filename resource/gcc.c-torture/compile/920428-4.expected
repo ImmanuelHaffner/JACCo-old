@@ -1,0 +1,24 @@
+0
+920428-4.c:1:1 identifier x
+920428-4.c:1:2 punctuator (
+920428-4.c:1:3 identifier a
+920428-4.c:1:4 punctuator )
+920428-4.c:1:5 punctuator {
+920428-4.c:1:6 keyword struct
+920428-4.c:1:12 punctuator {
+920428-4.c:1:13 keyword int
+920428-4.c:1:17 identifier p
+920428-4.c:1:18 punctuator [
+920428-4.c:1:19 identifier a
+920428-4.c:1:20 punctuator ]
+920428-4.c:1:21 punctuator ,
+920428-4.c:1:22 identifier i
+920428-4.c:1:23 punctuator ;
+920428-4.c:1:24 punctuator }
+920428-4.c:1:25 identifier l
+920428-4.c:1:26 punctuator ;
+920428-4.c:1:27 identifier l
+920428-4.c:1:28 punctuator .
+920428-4.c:1:29 identifier i
+920428-4.c:1:30 punctuator ;
+920428-4.c:1:31 punctuator }

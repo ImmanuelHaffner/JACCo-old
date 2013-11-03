@@ -1,0 +1,19 @@
+0
+991213-3.c:1:1 keyword int
+991213-3.c:1:5 identifier jump
+991213-3.c:1:10 punctuator (
+991213-3.c:1:11 punctuator )
+991213-3.c:1:13 punctuator {
+991213-3.c:1:15 keyword goto
+991213-3.c:1:20 punctuator *
+991213-3.c:1:22 punctuator (
+991213-3.c:1:23 keyword int
+991213-3.c:1:27 punctuator (
+991213-3.c:1:28 punctuator *
+991213-3.c:1:29 punctuator )
+991213-3.c:1:31 punctuator (
+991213-3.c:1:32 punctuator )
+991213-3.c:1:33 punctuator )
+991213-3.c:1:35 constant 0xbabebec0
+991213-3.c:1:45 punctuator ;
+991213-3.c:1:47 punctuator }

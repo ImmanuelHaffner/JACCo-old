@@ -1,0 +1,15 @@
+0
+complex-sign.h:6:1 keyword extern
+complex-sign.h:6:8 keyword void
+complex-sign.h:6:13 identifier abort
+complex-sign.h:6:19 punctuator (
+complex-sign.h:6:20 keyword void
+complex-sign.h:6:24 punctuator )
+complex-sign.h:6:25 punctuator ;
+complex-sign.h:7:1 keyword extern
+complex-sign.h:7:8 keyword void
+complex-sign.h:7:13 identifier exit
+complex-sign.h:7:18 punctuator (
+complex-sign.h:7:19 keyword int
+complex-sign.h:7:22 punctuator )
+complex-sign.h:7:23 punctuator ;

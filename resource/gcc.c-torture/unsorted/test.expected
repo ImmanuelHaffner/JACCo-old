@@ -1,0 +1,19 @@
+0
+test.c:1:1 identifier foo
+test.c:1:5 punctuator (
+test.c:1:6 identifier a
+test.c:1:7 punctuator )
+test.c:2:1 punctuator {
+test.c:3:3 keyword if
+test.c:3:6 punctuator (
+test.c:3:7 identifier a
+test.c:3:9 punctuator &
+test.c:3:11 constant 38
+test.c:3:13 punctuator )
+test.c:4:5 keyword return
+test.c:4:12 constant 1
+test.c:4:13 punctuator ;
+test.c:5:3 keyword return
+test.c:5:10 constant 0
+test.c:5:11 punctuator ;
+test.c:6:1 punctuator }

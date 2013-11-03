@@ -1,0 +1,22 @@
+0
+r.c:1:1 identifier r
+r.c:1:3 punctuator (
+r.c:1:4 identifier a
+r.c:1:5 punctuator ,
+r.c:1:7 identifier b
+r.c:1:8 punctuator )
+r.c:2:1 punctuator {
+r.c:3:3 keyword if
+r.c:3:6 punctuator (
+r.c:3:7 identifier a
+r.c:3:9 punctuator <
+r.c:3:11 identifier b
+r.c:3:12 punctuator )
+r.c:4:5 keyword return
+r.c:4:12 constant 1
+r.c:4:13 punctuator ;
+r.c:5:3 keyword else
+r.c:6:5 keyword return
+r.c:6:12 constant 2
+r.c:6:13 punctuator ;
+r.c:7:1 punctuator }

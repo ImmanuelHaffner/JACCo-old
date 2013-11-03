@@ -1,0 +1,19 @@
+0
+20021110.c:4:1 keyword struct
+20021110.c:4:8 identifier empty
+20021110.c:4:14 punctuator {
+20021110.c:5:1 punctuator }
+20021110.c:5:2 punctuator ;
+20021110.c:7:1 keyword void
+20021110.c:7:6 identifier foo
+20021110.c:7:9 punctuator (
+20021110.c:7:10 keyword struct
+20021110.c:7:17 identifier empty
+20021110.c:7:23 punctuator *
+20021110.c:7:24 identifier p
+20021110.c:7:25 punctuator )
+20021110.c:8:1 punctuator {
+20021110.c:9:4 identifier p
+20021110.c:9:5 punctuator ++
+20021110.c:9:7 punctuator ;
+20021110.c:10:1 punctuator }

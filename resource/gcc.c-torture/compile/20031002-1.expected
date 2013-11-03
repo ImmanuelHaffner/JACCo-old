@@ -1,0 +1,25 @@
+0
+20031002-1.c:4:1 keyword char
+20031002-1.c:4:6 identifier flags
+20031002-1.c:4:11 punctuator ;
+20031002-1.c:6:1 keyword int
+20031002-1.c:6:5 identifier bug12292
+20031002-1.c:6:13 punctuator (
+20031002-1.c:6:14 keyword int
+20031002-1.c:6:18 identifier t
+20031002-1.c:6:19 punctuator )
+20031002-1.c:7:1 punctuator {
+20031002-1.c:8:2 identifier flags
+20031002-1.c:8:8 punctuator &=
+20031002-1.c:8:11 punctuator ~
+20031002-1.c:8:12 punctuator (
+20031002-1.c:8:13 constant 1
+20031002-1.c:8:15 punctuator <<
+20031002-1.c:8:18 punctuator (
+20031002-1.c:8:19 identifier t
+20031002-1.c:8:21 punctuator +
+20031002-1.c:8:23 constant 4
+20031002-1.c:8:24 punctuator )
+20031002-1.c:8:25 punctuator )
+20031002-1.c:8:26 punctuator ;
+20031002-1.c:9:1 punctuator }

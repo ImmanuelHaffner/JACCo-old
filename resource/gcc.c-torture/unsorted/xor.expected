@@ -1,0 +1,18 @@
+0
+xor.c:1:1 identifier foo
+xor.c:1:5 punctuator (
+xor.c:1:6 identifier a
+xor.c:1:7 punctuator ,
+xor.c:1:9 identifier b
+xor.c:1:10 punctuator )
+xor.c:2:1 punctuator {
+xor.c:3:3 keyword return
+xor.c:3:10 punctuator ~
+xor.c:3:11 punctuator (
+xor.c:3:12 identifier a
+xor.c:3:14 punctuator ^
+xor.c:3:16 punctuator ~
+xor.c:3:17 constant 123
+xor.c:3:20 punctuator )
+xor.c:3:21 punctuator ;
+xor.c:4:1 punctuator }
