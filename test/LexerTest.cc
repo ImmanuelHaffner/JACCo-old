@@ -290,7 +290,7 @@ void LexerTest::testReadKeywords()
   std::cin.rdbuf( cin_bak );
 }
 
-void LexerTest::testReadNumericalConstant()
+void LexerTest::testReadDecimalConstant()
 {
   std::istringstream stream( "1 23\n4 \n 5\r\n67 8 90" );
 
@@ -360,6 +360,188 @@ void LexerTest::testReadNumericalConstant()
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "90" );
+  delete token;
+  lexer.skip();
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
+void LexerTest::testReadOctalConstant()
+{
+  std::istringstream stream( "0 01\n023 \n 04 05" );
+
+  // redirect stdin
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+  Token * token;
+
+  
+  // 0
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "0" );
+  delete token;
+  lexer.skip();
+
+  // 01
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "01" );
+  delete token;
+  lexer.skip();
+
+  // 023
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "023" );
+  delete token;
+  lexer.skip();
+
+  // 04
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "04" );
+  delete token;
+  lexer.skip();
+
+  // 05
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "05" );
+  delete token;
+  lexer.skip();
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
+void LexerTest::testReadHexConstant()
+{
+  std::istringstream stream( "0x0 0x01\n0xF3 \n 0X2d 0xAa" );
+
+  // redirect stdin
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+  Token * token;
+
+  
+  // 0x0
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "0x0" );
+  delete token;
+  lexer.skip();
+
+  // 0x01
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "0x01" );
+  delete token;
+  lexer.skip();
+
+  // 0xF3
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "0xF3" );
+  delete token;
+  lexer.skip();
+
+  // 0X2d
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "0X2d" );
+  delete token;
+  lexer.skip();
+
+  // 0xAa
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 7u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "0xAa" );
+  delete token;
+  lexer.skip();
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
+void LexerTest::testReadIntegerSuffix()
+{
+  std::istringstream stream( "0L 1u 2ll 3uL 4lU" );
+
+  // redirect stdin
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+  Token * token;
+
+
+  // 0L
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "0L" );
+  delete token;
+  lexer.skip();
+
+  // 1u
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "1u" );
+  delete token;
+  lexer.skip();
+
+  // 2ll
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 7u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "2ll" );
+  delete token;
+  lexer.skip();
+
+  // 3uL
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 11u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "3uL" );
+  delete token;
+  lexer.skip();
+
+  // 4lU
+  token = & lexer.readNumericalConstant();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 15u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "4lU" );
   delete token;
   lexer.skip();
 

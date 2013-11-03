@@ -29,7 +29,8 @@ do
   expected=$(mktemp /tmp/"${testname}".expected.XXXX);
   tail -n +2 "${expectedfile}" > "${expected}";
 
-  if ! $(diff -q "${result}" "${expected}");
+  $(diff -q "${result}" "${expected}")
+  if [ 0 -ne $? ];
   then
     diff -y "${result}" "${expected}"
     echo "-> output differs";
