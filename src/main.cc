@@ -82,13 +82,15 @@ int main(int, char** const argv)
                 if ( tok.kind == TokenKind::END_OF_FILE )
                   break;
 
-                std::ostringstream oss;
-                oss << tok << std::endl;
 
                 if ( tok.kind == TokenKind::ILLEGAL )
-                  errorf( "%s", oss.str().c_str() );
+								{
+									std::ostringstream oss;
+									oss << tok << std::endl;
+									errorf( "%s", oss.str().c_str() );
+								}
                 else
-                  std::cout << oss.str();
+                  std::cout << tok << std::endl;
               }
               break;
             }
