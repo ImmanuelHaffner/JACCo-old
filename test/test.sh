@@ -33,7 +33,8 @@ do
   if [ 0 -ne $? ];
   then
     diff -y "${result}" "${expected}"
-    echo "-> output differs";
+    echo "-> output differs: ${test}";
+    exit 1;
   else
     echo "-> passed";
   fi;
