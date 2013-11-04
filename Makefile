@@ -68,7 +68,7 @@ check: $(TESTBIN)
 
 check-all: check
 	@echo ""
-	./test/test.sh
+	- ./test/test.sh
 
 clean:
 	@echo "===> CLEAN"
