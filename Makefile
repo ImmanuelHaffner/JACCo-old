@@ -41,7 +41,7 @@ DUMMY				:= $(shell mkdir -p $(sort $(dir $(OBJ))))
 DUMMY				:= $(shell mkdir -p $(sort $(dir $(TEST_OBJ))))
 
 
-CFLAGS			+= -Wall -W -Wconstant-conversion -pedantic# -Werror
+CFLAGS			+= -Wall -W -pedantic# -Werror
 CXXFLAGS		+= $(CFLAGS) -std=c++11
 
 ifeq ($(DEBUG), 1)
