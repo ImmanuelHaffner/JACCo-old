@@ -38,7 +38,7 @@ do
     if [ 0 -ne $? ];
     then
       diff -y "${result}" "${expected}"
-      echo "-> output differs: ${test}";
+      echo "-> output differs: ${path}/${test}";
       exit 1;
     else
       echo "-> passed";
