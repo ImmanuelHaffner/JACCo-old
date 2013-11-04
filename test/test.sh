@@ -6,30 +6,33 @@ for test in $(find "resource/" -iname "*.c" -type f);
 do
   echo "testing ${test}";
   oldcwd=$(pwd);
-  cd $(dirname "${test}");
+
   testname=$(basename "${test}" .c);
   result=$(mktemp /tmp/"${testname}".XXXX);
+  expectedfile=$(dirname "${test}")/"${testname}".expected
+  expected=$(mktemp /tmp/"${testname}".expected.XXXX);
+  tail -n +2 "${expectedfile}" > "${expected}";
   
-  if ! $("${C4}" --tokenize "$(basename ${test})" > "${result}" 2>&1);
+  cd $(dirname "${test}");
+  $("${C4}" --tokenize "$(basename ${test})" > "${result}" 2>&1)
+  RES=$?
+  cd "${oldcwd}";
+
+  EXP=$(head -n 1 ${expectedfile})
+  if [ $EXP -ne 0 ]
   then
+    if [ $RES -ne 0 ]
+    then
+      echo "-> passed";
+      continue;
+    fi
     rm "${result}";
     cd "${oldcwd}";
     echo "-> error";
     continue;
   fi;
-  
-  cd "${oldcwd}";
-  expectedfile=$(dirname "${test}")/"${testname}".expected
 
-  if [ ! -e "${expectedfile}" ];
-  then
-    continue
-  fi
-
-  expected=$(mktemp /tmp/"${testname}".expected.XXXX);
-  tail -n +2 "${expectedfile}" > "${expected}";
-
-  $(diff -q "${result}" "${expected}")
+  $(diff -q "${result}" "${expected}" > /dev/null 2>&1)
   if [ 0 -ne $? ];
   then
     diff -y "${result}" "${expected}"
