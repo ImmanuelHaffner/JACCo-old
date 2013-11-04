@@ -34,7 +34,6 @@ do
   then
     diff -y "${result}" "${expected}"
     echo "-> output differs";
-    exit;
   else
     echo "-> passed";
   fi;
