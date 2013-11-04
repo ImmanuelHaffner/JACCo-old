@@ -9,7 +9,7 @@ do
 
   for test in $(ls *.c)
   do
-    echo "testing ${test}";
+    echo "testing $path/${test}";
 
     testname=$(basename "${test}" .c);
     result=$(mktemp /tmp/"${testname}".XXXX);
