@@ -2,6 +2,8 @@
 
 export C4="/home/immanuel/Documents/University/Compiler Construction/c4/build/default/c4";
 
+PASSES=0
+
 for path in $(find "resource/" -type d);
 do
   oldcwd=$(pwd)
@@ -26,6 +28,7 @@ do
       if [ $RES -ne 0 ];
       then
         echo "-> passed";
+        PASSES=$(echo $PASSES +1 | bc )
         continue;
       fi
 
@@ -39,9 +42,11 @@ do
     then
       diff -y "${result}" "${expected}"
       echo "-> output differs: ${path}/${test}";
+      echo Passed tests: $PASSES
       exit 1;
     else
       echo "-> passed";
+      PASSES=$(echo $PASSES +1 | bc )
     fi;
 
     rm "${result}";
@@ -49,3 +54,5 @@ do
   done
   cd "$oldcwd"
 done
+
+echo Passed tests: $PASSES
