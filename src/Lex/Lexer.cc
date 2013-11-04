@@ -249,6 +249,7 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
 
       switch ( file.peek() )
       {
+				case '0':
         case '"':
         case '\'':
         case '?':
