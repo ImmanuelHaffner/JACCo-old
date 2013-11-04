@@ -87,7 +87,7 @@ int main(int, char** const argv)
 								{
 									std::ostringstream oss;
 									oss << tok << std::endl;
-									errorf( "%s", oss.str().c_str() );
+									errorf( tok.pos, "%s", oss.str().c_str() );
 								}
                 else
                   std::cout << tok << std::endl;
