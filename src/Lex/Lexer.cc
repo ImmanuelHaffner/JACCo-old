@@ -631,7 +631,7 @@ void Lexer::updatePos( int c )
   if ( c == '\n' )
   {
     ++pos.line;
-    pos.column = 1;
+    pos.column = 1u;
   }
   else
     ++pos.column;
