@@ -34,7 +34,7 @@ convert-int.c:22:1 keyword long
 convert-int.c:22:6 keyword long
 convert-int.c:22:11 identifier sll
 convert-int.c:22:14 punctuator ;
-convert-int.c:23:1 identifier _Bool
+convert-int.c:23:1 keyword _Bool
 convert-int.c:23:7 identifier b
 convert-int.c:23:8 punctuator ;
 convert-int.c:25:1 keyword void

@@ -8,6 +8,6 @@ vector-3.c:8:28 constant 16
 vector-3.c:8:30 punctuator )
 vector-3.c:8:32 punctuator )
 vector-3.c:8:33 punctuator )
-vector-3.c:8:35 identifier _Bool
+vector-3.c:8:35 keyword _Bool
 vector-3.c:8:41 identifier a
 vector-3.c:8:42 punctuator ;

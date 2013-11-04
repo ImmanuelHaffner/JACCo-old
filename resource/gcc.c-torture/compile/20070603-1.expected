@@ -2,7 +2,7 @@
 20070603-1.c:2:1 keyword int
 20070603-1.c:2:5 identifier f
 20070603-1.c:2:6 punctuator (
-20070603-1.c:2:7 identifier _Complex
+20070603-1.c:2:7 keyword _Complex
 20070603-1.c:2:16 keyword double
 20070603-1.c:2:23 punctuator *
 20070603-1.c:2:24 identifier a

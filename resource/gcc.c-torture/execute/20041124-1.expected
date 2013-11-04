@@ -2,7 +2,7 @@
 20041124-1.c:1:1 keyword struct
 20041124-1.c:1:8 identifier s
 20041124-1.c:1:10 punctuator {
-20041124-1.c:1:12 identifier _Complex
+20041124-1.c:1:12 keyword _Complex
 20041124-1.c:1:21 keyword unsigned
 20041124-1.c:1:30 keyword short
 20041124-1.c:1:36 identifier x

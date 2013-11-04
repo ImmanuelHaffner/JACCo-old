@@ -11,14 +11,14 @@ pr27889.c:3:17 keyword void
 pr27889.c:3:21 punctuator )
 pr27889.c:3:22 punctuator )
 pr27889.c:3:23 punctuator ;
-pr27889.c:4:1 identifier _Complex
+pr27889.c:4:1 keyword _Complex
 pr27889.c:4:10 keyword int
 pr27889.c:4:14 identifier g
 pr27889.c:4:16 punctuator (
 pr27889.c:4:17 keyword void
 pr27889.c:4:21 punctuator )
 pr27889.c:5:1 punctuator {
-pr27889.c:6:3 identifier _Complex
+pr27889.c:6:3 keyword _Complex
 pr27889.c:6:12 keyword int
 pr27889.c:6:16 identifier x
 pr27889.c:6:17 punctuator ;

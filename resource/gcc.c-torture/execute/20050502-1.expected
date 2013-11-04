@@ -82,10 +82,10 @@
 20050502-1.c:22:27 punctuator *
 20050502-1.c:22:28 identifier x
 20050502-1.c:22:29 punctuator ,
-20050502-1.c:22:31 identifier _Bool
+20050502-1.c:22:31 keyword _Bool
 20050502-1.c:22:37 identifier y
 20050502-1.c:22:38 punctuator ,
-20050502-1.c:22:40 identifier _Bool
+20050502-1.c:22:40 keyword _Bool
 20050502-1.c:22:46 identifier z
 20050502-1.c:22:47 punctuator )
 20050502-1.c:23:1 punctuator {

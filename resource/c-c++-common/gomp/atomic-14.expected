@@ -1,5 +1,5 @@
 0
-atomic-14.c:8:1 identifier _Bool
+atomic-14.c:8:1 keyword _Bool
 atomic-14.c:8:7 punctuator *
 atomic-14.c:8:8 identifier baz
 atomic-14.c:8:12 punctuator (

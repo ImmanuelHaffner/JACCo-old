@@ -1,5 +1,5 @@
 0
-20081108-3.c:4:1 identifier _Bool
+20081108-3.c:4:1 keyword _Bool
 20081108-3.c:4:7 identifier f
 20081108-3.c:4:8 punctuator (
 20081108-3.c:4:9 keyword void

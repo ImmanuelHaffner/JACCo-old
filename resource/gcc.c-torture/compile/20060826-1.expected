@@ -1,6 +1,6 @@
 0
 20060826-1.c:1:1 keyword typedef
-20060826-1.c:1:9 identifier _Complex
+20060826-1.c:1:9 keyword _Complex
 20060826-1.c:1:18 keyword double
 20060826-1.c:1:25 identifier S
 20060826-1.c:1:26 punctuator ;

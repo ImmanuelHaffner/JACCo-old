@@ -34,7 +34,7 @@
 20030320-1.c:11:3 identifier size_t
 20030320-1.c:11:10 identifier len
 20030320-1.c:11:13 punctuator ;
-20030320-1.c:12:3 identifier _Bool
+20030320-1.c:12:3 keyword _Bool
 20030320-1.c:12:9 identifier is_curly
 20030320-1.c:12:18 punctuator =
 20030320-1.c:12:20 constant 0

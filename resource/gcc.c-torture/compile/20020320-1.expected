@@ -29,7 +29,7 @@
 20020320-1.c:11:17 identifier x
 20020320-1.c:11:18 punctuator ;
 20020320-1.c:12:3 keyword static
-20020320-1.c:12:10 identifier _Bool
+20020320-1.c:12:10 keyword _Bool
 20020320-1.c:12:16 identifier a
 20020320-1.c:12:17 punctuator ;
 20020320-1.c:13:3 identifier T

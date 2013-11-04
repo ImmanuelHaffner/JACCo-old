@@ -1,6 +1,6 @@
 0
 pr47150.c:3:1 keyword float
-pr47150.c:3:7 identifier _Complex
+pr47150.c:3:7 keyword _Complex
 pr47150.c:3:16 identifier foo
 pr47150.c:3:20 punctuator (
 pr47150.c:3:21 keyword float
@@ -19,7 +19,7 @@ pr47150.c:8:11 punctuator =
 pr47150.c:8:13 constant 2
 pr47150.c:8:14 punctuator ;
 pr47150.c:9:3 keyword float
-pr47150.c:9:9 identifier _Complex
+pr47150.c:9:9 keyword _Complex
 pr47150.c:9:18 identifier b
 pr47150.c:9:19 punctuator ;
 pr47150.c:10:3 identifier b

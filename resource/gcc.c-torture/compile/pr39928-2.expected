@@ -1,6 +1,6 @@
 0
 pr39928-2.c:1:1 keyword typedef
-pr39928-2.c:1:9 identifier _Complex
+pr39928-2.c:1:9 keyword _Complex
 pr39928-2.c:1:18 keyword float
 pr39928-2.c:1:24 identifier __m128
 pr39928-2.c:1:30 punctuator ;

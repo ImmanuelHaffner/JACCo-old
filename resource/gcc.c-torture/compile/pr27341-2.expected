@@ -15,7 +15,7 @@ pr27341-2.c:2:1 keyword extern
 pr27341-2.c:2:8 keyword void
 pr27341-2.c:2:13 identifier matmul_c8
 pr27341-2.c:2:23 punctuator (
-pr27341-2.c:2:24 identifier _Complex
+pr27341-2.c:2:24 keyword _Complex
 pr27341-2.c:2:33 keyword double
 pr27341-2.c:2:40 punctuator *
 pr27341-2.c:2:42 identifier dest

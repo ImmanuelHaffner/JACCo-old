@@ -16,7 +16,7 @@ pr58775.c:7:1 punctuator {
 pr58775.c:8:3 keyword char
 pr58775.c:8:8 identifier a
 pr58775.c:8:9 punctuator ;
-pr58775.c:9:3 identifier _Bool
+pr58775.c:9:3 keyword _Bool
 pr58775.c:9:9 identifier b
 pr58775.c:9:10 punctuator ,
 pr58775.c:9:12 identifier c

@@ -6,7 +6,7 @@ pr25513.c:1:7 keyword void
 pr25513.c:1:11 punctuator )
 pr25513.c:2:1 punctuator {
 pr25513.c:3:3 keyword static
-pr25513.c:3:10 identifier _Complex
+pr25513.c:3:10 keyword _Complex
 pr25513.c:3:19 keyword double
 pr25513.c:3:26 identifier t
 pr25513.c:3:27 punctuator ;

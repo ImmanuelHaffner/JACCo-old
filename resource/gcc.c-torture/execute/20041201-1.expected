@@ -2,11 +2,11 @@
 20041201-1.c:3:1 keyword typedef
 20041201-1.c:3:9 keyword struct
 20041201-1.c:3:16 punctuator {
-20041201-1.c:3:18 identifier _Complex
+20041201-1.c:3:18 keyword _Complex
 20041201-1.c:3:27 keyword char
 20041201-1.c:3:32 identifier a
 20041201-1.c:3:33 punctuator ;
-20041201-1.c:3:35 identifier _Complex
+20041201-1.c:3:35 keyword _Complex
 20041201-1.c:3:44 keyword char
 20041201-1.c:3:49 identifier b
 20041201-1.c:3:50 punctuator ;

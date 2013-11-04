@@ -2,13 +2,13 @@
 pr38359.c:1:1 keyword unsigned
 pr38359.c:1:10 identifier _ov_64_seek_lap
 pr38359.c:1:26 punctuator (
-pr38359.c:1:27 identifier _Bool
+pr38359.c:1:27 keyword _Bool
 pr38359.c:1:33 identifier x1
 pr38359.c:1:35 punctuator ,
-pr38359.c:1:37 identifier _Bool
+pr38359.c:1:37 keyword _Bool
 pr38359.c:1:43 identifier x2
 pr38359.c:1:45 punctuator ,
-pr38359.c:1:47 identifier _Bool
+pr38359.c:1:47 keyword _Bool
 pr38359.c:1:53 identifier x3
 pr38359.c:1:55 punctuator )
 pr38359.c:2:1 punctuator {

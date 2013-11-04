@@ -2,7 +2,7 @@
 pr26213.c:1:1 keyword void
 pr26213.c:2:1 identifier xnanosleep
 pr26213.c:2:12 punctuator (
-pr26213.c:2:13 identifier _Bool
+pr26213.c:2:13 keyword _Bool
 pr26213.c:2:19 identifier overflow
 pr26213.c:2:27 punctuator )
 pr26213.c:3:1 punctuator {

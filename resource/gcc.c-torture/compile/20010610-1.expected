@@ -5,11 +5,11 @@
 20010610-1.c:8:6 keyword void
 20010610-1.c:8:10 punctuator )
 20010610-1.c:9:1 punctuator {
-20010610-1.c:10:3 identifier _Bool
+20010610-1.c:10:3 keyword _Bool
 20010610-1.c:10:9 identifier arr
 20010610-1.c:10:12 punctuator [
 20010610-1.c:10:13 punctuator (
-20010610-1.c:10:14 identifier _Bool
+20010610-1.c:10:14 keyword _Bool
 20010610-1.c:10:19 punctuator )
 20010610-1.c:10:20 constant 1
 20010610-1.c:10:21 punctuator ]

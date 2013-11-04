@@ -1,5 +1,5 @@
 0
-20010423-1.c:8:1 identifier _Bool
+20010423-1.c:8:1 keyword _Bool
 20010423-1.c:8:7 identifier x
 20010423-1.c:8:8 punctuator ;
 20010423-1.c:9:1 keyword unsigned

@@ -4,7 +4,7 @@
 20010114-2.c:5:10 keyword int
 20010114-2.c:5:14 identifier x
 20010114-2.c:5:15 punctuator ;
-20010114-2.c:5:17 identifier _Bool
+20010114-2.c:5:17 keyword _Bool
 20010114-2.c:5:23 identifier y
 20010114-2.c:5:24 punctuator ;
 20010114-2.c:5:26 punctuator }

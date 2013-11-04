@@ -14,7 +14,7 @@
 20030714-1.c:4:22 punctuator )
 20030714-1.c:4:23 punctuator ;
 20030714-1.c:6:1 keyword typedef
-20030714-1.c:6:9 identifier _Bool
+20030714-1.c:6:9 keyword _Bool
 20030714-1.c:6:15 identifier bool
 20030714-1.c:6:19 punctuator ;
 20030714-1.c:7:1 keyword const

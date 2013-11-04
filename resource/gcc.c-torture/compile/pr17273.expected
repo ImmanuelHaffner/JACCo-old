@@ -31,7 +31,7 @@ pr17273.c:4:29 punctuator ;
 pr17273.c:7:1 keyword void
 pr17273.c:7:6 identifier bar
 pr17273.c:7:9 punctuator (
-pr17273.c:7:10 identifier _Bool
+pr17273.c:7:10 keyword _Bool
 pr17273.c:7:16 identifier b
 pr17273.c:7:17 punctuator )
 pr17273.c:8:1 punctuator {

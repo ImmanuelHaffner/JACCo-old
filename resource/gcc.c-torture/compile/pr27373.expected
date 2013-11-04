@@ -14,7 +14,7 @@ pr27373.c:3:20 punctuator [
 pr27373.c:3:21 constant 1
 pr27373.c:3:22 punctuator ]
 pr27373.c:3:23 punctuator ;
-pr27373.c:4:5 identifier _Bool
+pr27373.c:4:5 keyword _Bool
 pr27373.c:4:11 identifier ant
 pr27373.c:4:14 punctuator ;
 pr27373.c:5:1 punctuator }
@@ -23,7 +23,7 @@ pr27373.c:5:7 punctuator ;
 pr27373.c:8:1 keyword void
 pr27373.c:8:6 identifier cp_assert
 pr27373.c:8:15 punctuator (
-pr27373.c:8:16 identifier _Bool
+pr27373.c:8:16 keyword _Bool
 pr27373.c:8:21 punctuator *
 pr27373.c:8:22 punctuator ,
 pr27373.c:8:24 keyword float
@@ -32,7 +32,7 @@ pr27373.c:8:30 punctuator ,
 pr27373.c:8:32 keyword int
 pr27373.c:8:35 punctuator *
 pr27373.c:8:36 punctuator ,
-pr27373.c:8:38 identifier _Bool
+pr27373.c:8:38 keyword _Bool
 pr27373.c:8:43 punctuator *
 pr27373.c:8:44 punctuator )
 pr27373.c:8:45 punctuator ;
@@ -52,7 +52,7 @@ pr27373.c:10:40 keyword float
 pr27373.c:10:46 identifier u
 pr27373.c:10:47 punctuator )
 pr27373.c:11:1 punctuator {
-pr27373.c:12:5 identifier _Bool
+pr27373.c:12:5 keyword _Bool
 pr27373.c:12:11 identifier t
 pr27373.c:12:13 punctuator =
 pr27373.c:12:15 punctuator *
@@ -63,7 +63,7 @@ pr27373.c:12:31 punctuator ;
 pr27373.c:13:5 keyword float
 pr27373.c:13:11 identifier routinep
 pr27373.c:13:19 punctuator ;
-pr27373.c:14:5 identifier _Bool
+pr27373.c:14:5 keyword _Bool
 pr27373.c:14:11 identifier failure
 pr27373.c:14:18 punctuator ;
 pr27373.c:15:5 identifier cp_assert

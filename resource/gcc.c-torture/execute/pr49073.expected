@@ -43,7 +43,7 @@ pr49073.c:9:14 identifier i
 pr49073.c:9:16 punctuator =
 pr49073.c:9:18 constant 1
 pr49073.c:9:19 punctuator ;
-pr49073.c:10:3 identifier _Bool
+pr49073.c:10:3 keyword _Bool
 pr49073.c:10:9 identifier f
 pr49073.c:10:11 punctuator =
 pr49073.c:10:13 constant 0

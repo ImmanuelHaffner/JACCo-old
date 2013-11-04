@@ -6,7 +6,7 @@
 20070614-1.c:1:20 keyword void
 20070614-1.c:1:24 punctuator )
 20070614-1.c:1:25 punctuator ;
-20070614-1.c:3:1 identifier _Complex
+20070614-1.c:3:1 keyword _Complex
 20070614-1.c:3:10 identifier v
 20070614-1.c:3:12 punctuator =
 20070614-1.c:3:14 constant 3.0
@@ -16,7 +16,7 @@
 20070614-1.c:5:1 keyword void
 20070614-1.c:6:1 identifier foo
 20070614-1.c:6:5 punctuator (
-20070614-1.c:6:6 identifier _Complex
+20070614-1.c:6:6 keyword _Complex
 20070614-1.c:6:15 identifier z
 20070614-1.c:6:16 punctuator ,
 20070614-1.c:6:18 keyword int
@@ -35,10 +35,10 @@
 20070614-1.c:9:12 punctuator )
 20070614-1.c:9:13 punctuator ;
 20070614-1.c:10:1 punctuator }
-20070614-1.c:12:1 identifier _Complex
+20070614-1.c:12:1 keyword _Complex
 20070614-1.c:12:10 identifier bar
 20070614-1.c:12:14 punctuator (
-20070614-1.c:12:15 identifier _Complex
+20070614-1.c:12:15 keyword _Complex
 20070614-1.c:12:24 identifier z
 20070614-1.c:12:25 punctuator )
 20070614-1.c:12:27 identifier __attribute__
@@ -48,10 +48,10 @@
 20070614-1.c:12:47 punctuator )
 20070614-1.c:12:48 punctuator )
 20070614-1.c:12:49 punctuator ;
-20070614-1.c:13:1 identifier _Complex
+20070614-1.c:13:1 keyword _Complex
 20070614-1.c:14:1 identifier bar
 20070614-1.c:14:5 punctuator (
-20070614-1.c:14:6 identifier _Complex
+20070614-1.c:14:6 keyword _Complex
 20070614-1.c:14:15 identifier z
 20070614-1.c:14:16 punctuator )
 20070614-1.c:15:1 punctuator {

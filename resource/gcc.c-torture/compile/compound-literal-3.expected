@@ -2,7 +2,7 @@
 compound-literal-3.c:4:1 keyword int
 compound-literal-3.c:4:5 identifier f
 compound-literal-3.c:4:6 punctuator (
-compound-literal-3.c:4:7 identifier _Complex
+compound-literal-3.c:4:7 keyword _Complex
 compound-literal-3.c:4:16 keyword float
 compound-literal-3.c:4:22 punctuator *
 compound-literal-3.c:4:23 punctuator )
@@ -10,7 +10,7 @@ compound-literal-3.c:4:24 punctuator ;
 compound-literal-3.c:5:1 keyword int
 compound-literal-3.c:5:5 identifier g
 compound-literal-3.c:5:6 punctuator (
-compound-literal-3.c:5:7 identifier _Complex
+compound-literal-3.c:5:7 keyword _Complex
 compound-literal-3.c:5:16 keyword float
 compound-literal-3.c:5:22 identifier x
 compound-literal-3.c:5:23 punctuator )
@@ -20,7 +20,7 @@ compound-literal-3.c:7:10 identifier f
 compound-literal-3.c:7:11 punctuator (
 compound-literal-3.c:7:12 punctuator &
 compound-literal-3.c:7:13 punctuator (
-compound-literal-3.c:7:14 identifier _Complex
+compound-literal-3.c:7:14 keyword _Complex
 compound-literal-3.c:7:23 keyword float
 compound-literal-3.c:7:28 punctuator )
 compound-literal-3.c:7:29 punctuator {

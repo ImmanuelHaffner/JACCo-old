@@ -2,11 +2,11 @@
 pr42248.c:1:1 keyword typedef
 pr42248.c:1:9 keyword struct
 pr42248.c:1:16 punctuator {
-pr42248.c:2:3 identifier _Complex
+pr42248.c:2:3 keyword _Complex
 pr42248.c:2:12 keyword double
 pr42248.c:2:19 identifier a
 pr42248.c:2:20 punctuator ;
-pr42248.c:3:3 identifier _Complex
+pr42248.c:3:3 keyword _Complex
 pr42248.c:3:12 keyword double
 pr42248.c:3:19 identifier b
 pr42248.c:3:20 punctuator ;
@@ -22,7 +22,7 @@ pr42248.c:9:7 punctuator (
 pr42248.c:9:8 identifier Scf10
 pr42248.c:9:14 identifier x
 pr42248.c:9:15 punctuator ,
-pr42248.c:9:17 identifier _Complex
+pr42248.c:9:17 keyword _Complex
 pr42248.c:9:26 keyword double
 pr42248.c:9:33 identifier y
 pr42248.c:9:34 punctuator )
@@ -47,7 +47,7 @@ pr42248.c:15:7 identifier Scf10
 pr42248.c:15:13 punctuator *
 pr42248.c:15:14 identifier p
 pr42248.c:15:15 punctuator ,
-pr42248.c:15:17 identifier _Complex
+pr42248.c:15:17 keyword _Complex
 pr42248.c:15:26 keyword double
 pr42248.c:15:33 identifier y
 pr42248.c:15:34 punctuator )
@@ -70,7 +70,7 @@ pr42248.c:23:9 punctuator &
 pr42248.c:23:10 identifier g1s
 pr42248.c:23:13 punctuator ,
 pr42248.c:23:15 punctuator (
-pr42248.c:23:16 identifier _Complex
+pr42248.c:23:16 keyword _Complex
 pr42248.c:23:25 keyword double
 pr42248.c:23:31 punctuator )
 pr42248.c:23:32 constant 1
@@ -81,7 +81,7 @@ pr42248.c:24:9 punctuator (
 pr42248.c:24:10 identifier g1s
 pr42248.c:24:13 punctuator ,
 pr42248.c:24:15 punctuator (
-pr42248.c:24:16 identifier _Complex
+pr42248.c:24:16 keyword _Complex
 pr42248.c:24:25 keyword double
 pr42248.c:24:31 punctuator )
 pr42248.c:24:32 constant 1

@@ -11,7 +11,7 @@ pr49644.c:6:1 identifier main
 pr49644.c:6:6 punctuator (
 pr49644.c:6:7 punctuator )
 pr49644.c:7:1 punctuator {
-pr49644.c:8:3 identifier _Complex
+pr49644.c:8:3 keyword _Complex
 pr49644.c:8:12 keyword double
 pr49644.c:8:19 identifier a
 pr49644.c:8:20 punctuator [

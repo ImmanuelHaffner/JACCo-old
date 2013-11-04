@@ -18,7 +18,7 @@ pr53187.c:6:23 keyword double
 pr53187.c:6:30 identifier z
 pr53187.c:6:31 punctuator )
 pr53187.c:7:1 punctuator {
-pr53187.c:8:3 identifier _Bool
+pr53187.c:8:3 keyword _Bool
 pr53187.c:8:9 identifier t
 pr53187.c:8:11 punctuator =
 pr53187.c:8:13 identifier z

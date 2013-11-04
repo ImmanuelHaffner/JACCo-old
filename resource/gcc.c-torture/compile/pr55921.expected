@@ -2,7 +2,7 @@
 pr55921.c:3:1 keyword typedef
 pr55921.c:3:9 keyword union
 pr55921.c:4:1 punctuator {
-pr55921.c:5:3 identifier _Complex
+pr55921.c:5:3 keyword _Complex
 pr55921.c:5:12 keyword float
 pr55921.c:5:18 identifier cf
 pr55921.c:5:20 punctuator ;
@@ -24,7 +24,7 @@ pr55921.c:10:15 identifier ucf
 pr55921.c:10:19 punctuator *
 pr55921.c:10:20 identifier out
 pr55921.c:10:23 punctuator ,
-pr55921.c:10:25 identifier _Complex
+pr55921.c:10:25 keyword _Complex
 pr55921.c:10:34 keyword float
 pr55921.c:10:40 identifier r
 pr55921.c:10:41 punctuator )
@@ -35,7 +35,7 @@ pr55921.c:12:8 punctuator ;
 pr55921.c:13:3 identifier ucf
 pr55921.c:13:7 identifier ucf1
 pr55921.c:13:11 punctuator ;
-pr55921.c:14:3 identifier _Complex
+pr55921.c:14:3 keyword _Complex
 pr55921.c:14:12 keyword float
 pr55921.c:14:18 identifier cf
 pr55921.c:14:20 punctuator ;

@@ -46,7 +46,7 @@ convert-int-fold.c:28:3 keyword long
 convert-int-fold.c:28:8 keyword long
 convert-int-fold.c:28:13 identifier sll
 convert-int-fold.c:28:16 punctuator ;
-convert-int-fold.c:29:3 identifier _Bool
+convert-int-fold.c:29:3 keyword _Bool
 convert-int-fold.c:29:9 identifier b
 convert-int-fold.c:29:10 punctuator ;
 convert-int-fold.c:36:3 identifier d32

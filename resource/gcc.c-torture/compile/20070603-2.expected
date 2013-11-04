@@ -1,6 +1,6 @@
 0
 20070603-2.c:1:1 keyword typedef
-20070603-2.c:1:9 identifier _Complex
+20070603-2.c:1:9 keyword _Complex
 20070603-2.c:1:18 keyword double
 20070603-2.c:1:25 identifier ar
 20070603-2.c:1:27 punctuator [

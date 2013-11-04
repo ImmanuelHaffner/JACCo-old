@@ -29,11 +29,11 @@
 20030903-1.c:6:47 punctuator ;
 20030903-1.c:7:1 keyword extern
 20030903-1.c:7:8 keyword double
-20030903-1.c:7:15 identifier _Complex
+20030903-1.c:7:15 keyword _Complex
 20030903-1.c:7:24 identifier conj
 20030903-1.c:7:29 punctuator (
 20030903-1.c:7:30 keyword double
-20030903-1.c:7:37 identifier _Complex
+20030903-1.c:7:37 keyword _Complex
 20030903-1.c:7:45 punctuator )
 20030903-1.c:7:46 punctuator ;
 20030903-1.c:8:1 keyword extern
@@ -41,7 +41,7 @@
 20030903-1.c:8:15 identifier carg
 20030903-1.c:8:20 punctuator (
 20030903-1.c:8:21 keyword double
-20030903-1.c:8:28 identifier _Complex
+20030903-1.c:8:28 keyword _Complex
 20030903-1.c:8:37 identifier __z
 20030903-1.c:8:40 punctuator )
 20030903-1.c:8:41 punctuator ;

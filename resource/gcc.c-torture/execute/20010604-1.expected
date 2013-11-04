@@ -11,13 +11,13 @@
 20010604-1.c:2:22 keyword int
 20010604-1.c:2:26 identifier c
 20010604-1.c:2:27 punctuator ,
-20010604-1.c:2:29 identifier _Bool
+20010604-1.c:2:29 keyword _Bool
 20010604-1.c:2:35 identifier d
 20010604-1.c:2:36 punctuator ,
-20010604-1.c:2:38 identifier _Bool
+20010604-1.c:2:38 keyword _Bool
 20010604-1.c:2:44 identifier e
 20010604-1.c:2:45 punctuator ,
-20010604-1.c:2:47 identifier _Bool
+20010604-1.c:2:47 keyword _Bool
 20010604-1.c:2:53 identifier f
 20010604-1.c:2:54 punctuator ,
 20010604-1.c:2:56 keyword char

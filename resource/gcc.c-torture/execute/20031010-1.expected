@@ -14,13 +14,13 @@
 20031010-1.c:4:15 keyword long
 20031010-1.c:4:20 identifier cf
 20031010-1.c:4:22 punctuator ,
-20031010-1.c:4:24 identifier _Bool
+20031010-1.c:4:24 keyword _Bool
 20031010-1.c:4:30 identifier p1
 20031010-1.c:4:32 punctuator ,
-20031010-1.c:4:34 identifier _Bool
+20031010-1.c:4:34 keyword _Bool
 20031010-1.c:4:40 identifier p2
 20031010-1.c:4:42 punctuator ,
-20031010-1.c:4:44 identifier _Bool
+20031010-1.c:4:44 keyword _Bool
 20031010-1.c:4:50 identifier p3
 20031010-1.c:4:52 punctuator )
 20031010-1.c:5:1 punctuator {

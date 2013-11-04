@@ -60,7 +60,7 @@ sra-1.c:24:1 punctuator }
 sra-1.c:26:1 keyword struct
 sra-1.c:26:8 identifier sim_cmplx
 sra-1.c:27:1 punctuator {
-sra-1.c:28:3 identifier _Complex
+sra-1.c:28:3 keyword _Complex
 sra-1.c:28:12 keyword double
 sra-1.c:28:19 identifier c
 sra-1.c:28:20 punctuator ;
@@ -74,7 +74,7 @@ sra-1.c:31:32 punctuator (
 sra-1.c:31:33 keyword void
 sra-1.c:31:37 punctuator )
 sra-1.c:31:38 punctuator ;
-sra-1.c:33:1 identifier _Complex
+sra-1.c:33:1 keyword _Complex
 sra-1.c:33:10 keyword double
 sra-1.c:33:17 identifier foo_c
 sra-1.c:33:23 punctuator (

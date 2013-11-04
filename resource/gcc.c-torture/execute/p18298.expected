@@ -4186,7 +4186,7 @@ p18298.c:1022:14 punctuator =
 p18298.c:1022:16 string-literal "a"
 p18298.c:1022:19 punctuator ;
 p18298.c:1023:1 keyword inline
-p18298.c:1023:8 identifier _Bool
+p18298.c:1023:8 keyword _Bool
 p18298.c:1023:14 identifier foo
 p18298.c:1023:17 punctuator (
 p18298.c:1023:18 keyword const

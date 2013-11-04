@@ -23,7 +23,7 @@ pr23476.c:5:7 identifier tt
 pr23476.c:5:10 punctuator =
 pr23476.c:5:12 identifier i
 pr23476.c:5:13 punctuator ;
-pr23476.c:6:3 identifier _Bool
+pr23476.c:6:3 keyword _Bool
 pr23476.c:6:9 identifier a
 pr23476.c:6:11 punctuator =
 pr23476.c:6:13 identifier i

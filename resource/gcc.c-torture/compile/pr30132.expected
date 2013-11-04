@@ -3,7 +3,7 @@ pr30132.c:1:1 keyword double
 pr30132.c:1:8 identifier testit
 pr30132.c:1:14 punctuator (
 pr30132.c:1:15 keyword double
-pr30132.c:1:22 identifier _Complex
+pr30132.c:1:22 keyword _Complex
 pr30132.c:1:30 punctuator *
 pr30132.c:1:32 identifier t
 pr30132.c:1:33 punctuator )

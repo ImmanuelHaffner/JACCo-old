@@ -7,7 +7,7 @@ pr41987.c:1:23 punctuator )
 pr41987.c:2:1 punctuator {
 pr41987.c:3:3 keyword do
 pr41987.c:3:6 punctuator {
-pr41987.c:3:8 identifier _Complex
+pr41987.c:3:8 keyword _Complex
 pr41987.c:3:17 keyword float
 pr41987.c:3:23 identifier ylm
 pr41987.c:3:26 punctuator ;
@@ -36,7 +36,7 @@ pr41987.c:3:90 punctuator )
 pr41987.c:3:91 punctuator ;
 pr41987.c:4:3 keyword do
 pr41987.c:4:6 punctuator {
-pr41987.c:4:8 identifier _Complex
+pr41987.c:4:8 keyword _Complex
 pr41987.c:4:17 keyword double
 pr41987.c:4:24 identifier ylm
 pr41987.c:4:27 punctuator ;
@@ -65,7 +65,7 @@ pr41987.c:4:92 punctuator )
 pr41987.c:4:93 punctuator ;
 pr41987.c:5:3 keyword do
 pr41987.c:5:6 punctuator {
-pr41987.c:5:8 identifier _Complex
+pr41987.c:5:8 keyword _Complex
 pr41987.c:5:17 keyword long
 pr41987.c:5:22 keyword double
 pr41987.c:5:29 identifier ylm
@@ -96,7 +96,7 @@ pr41987.c:5:102 punctuator )
 pr41987.c:5:103 punctuator ;
 pr41987.c:7:3 keyword do
 pr41987.c:7:6 punctuator {
-pr41987.c:7:8 identifier _Complex
+pr41987.c:7:8 keyword _Complex
 pr41987.c:7:17 keyword char
 pr41987.c:7:22 identifier ylm
 pr41987.c:7:25 punctuator ;
@@ -125,7 +125,7 @@ pr41987.c:7:88 punctuator )
 pr41987.c:7:89 punctuator ;
 pr41987.c:8:3 keyword do
 pr41987.c:8:6 punctuator {
-pr41987.c:8:8 identifier _Complex
+pr41987.c:8:8 keyword _Complex
 pr41987.c:8:17 keyword short
 pr41987.c:8:23 identifier ylm
 pr41987.c:8:26 punctuator ;
@@ -154,7 +154,7 @@ pr41987.c:8:90 punctuator )
 pr41987.c:8:91 punctuator ;
 pr41987.c:9:3 keyword do
 pr41987.c:9:6 punctuator {
-pr41987.c:9:8 identifier _Complex
+pr41987.c:9:8 keyword _Complex
 pr41987.c:9:17 keyword int
 pr41987.c:9:21 identifier ylm
 pr41987.c:9:24 punctuator ;
@@ -183,7 +183,7 @@ pr41987.c:9:86 punctuator )
 pr41987.c:9:87 punctuator ;
 pr41987.c:10:3 keyword do
 pr41987.c:10:6 punctuator {
-pr41987.c:10:8 identifier _Complex
+pr41987.c:10:8 keyword _Complex
 pr41987.c:10:17 keyword long
 pr41987.c:10:22 identifier ylm
 pr41987.c:10:25 punctuator ;
@@ -212,7 +212,7 @@ pr41987.c:10:88 punctuator )
 pr41987.c:10:89 punctuator ;
 pr41987.c:11:3 keyword do
 pr41987.c:11:6 punctuator {
-pr41987.c:11:8 identifier _Complex
+pr41987.c:11:8 keyword _Complex
 pr41987.c:11:17 keyword long
 pr41987.c:11:22 keyword long
 pr41987.c:11:27 identifier ylm

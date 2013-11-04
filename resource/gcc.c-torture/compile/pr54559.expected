@@ -1,7 +1,7 @@
 0
 pr54559.c:3:1 keyword typedef
 pr54559.c:3:9 keyword double
-pr54559.c:3:16 identifier _Complex
+pr54559.c:3:16 keyword _Complex
 pr54559.c:3:25 identifier T
 pr54559.c:3:26 punctuator ;
 pr54559.c:5:1 identifier T

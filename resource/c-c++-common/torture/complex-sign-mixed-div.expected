@@ -23,7 +23,7 @@ complex-sign-mixed-div.c:17:3 keyword do
 complex-sign-mixed-div.c:17:6 punctuator {
 complex-sign-mixed-div.c:17:8 keyword do
 complex-sign-mixed-div.c:17:11 punctuator {
-complex-sign-mixed-div.c:17:13 identifier _Complex
+complex-sign-mixed-div.c:17:13 keyword _Complex
 complex-sign-mixed-div.c:17:22 keyword float
 complex-sign-mixed-div.c:17:28 identifier a1
 complex-sign-mixed-div.c:17:30 punctuator ,
@@ -33,7 +33,7 @@ complex-sign-mixed-div.c:17:36 keyword float
 complex-sign-mixed-div.c:17:42 identifier b1
 complex-sign-mixed-div.c:17:44 punctuator ;
 complex-sign-mixed-div.c:17:46 keyword volatile
-complex-sign-mixed-div.c:17:55 identifier _Complex
+complex-sign-mixed-div.c:17:55 keyword _Complex
 complex-sign-mixed-div.c:17:64 keyword float
 complex-sign-mixed-div.c:17:70 identifier a2
 complex-sign-mixed-div.c:17:72 punctuator ,
@@ -339,7 +339,7 @@ complex-sign-mixed-div.c:17:967 punctuator )
 complex-sign-mixed-div.c:17:968 punctuator ;
 complex-sign-mixed-div.c:17:970 keyword do
 complex-sign-mixed-div.c:17:973 punctuator {
-complex-sign-mixed-div.c:17:975 identifier _Complex
+complex-sign-mixed-div.c:17:975 keyword _Complex
 complex-sign-mixed-div.c:17:984 keyword float
 complex-sign-mixed-div.c:17:990 identifier a1
 complex-sign-mixed-div.c:17:992 punctuator ,
@@ -349,7 +349,7 @@ complex-sign-mixed-div.c:17:998 keyword float
 complex-sign-mixed-div.c:17:1004 identifier b1
 complex-sign-mixed-div.c:17:1006 punctuator ;
 complex-sign-mixed-div.c:17:1008 keyword volatile
-complex-sign-mixed-div.c:17:1017 identifier _Complex
+complex-sign-mixed-div.c:17:1017 keyword _Complex
 complex-sign-mixed-div.c:17:1026 keyword float
 complex-sign-mixed-div.c:17:1032 identifier a2
 complex-sign-mixed-div.c:17:1034 punctuator ,
@@ -655,7 +655,7 @@ complex-sign-mixed-div.c:17:1929 punctuator )
 complex-sign-mixed-div.c:17:1930 punctuator ;
 complex-sign-mixed-div.c:17:1932 keyword do
 complex-sign-mixed-div.c:17:1935 punctuator {
-complex-sign-mixed-div.c:17:1937 identifier _Complex
+complex-sign-mixed-div.c:17:1937 keyword _Complex
 complex-sign-mixed-div.c:17:1946 keyword float
 complex-sign-mixed-div.c:17:1952 identifier a1
 complex-sign-mixed-div.c:17:1954 punctuator ,
@@ -665,7 +665,7 @@ complex-sign-mixed-div.c:17:1960 keyword float
 complex-sign-mixed-div.c:17:1966 identifier b1
 complex-sign-mixed-div.c:17:1968 punctuator ;
 complex-sign-mixed-div.c:17:1970 keyword volatile
-complex-sign-mixed-div.c:17:1979 identifier _Complex
+complex-sign-mixed-div.c:17:1979 keyword _Complex
 complex-sign-mixed-div.c:17:1988 keyword float
 complex-sign-mixed-div.c:17:1994 identifier a2
 complex-sign-mixed-div.c:17:1996 punctuator ,
@@ -971,7 +971,7 @@ complex-sign-mixed-div.c:17:2891 punctuator )
 complex-sign-mixed-div.c:17:2892 punctuator ;
 complex-sign-mixed-div.c:17:2894 keyword do
 complex-sign-mixed-div.c:17:2897 punctuator {
-complex-sign-mixed-div.c:17:2899 identifier _Complex
+complex-sign-mixed-div.c:17:2899 keyword _Complex
 complex-sign-mixed-div.c:17:2908 keyword float
 complex-sign-mixed-div.c:17:2914 identifier a1
 complex-sign-mixed-div.c:17:2916 punctuator ,
@@ -981,7 +981,7 @@ complex-sign-mixed-div.c:17:2922 keyword float
 complex-sign-mixed-div.c:17:2928 identifier b1
 complex-sign-mixed-div.c:17:2930 punctuator ;
 complex-sign-mixed-div.c:17:2932 keyword volatile
-complex-sign-mixed-div.c:17:2941 identifier _Complex
+complex-sign-mixed-div.c:17:2941 keyword _Complex
 complex-sign-mixed-div.c:17:2950 keyword float
 complex-sign-mixed-div.c:17:2956 identifier a2
 complex-sign-mixed-div.c:17:2958 punctuator ,
@@ -1287,7 +1287,7 @@ complex-sign-mixed-div.c:17:3853 punctuator )
 complex-sign-mixed-div.c:17:3854 punctuator ;
 complex-sign-mixed-div.c:17:3856 keyword do
 complex-sign-mixed-div.c:17:3859 punctuator {
-complex-sign-mixed-div.c:17:3861 identifier _Complex
+complex-sign-mixed-div.c:17:3861 keyword _Complex
 complex-sign-mixed-div.c:17:3870 keyword float
 complex-sign-mixed-div.c:17:3876 identifier a1
 complex-sign-mixed-div.c:17:3878 punctuator ,
@@ -1297,7 +1297,7 @@ complex-sign-mixed-div.c:17:3884 keyword float
 complex-sign-mixed-div.c:17:3890 identifier b1
 complex-sign-mixed-div.c:17:3892 punctuator ;
 complex-sign-mixed-div.c:17:3894 keyword volatile
-complex-sign-mixed-div.c:17:3903 identifier _Complex
+complex-sign-mixed-div.c:17:3903 keyword _Complex
 complex-sign-mixed-div.c:17:3912 keyword float
 complex-sign-mixed-div.c:17:3918 identifier a2
 complex-sign-mixed-div.c:17:3920 punctuator ,
@@ -1603,7 +1603,7 @@ complex-sign-mixed-div.c:17:4815 punctuator )
 complex-sign-mixed-div.c:17:4816 punctuator ;
 complex-sign-mixed-div.c:17:4818 keyword do
 complex-sign-mixed-div.c:17:4821 punctuator {
-complex-sign-mixed-div.c:17:4823 identifier _Complex
+complex-sign-mixed-div.c:17:4823 keyword _Complex
 complex-sign-mixed-div.c:17:4832 keyword float
 complex-sign-mixed-div.c:17:4838 identifier a1
 complex-sign-mixed-div.c:17:4840 punctuator ,
@@ -1613,7 +1613,7 @@ complex-sign-mixed-div.c:17:4846 keyword float
 complex-sign-mixed-div.c:17:4852 identifier b1
 complex-sign-mixed-div.c:17:4854 punctuator ;
 complex-sign-mixed-div.c:17:4856 keyword volatile
-complex-sign-mixed-div.c:17:4865 identifier _Complex
+complex-sign-mixed-div.c:17:4865 keyword _Complex
 complex-sign-mixed-div.c:17:4874 keyword float
 complex-sign-mixed-div.c:17:4880 identifier a2
 complex-sign-mixed-div.c:17:4882 punctuator ,
@@ -1919,7 +1919,7 @@ complex-sign-mixed-div.c:17:5777 punctuator )
 complex-sign-mixed-div.c:17:5778 punctuator ;
 complex-sign-mixed-div.c:17:5780 keyword do
 complex-sign-mixed-div.c:17:5783 punctuator {
-complex-sign-mixed-div.c:17:5785 identifier _Complex
+complex-sign-mixed-div.c:17:5785 keyword _Complex
 complex-sign-mixed-div.c:17:5794 keyword float
 complex-sign-mixed-div.c:17:5800 identifier a1
 complex-sign-mixed-div.c:17:5802 punctuator ,
@@ -1929,7 +1929,7 @@ complex-sign-mixed-div.c:17:5808 keyword float
 complex-sign-mixed-div.c:17:5814 identifier b1
 complex-sign-mixed-div.c:17:5816 punctuator ;
 complex-sign-mixed-div.c:17:5818 keyword volatile
-complex-sign-mixed-div.c:17:5827 identifier _Complex
+complex-sign-mixed-div.c:17:5827 keyword _Complex
 complex-sign-mixed-div.c:17:5836 keyword float
 complex-sign-mixed-div.c:17:5842 identifier a2
 complex-sign-mixed-div.c:17:5844 punctuator ,
@@ -2235,7 +2235,7 @@ complex-sign-mixed-div.c:17:6739 punctuator )
 complex-sign-mixed-div.c:17:6740 punctuator ;
 complex-sign-mixed-div.c:17:6742 keyword do
 complex-sign-mixed-div.c:17:6745 punctuator {
-complex-sign-mixed-div.c:17:6747 identifier _Complex
+complex-sign-mixed-div.c:17:6747 keyword _Complex
 complex-sign-mixed-div.c:17:6756 keyword float
 complex-sign-mixed-div.c:17:6762 identifier a1
 complex-sign-mixed-div.c:17:6764 punctuator ,
@@ -2245,7 +2245,7 @@ complex-sign-mixed-div.c:17:6770 keyword float
 complex-sign-mixed-div.c:17:6776 identifier b1
 complex-sign-mixed-div.c:17:6778 punctuator ;
 complex-sign-mixed-div.c:17:6780 keyword volatile
-complex-sign-mixed-div.c:17:6789 identifier _Complex
+complex-sign-mixed-div.c:17:6789 keyword _Complex
 complex-sign-mixed-div.c:17:6798 keyword float
 complex-sign-mixed-div.c:17:6804 identifier a2
 complex-sign-mixed-div.c:17:6806 punctuator ,
@@ -2566,7 +2566,7 @@ complex-sign-mixed-div.c:24:3 keyword do
 complex-sign-mixed-div.c:24:6 punctuator {
 complex-sign-mixed-div.c:24:8 keyword do
 complex-sign-mixed-div.c:24:11 punctuator {
-complex-sign-mixed-div.c:24:13 identifier _Complex
+complex-sign-mixed-div.c:24:13 keyword _Complex
 complex-sign-mixed-div.c:24:22 keyword double
 complex-sign-mixed-div.c:24:29 identifier a1
 complex-sign-mixed-div.c:24:31 punctuator ,
@@ -2576,7 +2576,7 @@ complex-sign-mixed-div.c:24:37 keyword double
 complex-sign-mixed-div.c:24:44 identifier b1
 complex-sign-mixed-div.c:24:46 punctuator ;
 complex-sign-mixed-div.c:24:48 keyword volatile
-complex-sign-mixed-div.c:24:57 identifier _Complex
+complex-sign-mixed-div.c:24:57 keyword _Complex
 complex-sign-mixed-div.c:24:66 keyword double
 complex-sign-mixed-div.c:24:73 identifier a2
 complex-sign-mixed-div.c:24:75 punctuator ,
@@ -2882,7 +2882,7 @@ complex-sign-mixed-div.c:24:945 punctuator )
 complex-sign-mixed-div.c:24:946 punctuator ;
 complex-sign-mixed-div.c:24:948 keyword do
 complex-sign-mixed-div.c:24:951 punctuator {
-complex-sign-mixed-div.c:24:953 identifier _Complex
+complex-sign-mixed-div.c:24:953 keyword _Complex
 complex-sign-mixed-div.c:24:962 keyword double
 complex-sign-mixed-div.c:24:969 identifier a1
 complex-sign-mixed-div.c:24:971 punctuator ,
@@ -2892,7 +2892,7 @@ complex-sign-mixed-div.c:24:977 keyword double
 complex-sign-mixed-div.c:24:984 identifier b1
 complex-sign-mixed-div.c:24:986 punctuator ;
 complex-sign-mixed-div.c:24:988 keyword volatile
-complex-sign-mixed-div.c:24:997 identifier _Complex
+complex-sign-mixed-div.c:24:997 keyword _Complex
 complex-sign-mixed-div.c:24:1006 keyword double
 complex-sign-mixed-div.c:24:1013 identifier a2
 complex-sign-mixed-div.c:24:1015 punctuator ,
@@ -3198,7 +3198,7 @@ complex-sign-mixed-div.c:24:1885 punctuator )
 complex-sign-mixed-div.c:24:1886 punctuator ;
 complex-sign-mixed-div.c:24:1888 keyword do
 complex-sign-mixed-div.c:24:1891 punctuator {
-complex-sign-mixed-div.c:24:1893 identifier _Complex
+complex-sign-mixed-div.c:24:1893 keyword _Complex
 complex-sign-mixed-div.c:24:1902 keyword double
 complex-sign-mixed-div.c:24:1909 identifier a1
 complex-sign-mixed-div.c:24:1911 punctuator ,
@@ -3208,7 +3208,7 @@ complex-sign-mixed-div.c:24:1917 keyword double
 complex-sign-mixed-div.c:24:1924 identifier b1
 complex-sign-mixed-div.c:24:1926 punctuator ;
 complex-sign-mixed-div.c:24:1928 keyword volatile
-complex-sign-mixed-div.c:24:1937 identifier _Complex
+complex-sign-mixed-div.c:24:1937 keyword _Complex
 complex-sign-mixed-div.c:24:1946 keyword double
 complex-sign-mixed-div.c:24:1953 identifier a2
 complex-sign-mixed-div.c:24:1955 punctuator ,
@@ -3514,7 +3514,7 @@ complex-sign-mixed-div.c:24:2825 punctuator )
 complex-sign-mixed-div.c:24:2826 punctuator ;
 complex-sign-mixed-div.c:24:2828 keyword do
 complex-sign-mixed-div.c:24:2831 punctuator {
-complex-sign-mixed-div.c:24:2833 identifier _Complex
+complex-sign-mixed-div.c:24:2833 keyword _Complex
 complex-sign-mixed-div.c:24:2842 keyword double
 complex-sign-mixed-div.c:24:2849 identifier a1
 complex-sign-mixed-div.c:24:2851 punctuator ,
@@ -3524,7 +3524,7 @@ complex-sign-mixed-div.c:24:2857 keyword double
 complex-sign-mixed-div.c:24:2864 identifier b1
 complex-sign-mixed-div.c:24:2866 punctuator ;
 complex-sign-mixed-div.c:24:2868 keyword volatile
-complex-sign-mixed-div.c:24:2877 identifier _Complex
+complex-sign-mixed-div.c:24:2877 keyword _Complex
 complex-sign-mixed-div.c:24:2886 keyword double
 complex-sign-mixed-div.c:24:2893 identifier a2
 complex-sign-mixed-div.c:24:2895 punctuator ,
@@ -3830,7 +3830,7 @@ complex-sign-mixed-div.c:24:3765 punctuator )
 complex-sign-mixed-div.c:24:3766 punctuator ;
 complex-sign-mixed-div.c:24:3768 keyword do
 complex-sign-mixed-div.c:24:3771 punctuator {
-complex-sign-mixed-div.c:24:3773 identifier _Complex
+complex-sign-mixed-div.c:24:3773 keyword _Complex
 complex-sign-mixed-div.c:24:3782 keyword double
 complex-sign-mixed-div.c:24:3789 identifier a1
 complex-sign-mixed-div.c:24:3791 punctuator ,
@@ -3840,7 +3840,7 @@ complex-sign-mixed-div.c:24:3797 keyword double
 complex-sign-mixed-div.c:24:3804 identifier b1
 complex-sign-mixed-div.c:24:3806 punctuator ;
 complex-sign-mixed-div.c:24:3808 keyword volatile
-complex-sign-mixed-div.c:24:3817 identifier _Complex
+complex-sign-mixed-div.c:24:3817 keyword _Complex
 complex-sign-mixed-div.c:24:3826 keyword double
 complex-sign-mixed-div.c:24:3833 identifier a2
 complex-sign-mixed-div.c:24:3835 punctuator ,
@@ -4146,7 +4146,7 @@ complex-sign-mixed-div.c:24:4705 punctuator )
 complex-sign-mixed-div.c:24:4706 punctuator ;
 complex-sign-mixed-div.c:24:4708 keyword do
 complex-sign-mixed-div.c:24:4711 punctuator {
-complex-sign-mixed-div.c:24:4713 identifier _Complex
+complex-sign-mixed-div.c:24:4713 keyword _Complex
 complex-sign-mixed-div.c:24:4722 keyword double
 complex-sign-mixed-div.c:24:4729 identifier a1
 complex-sign-mixed-div.c:24:4731 punctuator ,
@@ -4156,7 +4156,7 @@ complex-sign-mixed-div.c:24:4737 keyword double
 complex-sign-mixed-div.c:24:4744 identifier b1
 complex-sign-mixed-div.c:24:4746 punctuator ;
 complex-sign-mixed-div.c:24:4748 keyword volatile
-complex-sign-mixed-div.c:24:4757 identifier _Complex
+complex-sign-mixed-div.c:24:4757 keyword _Complex
 complex-sign-mixed-div.c:24:4766 keyword double
 complex-sign-mixed-div.c:24:4773 identifier a2
 complex-sign-mixed-div.c:24:4775 punctuator ,
@@ -4462,7 +4462,7 @@ complex-sign-mixed-div.c:24:5645 punctuator )
 complex-sign-mixed-div.c:24:5646 punctuator ;
 complex-sign-mixed-div.c:24:5648 keyword do
 complex-sign-mixed-div.c:24:5651 punctuator {
-complex-sign-mixed-div.c:24:5653 identifier _Complex
+complex-sign-mixed-div.c:24:5653 keyword _Complex
 complex-sign-mixed-div.c:24:5662 keyword double
 complex-sign-mixed-div.c:24:5669 identifier a1
 complex-sign-mixed-div.c:24:5671 punctuator ,
@@ -4472,7 +4472,7 @@ complex-sign-mixed-div.c:24:5677 keyword double
 complex-sign-mixed-div.c:24:5684 identifier b1
 complex-sign-mixed-div.c:24:5686 punctuator ;
 complex-sign-mixed-div.c:24:5688 keyword volatile
-complex-sign-mixed-div.c:24:5697 identifier _Complex
+complex-sign-mixed-div.c:24:5697 keyword _Complex
 complex-sign-mixed-div.c:24:5706 keyword double
 complex-sign-mixed-div.c:24:5713 identifier a2
 complex-sign-mixed-div.c:24:5715 punctuator ,
@@ -4778,7 +4778,7 @@ complex-sign-mixed-div.c:24:6585 punctuator )
 complex-sign-mixed-div.c:24:6586 punctuator ;
 complex-sign-mixed-div.c:24:6588 keyword do
 complex-sign-mixed-div.c:24:6591 punctuator {
-complex-sign-mixed-div.c:24:6593 identifier _Complex
+complex-sign-mixed-div.c:24:6593 keyword _Complex
 complex-sign-mixed-div.c:24:6602 keyword double
 complex-sign-mixed-div.c:24:6609 identifier a1
 complex-sign-mixed-div.c:24:6611 punctuator ,
@@ -4788,7 +4788,7 @@ complex-sign-mixed-div.c:24:6617 keyword double
 complex-sign-mixed-div.c:24:6624 identifier b1
 complex-sign-mixed-div.c:24:6626 punctuator ;
 complex-sign-mixed-div.c:24:6628 keyword volatile
-complex-sign-mixed-div.c:24:6637 identifier _Complex
+complex-sign-mixed-div.c:24:6637 keyword _Complex
 complex-sign-mixed-div.c:24:6646 keyword double
 complex-sign-mixed-div.c:24:6653 identifier a2
 complex-sign-mixed-div.c:24:6655 punctuator ,
@@ -5109,7 +5109,7 @@ complex-sign-mixed-div.c:30:3 keyword do
 complex-sign-mixed-div.c:30:6 punctuator {
 complex-sign-mixed-div.c:30:8 keyword do
 complex-sign-mixed-div.c:30:11 punctuator {
-complex-sign-mixed-div.c:30:13 identifier _Complex
+complex-sign-mixed-div.c:30:13 keyword _Complex
 complex-sign-mixed-div.c:30:22 keyword long
 complex-sign-mixed-div.c:30:27 keyword double
 complex-sign-mixed-div.c:30:34 identifier a1
@@ -5121,7 +5121,7 @@ complex-sign-mixed-div.c:30:47 keyword double
 complex-sign-mixed-div.c:30:54 identifier b1
 complex-sign-mixed-div.c:30:56 punctuator ;
 complex-sign-mixed-div.c:30:58 keyword volatile
-complex-sign-mixed-div.c:30:67 identifier _Complex
+complex-sign-mixed-div.c:30:67 keyword _Complex
 complex-sign-mixed-div.c:30:76 keyword long
 complex-sign-mixed-div.c:30:81 keyword double
 complex-sign-mixed-div.c:30:88 identifier a2
@@ -5429,7 +5429,7 @@ complex-sign-mixed-div.c:30:991 punctuator )
 complex-sign-mixed-div.c:30:992 punctuator ;
 complex-sign-mixed-div.c:30:994 keyword do
 complex-sign-mixed-div.c:30:997 punctuator {
-complex-sign-mixed-div.c:30:999 identifier _Complex
+complex-sign-mixed-div.c:30:999 keyword _Complex
 complex-sign-mixed-div.c:30:1008 keyword long
 complex-sign-mixed-div.c:30:1013 keyword double
 complex-sign-mixed-div.c:30:1020 identifier a1
@@ -5441,7 +5441,7 @@ complex-sign-mixed-div.c:30:1033 keyword double
 complex-sign-mixed-div.c:30:1040 identifier b1
 complex-sign-mixed-div.c:30:1042 punctuator ;
 complex-sign-mixed-div.c:30:1044 keyword volatile
-complex-sign-mixed-div.c:30:1053 identifier _Complex
+complex-sign-mixed-div.c:30:1053 keyword _Complex
 complex-sign-mixed-div.c:30:1062 keyword long
 complex-sign-mixed-div.c:30:1067 keyword double
 complex-sign-mixed-div.c:30:1074 identifier a2
@@ -5749,7 +5749,7 @@ complex-sign-mixed-div.c:30:1977 punctuator )
 complex-sign-mixed-div.c:30:1978 punctuator ;
 complex-sign-mixed-div.c:30:1980 keyword do
 complex-sign-mixed-div.c:30:1983 punctuator {
-complex-sign-mixed-div.c:30:1985 identifier _Complex
+complex-sign-mixed-div.c:30:1985 keyword _Complex
 complex-sign-mixed-div.c:30:1994 keyword long
 complex-sign-mixed-div.c:30:1999 keyword double
 complex-sign-mixed-div.c:30:2006 identifier a1
@@ -5761,7 +5761,7 @@ complex-sign-mixed-div.c:30:2019 keyword double
 complex-sign-mixed-div.c:30:2026 identifier b1
 complex-sign-mixed-div.c:30:2028 punctuator ;
 complex-sign-mixed-div.c:30:2030 keyword volatile
-complex-sign-mixed-div.c:30:2039 identifier _Complex
+complex-sign-mixed-div.c:30:2039 keyword _Complex
 complex-sign-mixed-div.c:30:2048 keyword long
 complex-sign-mixed-div.c:30:2053 keyword double
 complex-sign-mixed-div.c:30:2060 identifier a2
@@ -6069,7 +6069,7 @@ complex-sign-mixed-div.c:30:2963 punctuator )
 complex-sign-mixed-div.c:30:2964 punctuator ;
 complex-sign-mixed-div.c:30:2966 keyword do
 complex-sign-mixed-div.c:30:2969 punctuator {
-complex-sign-mixed-div.c:30:2971 identifier _Complex
+complex-sign-mixed-div.c:30:2971 keyword _Complex
 complex-sign-mixed-div.c:30:2980 keyword long
 complex-sign-mixed-div.c:30:2985 keyword double
 complex-sign-mixed-div.c:30:2992 identifier a1
@@ -6081,7 +6081,7 @@ complex-sign-mixed-div.c:30:3005 keyword double
 complex-sign-mixed-div.c:30:3012 identifier b1
 complex-sign-mixed-div.c:30:3014 punctuator ;
 complex-sign-mixed-div.c:30:3016 keyword volatile
-complex-sign-mixed-div.c:30:3025 identifier _Complex
+complex-sign-mixed-div.c:30:3025 keyword _Complex
 complex-sign-mixed-div.c:30:3034 keyword long
 complex-sign-mixed-div.c:30:3039 keyword double
 complex-sign-mixed-div.c:30:3046 identifier a2
@@ -6389,7 +6389,7 @@ complex-sign-mixed-div.c:30:3949 punctuator )
 complex-sign-mixed-div.c:30:3950 punctuator ;
 complex-sign-mixed-div.c:30:3952 keyword do
 complex-sign-mixed-div.c:30:3955 punctuator {
-complex-sign-mixed-div.c:30:3957 identifier _Complex
+complex-sign-mixed-div.c:30:3957 keyword _Complex
 complex-sign-mixed-div.c:30:3966 keyword long
 complex-sign-mixed-div.c:30:3971 keyword double
 complex-sign-mixed-div.c:30:3978 identifier a1
@@ -6401,7 +6401,7 @@ complex-sign-mixed-div.c:30:3991 keyword double
 complex-sign-mixed-div.c:30:3998 identifier b1
 complex-sign-mixed-div.c:30:4000 punctuator ;
 complex-sign-mixed-div.c:30:4002 keyword volatile
-complex-sign-mixed-div.c:30:4011 identifier _Complex
+complex-sign-mixed-div.c:30:4011 keyword _Complex
 complex-sign-mixed-div.c:30:4020 keyword long
 complex-sign-mixed-div.c:30:4025 keyword double
 complex-sign-mixed-div.c:30:4032 identifier a2
@@ -6709,7 +6709,7 @@ complex-sign-mixed-div.c:30:4935 punctuator )
 complex-sign-mixed-div.c:30:4936 punctuator ;
 complex-sign-mixed-div.c:30:4938 keyword do
 complex-sign-mixed-div.c:30:4941 punctuator {
-complex-sign-mixed-div.c:30:4943 identifier _Complex
+complex-sign-mixed-div.c:30:4943 keyword _Complex
 complex-sign-mixed-div.c:30:4952 keyword long
 complex-sign-mixed-div.c:30:4957 keyword double
 complex-sign-mixed-div.c:30:4964 identifier a1
@@ -6721,7 +6721,7 @@ complex-sign-mixed-div.c:30:4977 keyword double
 complex-sign-mixed-div.c:30:4984 identifier b1
 complex-sign-mixed-div.c:30:4986 punctuator ;
 complex-sign-mixed-div.c:30:4988 keyword volatile
-complex-sign-mixed-div.c:30:4997 identifier _Complex
+complex-sign-mixed-div.c:30:4997 keyword _Complex
 complex-sign-mixed-div.c:30:5006 keyword long
 complex-sign-mixed-div.c:30:5011 keyword double
 complex-sign-mixed-div.c:30:5018 identifier a2
@@ -7029,7 +7029,7 @@ complex-sign-mixed-div.c:30:5921 punctuator )
 complex-sign-mixed-div.c:30:5922 punctuator ;
 complex-sign-mixed-div.c:30:5924 keyword do
 complex-sign-mixed-div.c:30:5927 punctuator {
-complex-sign-mixed-div.c:30:5929 identifier _Complex
+complex-sign-mixed-div.c:30:5929 keyword _Complex
 complex-sign-mixed-div.c:30:5938 keyword long
 complex-sign-mixed-div.c:30:5943 keyword double
 complex-sign-mixed-div.c:30:5950 identifier a1
@@ -7041,7 +7041,7 @@ complex-sign-mixed-div.c:30:5963 keyword double
 complex-sign-mixed-div.c:30:5970 identifier b1
 complex-sign-mixed-div.c:30:5972 punctuator ;
 complex-sign-mixed-div.c:30:5974 keyword volatile
-complex-sign-mixed-div.c:30:5983 identifier _Complex
+complex-sign-mixed-div.c:30:5983 keyword _Complex
 complex-sign-mixed-div.c:30:5992 keyword long
 complex-sign-mixed-div.c:30:5997 keyword double
 complex-sign-mixed-div.c:30:6004 identifier a2
@@ -7349,7 +7349,7 @@ complex-sign-mixed-div.c:30:6907 punctuator )
 complex-sign-mixed-div.c:30:6908 punctuator ;
 complex-sign-mixed-div.c:30:6910 keyword do
 complex-sign-mixed-div.c:30:6913 punctuator {
-complex-sign-mixed-div.c:30:6915 identifier _Complex
+complex-sign-mixed-div.c:30:6915 keyword _Complex
 complex-sign-mixed-div.c:30:6924 keyword long
 complex-sign-mixed-div.c:30:6929 keyword double
 complex-sign-mixed-div.c:30:6936 identifier a1
@@ -7361,7 +7361,7 @@ complex-sign-mixed-div.c:30:6949 keyword double
 complex-sign-mixed-div.c:30:6956 identifier b1
 complex-sign-mixed-div.c:30:6958 punctuator ;
 complex-sign-mixed-div.c:30:6960 keyword volatile
-complex-sign-mixed-div.c:30:6969 identifier _Complex
+complex-sign-mixed-div.c:30:6969 keyword _Complex
 complex-sign-mixed-div.c:30:6978 keyword long
 complex-sign-mixed-div.c:30:6983 keyword double
 complex-sign-mixed-div.c:30:6990 identifier a2

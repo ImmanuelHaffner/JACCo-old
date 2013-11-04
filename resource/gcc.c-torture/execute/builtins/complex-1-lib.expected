@@ -12,11 +12,11 @@ complex-1-lib.c:2:24 punctuator )
 complex-1-lib.c:2:25 punctuator ;
 complex-1-lib.c:9:1 keyword static
 complex-1-lib.c:9:8 keyword float
-complex-1-lib.c:9:14 identifier _Complex
+complex-1-lib.c:9:14 keyword _Complex
 complex-1-lib.c:10:1 identifier conjf
 complex-1-lib.c:10:7 punctuator (
 complex-1-lib.c:10:8 keyword float
-complex-1-lib.c:10:14 identifier _Complex
+complex-1-lib.c:10:14 keyword _Complex
 complex-1-lib.c:10:23 identifier z
 complex-1-lib.c:10:24 punctuator )
 complex-1-lib.c:11:1 punctuator {
@@ -35,11 +35,11 @@ complex-1-lib.c:13:12 punctuator ;
 complex-1-lib.c:14:1 punctuator }
 complex-1-lib.c:16:1 keyword static
 complex-1-lib.c:16:8 keyword double
-complex-1-lib.c:16:15 identifier _Complex
+complex-1-lib.c:16:15 keyword _Complex
 complex-1-lib.c:17:1 identifier conj
 complex-1-lib.c:17:6 punctuator (
 complex-1-lib.c:17:7 keyword double
-complex-1-lib.c:17:14 identifier _Complex
+complex-1-lib.c:17:14 keyword _Complex
 complex-1-lib.c:17:23 identifier z
 complex-1-lib.c:17:24 punctuator )
 complex-1-lib.c:18:1 punctuator {
@@ -59,12 +59,12 @@ complex-1-lib.c:21:1 punctuator }
 complex-1-lib.c:23:1 keyword static
 complex-1-lib.c:23:8 keyword long
 complex-1-lib.c:23:13 keyword double
-complex-1-lib.c:23:20 identifier _Complex
+complex-1-lib.c:23:20 keyword _Complex
 complex-1-lib.c:24:1 identifier conjl
 complex-1-lib.c:24:7 punctuator (
 complex-1-lib.c:24:8 keyword long
 complex-1-lib.c:24:13 keyword double
-complex-1-lib.c:24:20 identifier _Complex
+complex-1-lib.c:24:20 keyword _Complex
 complex-1-lib.c:24:29 identifier z
 complex-1-lib.c:24:30 punctuator )
 complex-1-lib.c:25:1 punctuator {
@@ -86,7 +86,7 @@ complex-1-lib.c:30:8 keyword float
 complex-1-lib.c:31:1 identifier crealf
 complex-1-lib.c:31:8 punctuator (
 complex-1-lib.c:31:9 keyword float
-complex-1-lib.c:31:15 identifier _Complex
+complex-1-lib.c:31:15 keyword _Complex
 complex-1-lib.c:31:24 identifier z
 complex-1-lib.c:31:25 punctuator )
 complex-1-lib.c:32:1 punctuator {
@@ -108,7 +108,7 @@ complex-1-lib.c:37:8 keyword double
 complex-1-lib.c:38:1 identifier creal
 complex-1-lib.c:38:7 punctuator (
 complex-1-lib.c:38:8 keyword double
-complex-1-lib.c:38:15 identifier _Complex
+complex-1-lib.c:38:15 keyword _Complex
 complex-1-lib.c:38:24 identifier z
 complex-1-lib.c:38:25 punctuator )
 complex-1-lib.c:39:1 punctuator {
@@ -132,7 +132,7 @@ complex-1-lib.c:45:1 identifier creall
 complex-1-lib.c:45:8 punctuator (
 complex-1-lib.c:45:9 keyword long
 complex-1-lib.c:45:14 keyword double
-complex-1-lib.c:45:21 identifier _Complex
+complex-1-lib.c:45:21 keyword _Complex
 complex-1-lib.c:45:30 identifier z
 complex-1-lib.c:45:31 punctuator )
 complex-1-lib.c:46:1 punctuator {
@@ -154,7 +154,7 @@ complex-1-lib.c:51:8 keyword float
 complex-1-lib.c:52:1 identifier cimagf
 complex-1-lib.c:52:8 punctuator (
 complex-1-lib.c:52:9 keyword float
-complex-1-lib.c:52:15 identifier _Complex
+complex-1-lib.c:52:15 keyword _Complex
 complex-1-lib.c:52:24 identifier z
 complex-1-lib.c:52:25 punctuator )
 complex-1-lib.c:53:1 punctuator {
@@ -176,7 +176,7 @@ complex-1-lib.c:58:8 keyword double
 complex-1-lib.c:59:1 identifier cimag
 complex-1-lib.c:59:7 punctuator (
 complex-1-lib.c:59:8 keyword double
-complex-1-lib.c:59:15 identifier _Complex
+complex-1-lib.c:59:15 keyword _Complex
 complex-1-lib.c:59:24 identifier z
 complex-1-lib.c:59:25 punctuator )
 complex-1-lib.c:60:1 punctuator {
@@ -200,7 +200,7 @@ complex-1-lib.c:66:1 identifier cimagl
 complex-1-lib.c:66:8 punctuator (
 complex-1-lib.c:66:9 keyword long
 complex-1-lib.c:66:14 keyword double
-complex-1-lib.c:66:21 identifier _Complex
+complex-1-lib.c:66:21 keyword _Complex
 complex-1-lib.c:66:30 identifier z
 complex-1-lib.c:66:31 punctuator )
 complex-1-lib.c:67:1 punctuator {

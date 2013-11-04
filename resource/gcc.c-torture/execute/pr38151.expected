@@ -12,7 +12,7 @@ pr38151.c:5:3 keyword unsigned
 pr38151.c:5:12 keyword int
 pr38151.c:5:16 identifier a
 pr38151.c:5:17 punctuator ;
-pr38151.c:6:3 identifier _Complex
+pr38151.c:6:3 keyword _Complex
 pr38151.c:6:12 keyword int
 pr38151.c:6:16 identifier b
 pr38151.c:6:17 punctuator ;

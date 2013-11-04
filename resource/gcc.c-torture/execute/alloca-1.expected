@@ -19,7 +19,7 @@ alloca-1.c:7:45 punctuator )
 alloca-1.c:7:46 punctuator ;
 alloca-1.c:7:48 punctuator }
 alloca-1.c:7:49 punctuator ;
-alloca-1.c:10:1 identifier _Bool
+alloca-1.c:10:1 keyword _Bool
 alloca-1.c:10:7 identifier foo
 alloca-1.c:10:10 punctuator (
 alloca-1.c:10:11 keyword void

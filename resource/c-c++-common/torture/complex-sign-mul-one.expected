@@ -23,7 +23,7 @@ complex-sign-mul-one.c:17:3 keyword do
 complex-sign-mul-one.c:17:6 punctuator {
 complex-sign-mul-one.c:17:8 keyword do
 complex-sign-mul-one.c:17:11 punctuator {
-complex-sign-mul-one.c:17:13 identifier _Complex
+complex-sign-mul-one.c:17:13 keyword _Complex
 complex-sign-mul-one.c:17:22 keyword float
 complex-sign-mul-one.c:17:28 identifier a1
 complex-sign-mul-one.c:17:30 punctuator ,
@@ -32,7 +32,7 @@ complex-sign-mul-one.c:17:34 punctuator ,
 complex-sign-mul-one.c:17:36 identifier c1
 complex-sign-mul-one.c:17:38 punctuator ;
 complex-sign-mul-one.c:17:40 keyword volatile
-complex-sign-mul-one.c:17:49 identifier _Complex
+complex-sign-mul-one.c:17:49 keyword _Complex
 complex-sign-mul-one.c:17:58 keyword float
 complex-sign-mul-one.c:17:64 identifier a2
 complex-sign-mul-one.c:17:66 punctuator ,
@@ -450,7 +450,7 @@ complex-sign-mul-one.c:17:1308 punctuator )
 complex-sign-mul-one.c:17:1309 punctuator ;
 complex-sign-mul-one.c:17:1311 keyword do
 complex-sign-mul-one.c:17:1314 punctuator {
-complex-sign-mul-one.c:17:1316 identifier _Complex
+complex-sign-mul-one.c:17:1316 keyword _Complex
 complex-sign-mul-one.c:17:1325 keyword float
 complex-sign-mul-one.c:17:1331 identifier a1
 complex-sign-mul-one.c:17:1333 punctuator ,
@@ -459,7 +459,7 @@ complex-sign-mul-one.c:17:1337 punctuator ,
 complex-sign-mul-one.c:17:1339 identifier c1
 complex-sign-mul-one.c:17:1341 punctuator ;
 complex-sign-mul-one.c:17:1343 keyword volatile
-complex-sign-mul-one.c:17:1352 identifier _Complex
+complex-sign-mul-one.c:17:1352 keyword _Complex
 complex-sign-mul-one.c:17:1361 keyword float
 complex-sign-mul-one.c:17:1367 identifier a2
 complex-sign-mul-one.c:17:1369 punctuator ,
@@ -877,7 +877,7 @@ complex-sign-mul-one.c:17:2611 punctuator )
 complex-sign-mul-one.c:17:2612 punctuator ;
 complex-sign-mul-one.c:17:2614 keyword do
 complex-sign-mul-one.c:17:2617 punctuator {
-complex-sign-mul-one.c:17:2619 identifier _Complex
+complex-sign-mul-one.c:17:2619 keyword _Complex
 complex-sign-mul-one.c:17:2628 keyword float
 complex-sign-mul-one.c:17:2634 identifier a1
 complex-sign-mul-one.c:17:2636 punctuator ,
@@ -886,7 +886,7 @@ complex-sign-mul-one.c:17:2640 punctuator ,
 complex-sign-mul-one.c:17:2642 identifier c1
 complex-sign-mul-one.c:17:2644 punctuator ;
 complex-sign-mul-one.c:17:2646 keyword volatile
-complex-sign-mul-one.c:17:2655 identifier _Complex
+complex-sign-mul-one.c:17:2655 keyword _Complex
 complex-sign-mul-one.c:17:2664 keyword float
 complex-sign-mul-one.c:17:2670 identifier a2
 complex-sign-mul-one.c:17:2672 punctuator ,
@@ -1304,7 +1304,7 @@ complex-sign-mul-one.c:17:3914 punctuator )
 complex-sign-mul-one.c:17:3915 punctuator ;
 complex-sign-mul-one.c:17:3917 keyword do
 complex-sign-mul-one.c:17:3920 punctuator {
-complex-sign-mul-one.c:17:3922 identifier _Complex
+complex-sign-mul-one.c:17:3922 keyword _Complex
 complex-sign-mul-one.c:17:3931 keyword float
 complex-sign-mul-one.c:17:3937 identifier a1
 complex-sign-mul-one.c:17:3939 punctuator ,
@@ -1313,7 +1313,7 @@ complex-sign-mul-one.c:17:3943 punctuator ,
 complex-sign-mul-one.c:17:3945 identifier c1
 complex-sign-mul-one.c:17:3947 punctuator ;
 complex-sign-mul-one.c:17:3949 keyword volatile
-complex-sign-mul-one.c:17:3958 identifier _Complex
+complex-sign-mul-one.c:17:3958 keyword _Complex
 complex-sign-mul-one.c:17:3967 keyword float
 complex-sign-mul-one.c:17:3973 identifier a2
 complex-sign-mul-one.c:17:3975 punctuator ,
@@ -1746,7 +1746,7 @@ complex-sign-mul-one.c:24:3 keyword do
 complex-sign-mul-one.c:24:6 punctuator {
 complex-sign-mul-one.c:24:8 keyword do
 complex-sign-mul-one.c:24:11 punctuator {
-complex-sign-mul-one.c:24:13 identifier _Complex
+complex-sign-mul-one.c:24:13 keyword _Complex
 complex-sign-mul-one.c:24:22 keyword double
 complex-sign-mul-one.c:24:29 identifier a1
 complex-sign-mul-one.c:24:31 punctuator ,
@@ -1755,7 +1755,7 @@ complex-sign-mul-one.c:24:35 punctuator ,
 complex-sign-mul-one.c:24:37 identifier c1
 complex-sign-mul-one.c:24:39 punctuator ;
 complex-sign-mul-one.c:24:41 keyword volatile
-complex-sign-mul-one.c:24:50 identifier _Complex
+complex-sign-mul-one.c:24:50 keyword _Complex
 complex-sign-mul-one.c:24:59 keyword double
 complex-sign-mul-one.c:24:66 identifier a2
 complex-sign-mul-one.c:24:68 punctuator ,
@@ -2173,7 +2173,7 @@ complex-sign-mul-one.c:24:1274 punctuator )
 complex-sign-mul-one.c:24:1275 punctuator ;
 complex-sign-mul-one.c:24:1277 keyword do
 complex-sign-mul-one.c:24:1280 punctuator {
-complex-sign-mul-one.c:24:1282 identifier _Complex
+complex-sign-mul-one.c:24:1282 keyword _Complex
 complex-sign-mul-one.c:24:1291 keyword double
 complex-sign-mul-one.c:24:1298 identifier a1
 complex-sign-mul-one.c:24:1300 punctuator ,
@@ -2182,7 +2182,7 @@ complex-sign-mul-one.c:24:1304 punctuator ,
 complex-sign-mul-one.c:24:1306 identifier c1
 complex-sign-mul-one.c:24:1308 punctuator ;
 complex-sign-mul-one.c:24:1310 keyword volatile
-complex-sign-mul-one.c:24:1319 identifier _Complex
+complex-sign-mul-one.c:24:1319 keyword _Complex
 complex-sign-mul-one.c:24:1328 keyword double
 complex-sign-mul-one.c:24:1335 identifier a2
 complex-sign-mul-one.c:24:1337 punctuator ,
@@ -2600,7 +2600,7 @@ complex-sign-mul-one.c:24:2543 punctuator )
 complex-sign-mul-one.c:24:2544 punctuator ;
 complex-sign-mul-one.c:24:2546 keyword do
 complex-sign-mul-one.c:24:2549 punctuator {
-complex-sign-mul-one.c:24:2551 identifier _Complex
+complex-sign-mul-one.c:24:2551 keyword _Complex
 complex-sign-mul-one.c:24:2560 keyword double
 complex-sign-mul-one.c:24:2567 identifier a1
 complex-sign-mul-one.c:24:2569 punctuator ,
@@ -2609,7 +2609,7 @@ complex-sign-mul-one.c:24:2573 punctuator ,
 complex-sign-mul-one.c:24:2575 identifier c1
 complex-sign-mul-one.c:24:2577 punctuator ;
 complex-sign-mul-one.c:24:2579 keyword volatile
-complex-sign-mul-one.c:24:2588 identifier _Complex
+complex-sign-mul-one.c:24:2588 keyword _Complex
 complex-sign-mul-one.c:24:2597 keyword double
 complex-sign-mul-one.c:24:2604 identifier a2
 complex-sign-mul-one.c:24:2606 punctuator ,
@@ -3027,7 +3027,7 @@ complex-sign-mul-one.c:24:3812 punctuator )
 complex-sign-mul-one.c:24:3813 punctuator ;
 complex-sign-mul-one.c:24:3815 keyword do
 complex-sign-mul-one.c:24:3818 punctuator {
-complex-sign-mul-one.c:24:3820 identifier _Complex
+complex-sign-mul-one.c:24:3820 keyword _Complex
 complex-sign-mul-one.c:24:3829 keyword double
 complex-sign-mul-one.c:24:3836 identifier a1
 complex-sign-mul-one.c:24:3838 punctuator ,
@@ -3036,7 +3036,7 @@ complex-sign-mul-one.c:24:3842 punctuator ,
 complex-sign-mul-one.c:24:3844 identifier c1
 complex-sign-mul-one.c:24:3846 punctuator ;
 complex-sign-mul-one.c:24:3848 keyword volatile
-complex-sign-mul-one.c:24:3857 identifier _Complex
+complex-sign-mul-one.c:24:3857 keyword _Complex
 complex-sign-mul-one.c:24:3866 keyword double
 complex-sign-mul-one.c:24:3873 identifier a2
 complex-sign-mul-one.c:24:3875 punctuator ,
@@ -3469,7 +3469,7 @@ complex-sign-mul-one.c:30:3 keyword do
 complex-sign-mul-one.c:30:6 punctuator {
 complex-sign-mul-one.c:30:8 keyword do
 complex-sign-mul-one.c:30:11 punctuator {
-complex-sign-mul-one.c:30:13 identifier _Complex
+complex-sign-mul-one.c:30:13 keyword _Complex
 complex-sign-mul-one.c:30:22 keyword long
 complex-sign-mul-one.c:30:27 keyword double
 complex-sign-mul-one.c:30:34 identifier a1
@@ -3479,7 +3479,7 @@ complex-sign-mul-one.c:30:40 punctuator ,
 complex-sign-mul-one.c:30:42 identifier c1
 complex-sign-mul-one.c:30:44 punctuator ;
 complex-sign-mul-one.c:30:46 keyword volatile
-complex-sign-mul-one.c:30:55 identifier _Complex
+complex-sign-mul-one.c:30:55 keyword _Complex
 complex-sign-mul-one.c:30:64 keyword long
 complex-sign-mul-one.c:30:69 keyword double
 complex-sign-mul-one.c:30:76 identifier a2
@@ -3898,7 +3898,7 @@ complex-sign-mul-one.c:30:1320 punctuator )
 complex-sign-mul-one.c:30:1321 punctuator ;
 complex-sign-mul-one.c:30:1323 keyword do
 complex-sign-mul-one.c:30:1326 punctuator {
-complex-sign-mul-one.c:30:1328 identifier _Complex
+complex-sign-mul-one.c:30:1328 keyword _Complex
 complex-sign-mul-one.c:30:1337 keyword long
 complex-sign-mul-one.c:30:1342 keyword double
 complex-sign-mul-one.c:30:1349 identifier a1
@@ -3908,7 +3908,7 @@ complex-sign-mul-one.c:30:1355 punctuator ,
 complex-sign-mul-one.c:30:1357 identifier c1
 complex-sign-mul-one.c:30:1359 punctuator ;
 complex-sign-mul-one.c:30:1361 keyword volatile
-complex-sign-mul-one.c:30:1370 identifier _Complex
+complex-sign-mul-one.c:30:1370 keyword _Complex
 complex-sign-mul-one.c:30:1379 keyword long
 complex-sign-mul-one.c:30:1384 keyword double
 complex-sign-mul-one.c:30:1391 identifier a2
@@ -4327,7 +4327,7 @@ complex-sign-mul-one.c:30:2635 punctuator )
 complex-sign-mul-one.c:30:2636 punctuator ;
 complex-sign-mul-one.c:30:2638 keyword do
 complex-sign-mul-one.c:30:2641 punctuator {
-complex-sign-mul-one.c:30:2643 identifier _Complex
+complex-sign-mul-one.c:30:2643 keyword _Complex
 complex-sign-mul-one.c:30:2652 keyword long
 complex-sign-mul-one.c:30:2657 keyword double
 complex-sign-mul-one.c:30:2664 identifier a1
@@ -4337,7 +4337,7 @@ complex-sign-mul-one.c:30:2670 punctuator ,
 complex-sign-mul-one.c:30:2672 identifier c1
 complex-sign-mul-one.c:30:2674 punctuator ;
 complex-sign-mul-one.c:30:2676 keyword volatile
-complex-sign-mul-one.c:30:2685 identifier _Complex
+complex-sign-mul-one.c:30:2685 keyword _Complex
 complex-sign-mul-one.c:30:2694 keyword long
 complex-sign-mul-one.c:30:2699 keyword double
 complex-sign-mul-one.c:30:2706 identifier a2
@@ -4756,7 +4756,7 @@ complex-sign-mul-one.c:30:3950 punctuator )
 complex-sign-mul-one.c:30:3951 punctuator ;
 complex-sign-mul-one.c:30:3953 keyword do
 complex-sign-mul-one.c:30:3956 punctuator {
-complex-sign-mul-one.c:30:3958 identifier _Complex
+complex-sign-mul-one.c:30:3958 keyword _Complex
 complex-sign-mul-one.c:30:3967 keyword long
 complex-sign-mul-one.c:30:3972 keyword double
 complex-sign-mul-one.c:30:3979 identifier a1
@@ -4766,7 +4766,7 @@ complex-sign-mul-one.c:30:3985 punctuator ,
 complex-sign-mul-one.c:30:3987 identifier c1
 complex-sign-mul-one.c:30:3989 punctuator ;
 complex-sign-mul-one.c:30:3991 keyword volatile
-complex-sign-mul-one.c:30:4000 identifier _Complex
+complex-sign-mul-one.c:30:4000 keyword _Complex
 complex-sign-mul-one.c:30:4009 keyword long
 complex-sign-mul-one.c:30:4014 keyword double
 complex-sign-mul-one.c:30:4021 identifier a2
