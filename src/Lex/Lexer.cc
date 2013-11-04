@@ -448,7 +448,7 @@ Token & Lexer::readPunctuator()
           // ...
           updatePos( '.' );
           text += ".";
-          PUNCTUATOR_GET( PunctuatorKind::LDOTS );
+          PUNCTUATOR_GET( PunctuatorKind::ELLIPSIS );
         }
         // ..
         file.unget();

@@ -731,7 +731,7 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 7u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "..." );
   punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LDOTS );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::ELLIPSIS );
   delete token;
   lexer.skip();
 
@@ -1121,7 +1121,7 @@ void LexerTest::testReadPunctuatorDots()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "..." );
   punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LDOTS );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::ELLIPSIS );
   delete token;
 
   // ...
@@ -1131,7 +1131,7 @@ void LexerTest::testReadPunctuatorDots()
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "..." );
   punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LDOTS );
+  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::ELLIPSIS );
   delete token;
 
   // .

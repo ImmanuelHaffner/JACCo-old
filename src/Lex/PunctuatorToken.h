@@ -56,7 +56,7 @@ namespace C4
 			QMARK,        // ?
 			COLON,        // :
 			SEMICOLON,    // ;
-			LDOTS,        // ...
+			ELLIPSIS,     // ...
 			ASSIGN,       // =
 			MULASSIGN,    // *=
 			DIVASSIGN,    // /=
