@@ -1,0 +1,22 @@
+0
+hello_world.c:1:1 punctuator #
+hello_world.c:1:2 identifier include
+hello_world.c:1:10 punctuator <
+hello_world.c:1:11 identifier stdio
+hello_world.c:1:16 punctuator .
+hello_world.c:1:17 identifier h
+hello_world.c:1:18 punctuator >
+hello_world.c:3:1 keyword int
+hello_world.c:3:5 identifier main
+hello_world.c:3:9 punctuator (
+hello_world.c:3:10 punctuator )
+hello_world.c:4:1 punctuator {
+hello_world.c:5:2 identifier printf
+hello_world.c:5:8 punctuator (
+hello_world.c:5:10 string-literal "Hello World!\n"
+hello_world.c:5:27 punctuator )
+hello_world.c:5:28 punctuator ;
+hello_world.c:6:2 keyword return
+hello_world.c:6:9 constant 0
+hello_world.c:6:10 punctuator ;
+hello_world.c:7:1 punctuator }
