@@ -15,7 +15,7 @@ using namespace Lex;
 
 std::ostream & Lex::operator<<( std::ostream &out, IllegalToken const &tok )
 {
-  out << tok.pos << " error: illegal token: " << tok.text << " - ";
+  out << "illegal token: " << tok.text << " - ";
   switch ( tok.iKind )
   {
     case IllegalTokenKind::UNKNOWN:
