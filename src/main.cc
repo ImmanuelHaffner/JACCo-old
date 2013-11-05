@@ -86,7 +86,7 @@ int main(int, char** const argv)
                 if ( tok.kind == TokenKind::ILLEGAL )
 								{
 									std::ostringstream oss;
-									oss << tok << std::endl;
+									oss << tok;
 									errorf( tok.pos, "%s", oss.str().c_str() );
 								}
                 else
