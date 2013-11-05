@@ -2,12 +2,12 @@
 
 std::ostream & operator<<( std::ostream &out, Pos const &pos )
 {
-  out << pos.name;
+  out << pos.name << ":";
 
   if ( pos.line )
-    out << ":" << pos.line;
+    out << pos.line << ":";
   if ( pos.column )
-    out << ":" << pos.column;
+    out << pos.column << ":";
 
   return out;
 }
