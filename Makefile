@@ -66,7 +66,7 @@ check: $(TESTBIN)
 
 -include $(TEST_DEP)
 
-check-all: check
+check-all: all check
 	@echo ""
 	- ./test/test.sh
 
