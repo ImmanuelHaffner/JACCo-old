@@ -36,7 +36,7 @@ namespace C4
         /// Reads and returns the next token on the input stream.
         ///
         /// \return the next token from the input stream
-        Token & getToken();
+        Token & get();
 
         Pos getPos() const;
 

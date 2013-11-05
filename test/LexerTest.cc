@@ -904,7 +904,7 @@ int main()\n\
   KeywordToken * keyword;
 
   // #
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -914,7 +914,7 @@ int main()\n\
   delete token;
 
   // include
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
@@ -922,7 +922,7 @@ int main()\n\
   delete token;
 
   // <
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
@@ -932,7 +932,7 @@ int main()\n\
   delete token;
 
   // stdio
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 11u, token->pos.column );
@@ -940,7 +940,7 @@ int main()\n\
   delete token;
 
   // .
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 16u, token->pos.column );
@@ -950,7 +950,7 @@ int main()\n\
   delete token;
 
   // h
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 17u, token->pos.column );
@@ -958,7 +958,7 @@ int main()\n\
   delete token;
 
   // >
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 18u, token->pos.column );
@@ -968,7 +968,7 @@ int main()\n\
   delete token;
 
   // int
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -978,7 +978,7 @@ int main()\n\
   delete token;
 
   // main
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
@@ -986,7 +986,7 @@ int main()\n\
   delete token;
 
   // (
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 9u, token->pos.column );
@@ -996,7 +996,7 @@ int main()\n\
   delete token;
 
   // )
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
@@ -1006,7 +1006,7 @@ int main()\n\
   delete token;
 
   // {
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1016,7 +1016,7 @@ int main()\n\
   delete token;
 
   // printf
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::IDENTIFIER );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
@@ -1024,7 +1024,7 @@ int main()\n\
   delete token;
 
   // (
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 9u, token->pos.column );
@@ -1034,7 +1034,7 @@ int main()\n\
   delete token;
 
   // "Hello World!\n"
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::STRING_LITERAL );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 11u, token->pos.column );
@@ -1042,7 +1042,7 @@ int main()\n\
   delete token;
 
   // )
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 28u, token->pos.column );
@@ -1052,7 +1052,7 @@ int main()\n\
   delete token;
 
   // ;
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 29u, token->pos.column );
@@ -1062,7 +1062,7 @@ int main()\n\
   delete token;
 
   // return
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::KEYWORD );
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
@@ -1072,7 +1072,7 @@ int main()\n\
   delete token;
 
   // 0
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::CONSTANT );
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
@@ -1080,7 +1080,7 @@ int main()\n\
   delete token;
 
   // ;
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 11u, token->pos.column );
@@ -1090,7 +1090,7 @@ int main()\n\
   delete token;
 
   // }
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 7u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1115,7 +1115,7 @@ void LexerTest::testReadPunctuatorDots()
   PunctuatorToken * punctuator;
 
   // ...
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1125,7 +1125,7 @@ void LexerTest::testReadPunctuatorDots()
   delete token;
 
   // ...
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.column );
@@ -1135,7 +1135,7 @@ void LexerTest::testReadPunctuatorDots()
   delete token;
 
   // .
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 7u, token->pos.column );
@@ -1145,7 +1145,7 @@ void LexerTest::testReadPunctuatorDots()
   delete token;
 
   // .
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 8u, token->pos.column );
@@ -1170,7 +1170,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   PunctuatorToken * punctuator;
 
   // <:
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1180,7 +1180,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   delete token;
 
   // >
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
@@ -1195,7 +1195,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   std::cin.rdbuf( stream.rdbuf() );
   
   // <%
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1205,7 +1205,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   delete token;
 
   // >
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
@@ -1220,7 +1220,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   std::cin.rdbuf( stream.rdbuf() );
   
   // %:%:
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1230,7 +1230,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   delete token;
 
   // %:
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
@@ -1245,7 +1245,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   std::cin.rdbuf( stream.rdbuf() );
   
   // <%
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1255,7 +1255,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   delete token;
 
   // :>
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
@@ -1270,7 +1270,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   std::cin.rdbuf( stream.rdbuf() );
   
   // <<
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1280,7 +1280,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   delete token;
 
   // :
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
@@ -1290,7 +1290,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   delete token;
 
   // :>
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.column );
@@ -1300,7 +1300,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   delete token;
 
   // >
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.column );
@@ -1326,7 +1326,7 @@ void LexerTest::testEmptyCharConst()
 
 
 	// ''
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1336,7 +1336,7 @@ void LexerTest::testEmptyCharConst()
   delete token;
 
 	// ''
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
@@ -1362,7 +1362,7 @@ void LexerTest::testIllegalIdentifiers()
 
 
 	// 12a
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
@@ -1372,7 +1372,7 @@ void LexerTest::testIllegalIdentifiers()
   delete token;
 
 	// 1_
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
@@ -1382,7 +1382,7 @@ void LexerTest::testIllegalIdentifiers()
   delete token;
 
 	// 1_2
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 8u, token->pos.column );
@@ -1392,7 +1392,7 @@ void LexerTest::testIllegalIdentifiers()
   delete token;
 
 	// 1a2
-  token = & lexer.getToken();
+  token = & lexer.get();
   CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 12u, token->pos.column );

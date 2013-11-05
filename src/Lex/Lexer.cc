@@ -38,7 +38,7 @@ Lexer::Lexer( std::string const &fileName ) : fileName(fileName),
 
 Lexer::~Lexer() {}
 
-Token & Lexer::getToken()
+Token & Lexer::get()
 {
   if ( ! file.good() )
     return *( new EofToken( pos ) );

@@ -78,7 +78,7 @@ int main(int, char** const argv)
 
               while ( true )
               {
-                Token const & tok = lexer.getToken();
+                Token const & tok = lexer.get();
                 if ( tok.kind == TokenKind::END_OF_FILE )
                   break;
 
