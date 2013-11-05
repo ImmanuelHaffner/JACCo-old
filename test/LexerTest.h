@@ -17,6 +17,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST_SUITE ( LexerTest );
   CPPUNIT_TEST ( testConstructor );
   CPPUNIT_TEST ( testSkip );
+  CPPUNIT_TEST ( testEof );
   CPPUNIT_TEST ( testReadIdentifier );
   CPPUNIT_TEST ( testReadKeywords );
   CPPUNIT_TEST ( testReadDecimalConstant );
@@ -30,8 +31,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testHelloWorld );
   CPPUNIT_TEST ( testReadPunctuatorDots );
   CPPUNIT_TEST ( testReadPunctuatorDigraphAmbiguity );
-  CPPUNIT_TEST ( testEmptyCharConst );
-  CPPUNIT_TEST ( testIllegalIdentifiers );
+  CPPUNIT_TEST ( testComments );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -41,6 +41,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   protected:
 	void testConstructor();
   void testSkip();
+  void testEof();
   void testReadIdentifier();
   void testReadKeywords();
   void testReadDecimalConstant();
@@ -54,8 +55,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   void testHelloWorld();
   void testReadPunctuatorDots();
   void testReadPunctuatorDigraphAmbiguity();
-  void testEmptyCharConst();
-  void testIllegalIdentifiers();
+  void testComments();
 };
 
 #endif

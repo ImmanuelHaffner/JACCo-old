@@ -119,6 +119,30 @@ void LexerTest::testSkip()
   std::cin.rdbuf( cin_bak );
 }
 
+void LexerTest::testEof()
+{
+  // redirect stdin
+  std::istringstream stream( "" );
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+  Lexer lexer;
+  Token * token;
+
+  token = & lexer.get();
+  CPPUNIT_ASSERT( token->kind == TokenKind::END_OF_FILE );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+
+  token = & lexer.get();
+  CPPUNIT_ASSERT( token->kind == TokenKind::END_OF_FILE );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
 void LexerTest::testReadIdentifier()
 {
   std::istringstream stream( "a b\nc \n d\r\ne f1 _f2" );
@@ -1314,91 +1338,75 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   std::cin.rdbuf( cin_bak );
 }
 
-void LexerTest::testEmptyCharConst()
+void LexerTest::testComments()
 {
   // redirect stdin
-  std::istringstream stream( "''''" );
+  std::istringstream stream( "//" );
   std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
 
   Lexer lexer;
   Token * token;
-  IllegalToken * itok;
 
 
-	// ''
   token = & lexer.get();
-  CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
-  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
-  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
-  CPPUNIT_ASSERT( token->text == "''" );
-  itok = static_cast< IllegalToken* >( token );
-  CPPUNIT_ASSERT( itok->iKind == IllegalTokenKind::EMPTY_CHARACTER_CONSTANT );
-  delete token;
-
-	// ''
-  token = & lexer.get();
-  CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
+  CPPUNIT_ASSERT( token->kind == TokenKind::END_OF_FILE );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
-  CPPUNIT_ASSERT( token->text == "''" );
-  itok = static_cast< IllegalToken* >( token );
-  CPPUNIT_ASSERT( itok->iKind == IllegalTokenKind::EMPTY_CHARACTER_CONSTANT );
   delete token;
 
 
-  // restode stdin
-  std::cin.rdbuf( cin_bak );
-}
-
-void LexerTest::testIllegalIdentifiers()
-{
   // redirect stdin
-  std::istringstream stream( "12a 1_ 1_2 1a2" );
-	std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+  stream.str( "\n//\\\n" );
+  std::cin.rdbuf( stream.rdbuf() );
 
-  Lexer lexer;
-  Token * token;
-  IllegalToken * itok;
-
-
-	// 12a
   token = & lexer.get();
-  CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
-  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT( token->kind == TokenKind::END_OF_FILE );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
-  CPPUNIT_ASSERT( token->text == "12a" );
-  itok = static_cast< IllegalToken* >( token );
-  CPPUNIT_ASSERT( itok->iKind == IllegalTokenKind::IDENTIFIER );
   delete token;
 
-	// 1_
+
+  // redirect stdin
+  stream.str( "\n/**/" );
+  std::cin.rdbuf( stream.rdbuf() );
+
   token = & lexer.get();
-  CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
-  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
+  CPPUNIT_ASSERT( token->kind == TokenKind::END_OF_FILE );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
-  CPPUNIT_ASSERT( token->text == "1_" );
-  itok = static_cast< IllegalToken* >( token );
-  CPPUNIT_ASSERT( itok->iKind == IllegalTokenKind::IDENTIFIER );
   delete token;
 
-	// 1_2
+
+  // redirect stdin
+  stream.str( "\n/*\n\\\n*/" );
+  std::cin.rdbuf( stream.rdbuf() );
+
   token = & lexer.get();
-  CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
-  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
-  CPPUNIT_ASSERT_EQUAL( 8u, token->pos.column );
-  CPPUNIT_ASSERT( token->text == "1_2" );
-  itok = static_cast< IllegalToken* >( token );
-  CPPUNIT_ASSERT( itok->iKind == IllegalTokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT( token->kind == TokenKind::END_OF_FILE );
+  CPPUNIT_ASSERT_EQUAL( 7u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
   delete token;
 
-	// 1a2
+
+  // redirect stdin
+  stream.str( "\n//*" );
+  std::cin.rdbuf( stream.rdbuf() );
+
   token = & lexer.get();
-  CPPUNIT_ASSERT( token->kind  == TokenKind::ILLEGAL );
-  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
-  CPPUNIT_ASSERT_EQUAL( 12u, token->pos.column );
-  CPPUNIT_ASSERT( token->text == "1a2" );
-  itok = static_cast< IllegalToken* >( token );
-  CPPUNIT_ASSERT( itok->iKind == IllegalTokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT( token->kind == TokenKind::END_OF_FILE );
+  CPPUNIT_ASSERT_EQUAL( 8u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.column );
+  delete token;
+
+
+  // redirect stdin
+  stream.str( "\n///*" );
+  std::cin.rdbuf( stream.rdbuf() );
+
+  token = & lexer.get();
+  CPPUNIT_ASSERT( token->kind == TokenKind::END_OF_FILE );
+  CPPUNIT_ASSERT_EQUAL( 9u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
   delete token;
 
 
