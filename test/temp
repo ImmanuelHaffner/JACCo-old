@@ -1,9 +1,0 @@
-resource/main_empty.c:1:1: keyword int
-resource/main_empty.c:1:5: identifier main
-resource/main_empty.c:1:9: punctuator (
-resource/main_empty.c:1:10: punctuator )
-resource/main_empty.c:2:1: punctuator {
-resource/main_empty.c:3:3: keyword return
-resource/main_empty.c:3:10: constant 0
-resource/main_empty.c:3:11: punctuator ;
-resource/main_empty.c:4:1: punctuator }

@@ -31,24 +31,17 @@ do
     RES=$?
     EXP=$(head -n 1 ${expectedfile})
 
-    if [ $EXP -ne 0 ];
+    if [[ ( $EXP -ne 0 && $RES -eq 0 ) || ( $EXP -eq 0 && $RES -ne 0 ) ]];
     then
-      if [ $RES -ne 0 ];
-      then
-        echo "-> passed";
-        PASSES=$(echo $PASSES +1 | bc )
-        continue;
-      fi
-
       rm "${result}";
       echo "-> error";
       continue;
     fi;
 
-    $(diff -q "${result}" "${expected}" > /dev/null 2>&1)
+    $(diff -q "${expected}" "${result}" > /dev/null 2>&1)
     if [ 0 -ne $? ];
     then
-      diff -y "${result}" "${expected}"
+      colordiff -y --width=180 "${expected}" "${result}"
       echo "-> output differs: ${path}/${test}";
       echo Passed tests: $PASSES
       exit 1;
