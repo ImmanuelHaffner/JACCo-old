@@ -538,7 +538,6 @@ Token & Lexer::readPunctuator()
   }
 }
 
-
 Token & Lexer::skip()
 {
   int c;
@@ -574,7 +573,8 @@ Token & Lexer::skip()
       {
         // comment line
         updatePos( c );
-        while ( file.good() && ( c == '\\' || file.peek() != '\n' ) )
+        while ( file.good() && file.peek() != -1
+            && ( c == '\\' || file.peek() != '\n' ) )
         {
           c = file.get();
           updatePos( c );
@@ -585,16 +585,18 @@ Token & Lexer::skip()
       {
         // comment block
         Pos start( pos );
-        updatePos( c );
-        file.get(); // read the *
 
+        updatePos( c ); // handle /
+        c = file.get(); // read the *
         updatePos( c );
         c = file.get(); // read the next char, skip previous * to prevent /*/
+        updatePos( c );
 
-        while ( file.good() && ( c != '*' || file.peek() != '/' ) )
+        while ( file.good() && file.peek() != -1
+            && ( c != '*' || file.peek() != '/' ) )
         {
-          updatePos( c );
           c = file.get();
+          updatePos( c );
         }
 
         if ( ! file.good() )
@@ -628,6 +630,9 @@ void Lexer::step()
 
 void Lexer::updatePos( int c )
 {
+  if ( c == -1 )
+    return;
+
   if ( c == '\n' )
   {
     ++pos.line;
