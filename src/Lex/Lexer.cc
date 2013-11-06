@@ -243,9 +243,17 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
     }
     else if ( file.peek() == '\\' )
     {
+      int c = file.get();
+      if ( file.peek() == '\n' )
+      {
+        // escaped newline
+        updatePos( file.get() );
+        continue;
+      }
+
       // Escape Sequence
-      updatePos( file.peek() );
-      text += file.get();
+      updatePos( c );
+      text += c;
 
       switch ( file.peek() )
       {
