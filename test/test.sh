@@ -23,7 +23,7 @@ do
 
     testname=$(basename "${test}" .c);
     result=$(mktemp /tmp/"${testname}".XXXX);
-    expectedfile=$(dirname "${test}")/"${testname}"".expected"
+    expectedfile=$(dirname "${test}")/"${testname}"".lex"
     expected=$(mktemp /tmp/"${testname}".expected.XXXX);
     tail -n +2 "${expectedfile}" > "${expected}";
 
@@ -38,9 +38,11 @@ do
       continue;
     fi;
 
-    $(diff -q "${expected}" "${result}" > /dev/null 2>&1)
+    diff -q "${expected}" "${result}" > /dev/null 2>&1
     if [ 0 -ne $? ];
     then
+			echo "expected                                                           \
+              -      actual"
       colordiff -y --width=180 "${expected}" "${result}"
       echo "-> output differs: ${path}/${test}";
       echo Passed tests: $PASSES
