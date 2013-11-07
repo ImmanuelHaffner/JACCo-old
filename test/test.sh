@@ -4,7 +4,7 @@ export C4="/home/immanuel/Documents/University/Compiler Construction/c4/build/de
 
 PASSES=0
 
-for path in $(find "resource/" -type d);
+for path in $(find "test/resource/" -type d);
 do
   oldcwd=$(pwd)
   cd "$path"

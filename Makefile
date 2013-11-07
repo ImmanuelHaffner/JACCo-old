@@ -9,7 +9,7 @@ BUILDDIR		?= build
 CFG					?= default
 NAME				?= c4
 SRCDIR			?= src
-TESTDIR			?= test
+TESTDIR			?= test/cppunit
 DOCSDIR			?= doc
 
 CPPUNIT_PATH	?= /usr/lib/

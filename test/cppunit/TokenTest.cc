@@ -8,14 +8,14 @@
 
 #include <cstdio>
 #include <cstring>
-#include "../src/Lex/Token.h"
-#include "../src/Lex/KeywordToken.h"
-#include "../src/Lex/IdentifierToken.h"
-#include "../src/Lex/ConstantToken.h"
-#include "../src/Lex/StringLiteralToken.h"
-#include "../src/Lex/PunctuatorToken.h"
-#include "../src/Lex/EofToken.h"
-#include "../src/Lex/IllegalToken.h"
+#include "../../src/Lex/Token.h"
+#include "../../src/Lex/KeywordToken.h"
+#include "../../src/Lex/IdentifierToken.h"
+#include "../../src/Lex/ConstantToken.h"
+#include "../../src/Lex/StringLiteralToken.h"
+#include "../../src/Lex/PunctuatorToken.h"
+#include "../../src/Lex/EofToken.h"
+#include "../../src/Lex/IllegalToken.h"
 
 
 // register this test 

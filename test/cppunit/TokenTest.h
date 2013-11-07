@@ -10,7 +10,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "../src/pos.h"
+#include "../../src/pos.h"
 
 class TokenTest : public CPPUNIT_NS::TestFixture
 {

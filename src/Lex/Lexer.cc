@@ -31,9 +31,7 @@ Lexer::Lexer() : fileName("<stdin>"), file( std::cin ), pos("<stdin>", 1, 1),
 Lexer::Lexer( char const * const fileName ) : fileName(fileName),
   file( * new std::ifstream( fileName ) ), pos(fileName, 1, 1), cur(NULL),
   prev(NULL)
-{
-
-}
+{}
 
 Lexer::Lexer( std::string const &fileName ) : fileName(fileName),
   file( * new std::ifstream( fileName ) ),
