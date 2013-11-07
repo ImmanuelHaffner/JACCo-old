@@ -18,6 +18,8 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testConstructor );
   CPPUNIT_TEST ( testSkip );
   CPPUNIT_TEST ( testEof );
+  CPPUNIT_TEST ( testPeek );
+  CPPUNIT_TEST ( testUnget );
   CPPUNIT_TEST ( testReadIdentifier );
   CPPUNIT_TEST ( testReadKeywords );
   CPPUNIT_TEST ( testReadDecimalConstant );
@@ -42,6 +44,8 @@ class LexerTest : public CPPUNIT_NS::TestFixture
 	void testConstructor();
   void testSkip();
   void testEof();
+  void testPeek();
+  void testUnget();
   void testReadIdentifier();
   void testReadKeywords();
   void testReadDecimalConstant();

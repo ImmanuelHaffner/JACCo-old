@@ -143,6 +143,157 @@ void LexerTest::testEof()
   std::cin.rdbuf( cin_bak );
 }
 
+void LexerTest::testPeek()
+{
+  Lexer lexer;
+
+  // redirect stdin
+  std::istringstream stream( "a b" );
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+
+  {
+    Token &token = lexer.peek();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "a" );
+    delete &token;
+  }
+
+  {
+    Token &token = lexer.peek();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "a" );
+    delete &token;
+  }
+
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "a" );
+    delete &token;
+  }
+
+
+  {
+    Token &token = lexer.peek();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "b" );
+    delete &token;
+  }
+
+  {
+    Token &token = lexer.peek();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "b" );
+    delete &token;
+  }
+
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "b" );
+    delete &token;
+  }
+
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::END_OF_FILE );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
+    delete &token;
+  }
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
+void LexerTest::testUnget()
+{
+  Lexer lexer;
+
+  // redirect stdin
+  std::istringstream stream( "a b" );
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "a" );
+    delete &token;
+  }
+
+  lexer.unget();
+
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "a" );
+    delete &token;
+  }
+
+  lexer.unget();
+  lexer.unget();
+
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "a" );
+    delete &token;
+  }
+
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "b" );
+    delete &token;
+  }
+
+  lexer.unget();
+
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "b" );
+    delete &token;
+  }
+
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::END_OF_FILE );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
+    delete &token;
+  }
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
 void LexerTest::testReadIdentifier()
 {
   std::istringstream stream( "a b\nc \n d\r\ne f1 _f2" );
