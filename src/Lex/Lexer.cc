@@ -24,7 +24,8 @@
 using namespace C4;
 using namespace Lex;
 
-Lexer::Lexer() : fileName("<stdin>"), file( std::cin ), pos("<stdin>", 1, 1)
+Lexer::Lexer() : fileName("<stdin>"), file( std::cin ), pos("<stdin>", 1, 1),
+  cur(NULL), prev(NULL)
 {}
 
 Lexer::Lexer( char const * const fileName ) : fileName(fileName),
@@ -33,12 +34,45 @@ Lexer::Lexer( char const * const fileName ) : fileName(fileName),
 
 Lexer::Lexer( std::string const &fileName ) : fileName(fileName),
   file( * new std::ifstream( fileName ) ),
-  pos(fileName.c_str(), 1, 1)
+  pos(fileName.c_str(), 1, 1), cur(NULL), prev(NULL)
 {}
 
 Lexer::~Lexer() {}
 
 Token & Lexer::get()
+{
+  if ( cur )
+  {
+    if ( prev )
+      delete prev;
+    prev = cur;
+    Token &t = cur->clone();
+    cur = NULL;
+    return t;
+  }
+  prev = & getToken();
+  return prev->clone();
+}
+
+Token & Lexer::peek()
+{
+  if ( ! cur )
+    cur = & getToken();
+  return cur->clone();
+}
+
+void Lexer::unget()
+{
+  if ( prev )
+  {
+    if ( cur )
+      delete cur;
+    cur = prev;
+    prev = NULL;
+  }
+}
+
+Token & Lexer::getToken()
 {
   if ( ! file.good() )
     return *( new EofToken( pos ) );

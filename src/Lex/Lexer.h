@@ -38,6 +38,12 @@ namespace C4
         /// \return the next token from the input stream
         Token & get();
 
+        Token & peek();
+
+        void unget();
+
+        Token & getToken();
+
         Pos getPos() const;
 
         char current() const;
@@ -94,6 +100,8 @@ namespace C4
       private:
         std::istream &file;
         Pos pos;
+        Token *cur;
+        Token *prev;
     };
   } // end namespace Lex
 } // end namespace C4
