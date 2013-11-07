@@ -34,7 +34,8 @@ do
     if [[ ( $EXP -ne 0 && $RES -eq 0 ) || ( $EXP -eq 0 && $RES -ne 0 ) ]];
     then
       rm "${result}";
-      echo "-> error";
+      echo "-> error: wrong return code";
+			echo "          expected: $EXP - actual $RES"
       continue;
     fi;
 

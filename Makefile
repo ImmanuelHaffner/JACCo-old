@@ -68,7 +68,9 @@ check: $(TESTBIN)
 
 check-all: all check
 	@echo ""
-	- ./test/test.sh
+	@cd test/;\
+	./test-tokenize.sh;\
+	cd ..
 
 clean:
 	@echo "===> CLEAN"
