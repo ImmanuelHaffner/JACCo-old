@@ -29,26 +29,35 @@ Lexer::Lexer() : fileName("<stdin>"), file( std::cin ), pos("<stdin>", 1, 1),
 {}
 
 Lexer::Lexer( char const * const fileName ) : fileName(fileName),
-  file( * new std::ifstream( fileName ) ), pos(fileName, 1, 1)
-{}
+  file( * new std::ifstream( fileName ) ), pos(fileName, 1, 1), cur(NULL),
+  prev(NULL)
+{
+
+}
 
 Lexer::Lexer( std::string const &fileName ) : fileName(fileName),
   file( * new std::ifstream( fileName ) ),
   pos(fileName.c_str(), 1, 1), cur(NULL), prev(NULL)
 {}
 
-Lexer::~Lexer() {}
+Lexer::~Lexer()
+{
+  if ( prev )
+    delete prev;
+  if ( cur )
+    delete cur;
+}
 
 Token & Lexer::get()
 {
+  if ( prev )
+    delete prev;
+
   if ( cur )
   {
-    if ( prev )
-      delete prev;
     prev = cur;
-    Token &t = cur->clone();
     cur = NULL;
-    return t;
+    return prev->clone();
   }
   prev = & getToken();
   return prev->clone();
