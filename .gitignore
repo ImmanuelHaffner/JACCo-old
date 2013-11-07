@@ -1,7 +1,7 @@
 doc/
 *.cfg
 build/
-test/default
+test/cppunit/default/
 .*.swp
 cleanup.sh
 *.tar
