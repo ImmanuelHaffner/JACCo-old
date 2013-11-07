@@ -85,9 +85,9 @@ namespace C4
 
       virtual ~PunctuatorToken() {}
 
+			Token & clone() const;
       friend std::ostream & operator<<( std::ostream &out,
           PunctuatorToken const &tok );
-
       void dump() const;
 
       PunctuatorKind const punctuator;

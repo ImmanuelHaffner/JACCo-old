@@ -13,6 +13,11 @@
 using namespace C4;
 using namespace Lex;
 
+Token & KeywordToken::clone() const
+{
+	return *( new KeywordToken( *this ) );
+}
+
 std::ostream & Lex::operator<<( std::ostream &out, KeywordToken const &tok )
 {
   out << tok.pos << " keyword " << tok.text;

@@ -13,6 +13,11 @@
 using namespace C4;
 using namespace Lex;
 
+Token & EofToken::clone() const
+{
+	return *( new EofToken( *this ) );
+}
+
 std::ostream & Lex::operator<<( std::ostream &out, EofToken const &tok )
 {
   out << tok.pos << " end of file";

@@ -13,6 +13,11 @@
 using namespace C4;
 using namespace Lex;
 
+Token & IdentifierToken::clone() const
+{
+	return *( new IdentifierToken( *this ) );
+}
+
 std::ostream & Lex::operator<<( std::ostream &out, IdentifierToken const &tok )
 {
   out << tok.pos << " identifier " << tok.text;

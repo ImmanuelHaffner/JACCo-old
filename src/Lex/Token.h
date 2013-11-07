@@ -46,8 +46,8 @@ namespace C4
 
       virtual ~Token() {}
 
+			virtual Token & clone() const;
       friend std::ostream & operator<<( std::ostream &out, Token const &tok );
-
       virtual void dump() const;
 
       Pos const pos;

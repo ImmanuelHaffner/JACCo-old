@@ -130,9 +130,9 @@ namespace C4
 
       virtual ~KeywordToken() {}
 
+			Token & clone() const;
       friend std::ostream & operator<<( std::ostream &out,
           KeywordToken const &tok );
-
       void dump() const;
 
       KeywordKind const keyword;

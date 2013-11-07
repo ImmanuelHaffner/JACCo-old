@@ -28,9 +28,9 @@ namespace C4
 
       virtual ~StringLiteralToken() {}
 
+			Token & clone() const;
       friend std::ostream & operator<<( std::ostream &out,
           StringLiteralToken const &tok );
-
       void dump() const;
     };
   } // end namespace Lex

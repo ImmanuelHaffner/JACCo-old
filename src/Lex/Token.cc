@@ -21,6 +21,11 @@
 using namespace C4;
 using namespace Lex;
 
+Token & Token::clone() const
+{
+	return *( new Token( *this ) );
+}
+
 std::ostream & Lex::operator<<( std::ostream &out, Token const &tok )
 {
   switch ( tok.kind )

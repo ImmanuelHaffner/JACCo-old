@@ -13,6 +13,11 @@
 using namespace C4;
 using namespace Lex;
 
+Token & IllegalToken::clone() const
+{
+	return *( new IllegalToken( *this ) );
+}
+
 std::ostream & Lex::operator<<( std::ostream &out, IllegalToken const &tok )
 {
   out << "illegal token: " << tok.text << " - ";
