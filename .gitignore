@@ -1,8 +1,11 @@
 doc/
 *.cfg
 build/
-test/cppunit/default/
 .*.swp
 cleanup.sh
 *.tar
 *.tar.gz
+
+# test dir stuff
+test/.gitignore
+test/cppunit/default/
