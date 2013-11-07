@@ -48,6 +48,8 @@ Token & Lexer::get()
   // Hack for the unterminated comment block
   if ( t.kind != TokenKind::END_OF_FILE )
     return t;
+  else
+    delete &t;
 
   if ( ! file.good() )
     return *( new EofToken( pos ) );

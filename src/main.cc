@@ -91,6 +91,8 @@ int main(int, char** const argv)
 								}
                 else
                   std::cout << tok << std::endl;
+
+								delete &tok;
               }
               break;
             }
