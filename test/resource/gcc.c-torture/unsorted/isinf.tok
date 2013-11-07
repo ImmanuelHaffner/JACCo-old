@@ -1,10 +1,10 @@
 0
-isinf.c:1:1 keyword int
-isinf.c:2:1 identifier isinf
-isinf.c:2:7 punctuator (
-isinf.c:2:8 punctuator )
-isinf.c:3:1 punctuator {
-isinf.c:4:3 keyword return
-isinf.c:4:10 constant 0
-isinf.c:4:11 punctuator ;
-isinf.c:5:1 punctuator }
+isinf.c:1:1: keyword int
+isinf.c:2:1: identifier isinf
+isinf.c:2:7: punctuator (
+isinf.c:2:8: punctuator )
+isinf.c:3:1: punctuator {
+isinf.c:4:3: keyword return
+isinf.c:4:10: constant 0
+isinf.c:4:11: punctuator ;
+isinf.c:5:1: punctuator }

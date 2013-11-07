@@ -1,12 +1,12 @@
 0
-sub32.c:1:1 identifier foo
-sub32.c:1:5 punctuator (
-sub32.c:1:6 identifier a
-sub32.c:1:7 punctuator )
-sub32.c:2:1 punctuator {
-sub32.c:3:3 keyword return
-sub32.c:3:10 identifier a
-sub32.c:3:12 punctuator +
-sub32.c:3:14 constant 32
-sub32.c:3:16 punctuator ;
-sub32.c:4:1 punctuator }
+sub32.c:1:1: identifier foo
+sub32.c:1:5: punctuator (
+sub32.c:1:6: identifier a
+sub32.c:1:7: punctuator )
+sub32.c:2:1: punctuator {
+sub32.c:3:3: keyword return
+sub32.c:3:10: identifier a
+sub32.c:3:12: punctuator +
+sub32.c:3:14: constant 32
+sub32.c:3:16: punctuator ;
+sub32.c:4:1: punctuator }

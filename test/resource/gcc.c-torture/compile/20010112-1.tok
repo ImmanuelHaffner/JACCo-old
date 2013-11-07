@@ -1,13 +1,13 @@
 0
-20010112-1.c:1:1 keyword void
-20010112-1.c:1:6 identifier f
-20010112-1.c:1:7 punctuator (
-20010112-1.c:1:8 punctuator )
-20010112-1.c:1:10 punctuator {
-20010112-1.c:2:3 keyword register
-20010112-1.c:2:12 keyword int
-20010112-1.c:2:16 identifier i
-20010112-1.c:2:18 punctuator =
-20010112-1.c:2:20 constant 3
-20010112-1.c:2:21 punctuator ;
-20010112-1.c:3:1 punctuator }
+20010112-1.c:1:1: keyword void
+20010112-1.c:1:6: identifier f
+20010112-1.c:1:7: punctuator (
+20010112-1.c:1:8: punctuator )
+20010112-1.c:1:10: punctuator {
+20010112-1.c:2:3: keyword register
+20010112-1.c:2:12: keyword int
+20010112-1.c:2:16: identifier i
+20010112-1.c:2:18: punctuator =
+20010112-1.c:2:20: constant 3
+20010112-1.c:2:21: punctuator ;
+20010112-1.c:3:1: punctuator }

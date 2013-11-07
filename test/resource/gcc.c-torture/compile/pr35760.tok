@@ -1,14 +1,14 @@
 0
-pr35760.c:3:1 keyword void
-pr35760.c:4:1 identifier foo
-pr35760.c:4:5 punctuator (
-pr35760.c:4:6 keyword void
-pr35760.c:4:10 punctuator )
-pr35760.c:5:1 punctuator {
-pr35760.c:6:3 identifier __complex__
-pr35760.c:6:15 keyword float
-pr35760.c:6:21 identifier i
-pr35760.c:6:23 punctuator =
-pr35760.c:6:25 constant 0
-pr35760.c:6:26 punctuator ;
-pr35760.c:7:1 punctuator }
+pr35760.c:3:1: keyword void
+pr35760.c:4:1: identifier foo
+pr35760.c:4:5: punctuator (
+pr35760.c:4:6: keyword void
+pr35760.c:4:10: punctuator )
+pr35760.c:5:1: punctuator {
+pr35760.c:6:3: identifier __complex__
+pr35760.c:6:15: keyword float
+pr35760.c:6:21: identifier i
+pr35760.c:6:23: punctuator =
+pr35760.c:6:25: constant 0
+pr35760.c:6:26: punctuator ;
+pr35760.c:7:1: punctuator }

@@ -1,13 +1,13 @@
 0
-pr22398.c:2:1 keyword int
-pr22398.c:2:5 identifier main
-pr22398.c:2:9 punctuator (
-pr22398.c:2:10 keyword void
-pr22398.c:2:14 punctuator )
-pr22398.c:2:16 punctuator {
-pr22398.c:2:18 identifier exit
-pr22398.c:2:23 punctuator (
-pr22398.c:2:24 constant 0
-pr22398.c:2:25 punctuator )
-pr22398.c:2:26 punctuator ;
-pr22398.c:2:28 punctuator }
+pr22398.c:2:1: keyword int
+pr22398.c:2:5: identifier main
+pr22398.c:2:9: punctuator (
+pr22398.c:2:10: keyword void
+pr22398.c:2:14: punctuator )
+pr22398.c:2:16: punctuator {
+pr22398.c:2:18: identifier exit
+pr22398.c:2:23: punctuator (
+pr22398.c:2:24: constant 0
+pr22398.c:2:25: punctuator )
+pr22398.c:2:26: punctuator ;
+pr22398.c:2:28: punctuator }

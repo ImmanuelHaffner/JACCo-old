@@ -1,12 +1,12 @@
 0
-a.c:1:1 identifier foo
-a.c:1:5 punctuator (
-a.c:1:6 identifier a
-a.c:1:7 punctuator )
-a.c:2:1 punctuator {
-a.c:3:3 keyword return
-a.c:3:10 identifier a
-a.c:3:12 punctuator &
-a.c:3:14 constant 65535
-a.c:3:19 punctuator ;
-a.c:4:1 punctuator }
+a.c:1:1: identifier foo
+a.c:1:5: punctuator (
+a.c:1:6: identifier a
+a.c:1:7: punctuator )
+a.c:2:1: punctuator {
+a.c:3:3: keyword return
+a.c:3:10: identifier a
+a.c:3:12: punctuator &
+a.c:3:14: constant 65535
+a.c:3:19: punctuator ;
+a.c:4:1: punctuator }

@@ -1,6 +1,6 @@
 0
-trivial.c:1:1 identifier foo
-trivial.c:1:5 punctuator (
-trivial.c:1:6 punctuator )
-trivial.c:1:8 punctuator {
-trivial.c:1:9 punctuator }
+trivial.c:1:1: identifier foo
+trivial.c:1:5: punctuator (
+trivial.c:1:6: punctuator )
+trivial.c:1:8: punctuator {
+trivial.c:1:9: punctuator }

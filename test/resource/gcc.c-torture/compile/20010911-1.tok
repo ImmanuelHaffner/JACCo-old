@@ -1,11 +1,11 @@
 0
-20010911-1.c:4:1 keyword void
-20010911-1.c:4:6 identifier __attribute__
-20010911-1.c:4:19 punctuator (
-20010911-1.c:4:20 punctuator (
-20010911-1.c:4:21 punctuator )
-20010911-1.c:4:22 punctuator )
-20010911-1.c:4:24 identifier foo
-20010911-1.c:4:27 punctuator (
-20010911-1.c:4:28 punctuator )
-20010911-1.c:4:29 punctuator ;
+20010911-1.c:4:1: keyword void
+20010911-1.c:4:6: identifier __attribute__
+20010911-1.c:4:19: punctuator (
+20010911-1.c:4:20: punctuator (
+20010911-1.c:4:21: punctuator )
+20010911-1.c:4:22: punctuator )
+20010911-1.c:4:24: identifier foo
+20010911-1.c:4:27: punctuator (
+20010911-1.c:4:28: punctuator )
+20010911-1.c:4:29: punctuator ;

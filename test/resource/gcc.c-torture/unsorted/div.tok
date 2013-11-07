@@ -1,14 +1,14 @@
 0
-div.c:1:1 identifier foo
-div.c:1:5 punctuator (
-div.c:1:6 identifier a
-div.c:1:7 punctuator ,
-div.c:1:9 identifier b
-div.c:1:10 punctuator )
-div.c:2:1 punctuator {
-div.c:3:3 keyword return
-div.c:3:10 identifier a
-div.c:3:12 punctuator /
-div.c:3:14 identifier b
-div.c:3:15 punctuator ;
-div.c:4:1 punctuator }
+div.c:1:1: identifier foo
+div.c:1:5: punctuator (
+div.c:1:6: identifier a
+div.c:1:7: punctuator ,
+div.c:1:9: identifier b
+div.c:1:10: punctuator )
+div.c:2:1: punctuator {
+div.c:3:3: keyword return
+div.c:3:10: identifier a
+div.c:3:12: punctuator /
+div.c:3:14: identifier b
+div.c:3:15: punctuator ;
+div.c:4:1: punctuator }

@@ -1,13 +1,13 @@
 0
-20031203-3.c:4:1 keyword void
-20031203-3.c:4:6 identifier bar
-20031203-3.c:4:10 punctuator (
-20031203-3.c:4:11 keyword void
-20031203-3.c:4:15 punctuator )
-20031203-3.c:5:1 punctuator {
-20031203-3.c:6:9 punctuator (
-20031203-3.c:6:10 punctuator {
-20031203-3.c:6:11 punctuator }
-20031203-3.c:6:12 punctuator )
-20031203-3.c:6:13 punctuator ;
-20031203-3.c:7:1 punctuator }
+20031203-3.c:4:1: keyword void
+20031203-3.c:4:6: identifier bar
+20031203-3.c:4:10: punctuator (
+20031203-3.c:4:11: keyword void
+20031203-3.c:4:15: punctuator )
+20031203-3.c:5:1: punctuator {
+20031203-3.c:6:9: punctuator (
+20031203-3.c:6:10: punctuator {
+20031203-3.c:6:11: punctuator }
+20031203-3.c:6:12: punctuator )
+20031203-3.c:6:13: punctuator ;
+20031203-3.c:7:1: punctuator }

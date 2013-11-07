@@ -1,13 +1,13 @@
 0
-sym.c:1:1 identifier foo
-sym.c:1:5 punctuator (
-sym.c:1:6 punctuator )
-sym.c:2:1 punctuator {
-sym.c:3:3 keyword return
-sym.c:3:10 punctuator (
-sym.c:3:11 keyword int
-sym.c:3:14 punctuator )
-sym.c:3:16 punctuator &
-sym.c:3:17 identifier foo
-sym.c:3:20 punctuator ;
-sym.c:4:1 punctuator }
+sym.c:1:1: identifier foo
+sym.c:1:5: punctuator (
+sym.c:1:6: punctuator )
+sym.c:2:1: punctuator {
+sym.c:3:3: keyword return
+sym.c:3:10: punctuator (
+sym.c:3:11: keyword int
+sym.c:3:14: punctuator )
+sym.c:3:16: punctuator &
+sym.c:3:17: identifier foo
+sym.c:3:20: punctuator ;
+sym.c:4:1: punctuator }
