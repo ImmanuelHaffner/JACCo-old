@@ -1,0 +1,17 @@
+Put your tests into resource/<your-name>/.
+
+For all tests you have to put a .c-file in there.
+For lexer-tests also put a .tok-file in there.
+.tok-files look like this:
+
+---------------------------------------
+0
+exercise.c:1:1 constant 42
+exercise.c:1:5 keyword if
+exercise.c:2:2 string-literal "bla\n"
+exercise.c:2:9 identifier x
+exercise.c:2:10 punctuator +
+---------------------------------------
+
+The first line specifies the expected return code of your compiler. The 
+following lines give the expected tokens.

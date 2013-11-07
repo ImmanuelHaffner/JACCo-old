@@ -1,10 +1,10 @@
 #!/bin/bash
 
-export C4="/home/immanuel/Documents/University/Compiler Construction/c4/build/default/c4";
+export C4="$(pwd)/../build/default/c4";
 
 PASSES=0
 
-for path in $(find "test/resource/" -type d);
+for path in $(find "resource/" -type d);
 do
   oldcwd=$(pwd)
   cd "$path"
@@ -23,7 +23,7 @@ do
 
     testname=$(basename "${test}" .c);
     result=$(mktemp /tmp/"${testname}".XXXX);
-    expectedfile=$(dirname "${test}")/"${testname}"".lex"
+    expectedfile=$(dirname "${test}")/"${testname}"".tok"
     expected=$(mktemp /tmp/"${testname}".expected.XXXX);
     tail -n +2 "${expectedfile}" > "${expected}";
 
