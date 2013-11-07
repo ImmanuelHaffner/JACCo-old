@@ -1,3 +1,4 @@
+1
 tests/all_punctuators.c:1:1: punctuator [
 tests/all_punctuators.c:2:1: punctuator ]
 tests/all_punctuators.c:3:1: punctuator (
