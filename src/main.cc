@@ -80,8 +80,10 @@ int main(int, char** const argv)
               {
                 Token const & tok = lexer.get();
                 if ( tok.kind == TokenKind::END_OF_FILE )
+								{
+									delete &tok;
                   break;
-
+								}
 
                 if ( tok.kind == TokenKind::ILLEGAL )
 								{
