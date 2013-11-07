@@ -11,7 +11,7 @@ do
 
   for test in $(ls *.c)
   do
-    echo "testing $path${test}";
+    echo "testing $path/${test}";
 
 # contains floating point
     $(grep -e '\.[0-9]' -e '[0-9]\.' "$test" > /dev/null)
