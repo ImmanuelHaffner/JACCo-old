@@ -211,48 +211,33 @@ Token & Lexer::readNumericalConstant()
   // support for 1u 1U 1l 1L 1ll 1LL
   bool isLong = false;
   bool isUnsigned = false;
-  while ( file.good() && ( isalnum( file.peek() ) || file.peek() == '_' ) )
+  while ( file.good() && isalpha( file.peek() ) )
   {
-    if ( ! isIllegalIdentifier )
+    // 1u 1U
+    if ( ! isUnsigned && ( file.peek() == 'u' || file.peek() == 'U' ) )
     {
-      // 1u 1U
-      if ( ! isUnsigned && ( file.peek() == 'u' || file.peek() == 'U' ) )
-      {
-        isUnsigned = true;
-        updatePos( file.peek() );
-        text += file.get();
-        continue;
-      }
-      // 1l 1L 1ll 1LL
-      else if ( ! isLong && ( file.peek() == 'l' || file.peek() == 'L' ) )
-      {
-        isLong = true;
-        char suf = file.peek();
-        updatePos( file.peek() );
-        text += file.get();
-
-        // 1ll 1LL
-        if ( file.peek() == suf )
-        {
-          updatePos( file.peek() );
-          text += file.get();
-        }
-
-        continue;
-      }
-      else
-        isIllegalIdentifier = true;
+      isUnsigned = true;
+      updatePos( file.peek() );
+      text += file.get();
+      continue;
     }
+    // 1l 1L 1ll 1LL
+    else if ( ! isLong && ( file.peek() == 'l' || file.peek() == 'L' ) )
+    {
+      isLong = true;
+      char suf = file.peek();
+      updatePos( file.peek() );
+      text += file.get();
 
-    updatePos( file.peek() );
-    text += file.get();
-  }
-
-  if ( isIllegalIdentifier )
-  {
-    // ILLEGAL Identifier
-    return *( new IllegalToken( start, IllegalTokenKind::IDENTIFIER,
-          text ) );
+      // 1ll 1LL
+      if ( file.peek() == suf )
+      {
+        updatePos( file.peek() );
+        text += file.get();
+      }
+      continue;
+    }
+    break;
   }
 
   return *( new ConstantToken( start, text ) );
