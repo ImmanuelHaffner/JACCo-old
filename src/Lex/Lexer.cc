@@ -95,15 +95,26 @@ Token & Lexer::getToken()
   if ( ! file.good() )
     return *( new EofToken( pos ) );
 
-  if ( isalpha( file.peek() ) || file.peek() == '_' )
-  {
-    // Keyword or Identifier
-    return readKeywordOrIdentifier();
-  }
-  else if ( isdigit( file.peek() ) )
+  if ( isdigit( file.peek() ) )
   {
     // Numerical Constant
     return readNumericalConstant();
+  }
+  else if ( file.peek() == 'L' || file.peek() == 'u' || file.peek() == 'U' )
+  {
+    file.get();
+    if ( file.peek() == '\'' || file.peek() == '"' )
+    {
+      file.unget();
+      return readCharacterConstantOrStringLiteral();
+    }
+    file.unget();
+    return readKeywordOrIdentifier();
+  }
+  else if ( isalpha( file.peek() ) || file.peek() == '_' )
+  {
+    // Keyword or Identifier
+    return readKeywordOrIdentifier();
   }
   else if ( file.peek() == '\'' || file.peek() == '"' )
   {
@@ -250,6 +261,15 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
    */
   Pos start(pos);
   std::string text = "";
+
+  if ( file.peek() == 'L' || file.peek() == 'u' || file.peek() == 'U' )
+  {
+    updatePos( file.peek() );
+    text += file.get();
+  }
+
+  assert( ( file.peek() == '\'' || file.peek() == '"' )
+      && "quote or apostrophe expected" );
 
   int terminator = file.peek();
   bool isCharConst = terminator == '\'';
