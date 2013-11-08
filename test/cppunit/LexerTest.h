@@ -28,6 +28,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testReadNumericalAndIdentifier );
   CPPUNIT_TEST ( testReadIntegerSuffix );
   CPPUNIT_TEST ( testReadCharacterConstant );
+  CPPUNIT_TEST ( testCharPrefix );
   CPPUNIT_TEST ( testReadStringLiteral );
   CPPUNIT_TEST ( testReadPunctuator );
   CPPUNIT_TEST ( testReadPunctuatorDigraph );
@@ -55,6 +56,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   void testReadNumericalAndIdentifier();
   void testReadIntegerSuffix();
   void testReadCharacterConstant();
+  void testCharPrefix();
   void testReadStringLiteral();
   void testReadPunctuator();
   void testReadPunctuatorDigraph();

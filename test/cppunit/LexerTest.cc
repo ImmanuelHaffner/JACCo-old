@@ -898,6 +898,51 @@ void LexerTest::testReadCharacterConstant()
   std::cin.rdbuf( cin_bak );
 }
 
+void LexerTest::testCharPrefix()
+{
+  Lexer lexer;
+
+  // redirect stdin
+  std::istringstream stream( "L'a'\nu'a'\nU'a'" );
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+
+  // L'a'
+  {
+    Token &token = lexer.readCharacterConstantOrStringLiteral();
+    CPPUNIT_ASSERT( token.kind  == TokenKind::CONSTANT );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "L'a'" );
+    delete &token;
+  }
+  lexer.skip();
+
+  // u'a'
+  {
+    Token &token = lexer.readCharacterConstantOrStringLiteral();
+    CPPUNIT_ASSERT( token.kind  == TokenKind::CONSTANT );
+    CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "u'a'" );
+    delete &token;
+  }
+  lexer.skip();
+
+  // U'a'
+  {
+    Token &token = lexer.readCharacterConstantOrStringLiteral();
+    CPPUNIT_ASSERT( token.kind  == TokenKind::CONSTANT );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "U'a'" );
+    delete &token;
+  }
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
 void LexerTest::testReadStringLiteral()
 {
   std::istringstream stream( "\"a\" \n \"bc\"\r\n\"d e \" \"\\n bla\"" );
