@@ -664,6 +664,60 @@ void LexerTest::testReadHexConstant()
   std::cin.rdbuf( cin_bak );
 }
 
+void LexerTest::testReadNumericalAndIdentifier()
+{
+  Lexer lexer;
+
+  // redirect stdin
+  std::istringstream stream( "12a 1_ 1_2 1a2" );
+	std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+
+	// 12
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind  == TokenKind::CONSTANT );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "12" );
+    delete &token;
+  }
+
+	// a
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind  == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "a" );
+    delete &token;
+  }
+
+	// 1
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind  == TokenKind::CONSTANT );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 5u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "1" );
+    delete &token;
+  }
+
+	// _
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind  == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 6u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "_" );
+    delete &token;
+  }
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
+
 void LexerTest::testReadIntegerSuffix()
 {
   std::istringstream stream( "0L 1u 2ll 3uL 4lU" );

@@ -25,6 +25,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testReadDecimalConstant );
   CPPUNIT_TEST ( testReadOctalConstant );
   CPPUNIT_TEST ( testReadHexConstant );
+  CPPUNIT_TEST ( testReadNumericalAndIdentifier );
   CPPUNIT_TEST ( testReadIntegerSuffix );
   CPPUNIT_TEST ( testReadCharacterConstant );
   CPPUNIT_TEST ( testReadStringLiteral );
@@ -51,6 +52,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   void testReadDecimalConstant();
   void testReadOctalConstant();
   void testReadHexConstant();
+  void testReadNumericalAndIdentifier();
   void testReadIntegerSuffix();
   void testReadCharacterConstant();
   void testReadStringLiteral();

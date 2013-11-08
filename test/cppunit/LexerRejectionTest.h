@@ -16,7 +16,6 @@ class LexerRejectionTest : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE ( LexerRejectionTest );
   CPPUNIT_TEST ( testEmptyCharConst );
-  CPPUNIT_TEST ( testIllegalIdentifiers );
   CPPUNIT_TEST ( testIllegalComments );
   CPPUNIT_TEST_SUITE_END ();
 
@@ -26,7 +25,6 @@ class LexerRejectionTest : public CPPUNIT_NS::TestFixture
 
   protected:
 	void testEmptyCharConst();
-	void testIllegalIdentifiers();
 	void testIllegalComments();
 };
 
