@@ -36,6 +36,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testReadPunctuatorDots );
   CPPUNIT_TEST ( testReadPunctuatorDigraphAmbiguity );
   CPPUNIT_TEST ( testComments );
+  CPPUNIT_TEST ( testReadCommentAsWhitespace );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -64,6 +65,7 @@ class LexerTest : public CPPUNIT_NS::TestFixture
   void testReadPunctuatorDots();
   void testReadPunctuatorDigraphAmbiguity();
   void testComments();
+  void testReadCommentAsWhitespace();
 };
 
 #endif

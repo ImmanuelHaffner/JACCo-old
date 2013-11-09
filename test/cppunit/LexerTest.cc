@@ -1703,3 +1703,115 @@ void LexerTest::testComments()
   // restode stdin
   std::cin.rdbuf( cin_bak );
 }
+
+void LexerTest::testReadCommentAsWhitespace()
+{
+  Lexer lexer;
+
+  // redirect stdin
+  std::istringstream stream( "abc/**/def" );
+  std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
+
+
+  // abc
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "abc" );
+    delete &token;
+  }
+
+  // def
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 8u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "def" );
+    delete &token;
+  }
+
+
+  // redirect stdin
+  stream.str( "\nau/**/to" );
+  std::cin.rdbuf( stream.rdbuf() );
+
+
+  // au
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "au" );
+    delete &token;
+  }
+
+  // to
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::IDENTIFIER );
+    CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 7u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "to" );
+    delete &token;
+  }
+
+
+  // redirect stdin
+  stream.str( "\n123/**/456" );
+  std::cin.rdbuf( stream.rdbuf() );
+
+
+  // 123
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::CONSTANT );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "123" );
+    delete &token;
+  }
+
+  // 456
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::CONSTANT );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 8u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "456" );
+    delete &token;
+  }
+
+
+  // redirect stdin
+  stream.str( "\n</**/<=" );
+  std::cin.rdbuf( stream.rdbuf() );
+
+
+  // <
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::PUNCTUATOR );
+    CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "<" );
+    delete &token;
+  }
+
+  // <=
+  {
+    Token &token = lexer.get();
+    CPPUNIT_ASSERT( token.kind == TokenKind::PUNCTUATOR );
+    CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
+    CPPUNIT_ASSERT_EQUAL( 6u, token.pos.column );
+    CPPUNIT_ASSERT( token.text == "<=" );
+    delete &token;
+  }
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
+}
