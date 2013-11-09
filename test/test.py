@@ -1,5 +1,5 @@
 from os import listdir
-from os.path import isdir, splitext, split
+from os.path import isdir, splitext, split, abspath
 from subprocess import check_output, CalledProcessError
 from itertools import count, chain
 from optparse import OptionParser
@@ -8,29 +8,26 @@ from optparse import OptionParser
 
 class Test:
     def __init__(self, testFile, cFile, c4Path):
-        self.testFile = testFile
-        self.cFile = cFile
+        self.name = testFile
+        self.cFile = split(cFile)[1]
+        self.cwd, self.testFile = split(testFile)
         expected = open(testFile, "rt").readlines()
-        print(testFile)
-        #print(expected)
-        self.expectedExitCode = int(expected[0])
+        try:
+            self.expectedExitCode = int(expected[0])
+        except ValueError:
+            raise SyntaxError("Invalid syntax in token-file: %s" % testFile)
         self.expectedLines = list(map(str.strip, expected[1:]))
         self.errors = []
-        self.c4Path = c4Path
+        self.c4Path = abspath(c4Path)
 
     def runC4(self):
         try:
-            out = check_output([self.c4Path] + self.c4Args + [self.cFile])
+            out = check_output([self.c4Path] + self.c4Args + [self.cFile], cwd = self.cwd)
             ret = 0
         except CalledProcessError as e:
             out = e.output
             ret = e.returncode
-        def processLine(l):
-            l = l.strip()
-            l = l.split(":", 1)
-            l = split(l[0])[1] + ":" + l[1]
-            return l
-        return (ret, list(map(processLine, out.decode().splitlines())))
+        return (ret, out.decode().splitlines())
 
     def logError(self, msg):
         self.errors.append(msg)
@@ -110,7 +107,13 @@ if (__name__ == "__main__"):
                       help = "Run a specified test")
     parser.add_option("-c", "--c4", dest = "c4Path",
                       metavar = "COMPILER", default = "../build/default/c4",
-                      help = "Run a specified test")
+                      help = "Specify the path to your compiler")
+    parser.add_option("-n", "--max-errors", dest = "maxErrors",
+                      metavar = "NUM", default = "20",
+                      help = "Abort after NUM failed tests")
+    parser.add_option("-o", "--html", dest = "html",
+                      metavar = "FILE", default = None,
+                      help = "Output results into HTML file")
     parser.add_option("-q", "--quiet", dest = "verbose", default = True,
                       action = "store_false",
                       help = "Print out more information")
