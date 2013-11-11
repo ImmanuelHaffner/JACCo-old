@@ -34,7 +34,7 @@ class Test:
 
     def printErrors(self):
         for err in self.errors:
-            print("%s: %s" % (self.testFile, err))
+            print("%s: %s" % (self.name, err))
 
     def __hash__(self):
         return hash(self.testFile)
