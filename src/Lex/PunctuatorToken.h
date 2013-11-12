@@ -73,6 +73,58 @@ namespace C4
 			DHASH         // ##
 		};
 
+		static std::map< PunctuatorKind, std::string > PunctuatorKindNames =
+		{
+      { PunctuatorKind::LBRACKET,       "[" },
+      { PunctuatorKind::RBRACKET,       "]" },
+      { PunctuatorKind::LPAR,           "(" },
+      { PunctuatorKind::RPAR,           ")" },
+      { PunctuatorKind::LBRACE,         "{" },
+      { PunctuatorKind::RBRACE,         "}" },
+      { PunctuatorKind::DOT,            "." },
+      { PunctuatorKind::ARROW,          "->" },
+      { PunctuatorKind::INC,            "++" },
+      { PunctuatorKind::DEC,            "--" },
+      { PunctuatorKind::AND,            "&" },
+      { PunctuatorKind::MUL,            "*" },
+      { PunctuatorKind::PLUS,           "+" },
+      { PunctuatorKind::MINUS,          "-" },
+      { PunctuatorKind::NEG,            "~" },
+      { PunctuatorKind::NOT,            "!" },
+      { PunctuatorKind::DIV,            "/" },
+      { PunctuatorKind::MOD,            "%" },
+      { PunctuatorKind::LSHIFT,         "<<" },
+      { PunctuatorKind::RSHIFT,         ">>" },
+      { PunctuatorKind::LE,             "<" },
+      { PunctuatorKind::GR,             ">" },
+      { PunctuatorKind::LEQ,            "<=" },
+      { PunctuatorKind::GEQ,            ">=" },
+      { PunctuatorKind::EQ,             "==" },
+      { PunctuatorKind::NE,             "!=" },
+      { PunctuatorKind::XOR,            "^" },
+      { PunctuatorKind::OR,             "|" },
+      { PunctuatorKind::LAND,           "&&" },
+      { PunctuatorKind::LOR,            "||" },
+      { PunctuatorKind::QMARK,          "?" },
+      { PunctuatorKind::COLON,          ":" },
+      { PunctuatorKind::SEMICOLON,      ";" },
+      { PunctuatorKind::ELLIPSIS,       "..." },
+      { PunctuatorKind::ASSIGN,         "=" },
+      { PunctuatorKind::MULASSIGN,      "*=" },
+      { PunctuatorKind::DIVASSIGN,      "/=" },
+      { PunctuatorKind::MODASSIGN,      "%=" },
+      { PunctuatorKind::ADDASSIGN,      "+=" },
+      { PunctuatorKind::SUBASSIGN,      "-=" },
+      { PunctuatorKind::LSHIFTASSIGN,   "<<=" },
+      { PunctuatorKind::RSHIFTASSIGN,   ">>=" },
+      { PunctuatorKind::ANDASSIGN,      "&=" },
+      { PunctuatorKind::XORASSIGN,      "^=" },
+      { PunctuatorKind::ORASSIGN,       "|=" },
+      { PunctuatorKind::COMMA,          "," },
+      { PunctuatorKind::HASH,           "#" },
+      { PunctuatorKind::DHASH,          "##" }
+		};
+
     struct PunctuatorToken : Token
     {
       PunctuatorToken( Pos const &pos, PunctuatorKind punctuator, char const * const text ) :
@@ -86,9 +138,6 @@ namespace C4
       virtual ~PunctuatorToken() {}
 
 			Token & clone() const;
-      friend std::ostream & operator<<( std::ostream &out,
-          PunctuatorToken const &tok );
-      void dump() const;
 
       PunctuatorKind const punctuator;
     };

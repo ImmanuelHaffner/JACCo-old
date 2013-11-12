@@ -17,14 +17,3 @@ Token & StringLiteralToken::clone() const
 {
 	return *( new StringLiteralToken( *this ) );
 }
-
-std::ostream & Lex::operator<<( std::ostream &out, StringLiteralToken const &tok )
-{
-  out << tok.pos << " string-literal " << tok.text;
-  return out;
-}
-
-void StringLiteralToken::dump() const
-{
-  std::cout << *this;
-}
