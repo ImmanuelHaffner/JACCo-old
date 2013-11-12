@@ -32,6 +32,17 @@ namespace C4
       END_OF_FILE
     };
 
+    static std::map< TokenKind, std::string > TokenKindNames =
+    {
+      { TokenKind::KEYWORD,        "keyword" },
+      { TokenKind::IDENTIFIER,     "identifier" },
+      { TokenKind::CONSTANT,       "constant" },
+      { TokenKind::STRING_LITERAL, "string-literal" },
+      { TokenKind::PUNCTUATOR,     "punctuator" },
+      { TokenKind::ILLEGAL,        "illegal" },
+      { TokenKind::END_OF_FILE,    "end-of-file" }
+    };
+
 
     /// A token...
     struct Token

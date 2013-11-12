@@ -29,9 +29,6 @@ namespace C4
       virtual ~ConstantToken() {}
 
 			Token & clone() const;
-      friend std::ostream & operator<<( std::ostream &out,
-          ConstantToken const &tok );
-      void dump() const;
     };
   } // end namespace Lex
 } // end namespace C4

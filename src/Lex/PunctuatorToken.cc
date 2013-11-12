@@ -17,14 +17,3 @@ Token & PunctuatorToken::clone() const
 {
 	return *( new PunctuatorToken( *this ) );
 }
-
-std::ostream & Lex::operator<<( std::ostream &out, PunctuatorToken const &tok )
-{
-  out << tok.pos << " punctuator " << tok.text;
-  return out;
-}
-
-void PunctuatorToken::dump() const
-{
-  std::cout << *this;
-}

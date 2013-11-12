@@ -17,14 +17,3 @@ Token & ConstantToken::clone() const
 {
 	return *( new ConstantToken( *this ) );
 }
-
-std::ostream & Lex::operator<<( std::ostream &out, ConstantToken const &tok )
-{
-  out << tok.pos << " constant " << tok.text;
-  return out;
-}
-
-void ConstantToken::dump() const
-{
-  std::cout << *this;
-}

@@ -118,6 +118,54 @@ namespace C4
       { "_Thread_local",  KeywordKind::_THREAD_LOCAL }
     };
 
+    static std::map<KeywordKind, std::string > KeywordKindNames =
+    {
+      { KeywordKind::AUTO,           "auto" },
+      { KeywordKind::BREAK,          "break" },
+      { KeywordKind::CASE,           "case" },
+      { KeywordKind::CHAR,           "char" },
+      { KeywordKind::CONST,          "const" },
+      { KeywordKind::CONTINUE,       "continue" },
+      { KeywordKind::DEFAULT,        "default" },
+      { KeywordKind::DO,             "do" },
+      { KeywordKind::DOUBLE,         "double" },
+      { KeywordKind::ELSE,           "else" },
+      { KeywordKind::ENUM,           "enum" },
+      { KeywordKind::EXTERN,         "extern" },
+      { KeywordKind::FLOAT,          "float" },
+      { KeywordKind::FOR,            "for" },
+      { KeywordKind::GOTO,           "goto" },
+      { KeywordKind::IF,             "if" },
+      { KeywordKind::INLINE,         "inline" },
+      { KeywordKind::INT,            "int" },
+      { KeywordKind::LONG,           "long" },
+      { KeywordKind::REGISTER,       "register" },
+      { KeywordKind::RESTRICT,       "restrict" },
+      { KeywordKind::RETURN,         "return" },
+      { KeywordKind::SHORT,          "short" },
+      { KeywordKind::SIGNED,         "signed" },
+      { KeywordKind::SIZEOF,         "sizeof" },
+      { KeywordKind::STATIC,         "static" },
+      { KeywordKind::STRUCT,         "struct" },
+      { KeywordKind::SWITCH,         "switch" },
+      { KeywordKind::TYPEDEF,        "typedef" },
+      { KeywordKind::UNION,          "union" },
+      { KeywordKind::UNSIGNED,       "unsigned" },
+      { KeywordKind::VOID,           "void" },
+      { KeywordKind::VOLATILE,       "volatile" },
+      { KeywordKind::WHILE,          "while" },
+      { KeywordKind::_ALIGNAS,       "_Alignas" },
+      { KeywordKind::_ALIGNOF,       "_Alignof" },
+      { KeywordKind::_ATOMIC,        "_Atomic" },
+      { KeywordKind::_BOOL,          "_Bool" },
+      { KeywordKind::_COMPLEX,       "_Complex" },
+      { KeywordKind::_GENERIC,       "_Generic" },
+      { KeywordKind::_IMAGINARY,     "_Imaginary" },
+      { KeywordKind::_NORETURN,      "_Noreturn" },
+      { KeywordKind::_STATIC_ASSERT, "_Static_assert" },
+      { KeywordKind::_THREAD_LOCAL,  "_Thread_local" },
+    };
+
     struct KeywordToken : Token
     {
       KeywordToken( Pos const &pos, KeywordKind keyword, char const * const text ) :
@@ -131,9 +179,6 @@ namespace C4
       virtual ~KeywordToken() {}
 
 			Token & clone() const;
-      friend std::ostream & operator<<( std::ostream &out,
-          KeywordToken const &tok );
-      void dump() const;
 
       KeywordKind const keyword;
     };

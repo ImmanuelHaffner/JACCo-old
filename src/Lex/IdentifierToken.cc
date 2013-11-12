@@ -17,14 +17,3 @@ Token & IdentifierToken::clone() const
 {
 	return *( new IdentifierToken( *this ) );
 }
-
-std::ostream & Lex::operator<<( std::ostream &out, IdentifierToken const &tok )
-{
-  out << tok.pos << " identifier " << tok.text;
-  return out;
-}
-
-void IdentifierToken::dump() const
-{
-  std::cout << *this;
-}
