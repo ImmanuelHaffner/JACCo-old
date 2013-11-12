@@ -16,23 +16,23 @@ namespace C4
 {
   namespace Parse
   {
-    struct AST
+    struct ASTNode
     {
-      AST( AST * const parent = NULL );
-      virtual ~AST();
+      ASTNode( ASTNode * const parent = NULL );
+      virtual ~ASTNode();
 
-      AST * getParent() const;
-      void setParent( AST * p );
-      AST * getChild( int n ) const;
-      void setChild( AST * c, int n );
-      std::vector< AST * > getChilds();
+      ASTNode * getParent() const;
+      void setParent( ASTNode * p );
+      ASTNode * getChild( int n ) const;
+      void setChild( ASTNode * c, int n );
+      std::vector< ASTNode * > getChilds();
 
-      friend std::ostream & operator<<( std::ostream &out, AST const &node );
+      friend std::ostream & operator<<( std::ostream &out, ASTNode const &node );
       virtual void dump() const;
 
       private:
-      AST * parent;
-      std::vector< AST * > childs;
+      ASTNode * parent;
+      std::vector< ASTNode * > childs;
     };
   }
 }
