@@ -16,12 +16,6 @@ class TokenTest : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE ( TokenTest );
   CPPUNIT_TEST ( testToken );
-  CPPUNIT_TEST ( testKeywordToken );
-  CPPUNIT_TEST ( testIdentifierToken );
-  CPPUNIT_TEST ( testConstantToken );
-  CPPUNIT_TEST ( testStringLiteralToken );
-  CPPUNIT_TEST ( testPunctuatorToken );
-  CPPUNIT_TEST ( testEofToken );
   CPPUNIT_TEST ( testIllegalToken );
   CPPUNIT_TEST_SUITE_END ();
 
@@ -31,12 +25,6 @@ class TokenTest : public CPPUNIT_NS::TestFixture
 
   protected:
   void testToken();
-  void testKeywordToken();
-  void testIdentifierToken();
-  void testConstantToken();
-  void testStringLiteralToken();
-  void testPunctuatorToken();
-  void testEofToken();
   void testIllegalToken();
 
   private:

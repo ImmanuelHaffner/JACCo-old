@@ -7,8 +7,6 @@
 #include "LexerRejectionTest.h"
 
 #include "../../src/Lex/Lexer.h"
-#include "../../src/Lex/KeywordToken.h"
-#include "../../src/Lex/PunctuatorToken.h"
 #include "../../src/Lex/IllegalToken.h"
 
 

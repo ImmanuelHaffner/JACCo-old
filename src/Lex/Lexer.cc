@@ -11,15 +11,7 @@
 #include <string>
 #include <cctype>
 #include "Token.h"
-#include "EofToken.h"
 #include "IllegalToken.h"
-#include "KeywordToken.h"
-#include "IdentifierToken.h"
-#include "ConstantToken.h"
-#include "StringLiteralToken.h"
-#include "PunctuatorToken.h"
-#include "../Support/CharUtils.h"
-#include "../Support/Diagnostic.h"
 
 using namespace C4;
 using namespace Lex;
@@ -82,7 +74,7 @@ void Lexer::unget()
 Token & Lexer::getToken()
 {
   if ( ! file.good() )
-    return *( new EofToken( pos ) );
+    return Token::EndOfFile( pos );
 
   Token &t = skip();
   
@@ -93,7 +85,7 @@ Token & Lexer::getToken()
     delete &t;
 
   if ( ! file.good() )
-    return *( new EofToken( pos ) );
+    return Token::EndOfFile( pos );
 
   if ( isdigit( file.peek() ) )
   {
@@ -163,11 +155,9 @@ Token & Lexer::readKeywordOrIdentifier()
 
   auto it = Keywords.find( text ) ;
   if ( it != Keywords.end() )
-  {
-    return *( new KeywordToken( start, it->second, text ) );
-  }
+    return Token::Keyword( start, text );
 
-  return *( new IdentifierToken( start, text ) );
+  return Token::Identifier( start, text );
 }
 
 Token & Lexer::readNumericalConstant()
@@ -251,7 +241,7 @@ Token & Lexer::readNumericalConstant()
     break;
   }
 
-  return *( new ConstantToken( start, text ) );
+  return Token::Constant( start, text );
 }
 
 Token & Lexer::readCharacterConstantOrStringLiteral()
@@ -357,8 +347,8 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
   }
 
   if ( isCharConst )
-    return *( new ConstantToken( start, text ) );
-  return *( new StringLiteralToken( start, text ) );
+    return Token::Constant( start, text );
+  return Token::StringLiteral( start, text );
 }
 
 Token & Lexer::readPunctuator()
@@ -370,7 +360,7 @@ Token & Lexer::readPunctuator()
   std::string text = "";
 
 #define PUNCTUATOR( kind ) \
-  return *( new PunctuatorToken( start, ( kind ), text ) );
+  return Token::Punctuator( start, text );
 
 #define PUNCTUATOR_GET( kind ) \
   { \
@@ -675,7 +665,7 @@ Token & Lexer::skip()
       // non-whitespace
       break;
   }
-  return *( new EofToken( pos ) );
+  return Token::EndOfFile( pos );
 }
 
 void Lexer::step()

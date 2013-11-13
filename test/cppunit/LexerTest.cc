@@ -7,8 +7,6 @@
 #include "LexerTest.h"
 
 #include "../../src/Lex/Lexer.h"
-#include "../../src/Lex/KeywordToken.h"
-#include "../../src/Lex/PunctuatorToken.h"
 #include "../../src/Lex/IllegalToken.h"
 
 
@@ -381,7 +379,6 @@ void LexerTest::testReadKeywords()
 
   Lexer lexer;
   Token * token;
-  KeywordToken * keyword;
 
   // auto
   token = & lexer.readKeywordOrIdentifier();
@@ -389,8 +386,6 @@ void LexerTest::testReadKeywords()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "auto" );
-  keyword = static_cast< KeywordToken* >( token );
-  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::AUTO );
   delete token;
   lexer.skip();
 
@@ -400,8 +395,6 @@ void LexerTest::testReadKeywords()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "break" );
-  keyword = static_cast< KeywordToken* >( token );
-  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::BREAK );
   delete token;
   lexer.skip();
 
@@ -411,8 +404,6 @@ void LexerTest::testReadKeywords()
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "const" );
-  keyword = static_cast< KeywordToken* >( token );
-  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::CONST );
   delete token;
   lexer.skip();
 
@@ -422,8 +413,6 @@ void LexerTest::testReadKeywords()
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "int" );
-  keyword = static_cast< KeywordToken* >( token );
-  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::INT );
   delete token;
   lexer.skip();
 
@@ -433,8 +422,6 @@ void LexerTest::testReadKeywords()
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "continue" );
-  keyword = static_cast< KeywordToken* >( token );
-  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::CONTINUE );
   delete token;
   lexer.skip();
 
@@ -444,8 +431,6 @@ void LexerTest::testReadKeywords()
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "while" );
-  keyword = static_cast< KeywordToken* >( token );
-  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::WHILE );
   delete token;
   lexer.skip();
 
@@ -455,8 +440,6 @@ void LexerTest::testReadKeywords()
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 16u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "for" );
-  keyword = static_cast< KeywordToken* >( token );
-  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::FOR );
   delete token;
   lexer.skip();
 
@@ -1003,7 +986,6 @@ void LexerTest::testReadPunctuator()
 
   Lexer lexer;
   Token * token;
-  PunctuatorToken * punctuator;
 
   // [
   token = & lexer.readPunctuator();
@@ -1011,8 +993,6 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "[" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACKET );
   delete token;
   lexer.skip();
 
@@ -1022,8 +1002,6 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "->" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::ARROW );
   delete token;
   lexer.skip();
 
@@ -1033,8 +1011,6 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ">>=" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RSHIFTASSIGN );
   delete token;
   lexer.skip();
 
@@ -1044,8 +1020,6 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 7u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "..." );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::ELLIPSIS );
   delete token;
   lexer.skip();
 
@@ -1055,8 +1029,6 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "." );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::DOT );
   delete token;
   lexer.skip();
 
@@ -1066,8 +1038,6 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 11u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "||" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LOR );
   delete token;
   lexer.skip();
 
@@ -1077,8 +1047,6 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 13u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "|" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::OR );
   delete token;
   lexer.skip();
 
@@ -1088,8 +1056,6 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 14u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "--" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::DEC );
   delete token;
   lexer.skip();
 
@@ -1099,8 +1065,6 @@ void LexerTest::testReadPunctuator()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 16u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "=" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::ASSIGN );
   delete token;
   lexer.skip();
 
@@ -1118,7 +1082,6 @@ void LexerTest::testReadPunctuatorDigraph()
 
   Lexer lexer;
   Token * token;
-  PunctuatorToken * punctuator;
 
 
   // <:
@@ -1127,8 +1090,6 @@ void LexerTest::testReadPunctuatorDigraph()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "<:" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACKET );
   delete token;
   lexer.skip();
 
@@ -1138,8 +1099,6 @@ void LexerTest::testReadPunctuatorDigraph()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ":>" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RBRACKET );
   delete token;
   lexer.skip();
 
@@ -1149,8 +1108,6 @@ void LexerTest::testReadPunctuatorDigraph()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "<%" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACE );
   delete token;
   lexer.skip();
 
@@ -1160,8 +1117,6 @@ void LexerTest::testReadPunctuatorDigraph()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 7u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "%>" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RBRACE );
   delete token;
   lexer.skip();
 
@@ -1171,8 +1126,6 @@ void LexerTest::testReadPunctuatorDigraph()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 9u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "%:" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::HASH );
   delete token;
   lexer.skip();
 
@@ -1182,8 +1135,6 @@ void LexerTest::testReadPunctuatorDigraph()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 12u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "%:%:" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::DHASH );
   delete token;
   lexer.skip();
 
@@ -1214,8 +1165,6 @@ int main()\n\
 
   Lexer lexer;
   Token * token;
-  PunctuatorToken * punctuator;
-  KeywordToken * keyword;
 
   // #
   token = & lexer.get();
@@ -1223,8 +1172,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "#" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::HASH );
   delete token;
 
   // include
@@ -1241,8 +1188,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "<" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LE );
   delete token;
 
   // stdio
@@ -1259,8 +1204,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 16u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "." );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::DOT );
   delete token;
 
   // h
@@ -1277,8 +1220,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 18u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ">" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::GR );
   delete token;
 
   // int
@@ -1287,8 +1228,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "int" );
-  keyword = static_cast< KeywordToken* >( token );
-  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::INT );
   delete token;
 
   // main
@@ -1305,8 +1244,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 9u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "(" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LPAR );
   delete token;
 
   // )
@@ -1315,8 +1252,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ")" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RPAR );
   delete token;
 
   // {
@@ -1325,8 +1260,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "{" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACE );
   delete token;
 
   // printf
@@ -1343,8 +1276,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 9u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "(" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LPAR );
   delete token;
 
   // "Hello World!\n"
@@ -1361,8 +1292,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 28u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ")" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RPAR );
   delete token;
 
   // ;
@@ -1371,8 +1300,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 29u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ";" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::SEMICOLON );
   delete token;
 
   // return
@@ -1381,8 +1308,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "return" );
-  keyword = static_cast< KeywordToken* >( token );
-  CPPUNIT_ASSERT( keyword->keyword == KeywordKind::RETURN );
   delete token;
 
   // 0
@@ -1399,8 +1324,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 11u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ";" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::SEMICOLON );
   delete token;
 
   // }
@@ -1409,8 +1332,6 @@ int main()\n\
   CPPUNIT_ASSERT_EQUAL( 7u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "}" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RBRACE );
   delete token;
 
 
@@ -1426,7 +1347,6 @@ void LexerTest::testReadPunctuatorDots()
 
   Lexer lexer;
   Token * token;
-  PunctuatorToken * punctuator;
 
   // ...
   token = & lexer.get();
@@ -1434,8 +1354,6 @@ void LexerTest::testReadPunctuatorDots()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "..." );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::ELLIPSIS );
   delete token;
 
   // ...
@@ -1444,8 +1362,6 @@ void LexerTest::testReadPunctuatorDots()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "..." );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::ELLIPSIS );
   delete token;
 
   // .
@@ -1454,8 +1370,6 @@ void LexerTest::testReadPunctuatorDots()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 7u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "." );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::DOT );
   delete token;
 
   // .
@@ -1464,8 +1378,6 @@ void LexerTest::testReadPunctuatorDots()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 8u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "." );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::DOT );
   delete token;
 
   
@@ -1481,7 +1393,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
 
   Lexer lexer;
   Token * token;
-  PunctuatorToken * punctuator;
 
   // <:
   token = & lexer.get();
@@ -1489,8 +1400,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "<:" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACKET );
   delete token;
 
   // >
@@ -1499,8 +1408,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ">" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::GR );
   delete token;
 
 
@@ -1514,8 +1421,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "<%" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACE );
   delete token;
 
   // >
@@ -1524,8 +1429,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 2u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ">" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::GR );
   delete token;
 
 
@@ -1539,8 +1442,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "%:%:" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::DHASH );
   delete token;
 
   // %:
@@ -1549,8 +1450,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "%:" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::HASH );
   delete token;
 
 
@@ -1564,8 +1463,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "<%" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LBRACE );
   delete token;
 
   // :>
@@ -1574,8 +1471,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ":>" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RBRACKET );
   delete token;
 
 
@@ -1589,8 +1484,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "<<" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::LSHIFT );
   delete token;
 
   // :
@@ -1599,8 +1492,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ":" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::COLON );
   delete token;
 
   // :>
@@ -1609,8 +1500,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 4u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ":>" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::RBRACKET );
   delete token;
 
   // >
@@ -1619,8 +1508,6 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 6u, token->pos.column );
   CPPUNIT_ASSERT( token->text == ">" );
-  punctuator = static_cast< PunctuatorToken* >( token );
-  CPPUNIT_ASSERT( punctuator->punctuator == PunctuatorKind::GR );
   delete token;
 
 

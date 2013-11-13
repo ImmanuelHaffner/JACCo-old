@@ -9,12 +9,6 @@
 #include <cstdio>
 #include <cstring>
 #include "../../src/Lex/Token.h"
-#include "../../src/Lex/KeywordToken.h"
-#include "../../src/Lex/IdentifierToken.h"
-#include "../../src/Lex/ConstantToken.h"
-#include "../../src/Lex/StringLiteralToken.h"
-#include "../../src/Lex/PunctuatorToken.h"
-#include "../../src/Lex/EofToken.h"
 #include "../../src/Lex/IllegalToken.h"
 
 
@@ -53,60 +47,6 @@ void TokenTest::testToken()
 
   // check token string
   CPPUNIT_ASSERT( strcmp( text, token.text.c_str() ) == 0 );
-}
-
-void TokenTest::testKeywordToken()
-{
-  KeywordToken token( *pos, KeywordKind::AUTO, text );
-
-  // check token kind
-  CPPUNIT_ASSERT( TokenKind::KEYWORD == token.kind );
-
-  // check keyword kind
-  CPPUNIT_ASSERT( KeywordKind::AUTO == token.keyword );
-}
-
-void TokenTest::testIdentifierToken()
-{
-  IdentifierToken token( *pos, text );
-
-  // check token kind
-  CPPUNIT_ASSERT( TokenKind::IDENTIFIER == token.kind );
-}
-
-void TokenTest::testConstantToken()
-{
-  ConstantToken token( *pos, text );
-
-  // check token kind
-  CPPUNIT_ASSERT( TokenKind::CONSTANT == token.kind );
-}
-
-void TokenTest::testStringLiteralToken()
-{
-  StringLiteralToken token( *pos, text );
-
-  // check token kind
-  CPPUNIT_ASSERT( TokenKind::STRING_LITERAL == token.kind );
-}
-
-void TokenTest::testPunctuatorToken()
-{
-  PunctuatorToken token( *pos, PunctuatorKind::LBRACE, text );
-
-  // check token kind
-  CPPUNIT_ASSERT( TokenKind::PUNCTUATOR == token.kind );
-
-  // check punctuator kind
-  CPPUNIT_ASSERT( PunctuatorKind::LBRACE == token.punctuator );
-}
-
-void TokenTest::testEofToken()
-{
-  EofToken token( *pos );
-
-  // check token kind
-  CPPUNIT_ASSERT( TokenKind::END_OF_FILE == token.kind );
 }
 
 void TokenTest::testIllegalToken()
