@@ -10,7 +10,7 @@
 #define C4_CONSTANT_H
 
 #include "AST.h"
-#include "../Lex/ConstantToken.h"
+#include "../Lex/Token.h"
 
 namespace C4
 {
@@ -19,7 +19,7 @@ namespace C4
     ///
     struct Constant : ASTNode
     {
-      Constant( Lex::ConstantToken &token, ASTNode * const parent = NULL );
+      Constant( Lex::Token &token, ASTNode * const parent = NULL );
       ~Constant();
 
       friend std::ostream & operator<<( std::ostream &out,
@@ -27,7 +27,7 @@ namespace C4
       virtual void dump() const;
 
       private:
-      Lex::ConstantToken &token;
+      Lex::Token &token;
     };
   }
 }

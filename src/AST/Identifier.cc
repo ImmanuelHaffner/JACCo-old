@@ -12,9 +12,9 @@ using namespace C4;
 using namespace AST;
 using namespace Lex;
 
-Identifier::Identifier( IdentifierToken &token,
+Identifier::Identifier( Token &token,
     ASTNode * const parent/* = NULL*/ )
-  : ASTNode( ASTType::PRIMARY_EXPRESSION, parent ), token( token )
+  : ASTNode( ASTType::IDENTIFIER, parent ), token( token )
 {}
 
 Identifier::~Identifier() {}

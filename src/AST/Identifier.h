@@ -10,7 +10,7 @@
 #define C4_IDENTIFIER_H
 
 #include "AST.h"
-#include "../Lex/IdentifierToken.h"
+#include "../Lex/Token.h"
 
 namespace C4
 {
@@ -19,7 +19,7 @@ namespace C4
     ///
     struct Identifier : ASTNode
     {
-      Identifier( Lex::IdentifierToken &token, ASTNode * const parent = NULL );
+      Identifier( Lex::Token &token, ASTNode * const parent = NULL );
       ~Identifier();
 
       friend std::ostream & operator<<( std::ostream &out,
@@ -27,7 +27,7 @@ namespace C4
       virtual void dump() const;
 
       private:
-      Lex::IdentifierToken &token;
+      Lex::Token &token;
     };
   }
 }

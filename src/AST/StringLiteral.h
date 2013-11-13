@@ -10,7 +10,7 @@
 #define C4_STRING_LITERAL_H
 
 #include "AST.h"
-#include "../Lex/StringLiteralToken.h"
+#include "../Lex/Token.h"
 
 namespace C4
 {
@@ -19,7 +19,7 @@ namespace C4
     ///
     struct StringLiteral : ASTNode
     {
-      StringLiteral( Lex::StringLiteralToken &token, ASTNode * const parent = NULL );
+      StringLiteral( Lex::Token &token, ASTNode * const parent = NULL );
       ~StringLiteral();
 
       friend std::ostream & operator<<( std::ostream &out,
@@ -27,7 +27,7 @@ namespace C4
       virtual void dump() const;
 
       private:
-      Lex::StringLiteralToken &token;
+      Lex::Token &token;
     };
   }
 }

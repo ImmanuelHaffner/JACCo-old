@@ -12,9 +12,9 @@ using namespace C4;
 using namespace AST;
 using namespace Lex;
 
-StringLiteral::StringLiteral( StringLiteralToken &token,
+StringLiteral::StringLiteral( Token &token,
     ASTNode * const parent/* = NULL*/ )
-  : ASTNode( ASTType::PRIMARY_EXPRESSION, parent ), token( token )
+  : ASTNode( ASTType::STRING_LITERAL, parent ), token( token )
 {}
 
 StringLiteral::~StringLiteral() {}

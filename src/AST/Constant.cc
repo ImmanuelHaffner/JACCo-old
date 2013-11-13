@@ -12,9 +12,9 @@ using namespace C4;
 using namespace AST;
 using namespace Lex;
 
-Constant::Constant( ConstantToken &token,
+Constant::Constant( Token &token,
     ASTNode * const parent/* = NULL*/ )
-  : ASTNode( ASTType::PRIMARY_EXPRESSION, parent ), token( token )
+  : ASTNode( ASTType::CONSTANT, parent ), token( token )
 {}
 
 Constant::~Constant() {}

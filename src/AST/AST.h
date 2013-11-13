@@ -21,6 +21,10 @@ namespace C4
       // the ILLEGAL type for ASTs where parsing failed
       ILLEGAL,
 
+      IDENTIFIER,
+      CONSTANT,
+      STRING_LITERAL,
+
       PRIMARY_EXPRESSION,
       POSTFIX_EXPRESSION,
       ARGUMENT_EXPRESSION_LIST,
