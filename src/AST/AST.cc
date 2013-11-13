@@ -51,9 +51,39 @@ ASTNode * ASTNode::operator[]( int n )
   return childs[n];
 }
 
+std::vector< ASTNode * >::iterator ASTNode::begin()
+{
+  return childs.begin();
+}
+
+std::vector< ASTNode * >::const_iterator ASTNode::begin() const
+{
+  return childs.begin();
+}
+
+std::vector< ASTNode * >::iterator ASTNode::end()
+{
+  return childs.end();
+}
+
+std::vector< ASTNode * >::const_iterator ASTNode::end() const
+{
+  return childs.end();
+}
+
 std::ostream & AST::operator<<( std::ostream &out, ASTNode const &node )
 {
-  out << "AST Node " << reinterpret_cast< size_t >( &node );
+  out << "-AST Node " << reinterpret_cast< size_t >( &node );
+  if ( node.childs.size() )
+  {
+    out << std::endl;
+    for ( auto it = node.begin(); it != node.end(); ++it )
+    {
+      out << " |" << *it;
+      if ( it != node.end() )
+        out << std::endl;
+    }
+  }
   return out;
 }
 

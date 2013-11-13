@@ -19,7 +19,7 @@ namespace C4
 {
   namespace Parse
   {
-    class Parser
+    struct Parser
     {
       Parser( Lex::Lexer &lexer );
       ~Parser();
@@ -27,11 +27,11 @@ namespace C4
       template < typename T >
       void accept( T t );
 
-      bool _accept( Lex::TokenKind tKind );
-      bool _accept( Lex::KeywordKind keyword );
-      bool _accept( Lex::PunctuatorKind punctuator );
-      bool _accept( std::string const s );
-      bool _accept( char const * const s );
+      bool match( Lex::TokenKind tKind );
+      bool match( Lex::KeywordKind keyword );
+      bool match( Lex::PunctuatorKind punctuator );
+      bool match( std::string const &s );
+      bool match( char const * const s );
 
       /// Parses the tokens returned by the lexer, and construct the
       /// corresponding AST.
@@ -41,10 +41,14 @@ namespace C4
       /// \return the AST of the input
       AST::ASTNode & parse();
 
+      AST::ASTNode & parseIdentifier();
+      AST::ASTNode & parseConstant();
+      AST::ASTNode & parseStringLiteral();
       AST::ASTNode & parsePrimaryExpression();
       AST::ASTNode & parseUnaryOperator();
       AST::ASTNode & parseAssignmentOperator();
       AST::ASTNode & parseExpression();
+      AST::ASTNode & parseStorageClassSpecifier();
 
       private:
       Lex::Lexer &lexer;
