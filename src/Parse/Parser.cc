@@ -30,19 +30,18 @@ using namespace Lex;
 template < typename T >
 void Parser::accept( T t )
 {
-  _accept( t );
+  match( t );
   lexer.get();
 }
 
-bool Parser::_accept( TokenKind tKind )
+bool Parser::match( TokenKind tKind )
 {
   Token &tok = lexer.peek();
   if ( tKind != tok.kind )
   {
     std::ostringstream oss;
-    oss << "unexpected token '" << tok << "', expected ";
-
-    auto res = TokenKindNames.find( tok.kind );
+    oss << "unexpected " << tok << ", expected ";
+    auto res = TokenKindNames.find( tKind );
     oss << res->second;
 
     errorf( tok.pos, "%s", oss.str().c_str() );
@@ -51,9 +50,9 @@ bool Parser::_accept( TokenKind tKind )
   return true;
 }
 
-bool Parser::_accept( KeywordKind keyword )
+bool Parser::match( KeywordKind keyword )
 {
-  if ( ! _accept( TokenKind::KEYWORD ) )
+  if ( ! match( TokenKind::KEYWORD ) )
     return false;
 
   KeywordToken &kTok = static_cast< KeywordToken & >( lexer.peek() );
@@ -70,9 +69,9 @@ bool Parser::_accept( KeywordKind keyword )
   return true;
 }
 
-bool Parser::_accept( PunctuatorKind punctuator )
+bool Parser::match( PunctuatorKind punctuator )
 {
-  if ( ! _accept( TokenKind::PUNCTUATOR ) )
+  if ( ! match( TokenKind::PUNCTUATOR ) )
     return false;
 
   PunctuatorToken &pTok = static_cast< PunctuatorToken & >( lexer.peek() );
@@ -84,6 +83,26 @@ bool Parser::_accept( PunctuatorKind punctuator )
     oss << res->second;
 
     errorf( pTok.pos, "%s", oss.str().c_str() );
+    return false;
+  }
+  return true;
+}
+
+bool Parser::match( std::string const &s )
+{
+  return match( s.c_str() );
+}
+
+bool Parser::match( char const * const s )
+{
+  Token &tok = lexer.peek();
+  if ( tok.text != s )
+  {
+    std::ostringstream oss;
+    oss << "unexpected input '" << tok.text << "', expected "
+      << s;
+
+    errorf( tok.pos, "%s", oss.str().c_str() );
     return false;
   }
   return true;
@@ -102,12 +121,21 @@ Parser::~Parser() {}
 
 ASTNode & Parser::parse()
 {
-
+  return parseIdentifier();
 }
 
 /*
  * Methods that parse particular parts of the grammar.
  */
+
+ASTNode & Parser::parseIdentifier()
+{
+  match( TokenKind::IDENTIFIER );
+  ASTNode & node = *( new Identifier(
+        static_cast< IdentifierToken & >( lexer.peek() ) ) );
+  lexer.get();
+  return node;
+}
 
 ASTNode & Parser::parsePrimaryExpression()
 {
@@ -127,30 +155,17 @@ ASTNode & Parser::parsePrimaryExpression()
       lexer.get();
       return *( new StringLiteral( static_cast< StringLiteralToken & >( tok ) ) );
 
-    case TokenKind::PUNCTUATOR:
+    default:
       {
-        PunctuatorToken &p = static_cast< PunctuatorToken & >( tok );
-        if ( p.punctuator == PunctuatorKind::LPAR )
-        {
-          lexer.get();
-          ASTNode & expr = parseExpression();
-          
-            Token &tok2 = lexer.peek();
-            if ( tok2.kind == TokenKind::PUNCTUATOR )
-            {
-              PunctuatorToken &p2 = static_cast< PunctuatorToken & >( tok2 );
-              if ( p2.punctuator == PunctuatorKind::RPAR )
-              {
-                ASTNode * e = new ASTNode( ASTType::PRIMARY_EXPRESSION );
-              }
-            }
-        }
-      }
+        accept( PunctuatorKind::LPAR );
+        ASTNode &expr = parseExpression();
+        accept( PunctuatorKind::RPAR );
 
-    default:;
+        ASTNode &node = *( new ASTNode( ASTType::PRIMARY_EXPRESSION ) );
+        node.append( &expr );
+        return node;
+      }
   }
-  // ERROR:
-  return *( new ASTNode( ASTType::ILLEGAL ) );
 }
 
 ASTNode & Parser::parseUnaryOperator()
@@ -181,35 +196,39 @@ ASTNode & Parser::parseUnaryOperator()
 
 ASTNode & Parser::parseAssignmentOperator()
 {
-  Token &tok = lexer.peek();
-
-  if ( tok.kind == TokenKind::PUNCTUATOR )
+  if ( ! match( TokenKind::PUNCTUATOR ) )
   {
-    PunctuatorToken &p = static_cast< PunctuatorToken & >( tok );
+    return *( new ASTNode( ASTType::ILLEGAL ) );
+  }
 
-    switch ( p.punctuator )
-    {
-      case PunctuatorKind::ASSIGN:
-      case PunctuatorKind::MULASSIGN:
-      case PunctuatorKind::DIVASSIGN:
-      case PunctuatorKind::MODASSIGN:
-      case PunctuatorKind::ADDASSIGN:
-      case PunctuatorKind::SUBASSIGN:
-      case PunctuatorKind::LSHIFTASSIGN:
-      case PunctuatorKind::RSHIFTASSIGN:
-      case PunctuatorKind::ANDASSIGN:
-      case PunctuatorKind::XORASSIGN:
-      case PunctuatorKind::ORASSIGN:
-        lexer.get();
-        return *( new ASTNode( ASTType::ASSIGNMENT_OPERATOR ) );
+  PunctuatorToken &p = static_cast< PunctuatorToken & >( lexer.peek() );
 
-      default:;
-    }
+  switch ( p.punctuator )
+  {
+    case PunctuatorKind::ASSIGN:
+    case PunctuatorKind::MULASSIGN:
+    case PunctuatorKind::DIVASSIGN:
+    case PunctuatorKind::MODASSIGN:
+    case PunctuatorKind::ADDASSIGN:
+    case PunctuatorKind::SUBASSIGN:
+    case PunctuatorKind::LSHIFTASSIGN:
+    case PunctuatorKind::RSHIFTASSIGN:
+    case PunctuatorKind::ANDASSIGN:
+    case PunctuatorKind::XORASSIGN:
+    case PunctuatorKind::ORASSIGN:
+      lexer.get();
+      return *( new ASTNode( ASTType::ASSIGNMENT_OPERATOR ) );
+
+    default:;
   }
   // ERROR:
   return *( new ASTNode( ASTType::ILLEGAL ) );
 }
 
 ASTNode & Parser::parseExpression()
+{
+}
+
+ASTNode & Parser::parseStorageClassSpecifier()
 {
 }

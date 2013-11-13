@@ -5,12 +5,14 @@
 #include "diagnostic.h"
 #include "util.h"
 #include "Lex/Lexer.h"
-#include "Support/CharUtils.h"
-#include "Support/Diagnostic.h"
+#include "AST/AST.h"
+#include "Parse/Parser.h"
 
 
 using namespace C4;
 using namespace Lex;
+using namespace AST;
+using namespace Parse;
 
 enum class Mode {
   TOKENIZE,
@@ -100,7 +102,23 @@ int main(int, char** const argv)
             }
 
           case Mode::PARSE:
-            {}
+            {
+              Lexer * lex;
+              if ( f == stdin )
+                lex = new Lexer;
+              else
+                lex = new Lexer( name );
+              Lexer lexer( *lex );
+              delete lex;
+
+              Parser parser( lexer );
+
+              ASTNode & ast = parser.parse();
+
+              ast.dump();
+
+              break;
+            }
           case Mode::PRINT_AST:
             {}
           case Mode::COMPILE:
