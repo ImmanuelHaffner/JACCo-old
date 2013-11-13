@@ -53,4 +53,3 @@ all_punctuators.c:51:1: punctuator ^=
 all_punctuators.c:52:1: punctuator &&
 all_punctuators.c:53:1: punctuator ||
 all_punctuators.c:54:1: punctuator |=
-
