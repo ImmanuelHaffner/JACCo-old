@@ -98,6 +98,10 @@ namespace C4
       void setChild( ASTNode * const c, int n );
       void append( ASTNode * const c );
       ASTNode * operator[]( int n );
+      std::vector< ASTNode * >::iterator begin();
+      std::vector< ASTNode * >::const_iterator begin() const;
+      std::vector< ASTNode * >::iterator end();
+      std::vector< ASTNode * >::const_iterator end() const;
 
       friend std::ostream & operator<<( std::ostream &out, ASTNode const &node );
       virtual void dump() const;
