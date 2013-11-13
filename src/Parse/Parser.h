@@ -10,8 +10,6 @@
 #define C4_PARSER_H
 
 #include "../Lex/Token.h"
-#include "../Lex/KeywordToken.h"
-#include "../Lex/PunctuatorToken.h"
 #include "../Lex/Lexer.h"
 #include "../AST/AST.h"
 
@@ -28,10 +26,16 @@ namespace C4
       void accept( T t );
 
       bool match( Lex::TokenKind tKind );
-      bool match( Lex::KeywordKind keyword );
-      bool match( Lex::PunctuatorKind punctuator );
-      bool match( std::string const &s );
-      bool match( char const * const s );
+
+      inline bool match( char const * const s )
+      {
+        return lexer.peek().text == s;
+      }
+
+      inline bool match( std::string const &s )
+      {
+        return match( s.c_str() );
+      }
 
       /// Parses the tokens returned by the lexer, and construct the
       /// corresponding AST.
@@ -45,10 +49,17 @@ namespace C4
       AST::ASTNode & parseConstant();
       AST::ASTNode & parseStringLiteral();
       AST::ASTNode & parsePrimaryExpression();
+      AST::ASTNode & parsePostfixExpression();
+      AST::ASTNode & parseArgumentExpressionList();
+      AST::ASTNode & parseUnaryExpression();
+
       AST::ASTNode & parseUnaryOperator();
       AST::ASTNode & parseAssignmentOperator();
       AST::ASTNode & parseExpression();
       AST::ASTNode & parseStorageClassSpecifier();
+      AST::ASTNode & parseAssignmentExpression();
+      AST::ASTNode & parseTypeName();
+      AST::ASTNode & parseCastExpression();
 
       private:
       Lex::Lexer &lexer;
