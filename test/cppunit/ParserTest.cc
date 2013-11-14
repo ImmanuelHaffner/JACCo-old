@@ -55,6 +55,10 @@ void ParserTest::testIs()
   lexer.get();
 
   CPPUNIT_ASSERT( parser.is( TokenKind::END_OF_FILE ) );
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
 }
 
 void ParserTest::testIsMulti()
@@ -65,6 +69,7 @@ void ParserTest::testIsMulti()
   Lexer lexer;
   Parser parser( lexer );
 
+
   CPPUNIT_ASSERT( parser.is( "a", "b", TokenKind::CONSTANT ) );
   CPPUNIT_ASSERT( parser.is( TokenKind::IDENTIFIER, "b", "" ) );
 
@@ -72,4 +77,8 @@ void ParserTest::testIsMulti()
 
   CPPUNIT_ASSERT( parser.is( "a", "->", TokenKind::CONSTANT ) );
   CPPUNIT_ASSERT( parser.is( TokenKind::PUNCTUATOR, "b", "" ) );
+
+
+  // restode stdin
+  std::cin.rdbuf( cin_bak );
 }
