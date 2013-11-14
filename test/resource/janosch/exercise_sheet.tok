@@ -1,7 +1,6 @@
 0
-exercise.c:1:1 constant 42
-exercise.c:1:5 keyword if
-exercise.c:2:2 string-literal "bla\n"
-exercise.c:2:9 identifier x
-exercise.c:2:10 punctuator +
-
+exercise_sheet.c:1:1: constant 42
+exercise_sheet.c:1:5: keyword if
+exercise_sheet.c:2:2: string-literal "bla\n"
+exercise_sheet.c:2:9: identifier x
+exercise_sheet.c:2:10: punctuator +

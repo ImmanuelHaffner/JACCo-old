@@ -10,4 +10,3 @@ char_constant_valid_escape_seq.c:1:36: constant '\n'
 char_constant_valid_escape_seq.c:1:41: constant '\r'
 char_constant_valid_escape_seq.c:1:46: constant '\t'
 char_constant_valid_escape_seq.c:1:51: constant '\v'
-
