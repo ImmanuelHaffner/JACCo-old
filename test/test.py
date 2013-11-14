@@ -126,6 +126,7 @@ if (__name__ == "__main__"):
     (options, args) = parser.parse_args()
     c4Path = options.c4Path
     verbose = options.verbose
+    maxErrors = int(options.maxErrors)
     exts = []
     catFlags = {
         "lexer": ".tok",
@@ -143,6 +144,7 @@ if (__name__ == "__main__"):
 
     results = {}
     passed = 0
+    failed = 0
     numTests = 0
     for test in tests:
         if (test not in results):
@@ -151,7 +153,13 @@ if (__name__ == "__main__"):
             if (res):
                 passed += 1
             else:
+                failed += 1
                 print("Failed " + test.testFile)
                 if (verbose):
                     test.printErrors()
+                if (failed >= maxErrors):
+                    break
     print("Passed %d of %d tests" % (passed, numTests))
+
+    if (options.html != None):
+        htmloutput.generate(results, options.html)
