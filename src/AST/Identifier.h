@@ -19,15 +19,14 @@ namespace C4
     ///
     struct Identifier : ASTNode
     {
-      Identifier( Lex::Token &token, ASTNode * const parent = NULL );
+      Identifier( Lex::Token const &tok, ASTNode * const parent = NULL );
       ~Identifier();
 
       friend std::ostream & operator<<( std::ostream &out,
           Identifier const &node );
-      virtual void dump() const;
+      void dump( std::ostream &out = std::cout, int const n = 0 ) const;
 
-      private:
-      Lex::Token &token;
+      Lex::Token const tok;
     };
   }
 }

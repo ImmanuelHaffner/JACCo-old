@@ -12,20 +12,22 @@ using namespace C4;
 using namespace AST;
 using namespace Lex;
 
-Identifier::Identifier( Token &token,
-    ASTNode * const parent/* = NULL*/ )
-  : ASTNode( ASTType::IDENTIFIER, parent ), token( token )
+Identifier::Identifier( Token const &tok, ASTNode * const parent/* = NULL*/ )
+  : ASTNode( ASTType::IDENTIFIER, parent ), tok(tok)
 {}
 
 Identifier::~Identifier() {}
 
 std::ostream & AST::operator<<( std::ostream &out, Identifier const &node )
 {
-  out << "Identifier " << node.token.text;
+  node.dump( out );
   return out;
 }
 
-void Identifier::dump() const
+void Identifier::dump( std::ostream &out /*= std::cout*/,
+    int const n /*= 0*/ ) const
 {
-  std::cout << *this;
+  for ( int i = 0; i < n; ++i )
+    out << " ";
+  out << tok;
 }

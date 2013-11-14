@@ -12,20 +12,23 @@ using namespace C4;
 using namespace AST;
 using namespace Lex;
 
-StringLiteral::StringLiteral( Token &token,
+StringLiteral::StringLiteral( Token const &tok,
     ASTNode * const parent/* = NULL*/ )
-  : ASTNode( ASTType::STRING_LITERAL, parent ), token( token )
+  : ASTNode( ASTType::STRING_LITERAL, parent ), tok(tok)
 {}
 
 StringLiteral::~StringLiteral() {}
 
 std::ostream & AST::operator<<( std::ostream &out, StringLiteral const &node )
 {
-  out << "StringLiteral " << node.token.text;
+  node.dump( out );
   return out;
 }
 
-void StringLiteral::dump() const
+void StringLiteral::dump( std::ostream &out /*= std::cout*/,
+    int const n /*= 0*/ ) const
 {
-  std::cout << *this;
+  for ( int i = 0; i < n; ++i )
+    out << " ";
+  out << tok;
 }

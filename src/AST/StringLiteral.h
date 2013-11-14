@@ -19,15 +19,14 @@ namespace C4
     ///
     struct StringLiteral : ASTNode
     {
-      StringLiteral( Lex::Token &token, ASTNode * const parent = NULL );
+      StringLiteral( Lex::Token const &tok, ASTNode * const parent = NULL );
       ~StringLiteral();
 
       friend std::ostream & operator<<( std::ostream &out,
           StringLiteral const &node );
-      virtual void dump() const;
+      void dump( std::ostream &out = std::cout, int const n = 0 ) const;
 
-      private:
-      Lex::Token &token;
+      Lex::Token const &tok;
     };
   }
 }

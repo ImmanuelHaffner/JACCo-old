@@ -12,20 +12,22 @@ using namespace C4;
 using namespace AST;
 using namespace Lex;
 
-Constant::Constant( Token &token,
-    ASTNode * const parent/* = NULL*/ )
-  : ASTNode( ASTType::CONSTANT, parent ), token( token )
+Constant::Constant( Token const &tok, ASTNode * const parent/* = NULL*/ )
+  : ASTNode( ASTType::CONSTANT, parent ), tok(tok)
 {}
 
 Constant::~Constant() {}
 
 std::ostream & AST::operator<<( std::ostream &out, Constant const &node )
 {
-  out << "Constant " << node.token.text;
+  node.dump( out );
   return out;
 }
 
-void Constant::dump() const
+void Constant::dump( std::ostream &out /*= std::cout*/,
+    int const n /*= 0*/ ) const
 {
-  std::cout << *this;
+  for ( int i = 0; i < n; ++i )
+    out << " ";
+  out << tok;
 }

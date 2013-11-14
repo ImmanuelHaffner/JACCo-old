@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <iostream>
+#include "../Lex/Token.h"
 
 namespace C4
 {
@@ -101,14 +102,16 @@ namespace C4
       ASTNode * getChild( int n ) const;
       void setChild( ASTNode * const c, int n );
       void append( ASTNode * const c );
+      void append( ASTNode &c );
       ASTNode * operator[]( int n );
       std::vector< ASTNode * >::iterator begin();
       std::vector< ASTNode * >::const_iterator begin() const;
       std::vector< ASTNode * >::iterator end();
       std::vector< ASTNode * >::const_iterator end() const;
 
-      friend std::ostream & operator<<( std::ostream &out, ASTNode const &node );
-      virtual void dump() const;
+      friend std::ostream & operator<<( std::ostream &out,
+          ASTNode const &node );
+      virtual void dump( std::ostream &out = std::cout, int const n = 0 ) const;
 
 
       ASTType const type;

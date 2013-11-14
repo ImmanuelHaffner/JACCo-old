@@ -19,15 +19,14 @@ namespace C4
     ///
     struct Constant : ASTNode
     {
-      Constant( Lex::Token &token, ASTNode * const parent = NULL );
+      Constant( Lex::Token const &tok, ASTNode * const parent = NULL );
       ~Constant();
 
       friend std::ostream & operator<<( std::ostream &out,
           Constant const &node );
-      virtual void dump() const;
+      void dump( std::ostream &out = std::cout, int const n = 0 ) const;
 
-      private:
-      Lex::Token &token;
+      Lex::Token const tok;
     };
   }
 }

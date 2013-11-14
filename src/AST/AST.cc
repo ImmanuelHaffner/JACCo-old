@@ -8,10 +8,13 @@
 
 #include "AST.h"
 
+
 using namespace C4;
 using namespace AST;
+using namespace Lex;
 
-ASTNode::ASTNode( ASTType type, ASTNode * const parent ) : type(type), parent(parent) {}
+ASTNode::ASTNode( ASTType type, ASTNode * const parent )
+  : type(type), parent(parent) {}
 
 ASTNode::~ASTNode()
 {
@@ -46,6 +49,12 @@ void ASTNode::append( ASTNode * const c )
   childs.push_back( c );
 }
 
+void ASTNode::append( ASTNode &c )
+{
+  childs.push_back( &c );
+  c.setParent( this );
+}
+
 ASTNode * ASTNode::operator[]( int n )
 {
   return childs[n];
@@ -73,21 +82,13 @@ std::vector< ASTNode * >::const_iterator ASTNode::end() const
 
 std::ostream & AST::operator<<( std::ostream &out, ASTNode const &node )
 {
-  out << "-AST Node " << reinterpret_cast< size_t >( &node );
-  if ( node.childs.size() )
-  {
-    out << std::endl;
-    for ( auto it = node.begin(); it != node.end(); ++it )
-    {
-      out << " |" << *it;
-      if ( it != node.end() )
-        out << std::endl;
-    }
-  }
+  node.dump( out );
   return out;
 }
 
-void ASTNode::dump() const
+void ASTNode::dump( std::ostream &out /*= std::cout*/, int const n /*= 0*/ ) const
 {
-  std::cout << *this;
+  for ( int i = 0; i < n; ++i )
+    out << " ";
+  out << "-AST Node " << reinterpret_cast< size_t >( this );
 }
