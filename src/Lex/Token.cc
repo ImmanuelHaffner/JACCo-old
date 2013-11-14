@@ -20,12 +20,12 @@ Token & Token::clone() const
 
 std::ostream & Lex::operator<<( std::ostream &out, Token const &tok )
 {
-  auto res = TokenKindNames.find( tok.kind );
-  out << res->second << " " << tok.text;
+  tok.dump( out );
   return out;
 }
 
-void Token::dump() const
+void Token::dump( std::ostream &out /*= std::cout*/ ) const
 {
-  std::cout << *this;
+  auto res = TokenKindNames.find( kind );
+  out << res->second << " " << text;
 }

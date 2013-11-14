@@ -122,7 +122,7 @@ namespace C4
 
       virtual Token & clone() const;
       friend std::ostream & operator<<( std::ostream &out, Token const &tok );
-      virtual void dump() const;
+      virtual void dump( std::ostream &out = std::cout ) const;
 
       Pos const pos;
       TokenKind const kind;

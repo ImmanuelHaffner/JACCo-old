@@ -44,7 +44,7 @@ namespace C4
 			Token & clone() const;
       friend std::ostream & operator<<( std::ostream &out,
           IllegalToken const &tok );
-      void dump() const;
+      void dump( std::ostream &out = std::cout ) const;
 
       IllegalTokenKind const iKind;
     };

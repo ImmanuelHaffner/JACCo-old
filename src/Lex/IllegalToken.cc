@@ -20,8 +20,14 @@ Token & IllegalToken::clone() const
 
 std::ostream & Lex::operator<<( std::ostream &out, IllegalToken const &tok )
 {
-  out << "illegal token: " << tok.text << " - ";
-  switch ( tok.iKind )
+  tok.dump( out );
+  return out;
+}
+
+void IllegalToken::dump( std::ostream &out /*= std::cout*/ ) const
+{
+  out << "illegal token: " << text << " - ";
+  switch ( iKind )
   {
     case IllegalTokenKind::UNKNOWN:
       out << "unknown token";
@@ -55,11 +61,4 @@ std::ostream & Lex::operator<<( std::ostream &out, IllegalToken const &tok )
       out << "illegal escape sequence";
       break;
   }
-
-  return out;
-}
-
-void IllegalToken::dump() const
-{
-  std::cout << *this;
 }
