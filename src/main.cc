@@ -113,9 +113,10 @@ int main(int, char** const argv)
 
               Parser parser( lexer );
 
-              ASTNode & ast = parser.parse();
+              parser.parse();
 
-              ast.dump();
+              while ( lexer.peek().kind != TokenKind::END_OF_FILE )
+                errorf( "%s", lexer.get().text.c_str() );
 
               break;
             }
