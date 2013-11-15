@@ -48,6 +48,8 @@ namespace C4
 
       IllegalTokenKind const iKind;
     };
+
+    std::ostream & operator<<( std::ostream &out, IllegalToken const &tok );
   } // end namespace Lex
 } // end namespace C4
 

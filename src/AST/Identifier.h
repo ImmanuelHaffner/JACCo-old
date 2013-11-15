@@ -28,6 +28,8 @@ namespace C4
 
       Lex::Token const tok;
     };
+
+    std::ostream & operator<<( std::ostream &out, Identifier const &node );
   }
 }
 

@@ -120,7 +120,9 @@ namespace C4
       ASTNode * parent;
       std::vector< ASTNode * > childs;
     };
-  }
-}
+
+    std::ostream & operator<<( std::ostream &out, ASTNode const &node );
+  } // end namespace AST
+} // end namespace C4
 
 #endif

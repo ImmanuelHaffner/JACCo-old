@@ -129,6 +129,8 @@ namespace C4
       std::string const text;
     };
 
+    std::ostream & operator<<( std::ostream &out, Token const &tok );
+
     static std::set<std::string> Keywords =
     {
       "auto",           
