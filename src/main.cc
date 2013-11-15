@@ -60,7 +60,10 @@ int main(int, char** const argv)
         } else {
           f = fopen(name, "rb");
           if (!f)
+					{
             errorErrno(Pos(name));
+						continue;
+					}
           fclose( f );
         }
 
