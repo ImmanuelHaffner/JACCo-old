@@ -168,8 +168,6 @@ Token & Lexer::readNumericalConstant()
   Pos start( pos );
   std::string text = "";
 
-  bool isIllegalIdentifier = false;
-
   // Hex and Oct support
   bool isHex = false;
   bool isOct = false;
@@ -184,7 +182,8 @@ Token & Lexer::readNumericalConstant()
       text += file.get();
 
       if ( ! isxdigit( file.peek() ) )
-        isIllegalIdentifier = true;
+        return *( new IllegalToken( start, IllegalTokenKind::HEX_CONSTANT,
+              text ) );
     }
     else
       isOct = true;

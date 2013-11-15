@@ -60,5 +60,9 @@ void IllegalToken::dump( std::ostream &out /*= std::cout*/ ) const
     case IllegalTokenKind::ESCAPE_SEQUENCE:
       out << "illegal escape sequence";
       break;
+
+    case IllegalTokenKind::HEX_CONSTANT:
+      out << "illegal hexadecimal constant";
+      break;
   }
 }
