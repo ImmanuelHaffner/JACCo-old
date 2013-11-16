@@ -928,12 +928,12 @@ void LexerTest::testCharPrefix()
 
 void LexerTest::testReadStringLiteral()
 {
-  std::istringstream stream( "\"a\" \n \"bc\"\r\n\"d e \" \"\\n bla\"" );
+  Lexer lexer;
 
   // redirect stdin
+  std::istringstream stream( "\"a\" \n \"bc\"\r\n\"d e \" \"\\n bla\"" );
   std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
 
-  Lexer lexer;
   Token * token;
 
   // "a"
@@ -971,6 +971,19 @@ void LexerTest::testReadStringLiteral()
   CPPUNIT_ASSERT( token->text == "\"\\n bla\"" );
   delete token;
   lexer.skip();
+
+
+  stream.str( "\n\"\"" );
+  std::cin.rdbuf( stream.rdbuf() );
+  
+  lexer.skip();
+
+  token = & lexer.readCharacterConstantOrStringLiteral();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::STRING_LITERAL );
+  CPPUNIT_ASSERT_EQUAL( 4u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "\"\"" );
+  delete token;
 
 
   // restode stdin
