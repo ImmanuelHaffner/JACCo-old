@@ -358,72 +358,64 @@ Token & Lexer::readPunctuator()
   Pos start(pos);
   std::string text = "";
 
-#define PUNCTUATOR() \
-  return Token::Punctuator( start, text );
-
-#define PUNCTUATOR_GET() \
-  { \
+#define GET \
   updatePos( file.peek() ); \
-  text += file.get(); \
-  PUNCTUATOR(); \
+  text += file.get();
+
+#define GET_IF( chr ) \
+  if ( file.peek() == ( chr ) ) \
+  {\
+    GET; \
   }
 
 #define PUNCTUATOR_GET_IF( chr ) \
   if ( file.peek() == ( chr ) ) \
-  PUNCTUATOR_GET();
-
+  { \
+    GET; \
+    return Token::Punctuator( start, text ); \
+  }
 
   switch ( file.peek() )
   {
     // Punctuators that consist of a single character
     case '(':
-      PUNCTUATOR_GET();
     case ')':
-      PUNCTUATOR_GET();
     case ',':
-      PUNCTUATOR_GET();
     case ';':
-      PUNCTUATOR_GET();
     case '?':
-      PUNCTUATOR_GET();
     case '[':
-      PUNCTUATOR_GET();
     case ']':
-      PUNCTUATOR_GET();
     case '{':
-      PUNCTUATOR_GET();
     case '}':
-      PUNCTUATOR_GET();
     case '~':
-      PUNCTUATOR_GET();
+      GET;
+      return Token::Punctuator( start, text );
 
+      //
       // Punctuators that can have more than one character
-    case ':':
-      updatePos( file.peek() );
-      text += file.get();
+      //
 
+    case ':':
+      GET;
       // :>
-      PUNCTUATOR_GET_IF( '>' );
+      GET_IF( '>' );
       // :
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '!':
-      updatePos( file.peek() );
-      text += file.get();
-
-      PUNCTUATOR_GET_IF( '=' );
-      PUNCTUATOR();
+      GET;
+      // !=
+      GET_IF( '=' );
+      return Token::Punctuator( start, text );
 
     case '#':
-      updatePos( file.peek() );
-      text += file.get();
-
-      PUNCTUATOR_GET_IF( '#' );
-      PUNCTUATOR();
+      GET;
+      // ##
+      GET_IF ( '#' );
+      return Token::Punctuator( start, text );
 
     case '%':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       // %=
       PUNCTUATOR_GET_IF( '=' );
@@ -432,8 +424,7 @@ Token & Lexer::readPunctuator()
       // %:
       if ( file.peek() == ':' )
       {
-        updatePos( file.peek() );
-        text += file.get();
+        GET;
 
         if ( file.peek() == '%' )
         {
@@ -443,54 +434,47 @@ Token & Lexer::readPunctuator()
           {
             updatePos( '%' );
             text += "%";
-            updatePos( file.peek() );
-            text += file.get();
-
-            PUNCTUATOR();
+            GET;
+            return Token::Punctuator( start, text );
           }
 
           file.unget();
         }
-        PUNCTUATOR();
+        return Token::Punctuator( start, text );
       }
       // %
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '&':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       PUNCTUATOR_GET_IF( '&' );
       PUNCTUATOR_GET_IF( '=' );
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '*':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       PUNCTUATOR_GET_IF( '=' );
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '+':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       PUNCTUATOR_GET_IF( '+' );
       PUNCTUATOR_GET_IF( '=' );
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '-':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       PUNCTUATOR_GET_IF( '-' );
       PUNCTUATOR_GET_IF( '=' );
       PUNCTUATOR_GET_IF( '>' );
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '.':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       if ( file.peek() == '.' ) // 2nd .
       {
@@ -499,26 +483,25 @@ Token & Lexer::readPunctuator()
         {
           // ...
           updatePos( '.' );
-          text += ".";
-          PUNCTUATOR_GET();
+          text += '.';
+          GET;
+          return Token::Punctuator( start, text );
         }
         // ..
         file.unget();
-        PUNCTUATOR();
+        return Token::Punctuator( start, text );
       }
       // .
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '/':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       PUNCTUATOR_GET_IF( '=' );
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '<':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       // <=
       PUNCTUATOR_GET_IF( '=' );
@@ -529,62 +512,55 @@ Token & Lexer::readPunctuator()
       // <<
       if ( file.peek() == '<' )
       {
-        updatePos( file.peek() );
-        text += file.get();
+        GET;
 
         // <<=
         PUNCTUATOR_GET_IF( '=' );
         // <<
-        PUNCTUATOR();
+        return Token::Punctuator( start, text );
       }
       // <
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '=':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       PUNCTUATOR_GET_IF( '=' );
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '>':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       // >=
       PUNCTUATOR_GET_IF( '=' );
       if ( file.peek() == '>' )
       {
-        updatePos( file.peek() );
-        text += file.get();
+        GET;
 
         // >>=
         PUNCTUATOR_GET_IF( '=' );
         // >>
-        PUNCTUATOR();
+        return Token::Punctuator( start, text );
       }
       // >
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '^':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       PUNCTUATOR_GET_IF( '=' );
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     case '|':
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
 
       PUNCTUATOR_GET_IF( '=' );
       PUNCTUATOR_GET_IF( '|' );
-      PUNCTUATOR();
+      return Token::Punctuator( start, text );
 
     default:
       // Illegal Punctuator
-      updatePos( file.peek() );
-      text += file.get();
+      GET;
       return *( new IllegalToken( start, IllegalTokenKind::UNKNOWN, text ) );
   }
 }
