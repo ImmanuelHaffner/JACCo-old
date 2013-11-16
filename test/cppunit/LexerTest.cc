@@ -1446,7 +1446,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
 
 
   // redirect stdin
-  stream.str( "\n%:%:%:" );
+  stream.str( "\n%:%:%:%" );
   std::cin.rdbuf( stream.rdbuf() );
   
   // %:%:
@@ -1463,6 +1463,14 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
   CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
   CPPUNIT_ASSERT( token->text == "%:" );
+  delete token;
+
+  // %
+  token = & lexer.get();
+  CPPUNIT_ASSERT( token->kind  == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 3u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 7u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "%" );
   delete token;
 
 
@@ -1597,6 +1605,39 @@ void LexerTest::testComments()
   CPPUNIT_ASSERT( token->kind == TokenKind::END_OF_FILE );
   CPPUNIT_ASSERT_EQUAL( 9u, token->pos.line );
   CPPUNIT_ASSERT_EQUAL( 5u, token->pos.column );
+  delete token;
+
+
+  // redirect stdin
+  stream.str( "\nint /*This is a multi-line\ncomment*/a = TEN;" );
+  std::cin.rdbuf( stream.rdbuf() );
+
+  token = & lexer.get();
+  CPPUNIT_ASSERT( token->kind == TokenKind::KEYWORD );
+  CPPUNIT_ASSERT_EQUAL( 10u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 1u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "int" );
+  delete token;
+
+  token = & lexer.get();
+  CPPUNIT_ASSERT( token->kind == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 11u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 10u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "a" );
+  delete token;
+
+  token = & lexer.get();
+  CPPUNIT_ASSERT( token->kind == TokenKind::PUNCTUATOR );
+  CPPUNIT_ASSERT_EQUAL( 11u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 12u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "=" );
+  delete token;
+
+  token = & lexer.get();
+  CPPUNIT_ASSERT( token->kind == TokenKind::IDENTIFIER );
+  CPPUNIT_ASSERT_EQUAL( 11u, token->pos.line );
+  CPPUNIT_ASSERT_EQUAL( 14u, token->pos.column );
+  CPPUNIT_ASSERT( token->text == "TEN" );
   delete token;
 
 
