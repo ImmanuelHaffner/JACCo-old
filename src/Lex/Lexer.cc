@@ -358,44 +358,44 @@ Token & Lexer::readPunctuator()
   Pos start(pos);
   std::string text = "";
 
-#define PUNCTUATOR( kind ) \
+#define PUNCTUATOR() \
   return Token::Punctuator( start, text );
 
-#define PUNCTUATOR_GET( kind ) \
+#define PUNCTUATOR_GET() \
   { \
   updatePos( file.peek() ); \
   text += file.get(); \
-  PUNCTUATOR( kind ); \
+  PUNCTUATOR(); \
   }
 
-#define PUNCTUATOR_GET_IF( chr, kind ) \
+#define PUNCTUATOR_GET_IF( chr ) \
   if ( file.peek() == ( chr ) ) \
-  PUNCTUATOR_GET( kind );
+  PUNCTUATOR_GET();
 
 
   switch ( file.peek() )
   {
     // Punctuators that consist of a single character
     case '(':
-      PUNCTUATOR_GET( PunctuatorKind::LPAR );
+      PUNCTUATOR_GET();
     case ')':
-      PUNCTUATOR_GET( PunctuatorKind::RPAR );
+      PUNCTUATOR_GET();
     case ',':
-      PUNCTUATOR_GET( PunctuatorKind::COMMA );
+      PUNCTUATOR_GET();
     case ';':
-      PUNCTUATOR_GET( PunctuatorKind::SEMICOLON );
+      PUNCTUATOR_GET();
     case '?':
-      PUNCTUATOR_GET( PunctuatorKind::QMARK );
+      PUNCTUATOR_GET();
     case '[':
-      PUNCTUATOR_GET( PunctuatorKind::LBRACKET );
+      PUNCTUATOR_GET();
     case ']':
-      PUNCTUATOR_GET( PunctuatorKind::RBRACKET );
+      PUNCTUATOR_GET();
     case '{':
-      PUNCTUATOR_GET( PunctuatorKind::LBRACE );
+      PUNCTUATOR_GET();
     case '}':
-      PUNCTUATOR_GET( PunctuatorKind::RBRACE );
+      PUNCTUATOR_GET();
     case '~':
-      PUNCTUATOR_GET( PunctuatorKind::NEG );
+      PUNCTUATOR_GET();
 
       // Punctuators that can have more than one character
     case ':':
@@ -403,32 +403,32 @@ Token & Lexer::readPunctuator()
       text += file.get();
 
       // :>
-      PUNCTUATOR_GET_IF( '>', PunctuatorKind::RBRACKET );
+      PUNCTUATOR_GET_IF( '>' );
       // :
-      PUNCTUATOR( PunctuatorKind::COLON );
+      PUNCTUATOR();
 
     case '!':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::NE );
-      PUNCTUATOR( PunctuatorKind::NOT );
+      PUNCTUATOR_GET_IF( '=' );
+      PUNCTUATOR();
 
     case '#':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '#', PunctuatorKind::DHASH );
-      PUNCTUATOR( PunctuatorKind::HASH );
+      PUNCTUATOR_GET_IF( '#' );
+      PUNCTUATOR();
 
     case '%':
       updatePos( file.peek() );
       text += file.get();
 
       // %=
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::MODASSIGN );
+      PUNCTUATOR_GET_IF( '=' );
       // %>
-      PUNCTUATOR_GET_IF( '>', PunctuatorKind::RBRACE );
+      PUNCTUATOR_GET_IF( '>' );
       // %:
       if ( file.peek() == ':' )
       {
@@ -437,50 +437,56 @@ Token & Lexer::readPunctuator()
 
         if ( file.peek() == '%' )
         {
-          updatePos( file.peek() );
-          text += file.get();
+          file.get();
 
-          // %:%:
-          PUNCTUATOR_GET_IF( ':', PunctuatorKind::DHASH );
+          if ( file.peek() == ':' )
+          {
+            updatePos( '%' );
+            text += "%";
+            updatePos( file.peek() );
+            text += file.get();
+
+            PUNCTUATOR();
+          }
 
           file.unget();
         }
-        PUNCTUATOR( PunctuatorKind::HASH );
+        PUNCTUATOR();
       }
       // %
-      PUNCTUATOR( PunctuatorKind::MOD );
+      PUNCTUATOR();
 
     case '&':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '&', PunctuatorKind::LAND );
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::ANDASSIGN );
-      PUNCTUATOR( PunctuatorKind::AND );
+      PUNCTUATOR_GET_IF( '&' );
+      PUNCTUATOR_GET_IF( '=' );
+      PUNCTUATOR();
 
     case '*':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::MULASSIGN );
-      PUNCTUATOR( PunctuatorKind::MUL );
+      PUNCTUATOR_GET_IF( '=' );
+      PUNCTUATOR();
 
     case '+':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '+', PunctuatorKind::INC );
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::ADDASSIGN );
-      PUNCTUATOR( PunctuatorKind::PLUS );
+      PUNCTUATOR_GET_IF( '+' );
+      PUNCTUATOR_GET_IF( '=' );
+      PUNCTUATOR();
 
     case '-':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '-', PunctuatorKind::DEC );
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::SUBASSIGN );
-      PUNCTUATOR_GET_IF( '>', PunctuatorKind::ARROW );
-      PUNCTUATOR( PunctuatorKind::MINUS );
+      PUNCTUATOR_GET_IF( '-' );
+      PUNCTUATOR_GET_IF( '=' );
+      PUNCTUATOR_GET_IF( '>' );
+      PUNCTUATOR();
 
     case '.':
       updatePos( file.peek() );
@@ -494,32 +500,32 @@ Token & Lexer::readPunctuator()
           // ...
           updatePos( '.' );
           text += ".";
-          PUNCTUATOR_GET( PunctuatorKind::ELLIPSIS );
+          PUNCTUATOR_GET();
         }
         // ..
         file.unget();
-        PUNCTUATOR( PunctuatorKind::DOT );
+        PUNCTUATOR();
       }
       // .
-      PUNCTUATOR( PunctuatorKind::DOT );
+      PUNCTUATOR();
 
     case '/':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::DIVASSIGN );
-      PUNCTUATOR( PunctuatorKind::DIV );
+      PUNCTUATOR_GET_IF( '=' );
+      PUNCTUATOR();
 
     case '<':
       updatePos( file.peek() );
       text += file.get();
 
       // <=
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::LEQ );
+      PUNCTUATOR_GET_IF( '=' );
       // <:
-      PUNCTUATOR_GET_IF( ':', PunctuatorKind::LBRACKET );
+      PUNCTUATOR_GET_IF( ':' );
       // <%
-      PUNCTUATOR_GET_IF( '%', PunctuatorKind::LBRACE );
+      PUNCTUATOR_GET_IF( '%' );
       // <<
       if ( file.peek() == '<' )
       {
@@ -527,53 +533,53 @@ Token & Lexer::readPunctuator()
         text += file.get();
 
         // <<=
-        PUNCTUATOR_GET_IF( '=', PunctuatorKind::LSHIFTASSIGN );
+        PUNCTUATOR_GET_IF( '=' );
         // <<
-        PUNCTUATOR( PunctuatorKind::LSHIFT );
+        PUNCTUATOR();
       }
       // <
-      PUNCTUATOR( PunctuatorKind::LE );
+      PUNCTUATOR();
 
     case '=':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::EQ );
-      PUNCTUATOR( PunctuatorKind::ASSIGN );
+      PUNCTUATOR_GET_IF( '=' );
+      PUNCTUATOR();
 
     case '>':
       updatePos( file.peek() );
       text += file.get();
 
       // >=
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::GEQ );
+      PUNCTUATOR_GET_IF( '=' );
       if ( file.peek() == '>' )
       {
         updatePos( file.peek() );
         text += file.get();
 
         // >>=
-        PUNCTUATOR_GET_IF( '=', PunctuatorKind::RSHIFTASSIGN );
+        PUNCTUATOR_GET_IF( '=' );
         // >>
-        PUNCTUATOR( PunctuatorKind::RSHIFT );
+        PUNCTUATOR();
       }
       // >
-      PUNCTUATOR( PunctuatorKind::GR );
+      PUNCTUATOR();
 
     case '^':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::XORASSIGN );
-      PUNCTUATOR( PunctuatorKind::XOR );
+      PUNCTUATOR_GET_IF( '=' );
+      PUNCTUATOR();
 
     case '|':
       updatePos( file.peek() );
       text += file.get();
 
-      PUNCTUATOR_GET_IF( '=', PunctuatorKind::ORASSIGN );
-      PUNCTUATOR_GET_IF( '|', PunctuatorKind::LOR );
-      PUNCTUATOR( PunctuatorKind::OR );
+      PUNCTUATOR_GET_IF( '=' );
+      PUNCTUATOR_GET_IF( '|' );
+      PUNCTUATOR();
 
     default:
       // Illegal Punctuator
