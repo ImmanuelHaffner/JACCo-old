@@ -1,0 +1,4 @@
+0
+comment_with_CR.c:1:1: keyword int
+comment_with_CR.c:2:10: identifier a
+comment_with_CR.c:2:11: punctuator ;

@@ -1,0 +1,2 @@
+# Disable eol normalization for test files
+comment_with_*.c binary
