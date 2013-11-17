@@ -41,16 +41,19 @@ DUMMY				:= $(shell mkdir -p $(sort $(dir $(OBJ))))
 DUMMY				:= $(shell mkdir -p $(sort $(dir $(TEST_OBJ))))
 
 
-CFLAGS			+= -Wall -W -pedantic# -Werror
-CXXFLAGS		+= $(CFLAGS) -std=c++11
 
 ifeq ($(DEBUG), 1)
 	CXXFLAGS	+= -g -DDEBUG
+else
+	CXXFLAGS	+= -O2
 endif
 
 ifeq ($(VERBOSE), 1)
 	CXXFLAGS	+= -v
 endif
+
+CFLAGS			+= -Wall -W -pedantic# -Werror
+CXXFLAGS		+= $(CFLAGS) -std=c++11
 
 
 .PHONY: all check check-all clean cleanall doxy
