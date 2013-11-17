@@ -273,6 +273,16 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
 
   while ( file.good() && file.peek() != terminator )
   {
+    // \r\n
+    if ( file.peek() == '\r' )
+    {
+      newLine = true;
+      file.get();
+      if ( file.peek() != '\n' )
+        file.unget();
+      break;
+    }
+    // \n
     if ( file.peek() == '\n' )
     {
       newLine = true;
@@ -281,6 +291,17 @@ Token & Lexer::readCharacterConstantOrStringLiteral()
     else if ( file.peek() == '\\' )
     {
       int c = file.get();
+      // \r\n
+      if ( file.peek() == '\r' )
+      {
+        file.get();
+        if ( file.peek() != '\n' )
+          file.unget();
+        // escaped newline
+        updatePos( file.get() );
+        continue;
+      }
+      // \n
       if ( file.peek() == '\n' )
       {
         // escaped newline
@@ -570,7 +591,15 @@ Token & Lexer::skip()
   int c;
   while ( file.good() )
   {
+    if ( file.peek() == '\r' )
+    {
+      file.get();
+      if ( file.peek() != '\n' )
+        file.unget();
+    }
+
     c = file.peek();
+
 
     if ( isspace( c ) )
     {
@@ -581,6 +610,16 @@ Token & Lexer::skip()
     else if ( c == '\\' )
     {
       file.get();
+      // \r\n
+      if ( file.peek() == '\r' )
+      {
+        file.get();
+        if ( file.peek() != '\n' )
+          file.unget();
+        // escaped newline
+        continue;
+      }
+      // \n
       if ( file.peek() == '\n' )
       {
         // escaped newline
@@ -600,9 +639,22 @@ Token & Lexer::skip()
       {
         // comment line
         updatePos( c );
-        while ( file.good() && file.peek() != -1
-            && ( c == '\\' || file.peek() != '\n' ) )
+        while ( file.good() && file.peek() != -1 )
         {
+          if ( c != '\\' )
+          {
+            // \n
+            if ( file.peek() == '\n' )
+              break;
+            // \r\n
+            if ( file.peek() == '\r' )
+            {
+              file.get();
+              if ( file.peek() != '\n' )
+                file.unget();
+              break;
+            }
+          }
           c = file.get();
           updatePos( c );
         }
@@ -616,12 +668,27 @@ Token & Lexer::skip()
         updatePos( c ); // handle /
         c = file.get(); // read the *
         updatePos( c );
-        c = file.get(); // read the next char, skip previous * to prevent /*/
-        updatePos( c );
+
+        // read the next char, skip previous * to prevent /*/
+        // \r\n
+        if ( file.peek() == '\r' )
+        {
+          file.get();
+          if ( file.peek() != '\n' )
+            file.unget();
+        }
+        updatePos( file.get() );
 
         while ( file.good() && file.peek() != -1
             && ( c != '*' || file.peek() != '/' ) )
         {
+          // \r\n
+          if ( file.peek() == '\r' )
+          {
+            file.get();
+            if ( file.peek() != '\n' )
+              file.unget();
+          }
           c = file.get();
           updatePos( c );
         }
@@ -660,7 +727,7 @@ void Lexer::updatePos( int c )
   if ( c == -1 )
     return;
 
-  if ( c == '\n' )
+  if ( c == '\n' || c == '\r' )
   {
     ++pos.line;
     pos.column = 1u;
