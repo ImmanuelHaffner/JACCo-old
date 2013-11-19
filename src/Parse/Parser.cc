@@ -23,8 +23,3 @@ using namespace Lex;
 Parser::Parser( Lexer &lexer ) : lexer( lexer ) {}
 
 Parser::~Parser() {}
-
-ASTNode & Parser::parse()
-{
-  return parseUnaryExpression();
-}

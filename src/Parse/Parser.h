@@ -222,9 +222,10 @@ namespace C4
       /// corresponding AST.
       ///
       /// NOTE: This function may prompt errors/warnings to the console.
-      ///
-      /// \return the AST of the input
-      AST::ASTNode & parse();
+      inline void parse()
+      {
+        parseUnaryExpression( Lex::TokenKind::END_OF_FILE );
+      }
 
       /*
        *
@@ -232,87 +233,48 @@ namespace C4
        *
        */
 
-#define __NODE( type ) *( new AST::ASTNode( AST::ASTType:: type ) )
-#define __ILLEGAL __NODE( ILLEGAL )
-
       template < typename... Args >
-      AST::ASTNode & parseIdentifier( Args... args )
+      void parsePrimaryExpression( Args... args )
       {
-        if ( match( Lex::TokenKind::IDENTIFIER ) )
+        if ( match( PRIMARY_EXPRESSION ) )
         {
-          return *( new AST::Identifier( lexer.get() ) );
+          if ( is( "(" ) )
+          {
+            lexer.get();
+            parseExpression( ")", args... );
+            accept( ")", args... );
+          }
+          else
+            lexer.get();
         }
-        until( args... );
-        return __ILLEGAL;
+        else
+          until( args... );
       }
 
       template < typename... Args >
-      AST::ASTNode & parseConstant( Args... args )
+      void parsePostfixExpression( Args... args )
       {
-        if ( match( Lex::TokenKind::CONSTANT ) )
+        parsePrimaryExpression( "[", "(", ".", "->", "++", "--", args... );
+
+        while ( true )
         {
-          return *( new AST::Constant( lexer.get() ) );
-        }
-        until( args... );
-        return __ILLEGAL;
-      }
-
-      template < typename... Args >
-      AST::ASTNode & parseStringLiteral( Args... args )
-      {
-        if ( match( Lex::TokenKind::STRING_LITERAL ) )
-        {
-          return *( new AST::StringLiteral( lexer.get() ) );
-        }
-        until( args... );
-        return __ILLEGAL;
-      }
-
-      template < typename... Args >
-      AST::ASTNode & parsePrimaryExpression( Args... args )
-      {
-        if ( is( Lex::TokenKind::IDENTIFIER ) )
-          return parseIdentifier( args... );
-        if ( is( Lex::TokenKind::CONSTANT ) )
-          return parseConstant( args... );
-        if ( is( Lex::TokenKind::STRING_LITERAL ) )
-          return parseStringLiteral( args... );
-        
-        accept( "(", ")" ); // TODO add FIRST(1) of 'expression'
-        AST::ASTNode &node = parseExpression( args..., ")" );
-        accept( ")", args... );
-        return node;
-      }
-
-      template < typename... Args >
-      AST::ASTNode & parsePostfixExpression( Args... args )
-      {
-        AST::ASTNode * sub = & parsePrimaryExpression( args..., "[", "(",
-            ".", "->", "++", "--" );
-
-        while ( is( "[", "(", ".", "->", "++", "--" ) )
-        {
-          AST::ASTNode * node = & __NODE( POSTFIX_EXPRESSION );
-          node->append( *sub );
-          sub = node;
-
           if ( is( "[" ) )
           {
             lexer.get();
-            sub->append( parseExpression( args..., "]" ) );
+            parseExpression( "]", args... );
             accept( "]", args... );
           }
           else if ( is( "(" ) )
           {
             lexer.get();
             if ( ! is( ")" ) )
-              sub->append( parseArgumentExpressionList( args..., ")" ) );
+              parseArgumentExpressionList( ")", args... );
             accept( ")", args... );
           }
           else if ( is( ".", "->" ) )
           {
             lexer.get();
-            sub->append( parseIdentifier( args... ) );
+            accept( Lex::TokenKind::IDENTIFIER, args... );
           }
           else if ( is( "++", "--" ) )
           {
@@ -321,119 +283,84 @@ namespace C4
           else
             break;
         }
-
-        return *sub;
       }
 
       template < typename... Args >
-      AST::ASTNode & parseArgumentExpressionList( Args... args )
+      void parseArgumentExpressionList( Args... args )
       {
-        AST::ASTNode * sub = & parseAssignmentExpression( args..., "," );
+        parseAssignmentExpression( ",", args... );
 
         while ( is( "," ) )
         {
-          AST::ASTNode * node = & __NODE( POSTFIX_EXPRESSION );
-          node->append( *sub );
-          sub = node;
-
           lexer.get();
-          sub->append( parseAssignmentExpression( args..., "," ) );
+          parseAssignmentExpression( ",", args... );
         }
-
-        return *sub;
       }
 
       template < typename... Args >
-      AST::ASTNode & parseUnaryExpression( Args... args )
+      void parseUnaryExpression( Args... args )
       {
         if ( is( "++", "--" ) )
         {
           lexer.get();
-          AST::ASTNode &node = __NODE( UNARY_EXPRESSION );
-          node.append( parseUnaryExpression( args... ) );
-          return node;
+          parseUnaryExpression( args... );
         }
-
-        if ( is( "sizeof" ) )
+        else if ( is( "sizeof" ) )
         {
           lexer.get();
-          AST::ASTNode &node = __NODE( UNARY_EXPRESSION );
           if ( is( "(" ) )
           {
             lexer.get();
-            node.append( parseTypeName( args..., ")" ) );
+            parseTypeName( ")", args... );
             accept( ")", args... );
           }
           else
-            node.append( parseUnaryExpression( args... ) );
-          return node;
+            parseUnaryExpression( args... );
         }
-
         // unary_operator cast_expression
-        if ( is( "&", "*", "+", "-", "~", "!" ) )
+        else if ( is( UNARY_OPERATOR ) )
         {
-          AST::ASTNode &node = __NODE( UNARY_EXPRESSION );
-          node.append(
-              parseUnaryOperator(
-                args...,
-                "!", "&", "(", "*", "+", "-", "~", "--", "++", "sizeof",
-                Lex::TokenKind::IDENTIFIER,
-                Lex::TokenKind::CONSTANT,
-                Lex::TokenKind::STRING_LITERAL ) );
-          node.append( parseCastExpression( args... ) );
-          return node;
+          lexer.get();
+          parseCastExpression( args... );
         }
-
-        return parsePostfixExpression( args... );
+        else
+          parsePostfixExpression( args... );
       }
  
       template < typename... Args >
-      AST::ASTNode & parseUnaryOperator( Args... args )
+      void parseCastExpression( Args... args )
       {
         is( args... ); // TODO remove
-        return __ILLEGAL;
       }
 
       template < typename... Args >
-      AST::ASTNode & parseCastExpression( Args... args )
+      void parseAssignmentOperator( Args... args )
       {
         is( args... ); // TODO remove
-        return __ILLEGAL;
       }
 
       template < typename... Args >
-      AST::ASTNode & parseAssignmentOperator( Args... args )
+      void parseExpression( Args... args )
       {
         is( args... ); // TODO remove
-        return __ILLEGAL;
       }
 
       template < typename... Args >
-      AST::ASTNode & parseExpression( Args... args )
+      void parseStorageClassSpecifier( Args... args )
       {
         is( args... ); // TODO remove
-        return __ILLEGAL;
       }
 
       template < typename... Args >
-      AST::ASTNode & parseStorageClassSpecifier( Args... args )
+      void parseAssignmentExpression( Args... args )
       {
         is( args... ); // TODO remove
-        return __ILLEGAL;
       }
 
       template < typename... Args >
-      AST::ASTNode & parseAssignmentExpression( Args... args )
+      void parseTypeName( Args... args )
       {
         is( args... ); // TODO remove
-        return __ILLEGAL;
-      }
-
-      template < typename... Args >
-      AST::ASTNode & parseTypeName( Args... args )
-      {
-        is( args... ); // TODO remove
-        return __ILLEGAL;
       }
 
       private:
