@@ -21,4 +21,6 @@ struct Pos
 	unsigned    column;
 };
 
+std::ostream & operator<<( std::ostream &out, Pos const &pos );
+
 #endif
