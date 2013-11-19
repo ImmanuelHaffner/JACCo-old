@@ -33,6 +33,8 @@ namespace C4
       END_OF_FILE
     };
 
+    std::ostream & operator<<( std::ostream &out, TokenKind kind );
+
     static std::map< TokenKind, std::string > TokenKindNames =
     {
       { TokenKind::KEYWORD,        "keyword" },

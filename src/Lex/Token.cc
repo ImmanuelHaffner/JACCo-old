@@ -13,6 +13,17 @@
 using namespace C4;
 using namespace Lex;
 
+std::ostream & Lex::operator<<( std::ostream &out, TokenKind kind )
+{
+	auto it = TokenKindNames.find( kind );
+	if ( it != TokenKindNames.end() )
+		out << it->second;
+	else
+		out << "unresolved token kind";
+
+	return out;
+}
+
 Token & Token::clone() const
 {
   return *( new Token( *this ) );
@@ -26,6 +37,5 @@ std::ostream & Lex::operator<<( std::ostream &out, Token const &tok )
 
 void Token::dump( std::ostream &out /*= std::cout*/ ) const
 {
-  auto res = TokenKindNames.find( kind );
-  out << res->second << " " << text;
+  out << kind << " " << text;
 }

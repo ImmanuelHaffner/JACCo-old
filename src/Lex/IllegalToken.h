@@ -28,6 +28,30 @@ namespace C4
       ESCAPE_SEQUENCE
     };
 
+    static std::map< IllegalTokenKind, std::string > IllegalTokenKindNames =
+    {
+      { IllegalTokenKind::UNKNOWN,
+        "unknown token" },
+      { IllegalTokenKind::IDENTIFIER,
+        "illegal identifier" },
+      { IllegalTokenKind::EMPTY_CHARACTER_CONSTANT,
+        "empty character constant" },
+      { IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS,
+        "character constant with multiple characters" },
+      { IllegalTokenKind::MISSING_APOSTROPHE,
+        "missing terminating apostrophe" },
+      { IllegalTokenKind::MISSING_QUOTE,
+        "missing terminating quote" },
+      { IllegalTokenKind::MISSING_COMMENT_TERMINATOR,
+        "unterminated comment block" },
+      { IllegalTokenKind::ESCAPE_SEQUENCE,
+        "illegal escape sequence" },
+      { IllegalTokenKind::HEX_CONSTANT,
+        "illegal hexadecimal constant" }
+    };
+
+    std::ostream & operator<<( std::ostream &out, IllegalTokenKind iKind );
+
     struct IllegalToken : Token
     {
       IllegalToken( Pos const &pos, IllegalTokenKind iKind,
