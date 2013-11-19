@@ -73,17 +73,15 @@ int main(int, char** const argv)
         switch (mode) {
           case Mode::TOKENIZE:
             {
-              C4::Lex::Lexer * lex;
+              C4::Lex::Lexer * lexer;
               if ( f == stdin )
-                lex = new Lexer;
+                lexer = new Lexer;
               else
-                lex = new Lexer( name );
-              C4::Lex::Lexer lexer( *lex );
-              delete lex;
+                lexer = new Lexer( name );
 
               while ( true )
               {
-                Token const & tok = lexer.get();
+                Token const & tok = lexer->get();
                 if ( tok.kind == TokenKind::END_OF_FILE )
 								{
 									delete &tok;
@@ -101,26 +99,31 @@ int main(int, char** const argv)
 
 								delete &tok;
               }
+              delete lexer;
               break;
             }
 
           case Mode::PARSE:
             {
-              Lexer * lex;
+              Lexer * lexer;
               if ( f == stdin )
-                lex = new Lexer;
+                lexer = new Lexer;
               else
-                lex = new Lexer( name );
-              Lexer lexer( *lex );
-              delete lex;
+                lexer = new Lexer( name );
 
-              Parser parser( lexer );
+              Parser parser( *lexer );
 
               parser.parse();
 
-              while ( lexer.peek().kind != TokenKind::END_OF_FILE )
-                errorf( "%s", lexer.get().text.c_str() );
+              if ( lexer->peek().kind != TokenKind::END_OF_FILE )
+              {
+                errorf( "%s", "unparsed tokens:" );
+                do
+                  std::cout << "\t" << lexer->get() << std::endl;
+                while ( lexer->peek().kind != TokenKind::END_OF_FILE );
+              }
 
+              delete lexer;
               break;
             }
           case Mode::PRINT_AST:
