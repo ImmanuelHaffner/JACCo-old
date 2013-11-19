@@ -50,7 +50,7 @@ void LexerTest::testConstructor()
 
 void LexerTest::testSkip()
 {
-  std::istringstream stream( "a  b\nc \n d\r\ne _f1" );
+  std::istringstream stream( "a  b\nc \n d\r\ne _f1\rg" );
 
   // redirect stdin
   std::streambuf * cin_bak = std::cin.rdbuf( stream.rdbuf() );
@@ -111,6 +111,13 @@ void LexerTest::testSkip()
 
 	CPPUNIT_ASSERT_EQUAL( 4u, lexer.getPos().line );
 	CPPUNIT_ASSERT_EQUAL( 5u, lexer.getPos().column );
+
+	// g
+  lexer.step();
+	lexer.skip();
+
+	CPPUNIT_ASSERT_EQUAL( 5u, lexer.getPos().line );
+	CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().column );
 
 
   // restode stdin
