@@ -330,7 +330,14 @@ namespace C4
       template < typename... Args >
       void parseCastExpression( Args... args )
       {
-        is( args... ); // TODO remove
+        if ( is( "(" ) )
+        {
+          lexer.get();
+          parseTypeName( ")", args... );
+          accept( ")" );
+        }
+        else
+          parseUnaryExpression( args... );
       }
 
       template < typename... Args >
