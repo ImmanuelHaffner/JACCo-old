@@ -37,5 +37,7 @@ std::ostream & Lex::operator<<( std::ostream &out, Token const &tok )
 
 void Token::dump( std::ostream &out /*= std::cout*/ ) const
 {
-  out << kind << " " << text;
+  out << kind;
+  if ( kind != TokenKind::END_OF_FILE )
+    out << " " << text;
 }
