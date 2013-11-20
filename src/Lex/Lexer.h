@@ -9,9 +9,13 @@
 #ifndef C4_LEXER_H
 #define C4_LEXER_H
 
+#include <string>
 #include <fstream>
 #include "Token.h"
 #include "../pos.h"
+#include "../Support/File.h"
+#include "../Support/RegularFile.h"
+#include "../Support/MemMapFile.h"
 
 namespace C4
 {
@@ -28,80 +32,34 @@ namespace C4
     {
       public:
         Lexer();
-        Lexer( char const * const fileName );
-        Lexer( std::string const &fileName );
-
+        explicit Lexer( char const * const fileName );
+        explicit Lexer( std::string const &fileName );
         ~Lexer();
 
-        /// Reads and returns the next token on the input stream.
-        ///
-        /// \return the next token from the input stream
-        Token & get();
-
-        Token & peek();
-
-        void unget();
-
-        Token & getToken();
-
         Pos getPos() const;
-
-        char current() const;
-
-        /// Reads a keyword or an identifier.
-        /// Stops at the first character not part of the keyword or the
-        /// identifier, such that file.peek() would return that character.
-        /// Reads at least one character.
-        ///
-        /// \return a KEYWORD or IDENTIFIER
-        Token & readKeywordOrIdentifier();
-
-        /// Reads a numerical constant.
-        /// Stops at the first character not part of the numerical constant,
-        /// such that file.peek() would return that character.
-        /// Reads at least one character.
-        ///
-        /// \return a Numerical CONSTANT or an ILLEGAL Token
-        Token & readNumericalConstant();
-
-        /// Reads a character constant or a string literal.
-        /// Stops at the first character not part of the character constant
-        /// or the string literal, such that file.peek() would return that
-        /// character.
-        /// Reads at least one character.
-        ///
-        /// \return a Character CONSTANT, a STRING LITERAL or an ILLEGAL Token
-        Token & readCharacterConstantOrStringLiteral();
-
-        /// Reads a punctuator.
-        /// Stops at the first character not part of the punctuator, such that
-        /// file.peek() would return that character.
-        /// Reads at least one character.
-        ///
-        /// \return a PUNCTUATOR or an ILLEGAL Token
-        Token & readPunctuator();
+        Token & getToken();
 
         std::string const fileName;
 
-        /// Skips until the next non-whitespace character, that is not part of
-        /// a comment.
-        /// Stops at the first non-whitespace character not part of a comment,
-        /// such that file.peek() would return that character.
-        /// 
-        /// \return an IllegalToken, if an error occured, or an EofToken
-        /// otherwise
-        Token & skip();
-
-        /// Reads exactly one character and updates the position.
-        void step();
-
-        void updatePos( int c );
-
       private:
-        std::istream &file;
         Pos pos;
-        Token *cur;
-        Token *prev;
+        File &file;
+
+        inline int updatePos( int c )
+        {
+          if ( c == -1 )
+            return c;
+
+          if ( c == '\n' )
+          {
+            ++pos.line;
+            pos.column = 1u;
+          }
+          else
+            ++pos.column;
+
+          return c;
+        }
     };
   } // end namespace Lex
 } // end namespace C4

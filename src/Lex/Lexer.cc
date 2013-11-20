@@ -2,122 +2,33 @@
 //
 //	~~~ The C4 Compiler ~~~
 //
-//	This file implements the lexer interface.
+//	This file implements the Lexer interface.
 //
 //===----------------------------------------------------------------------===//
 
 #include "Lexer.h"
 
-#include <string>
 #include <cctype>
-#include "Token.h"
 #include "IllegalToken.h"
 
 using namespace C4;
 using namespace Lex;
 
-Lexer::Lexer() : fileName("<stdin>"), file( std::cin ), pos("<stdin>", 1, 1),
-  cur(NULL), prev(NULL)
+
+Lexer::Lexer() : fileName( "<stdin>" ), pos( "<stdin>", 1, 1 ),
+  file( *( new RegularFile() ) )
 {}
 
-Lexer::Lexer( char const * const fileName ) : fileName(fileName),
-  file( * new std::ifstream( fileName ) ), pos(fileName, 1, 1), cur(NULL),
-  prev(NULL)
+Lexer::Lexer( std::string const &fileName ) : Lexer( fileName.c_str() )
 {}
 
-Lexer::Lexer( std::string const &fileName ) : fileName(fileName),
-  file( * new std::ifstream( fileName ) ),
-  pos(fileName.c_str(), 1, 1), cur(NULL), prev(NULL)
+Lexer::Lexer( char const * const fileName ) : fileName( fileName ),
+  pos( fileName, 1, 1 ), file( *( new MemMapFile( fileName ) ) )
 {}
 
 Lexer::~Lexer()
 {
-  if ( prev )
-    delete prev;
-  if ( cur )
-    delete cur;
-}
-
-Token & Lexer::get()
-{
-  if ( prev )
-    delete prev;
-
-  if ( cur )
-  {
-    prev = cur;
-    cur = NULL;
-    return prev->clone();
-  }
-  prev = & getToken();
-  return prev->clone();
-}
-
-Token & Lexer::peek()
-{
-  if ( ! cur )
-    cur = & getToken();
-  return cur->clone();
-}
-
-void Lexer::unget()
-{
-  if ( prev )
-  {
-    if ( cur )
-      delete cur;
-    cur = prev;
-    prev = NULL;
-  }
-}
-
-Token & Lexer::getToken()
-{
-  if ( ! file.good() )
-    return Token::EndOfFile( pos );
-
-  Token &t = skip();
-  
-  // Hack for the unterminated comment block
-  if ( t.kind != TokenKind::END_OF_FILE )
-    return t;
-  else
-    delete &t;
-
-  if ( ! file.good() )
-    return Token::EndOfFile( pos );
-
-  if ( isdigit( file.peek() ) )
-  {
-    // Numerical Constant
-    return readNumericalConstant();
-  }
-  else if ( file.peek() == 'L' || file.peek() == 'u' || file.peek() == 'U' )
-  {
-    file.get();
-    if ( file.peek() == '\'' || file.peek() == '"' )
-    {
-      file.unget();
-      return readCharacterConstantOrStringLiteral();
-    }
-    file.unget();
-    return readKeywordOrIdentifier();
-  }
-  else if ( isalpha( file.peek() ) || file.peek() == '_' )
-  {
-    // Keyword or Identifier
-    return readKeywordOrIdentifier();
-  }
-  else if ( file.peek() == '\'' || file.peek() == '"' )
-  {
-    // Character Constant or String Literal
-    return readCharacterConstantOrStringLiteral();
-  }
-  else
-  {
-    // Punctuator
-    return readPunctuator();
-  }
+  delete &file;
 }
 
 Pos Lexer::getPos() const
@@ -125,613 +36,529 @@ Pos Lexer::getPos() const
   return Pos( this->pos );
 }
 
-char Lexer::current() const
+Token & Lexer::getToken()
 {
-  return file.peek();
-}
+  while ( isspace( file.peek() ) )
+    updatePos( file.get() );
 
-Token & Lexer::readKeywordOrIdentifier()
-{
-  /*
-   * KEYWORD or IDENTIFIER
-   */
   Pos start( pos );
-  std::string text = "";
 
-  if ( ! file.good() || ! ( isalpha( file.peek() ) || file.peek() == '_' ) )
-  {
-    // read first character
-    updatePos( file.peek() );
-    text += file.get();
+  int c = updatePos( file.get() );
 
-    return *( new IllegalToken( start, IllegalTokenKind::IDENTIFIER, text ) );
-  }
+  if ( c == -1 )
+    return Token::EndOfFile( pos );
 
-  while ( file.good() && ( isalnum( file.peek() ) || file.peek() == '_' ) )
-  {
-    updatePos( file.peek() );
-    text += file.get();
-  }
-
-  auto it = Keywords.find( text ) ;
-  if ( it != Keywords.end() )
-    return Token::Keyword( start, text );
-
-  return Token::Identifier( start, text );
-}
-
-Token & Lexer::readNumericalConstant()
-{
   /*
-   * Numerical CONSTANT
+   * 
+   * Decide what to lex.
+   *
    */
-  Pos start( pos );
-  std::string text = "";
 
-  // Hex and Oct support
-  bool isHex = false;
-  bool isOct = false;
-  if ( file.peek() == '0' )
+  //
+  //  Character Constant or String Literal
+  //
+  if ( c == '\'' || c == '"'
+      || ( ( c == 'L' || c == 'u' || c == 'U' )
+        && ( file.peek() == '\'' || file.peek() == '"' ) ) )
   {
-    updatePos( file.peek() );
-    text += file.get();
-    if ( file.peek() == 'x' || file.peek() == 'X' )
-    {
-      isHex = true;
-      updatePos( file.peek() );
-      text += file.get();
+    std::string str;
+    str += c;
 
-      if ( ! isxdigit( file.peek() ) )
-        return *( new IllegalToken( start, IllegalTokenKind::HEX_CONSTANT,
-              text ) );
+    if ( c == 'L' || c == 'u' || c == 'U' )
+      c = updatePos( file.get() );
+
+    int terminator = c;
+    bool isCharConst = terminator == '\'';
+
+    if ( isCharConst && file.peek() == '\'' )
+    {
+      str += updatePos( file.get() );
+      return *( new IllegalToken( start,
+            IllegalTokenKind::EMPTY_CHARACTER_CONSTANT, str ) );
     }
-    else
-      isOct = true;
-  }
 
-  while ( file.good() )
-  {
-    if ( isHex )
+    bool illegalEscapeSequence = false;
+    unsigned length = 0;
+
+    while ( file.peek() != terminator && file.peek() != -1 )
     {
-      if ( ! isxdigit( file.peek() ) )
-        break;
-    }
-    else if ( isOct )
-    {
-      if ( ! ( '0' <= file.peek() && file.peek() < '8' ) )
-        break;
-    }
-    else if ( ! isdigit( file.peek() ) )
-      break;
-
-    updatePos( file.peek() );
-    text += file.get();
-  }
-
-  // support for 1u 1U 1l 1L 1ll 1LL
-  bool isLong = false;
-  bool isUnsigned = false;
-  while ( file.good() && isalpha( file.peek() ) )
-  {
-    // 1u 1U
-    if ( ! isUnsigned && ( file.peek() == 'u' || file.peek() == 'U' ) )
-    {
-      isUnsigned = true;
-      updatePos( file.peek() );
-      text += file.get();
-      continue;
-    }
-    // 1l 1L 1ll 1LL
-    else if ( ! isLong && ( file.peek() == 'l' || file.peek() == 'L' ) )
-    {
-      isLong = true;
-      char suf = file.peek();
-      updatePos( file.peek() );
-      text += file.get();
-
-      // 1ll 1LL
-      if ( file.peek() == suf )
-      {
-        updatePos( file.peek() );
-        text += file.get();
-      }
-      continue;
-    }
-    break;
-  }
-
-  return Token::Constant( start, text );
-}
-
-Token & Lexer::readCharacterConstantOrStringLiteral()
-{
-  /*
-   * Character CONSTANT or STRING LITERAL
-   */
-  Pos start(pos);
-  std::string text = "";
-
-  if ( file.peek() == 'L' || file.peek() == 'u' || file.peek() == 'U' )
-  {
-    updatePos( file.peek() );
-    text += file.get();
-  }
-
-  assert( ( file.peek() == '\'' || file.peek() == '"' )
-      && "quote or apostrophe expected" );
-
-  int terminator = file.peek();
-  bool isCharConst = terminator == '\'';
-
-  // read first character
-  updatePos( file.peek() );
-  text += file.get();
-
-  unsigned length = 0;
-  bool illegalEscapeSequence = false;
-  bool newLine = false;
-
-  while ( file.good() && file.peek() != terminator )
-  {
-    // \r\n
-    if ( file.peek() == '\r' )
-    {
-      newLine = true;
-      file.get();
-      if ( file.peek() != '\n' )
-        file.unget();
-      break;
-    }
-    // \n
-    if ( file.peek() == '\n' )
-    {
-      newLine = true;
-      break;
-    }
-    else if ( file.peek() == '\\' )
-    {
-      int c = file.get();
-      // \r\n
-      if ( file.peek() == '\r' )
-      {
-        file.get();
-        if ( file.peek() != '\n' )
-          file.unget();
-        // escaped newline
-        updatePos( file.get() );
-        continue;
-      }
-      // \n
-      if ( file.peek() == '\n' )
-      {
-        // escaped newline
-        updatePos( file.get() );
-        continue;
-      }
-
-      // Escape Sequence
-      updatePos( c );
-      text += c;
-
       switch ( file.peek() )
       {
-				case '0':
-        case '"':
-        case '\'':
-        case '?':
+        // new line
+        case '\n':
+          updatePos( file.get() );
+          goto NEWLINE;
+
+          // escape sequence
         case '\\':
-        case 'a':
-        case 'b':
-        case 'f':
-        case 'n':
-        case 'r':
-        case 't':
-        case 'v':
-          break;
+            str += updatePos( file.get() );
+            switch ( file.peek() )
+            {
+              case '0':
+              case '"':
+              case '\'':
+              case '?':
+              case '\\':
+              case 'a':
+              case 'b':
+              case 'f':
+              case 'n':
+              case 'r':
+              case 't':
+              case 'v':
+                break;
+
+              default:
+                illegalEscapeSequence = true;
+            }
 
         default:
-          illegalEscapeSequence = true;
+            ++length;
+            str += updatePos( file.get() );
       }
     }
-    updatePos( file.peek() );
-    text += file.get();
-    ++length;
-  }
 
-  if ( file.peek() == terminator )
-  {
-    // read terminating apostrophe or quote
-    updatePos( file.peek() );
-    text += file.get();
-  }
+    if ( file.peek() == terminator )
+      str += updatePos( file.get() );
 
-	if ( isCharConst && length == 0 )
-		return *( new IllegalToken( start,
-					IllegalTokenKind::EMPTY_CHARACTER_CONSTANT, text ) );
-  if ( isCharConst && length > 1 )
-  {
+    if ( isCharConst && length != 1 )
+      return *( new IllegalToken( start,
+            IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS, str ) );
+
+    if ( illegalEscapeSequence )
+      return *( new IllegalToken( start, IllegalTokenKind::ESCAPE_SEQUENCE,
+            str ) );
+
+    if ( isCharConst )
+      return Token::Constant( start, str );
+    return Token::StringLiteral( start, str );
+
+NEWLINE:
     return *( new IllegalToken( start,
-          IllegalTokenKind::CONSTANT_MULTIPLE_CHARACTERS, text ) );
+          ( isCharConst ? IllegalTokenKind::MISSING_APOSTROPHE
+            : IllegalTokenKind::MISSING_QUOTE ), str ) );
   }
-  else if ( newLine )
+  //
+  //  Keyword or Identifier
+  //
+  else if ( isalpha( c ) || c == '_' )
   {
-    return *( new IllegalToken( start,
-          ( isCharConst ? IllegalTokenKind::MISSING_APOSTROPHE :
-            IllegalTokenKind::MISSING_QUOTE ),
-          text ) );
-  }
-  else if ( illegalEscapeSequence )
-  {
-    return *( new IllegalToken( start, IllegalTokenKind::ESCAPE_SEQUENCE,
-          text ) );
-  }
-
-  if ( isCharConst )
-    return Token::Constant( start, text );
-  return Token::StringLiteral( start, text );
-}
-
-Token & Lexer::readPunctuator()
-{
-  /*
-   * Punctuator
-   */
-  Pos start(pos);
-  std::string text = "";
-
-#define GET \
-  updatePos( file.peek() ); \
-  text += file.get();
-
-#define GET_IF( chr ) \
-  if ( file.peek() == ( chr ) ) \
-  {\
-    GET; \
-  }
-
-#define PUNCTUATOR_GET_IF( chr ) \
-  if ( file.peek() == ( chr ) ) \
-  { \
-    GET; \
-    return Token::Punctuator( start, text ); \
-  }
-
-  switch ( file.peek() )
-  {
-    // Punctuators that consist of a single character
-    case '(':
-    case ')':
-    case ',':
-    case ';':
-    case '?':
-    case '[':
-    case ']':
-    case '{':
-    case '}':
-    case '~':
-      GET;
-      return Token::Punctuator( start, text );
-
-      //
-      // Punctuators that can have more than one character
-      //
-
-    case ':':
-      GET;
-      // :>
-      GET_IF( '>' );
-      // :
-      return Token::Punctuator( start, text );
-
-    case '!':
-      GET;
-      // !=
-      GET_IF( '=' );
-      return Token::Punctuator( start, text );
-
-    case '#':
-      GET;
-      // ##
-      GET_IF ( '#' );
-      return Token::Punctuator( start, text );
-
-    case '%':
-      GET;
-
-      // %=
-      PUNCTUATOR_GET_IF( '=' );
-      // %>
-      PUNCTUATOR_GET_IF( '>' );
-      // %:
-      if ( file.peek() == ':' )
-      {
-        GET;
-
-        if ( file.peek() == '%' )
-        {
-          file.get();
-
-          if ( file.peek() == ':' )
-          {
-            updatePos( '%' );
-            text += "%";
-            GET;
-            return Token::Punctuator( start, text );
-          }
-
-          file.unget();
-        }
-        return Token::Punctuator( start, text );
-      }
-      // %
-      return Token::Punctuator( start, text );
-
-    case '&':
-      GET;
-
-      PUNCTUATOR_GET_IF( '&' );
-      PUNCTUATOR_GET_IF( '=' );
-      return Token::Punctuator( start, text );
-
-    case '*':
-      GET;
-
-      PUNCTUATOR_GET_IF( '=' );
-      return Token::Punctuator( start, text );
-
-    case '+':
-      GET;
-
-      PUNCTUATOR_GET_IF( '+' );
-      PUNCTUATOR_GET_IF( '=' );
-      return Token::Punctuator( start, text );
-
-    case '-':
-      GET;
-
-      PUNCTUATOR_GET_IF( '-' );
-      PUNCTUATOR_GET_IF( '=' );
-      PUNCTUATOR_GET_IF( '>' );
-      return Token::Punctuator( start, text );
-
-    case '.':
-      GET;
-
-      if ( file.peek() == '.' ) // 2nd .
-      {
-        file.get();
-        if ( file.peek() == '.' ) // 3rd .
-        {
-          // ...
-          updatePos( '.' );
-          text += '.';
-          GET;
-          return Token::Punctuator( start, text );
-        }
-        // ..
-        file.unget();
-        return Token::Punctuator( start, text );
-      }
-      // .
-      return Token::Punctuator( start, text );
-
-    case '/':
-      GET;
-
-      PUNCTUATOR_GET_IF( '=' );
-      return Token::Punctuator( start, text );
-
-    case '<':
-      GET;
-
-      // <=
-      PUNCTUATOR_GET_IF( '=' );
-      // <:
-      PUNCTUATOR_GET_IF( ':' );
-      // <%
-      PUNCTUATOR_GET_IF( '%' );
-      // <<
-      if ( file.peek() == '<' )
-      {
-        GET;
-
-        // <<=
-        PUNCTUATOR_GET_IF( '=' );
-        // <<
-        return Token::Punctuator( start, text );
-      }
-      // <
-      return Token::Punctuator( start, text );
-
-    case '=':
-      GET;
-
-      PUNCTUATOR_GET_IF( '=' );
-      return Token::Punctuator( start, text );
-
-    case '>':
-      GET;
-
-      // >=
-      PUNCTUATOR_GET_IF( '=' );
-      if ( file.peek() == '>' )
-      {
-        GET;
-
-        // >>=
-        PUNCTUATOR_GET_IF( '=' );
-        // >>
-        return Token::Punctuator( start, text );
-      }
-      // >
-      return Token::Punctuator( start, text );
-
-    case '^':
-      GET;
-
-      PUNCTUATOR_GET_IF( '=' );
-      return Token::Punctuator( start, text );
-
-    case '|':
-      GET;
-
-      PUNCTUATOR_GET_IF( '=' );
-      PUNCTUATOR_GET_IF( '|' );
-      return Token::Punctuator( start, text );
-
-    default:
-      // Illegal Punctuator
-      GET;
-      return *( new IllegalToken( start, IllegalTokenKind::UNKNOWN, text ) );
-  }
-}
-
-Token & Lexer::skip()
-{
-  int c;
-  while ( file.good() )
-  {
-    if ( file.peek() == '\r' )
+    std::string str;
+    str += c;
+    while ( isalnum( file.peek() ) || file.peek() == '_' )
     {
-      file.get();
-      if ( file.peek() != '\n' )
-        file.unget();
+      str += updatePos( file.get() );
     }
 
-    c = file.peek();
+    auto it = Keywords.find( str ) ;
+    if ( it != Keywords.end() )
+      return Token::Keyword( start, str );
 
+    return Token::Identifier( start, str );
+  }
+  //
+  //  Numerical Constant
+  //
+  else if ( isdigit( c ) )
+  {
+    std::string str;
+    str += c;
+    bool isHex = false, isOct = false;
 
-    if ( isspace( c ) )
+    //
+    //  Check whether the number is hex, oct or decimal
+    //
+    if ( c == '0' )
     {
-      file.get();
-      updatePos( c );
-      continue;
+      if ( file.peek() == 'x' || file.peek() == 'X' ) // 0x OR 0X
+      {
+        str += c = updatePos( file.get() );  // c = x OR c = X
+        // 0x must be followed by a hexadecimal digit
+        if ( ! isxdigit( file.peek() ) )
+          return *( new IllegalToken( start, IllegalTokenKind::HEX_CONSTANT,
+                str ) );
+        isHex = true;
+      }
+      else                        // 0 only
+        isOct = true;
     }
-    else if ( c == '\\' )
+
+    //
+    //  Lex Octal Numerical Constant
+    //
+    if ( isOct )
     {
-      file.get();
-      // \r\n
-      if ( file.peek() == '\r' )
-      {
-        file.get();
-        if ( file.peek() != '\n' )
-          file.unget();
-        // escaped newline
-        continue;
-      }
-      // \n
-      if ( file.peek() == '\n' )
-      {
-        // escaped newline
-        continue;
-      }
-      else
-      {
-        // non-whitespace
-        file.unget();
-        break;
-      }
+      while ( '0' <= file.peek() && file.peek() < '8' )
+        str += updatePos( file.get() );
     }
-    else if ( c == '/' )
+    //
+    //  Lex Hexadecimal Numerical Constant
+    //
+    else if ( isHex )
     {
-      file.get();
-      if ( file.peek() == '/' )
-      {
-        // comment line
-        updatePos( c );
-        while ( file.good() && file.peek() != -1 )
-        {
-          if ( c != '\\' )
-          {
-            // \n
-            if ( file.peek() == '\n' )
-              break;
-            // \r\n
-            if ( file.peek() == '\r' )
-            {
-              file.get();
-              if ( file.peek() != '\n' )
-                file.unget();
-              break;
-            }
-          }
-          c = file.get();
-          updatePos( c );
-        }
-        continue;
-      }
-      else if ( file.peek() == '*' )
-      {
-        // comment block
-        Pos start( pos );
-
-        updatePos( c ); // handle /
-        c = file.get(); // read the *
-        updatePos( c );
-
-        // read the next char, skip previous * to prevent /*/
-        // \r\n
-        if ( file.peek() == '\r' )
-        {
-          file.get();
-          if ( file.peek() != '\n' )
-            file.unget();
-        }
-        updatePos( file.get() );
-
-        while ( file.good() && file.peek() != -1
-            && ( c != '*' || file.peek() != '/' ) )
-        {
-          // \r\n
-          if ( file.peek() == '\r' )
-          {
-            file.get();
-            if ( file.peek() != '\n' )
-              file.unget();
-          }
-          c = file.get();
-          updatePos( c );
-        }
-
-        if ( ! file.good() )
-          return *( new IllegalToken( start,
-                IllegalTokenKind::MISSING_COMMENT_TERMINATOR, "" ) );
-
-        c = file.get(); // read last /
-        updatePos( c );
-
-        continue;
-      }
-      else
-      {
-        // non-whitespace
-        file.unget(); // write back the /
-        break;
-      }
+      while ( isxdigit( file.peek() ) )
+        str += updatePos( file.get() );
     }
+    //
+    //  Lex Decimal Numerical Constant
+    //
     else
-      // non-whitespace
-      break;
+    {
+      while ( isdigit( file.peek() ) )
+        str += updatePos( file.get() );
+    }
+
+    //
+    //  Lex Integer Suffix
+    //
+    bool isLong = false;
+    bool isUnsigned = false;
+
+    while ( true )
+    {
+      switch ( file.peek() )
+      {
+        case 'u':
+        case 'U':
+          if ( isUnsigned )
+            goto end;
+          isUnsigned = true;
+          str += updatePos( file.get() );
+          break;
+
+        case 'l':
+        case 'L':
+          {
+            if ( isLong )
+              goto end;
+            isLong = true;
+            int l = updatePos( file.get() );
+            str += l;
+            if ( file.peek() == l )
+              str += updatePos( file.get() );
+            break;
+          }
+
+        default:
+          goto end;
+      }
+    }
+end:
+    return Token::Constant( start, str );
   }
-  return Token::EndOfFile( pos );
-}
-
-void Lexer::step()
-{
-  updatePos( file.peek() );
-  file.get();
-}
-
-void Lexer::updatePos( int c )
-{
-  if ( c == -1 )
-    return;
-
-  if ( c == '\n' || c == '\r' )
-  {
-    ++pos.line;
-    pos.column = 1u;
-  }
+  //
+  //  Punctuator
+  //
   else
-    ++pos.column;
+  {
+    switch ( c )
+    {
+      // Punctuators that consist of a single character
+      case '(':
+        return Token::Punctuator( start, "(" );
+      case ')':
+        return Token::Punctuator( start, ")" );
+      case ',':
+        return Token::Punctuator( start, "," );
+      case ';':
+        return Token::Punctuator( start, ";" );
+      case '?':
+        return Token::Punctuator( start, "?" );
+      case '[':
+        return Token::Punctuator( start, "[" );
+      case ']':
+        return Token::Punctuator( start, "]" );
+      case '{':
+        return Token::Punctuator( start, "{" );
+      case '}':
+        return Token::Punctuator( start, "}" );
+      case '~':
+        return Token::Punctuator( start, "~" );
+
+        //
+        // Punctuators that can have more than one character
+        //
+
+      case ':':
+        switch ( file.peek() )
+        {
+          // :>
+          case '>':
+            updatePos( file.get() );
+            return Token::Punctuator( start, ":>" );
+
+            // :
+          default:
+            return Token::Punctuator( start, ":" );
+        }
+
+      case '!':
+        switch ( file.peek() )
+        {
+          // !=
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "!=" );
+
+            // !
+          default:
+            return Token::Punctuator( start, "!" );
+        }
+
+      case '#':
+        switch ( file.peek() )
+        {
+          // ##
+          case '#':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "##" );
+
+            // #
+          default:
+            return Token::Punctuator( start, "#" );
+        }
+
+      case '%':
+        switch ( file.peek() )
+        {
+          // %=
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "%=" );
+
+            // %>
+          case '>':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "%>" );
+
+            // %:
+          case ':':
+            {
+              updatePos( file.get() );
+              if ( file.peek() == '%' && file.peek( 1 ) == ':' )
+              {
+                // %:%:
+                updatePos( file.get() );
+                updatePos( file.get() );
+                return Token::Punctuator( start, "%:%:" );
+              }
+              return Token::Punctuator( start, "%:" );
+            }
+
+            // %
+          default:
+            return Token::Punctuator( start, "%" );
+        }
+
+      case '&':
+        switch ( file.peek() )
+        {
+          // &&
+          case '&':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "&&" );
+
+            // &=
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "&=" );
+
+            // &
+          default:
+            return Token::Punctuator( start, "&" );
+        }
+
+      case '*':
+        switch ( file.peek() )
+        {
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "*=" );
+
+          default:
+            return Token::Punctuator( start, "*" );
+        }
+
+      case '+':
+        switch ( file.peek() )
+        {
+          // ++
+          case '+':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "++" );
+
+            // +=
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "+=" );
+
+            // +
+          default:
+            return Token::Punctuator( start, "+" );
+        }
+
+      case '-':
+        switch ( file.peek() )
+        {
+          // --
+          case '-':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "--" );
+
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "-=" );
+
+          case '>':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "->" );
+
+            // -
+          default:
+            return Token::Punctuator( start, "-" );
+        }
+
+      case '.':
+        switch ( file.peek() )
+        {
+          // ..
+          case '.':
+            {
+              if ( file.peek( 1 ) == '.' )
+              {
+                // ...
+                updatePos( file.get() );
+                updatePos( file.get() );
+                return Token::Punctuator( start, "..." );
+              }
+            }
+
+            // .
+          default:
+            return Token::Punctuator( start, "." );
+        }
+
+      case '/':
+        switch ( file.peek() )
+        {
+          // /=
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "/=" );
+
+            // /
+          default:
+            return Token::Punctuator( start, "/" );
+        }
+
+      case '<':
+        switch ( file.peek() )
+        {
+          // <=
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "<=" );
+
+          // <:
+          case ':':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "<:" );
+
+          // <%
+          case '%':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "<%" );
+
+            // <<
+          case '<':
+            updatePos( file.get() );
+            if ( file.peek() == '=' )
+            {
+              // <<=
+              updatePos( file.get() );
+              return Token::Punctuator( start, "<<=" );
+            }
+            return Token::Punctuator( start, "<<" );
+
+            // <
+          default:
+            return Token::Punctuator( start, "<" );
+        }
+
+      case '=':
+        switch ( file.peek() )
+        {
+          // ==
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "==" );
+
+            // =
+          default:
+            return Token::Punctuator( start, "=" );
+        }
+
+      case '>':
+        switch ( file.peek() )
+        {
+          // >=
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, ">=" );
+
+            // >>
+          case '>':
+            updatePos( file.get() );
+            if ( file.peek() == '=' )
+            {
+              // >>=
+              updatePos( file.get() );
+              return Token::Punctuator( start, ">>=" );
+            }
+            return Token::Punctuator( start, ">>" );
+
+            // >
+          default:
+            return Token::Punctuator( start, ">" );
+        }
+
+      case '^':
+        switch ( file.peek() )
+        {
+          // ^=
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "^=" );
+
+            // ^
+          default:
+            return Token::Punctuator( start, "^" );
+        }
+
+      case '|':
+        switch ( file.peek() )
+        {
+          // |=
+          case '=':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "|=" );
+
+          // ||
+          case '|':
+            updatePos( file.get() );
+            return Token::Punctuator( start, "||" );
+
+            // |
+          default:
+            return Token::Punctuator( start, "|" );
+        }
+
+
+      default:
+        // Illegal Punctuator
+        std::string str;
+        str += updatePos( file.get() );
+        return *( new IllegalToken( start, IllegalTokenKind::UNKNOWN, str ) );
+    }
+  }
 }
