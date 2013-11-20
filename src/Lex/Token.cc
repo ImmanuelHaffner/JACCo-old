@@ -39,5 +39,5 @@ void Token::dump( std::ostream &out /*= std::cout*/ ) const
 {
   out << kind;
   if ( kind != TokenKind::END_OF_FILE )
-    out << " " << text;
+    out << " " << sym;
 }

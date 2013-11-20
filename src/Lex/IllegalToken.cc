@@ -38,5 +38,5 @@ std::ostream & Lex::operator<<( std::ostream &out, IllegalToken const &tok )
 
 void IllegalToken::dump( std::ostream &out /*= std::cout*/ ) const
 {
-  out << "illegal token: " << text << " - " << iKind;
+  out << "illegal token: " << sym << " - " << iKind;
 }

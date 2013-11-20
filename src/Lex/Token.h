@@ -15,6 +15,7 @@
 #include <string>
 #include "../pos.h"
 #include "../util.h"
+#include "../Support/Symbol.h"
 
 namespace C4
 {
@@ -113,11 +114,11 @@ namespace C4
 
 
       Token( Pos const &pos, TokenKind kind, char const * const text ) :
-        pos(pos), kind(kind), text(nonNull(text))
+        pos(pos), kind(kind), sym(nonNull(text))
       {}
 
       Token( Pos const &pos, TokenKind kind, std::string const &text ) :
-        pos(pos), kind(kind), text(text)
+        pos(pos), kind(kind), sym(text)
       {}
 
       virtual ~Token() {}
@@ -128,7 +129,7 @@ namespace C4
 
       Pos const pos;
       TokenKind const kind;
-      std::string const text;
+      Symbol sym;
     };
 
     std::ostream & operator<<( std::ostream &out, Token const &tok );
