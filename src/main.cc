@@ -81,7 +81,7 @@ int main(int, char** const argv)
 
               while ( true )
               {
-                Token const & tok = lexer->get();
+                Token const & tok = lexer->getToken();
                 if ( tok.kind == TokenKind::END_OF_FILE )
 								{
 									delete &tok;
@@ -105,6 +105,7 @@ int main(int, char** const argv)
 
           case Mode::PARSE:
             {
+              break;
               Lexer * lexer;
               if ( f == stdin )
                 lexer = new Lexer;
@@ -115,12 +116,12 @@ int main(int, char** const argv)
 
               parser.parse();
 
-              if ( lexer->peek().kind != TokenKind::END_OF_FILE )
+              if ( lexer->getToken().kind != TokenKind::END_OF_FILE )
               {
                 errorf( "%s", "unparsed tokens:" );
                 do
-                  std::cout << "\t" << lexer->get() << std::endl;
-                while ( lexer->peek().kind != TokenKind::END_OF_FILE );
+                  std::cout << "\t" << lexer->getToken() << std::endl;
+                while ( lexer->getToken().kind != TokenKind::END_OF_FILE );
               }
 
               delete lexer;
