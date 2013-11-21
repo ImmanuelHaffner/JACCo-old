@@ -59,9 +59,9 @@
 
 #define POSTFIX_EXPRESSION \
   "(", \
-  Lex::TokenKind::CONSTANT, \
-  Lex::TokenKind::IDENTIFIER, \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::CONSTANT, \
+  Lex::TK::IDENTIFIER, \
+  Lex::TK::STRING_LITERAL
 
 #define FUNCTION_DEFINITION \
   "(", \
@@ -71,7 +71,7 @@
   "const", \
   "enum", \
   "extern", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "int", \
   "long", \
   "register", \
@@ -88,7 +88,7 @@
 #define DECLARATOR \
   "(", \
   "*", \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define STATEMENT \
   "!", \
@@ -102,19 +102,19 @@
   "~", \
   "break", \
   "case", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "continue", \
   "dec_op", \
   "default", \
   "do", \
   "for", \
   "goto", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "if", \
   "inc_op", \
   "return", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL, \
+  Lex::TK::STRING_LITERAL, \
   "switch", \
   "while"
 
@@ -130,7 +130,7 @@
   "(", \
   "*", \
   ":", \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define ASSIGNMENT_EXPRESSION \
   "!", \
@@ -140,25 +140,25 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define INIT_DECLARATOR \
   "(", \
   "*", \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define ENUMERATOR \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define LABELED_STATEMENT \
   "case", \
   "default", \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define LOGICAL_OR_EXPRESSION \
   "!", \
@@ -168,12 +168,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define PARAMETER_TYPE_LIST \
   "auto", \
@@ -206,19 +206,19 @@
   "~", \
   "break", \
   "case", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "continue", \
   "dec_op", \
   "default", \
   "do", \
   "for", \
   "goto", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "if", \
   "inc_op", \
   "return", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL, \
+  Lex::TK::STRING_LITERAL, \
   "switch", \
   "while"
 
@@ -226,7 +226,7 @@
   "(", \
   "*", \
   ":", \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define POINTER \
   "*"
@@ -239,12 +239,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define EXPRESSION_STATEMENT \
   "!", \
@@ -255,15 +255,15 @@
   "-", \
   ";", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define ENUMERATOR_LIST \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define TYPE_QUALIFIER \
   "const", \
@@ -280,12 +280,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define UNARY_EXPRESSION \
   "!", \
@@ -295,15 +295,15 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define IDENTIFIER_LIST \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define TYPE_NAME \
   "char", \
@@ -327,16 +327,16 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define DIRECT_DECLARATOR \
   "(", \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define STRUCT_DECLARATION \
   "char", \
@@ -360,12 +360,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define DECLARATION_SPECIFIERS \
   "auto", \
@@ -394,12 +394,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define AND_EXPRESSION \
   "!", \
@@ -409,12 +409,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define EXTERNAL_DECLARATION \
   "(", \
@@ -424,7 +424,7 @@
   "const", \
   "enum", \
   "extern", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "int", \
   "long", \
   "register", \
@@ -441,7 +441,7 @@
 #define INIT_DECLARATOR_LIST \
   "(", \
   "*", \
-  Lex::TokenKind::IDENTIFIER
+  Lex::TK::IDENTIFIER
 
 #define CONSTANT_EXPRESSION \
   "!", \
@@ -451,12 +451,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define ASSIGNMENT_OPERATOR \
   "=", \
@@ -490,12 +490,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define DECLARATION \
   "auto", \
@@ -539,12 +539,12 @@
   "-", \
   "{", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define JUMP_STATEMENT \
   "break", \
@@ -560,12 +560,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define COMPOUND_STATEMENT \
   "{"
@@ -578,7 +578,7 @@
   "const", \
   "enum", \
   "extern", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "int", \
   "long", \
   "register", \
@@ -629,12 +629,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define ABSTRACT_DECLARATOR \
   "(", \
@@ -649,12 +649,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define INITIALIZER \
   "!", \
@@ -665,12 +665,12 @@
   "-", \
   "{", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define ITERATION_STATEMENT \
   "do", \
@@ -704,12 +704,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define SPECIFIER_QUALIFIER_LIST \
   "char", \
@@ -727,9 +727,9 @@
 
 #define PRIMARY_EXPRESSION \
   "(", \
-  Lex::TokenKind::CONSTANT, \
-  Lex::TokenKind::IDENTIFIER, \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::CONSTANT, \
+  Lex::TK::IDENTIFIER, \
+  Lex::TK::STRING_LITERAL
 
 #define EQUALITY_EXPRESSION \
   "!", \
@@ -739,12 +739,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define CONDITIONAL_EXPRESSION \
   "!", \
@@ -754,12 +754,12 @@
   "+", \
   "-", \
   "~", \
-  Lex::TokenKind::CONSTANT, \
+  Lex::TK::CONSTANT, \
   "dec_op", \
-  Lex::TokenKind::IDENTIFIER, \
+  Lex::TK::IDENTIFIER, \
   "inc_op", \
   "sizeof", \
-  Lex::TokenKind::STRING_LITERAL
+  Lex::TK::STRING_LITERAL
 
 #define SELECTION_STATEMENT \
   "if", \
@@ -800,7 +800,7 @@ namespace C4
       }
 
       /// Prints t to the ostream out.
-      inline void pout( std::ostream &out, Lex::TokenKind t )
+      inline void pout( std::ostream &out, Lex::TK t )
       {
         out << t;
       }
@@ -830,8 +830,8 @@ namespace C4
       }
 
       /// \return true, iff the token peeked by the lexer is of the specified
-      /// TokenKind
-      inline bool is( Lex::TokenKind tKind )
+      /// TK
+      inline bool is( Lex::TK tKind )
       {
         return lexer.getToken().kind == tKind;
       }
@@ -862,18 +862,11 @@ namespace C4
       template < typename... Args >
         void err( Args... args )
         {
-          Lex::Token &tok = lexer.getToken();
+          Lex::Token tok = lexer.getToken();
 
           switch ( tok.kind )
           {
-            case Lex::TokenKind::ILLEGAL:
-              {
-                std::ostringstream oss;
-                oss << tok.pos << " " << tok;
-                errorf( tok.pos, "%s", oss.str().c_str() );
-              }
-
-            case Lex::TokenKind::END_OF_FILE:
+            case Lex::TK::END_OF_FILE:
               {
                 std::ostringstream oss;
                 oss << "unexpected end-of-file, expected one of: ";
@@ -933,36 +926,6 @@ namespace C4
        */
 
       template < typename... Args >
-      void parsePrimaryExpression( Args... args )
-      {
-        is( args... ); // TODO remove
-      }
-
-      template < typename... Args >
-      void parsePostfixExpression( Args... args )
-      {
-        is( args... ); // TODO remove
-      }
-
-      template < typename... Args >
-      void parseArgumentExpressionList( Args... args )
-      {
-        is( args... ); // TODO remove
-      }
-
-      template < typename... Args >
-      void parseUnaryExpression( Args... args )
-      {
-        is( args... ); // TODO remove
-      }
- 
-      template < typename... Args >
-      void parseCastExpression( Args... args )
-      {
-        is( args... ); // TODO remove
-      }
-
-      template < typename... Args >
       void parseAssignmentOperator( Args... args )
       {
         is( args... ); // TODO remove
@@ -976,12 +939,6 @@ namespace C4
 
       template < typename... Args >
       void parseStorageClassSpecifier( Args... args )
-      {
-        is( args... ); // TODO remove
-      }
-
-      template < typename... Args >
-      void parseAssignmentExpression( Args... args )
       {
         is( args... ); // TODO remove
       }
