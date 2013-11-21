@@ -40,7 +40,7 @@ TEST_DEP		:= $(TEST_OBJ:%.o=%.d)
 DUMMY				:= $(shell mkdir -p $(sort $(dir $(OBJ))))
 DUMMY				:= $(shell mkdir -p $(sort $(dir $(TEST_OBJ))))
 
-
+DEBUG				?= 1
 
 ifeq ($(DEBUG), 1)
 	CXXFLAGS	+= -g -DDEBUG
