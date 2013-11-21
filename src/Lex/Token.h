@@ -23,30 +23,66 @@ namespace C4
   {
 
 		/// The kind of a token.
-    enum class TokenKind
+    enum class TK
     {
       KEYWORD,
       IDENTIFIER,
       CONSTANT,
       STRING_LITERAL,
-      PUNCTUATOR,
-      ILLEGAL,
-      END_OF_FILE
+      END_OF_FILE,
+
+      // Punctuators
+      LBracket,
+      RBracket,
+      LPar,
+      RPar,
+      LBrace,
+      RBrace,
+      Dot,
+      PtrOp,
+      IncOp,
+      DecOp,
+      And,
+      Mul,
+      Plus,
+      Minus,
+      Neg,
+      Not,
+      Div,
+      Mod,
+      LShift,
+      RShift,
+      Le,
+      Gr,
+      LEq,
+      GEq,
+      Eq,
+      NE,
+      Xor,
+      Or,
+      LAnd,
+      LOr,
+      QMark,
+      Col,
+      SCol,
+      Ellipsis,
+      Assign,
+      MulAssign,
+      DivAssign,
+      ModAssign,
+      AddAssign,
+      SubAssign,
+      LShiftAssign,
+      RShiftAssign,
+      AndAssign,
+      XorAssign,
+      OrAssign,
+      Comma,
+      Hash,
+      DHash
     };
 
-    std::ostream & operator<<( std::ostream &out, TokenKind kind );
-
-    static std::map< TokenKind, std::string > TokenKindNames =
-    {
-      { TokenKind::KEYWORD,        "keyword" },
-      { TokenKind::IDENTIFIER,     "identifier" },
-      { TokenKind::CONSTANT,       "constant" },
-      { TokenKind::STRING_LITERAL, "string-literal" },
-      { TokenKind::PUNCTUATOR,     "punctuator" },
-      { TokenKind::END_OF_FILE,    "end-of-file" },
-      { TokenKind::ILLEGAL,        "illegal" }
-    };
-
+    std::ostream & operator<<( std::ostream &out, TK kind );
 
     /// A token...
     struct Token
@@ -54,7 +90,7 @@ namespace C4
       // KEYWORD
       static Token & Keyword( Pos const &pos, char const * const text )
       {
-        return *( new Token( pos, TokenKind::KEYWORD, text ) );
+        return *( new Token( pos, TK::KEYWORD, text ) );
       }
 
       static Token & Keyword( Pos const &pos, std::string const &text )
@@ -65,7 +101,7 @@ namespace C4
       // IDENTIFIER
       static Token & Identifier( Pos const &pos, char const * const text )
       {
-        return *( new Token( pos, TokenKind::IDENTIFIER, text ) );
+        return *( new Token( pos, TK::IDENTIFIER, text ) );
       }
 
       static Token & Identifier( Pos const &pos, std::string const &text )
@@ -76,7 +112,7 @@ namespace C4
       // CONSTANT
       static Token & Constant( Pos const &pos, char const * const text )
       {
-        return *( new Token( pos, TokenKind::CONSTANT, text ) );
+        return *( new Token( pos, TK::CONSTANT, text ) );
       }
 
       static Token & Constant( Pos const &pos, std::string const &text )
@@ -87,7 +123,7 @@ namespace C4
       // STRING-LITERAL
       static Token & StringLiteral( Pos const &pos, char const * const text )
       {
-        return *( new Token( pos, TokenKind::STRING_LITERAL, text ) );
+        return *( new Token( pos, TK::STRING_LITERAL, text ) );
       }
 
       static Token & StringLiteral( Pos const &pos, std::string const &text )
@@ -96,45 +132,45 @@ namespace C4
       }
 
       // PUNCTUATOR
-      static Token & Punctuator( Pos const &pos, char const * const text )
+      static Token & Punctuator( Pos const &pos, TK tk,
+          char const * const text )
       {
-        return *( new Token( pos, TokenKind::PUNCTUATOR, text ) );
+        return *( new Token( pos, tk, text ) );
       }
 
-      static Token & Punctuator( Pos const &pos, std::string const &text )
+      static Token & Punctuator( Pos const &pos, TK tk, std::string const &text )
       {
-        return Punctuator( pos, text.c_str() );
+        return Punctuator( pos, tk, text.c_str() );
       }
 
       // END-OF-FILE
       static Token & EndOfFile( Pos const &pos )
       {
-        return *( new Token( pos, TokenKind::END_OF_FILE, "" ) );
+        return *( new Token( pos, TK::END_OF_FILE, "" ) );
       }
 
 
-      Token( Pos const &pos, TokenKind kind, char const * const text ) :
+      Token( Pos const &pos, TK kind, char const * const text ) :
         pos(pos), kind(kind), sym(nonNull(text))
       {}
 
-      Token( Pos const &pos, TokenKind kind, std::string const &text ) :
+      Token( Pos const &pos, TK kind, std::string const &text ) :
         pos(pos), kind(kind), sym(text)
       {}
 
-      virtual ~Token() {}
+      ~Token() {}
 
-      virtual Token & clone() const;
       friend std::ostream & operator<<( std::ostream &out, Token const &tok );
-      virtual void dump( std::ostream &out = std::cout ) const;
+      void dump() const;
 
       Pos const pos;
-      TokenKind const kind;
+      TK const kind;
       Symbol sym;
     };
 
     std::ostream & operator<<( std::ostream &out, Token const &tok );
 
-    static std::set<std::string> Keywords =
+    static std::set< std::string > Keywords =
     {
       "auto",           
       "break",          
@@ -181,58 +217,6 @@ namespace C4
       "_Static_assert", 
       "_Thread_local",  
     };
-
-		static std::set< std::string > Punctuators =
-		{
-      "[",
-      "]",
-      "(",
-      ")",
-      "{",
-      "}",
-      ".",
-      "->",
-      "++",
-      "--",
-      "&",
-      "*",
-      "+",
-      "-",
-      "~",
-      "!",
-      "/",
-      "%",
-      "<<",
-      ">>",
-      "<",
-      ">",
-      "<=",
-      ">=",
-      "==",
-      "!=",
-      "^",
-      "|",
-      "&&",
-      "||",
-      "?",
-      ":",
-      ";",
-      "...",
-      "=",
-      "*=",
-      "/=",
-      "%=",
-      "+=",
-      "-=",
-      "<<=",
-      ">>=",
-      "&=",
-      "^=",
-      "|=",
-      "," 
-      "#",
-      "##"
-		};
   } // end namespace Lex
 } // end namespace C4
 

@@ -81,23 +81,10 @@ int main(int, char** const argv)
 
               while ( true )
               {
-                Token const & tok = lexer->getToken();
-                if ( tok.kind == TokenKind::END_OF_FILE )
-								{
-									delete &tok;
+                Token const tok = lexer->getToken();
+                if ( tok.kind == TK::END_OF_FILE )
                   break;
-								}
-
-                if ( tok.kind == TokenKind::ILLEGAL )
-								{
-									std::ostringstream oss;
-									oss << tok.pos << " " << tok;
-									errorf( tok.pos, "%s", oss.str().c_str() );
-								}
-                else
-                  std::cout << tok.pos << " " << tok << std::endl;
-
-								delete &tok;
+                std::cout << tok.pos << " " << tok << "\n";
               }
               delete lexer;
               break;
@@ -116,12 +103,12 @@ int main(int, char** const argv)
 
               parser.parse();
 
-              if ( lexer->getToken().kind != TokenKind::END_OF_FILE )
+              if ( lexer->getToken().kind != TK::END_OF_FILE )
               {
                 errorf( "%s", "unparsed tokens:" );
                 do
-                  std::cout << "\t" << lexer->getToken() << std::endl;
-                while ( lexer->getToken().kind != TokenKind::END_OF_FILE );
+                  std::cout << "\t" << lexer->getToken() << "\n";
+                while ( lexer->getToken().kind != TK::END_OF_FILE );
               }
 
               delete lexer;

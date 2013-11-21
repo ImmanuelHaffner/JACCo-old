@@ -12,7 +12,14 @@ using namespace C4;
 
 int RegularFile::get()
 {
-  return source.get();
+  int res = source.get();
+  if ( res == '\r' )
+  {
+    if ( source.peek() == '\n' )
+      source.get();
+    return '\n';
+  }
+  return res;
 }
 
 int RegularFile::peek()

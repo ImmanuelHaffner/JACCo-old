@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <errno.h>
+#include <iostream>
 
 #include "diagnostic.h"
 
@@ -41,7 +42,7 @@ bool hasNewErrors()
 int printDiagnosticSummary()
 {
 	if (nErrors != 0) {
-		fprintf(stderr, "%u error(s)\n", nErrors);
+    std::cerr << nErrors << " error(s)\n";
 		return 1;
 	}
 	return 0;
@@ -52,38 +53,34 @@ static void verrorf(Pos const* const pos, char const* fmt, va_list ap)
 	newErrors = true;
 	++nErrors;
 
-	auto const out = stderr;
+  std::ostream &out = std::cerr;
 
 	if (pos) {
-		if (pos->line && pos->column) {
-			fprintf(out, "%s:%u:%u: ", pos->name, pos->line, pos->column);
-		} else if (pos->line) {
-			fprintf(out, "%s:%u: ", pos->name, pos->line);
-		} else if (pos->column) {
-			fprintf(out, "%s:%u: ", pos->name, pos->column);
-		} else {
-			fprintf(out, "%s: ", pos->name);
-		}
+    out << pos->name << ":";
+    if ( pos->line )
+      out << pos->line << ":";
+    if ( pos->column )
+      out << pos->column << ":";
 	}
-	fputs("error: ", out);
+  out << " error: ";
 
 	for (; auto f = strchr(fmt, '%'); fmt = f) {
-		fwrite(fmt, 1, f - fmt, out);
+    out.write( fmt, f - fmt );
 		++f; // Skip '%'.
 		switch (*f++) {
 		case '%':
-			fputc('%', out);
+      out.put( '%' );
 			break;
 
 		case 'c': {
 			auto const c = (char)va_arg(ap, int);
-			fputc(c, out);
+      out.put( c );
 			break;
 		}
 
 		case 's': {
 			auto const s = va_arg(ap, char const*);
-			fputs(s, out);
+      out << s;
 			break;
 		}
 
@@ -91,7 +88,7 @@ static void verrorf(Pos const* const pos, char const* fmt, va_list ap)
 			PANIC("invalid format specifier");
 		}
 	}
-	fputs(fmt, out);
+  out << fmt;
 
-	fputc('\n', out);
+  out.put( '\n' );
 }

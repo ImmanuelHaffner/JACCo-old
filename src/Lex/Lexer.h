@@ -37,13 +37,29 @@ namespace C4
         ~Lexer();
 
         Pos getPos() const;
-        Token & getToken();
+        Token getToken();
 
         std::string const fileName;
 
       private:
+        char c = ' ';
+        std::string buf;
         Pos pos;
         File &file;
+
+        Token lexKeywordOrIdentifier();
+        Token lexNumericalConstant();
+        Token lexCharConstOrStringLiteral();
+
+        inline void nextChar()
+        {
+          c = updatePos( file.get() );
+          while ( c == '\\' && file.peek() == '\n' )
+          {
+            updatePos( file.get() );
+            c = updatePos( file.get() );
+          }
+        }
 
         inline int updatePos( int c )
         {
@@ -53,7 +69,7 @@ namespace C4
           if ( c == '\n' )
           {
             ++pos.line;
-            pos.column = 1u;
+            pos.column = 0;
           }
           else
             ++pos.column;

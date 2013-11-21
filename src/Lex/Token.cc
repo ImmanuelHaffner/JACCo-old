@@ -13,31 +13,22 @@
 using namespace C4;
 using namespace Lex;
 
-std::ostream & Lex::operator<<( std::ostream &out, TokenKind kind )
-{
-	auto it = TokenKindNames.find( kind );
-	if ( it != TokenKindNames.end() )
-		out << it->second;
-	else
-		out << "unresolved token kind";
-
-	return out;
-}
-
-Token & Token::clone() const
-{
-  return *( new Token( *this ) );
-}
-
 std::ostream & Lex::operator<<( std::ostream &out, Token const &tok )
 {
-  tok.dump( out );
+  switch ( tok.kind )
+  {
+    case TK::KEYWORD:         out << "keyword"; break;
+    case TK::IDENTIFIER:      out << "identifier"; break;
+    case TK::CONSTANT:        out << "constant"; break;
+    case TK::STRING_LITERAL:  out << "string-literal"; break;
+    case TK::END_OF_FILE:     out << "end-of-file"; break;
+    default:                  out << "punctuator";
+  }
+  out << " " << tok.sym;
   return out;
 }
 
-void Token::dump( std::ostream &out /*= std::cout*/ ) const
+void Token::dump() const
 {
-  out << kind;
-  if ( kind != TokenKind::END_OF_FILE )
-    out << " " << sym;
+  std::cout << *this;
 }
