@@ -16,7 +16,6 @@ class TokenTest : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE ( TokenTest );
   CPPUNIT_TEST ( testToken );
-  CPPUNIT_TEST ( testIllegalToken );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -25,7 +24,6 @@ class TokenTest : public CPPUNIT_NS::TestFixture
 
   protected:
   void testToken();
-  void testIllegalToken();
 
   private:
   Pos * pos;

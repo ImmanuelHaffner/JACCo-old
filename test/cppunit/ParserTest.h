@@ -15,8 +15,6 @@
 class ParserTest : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE ( ParserTest );
-  CPPUNIT_TEST ( testIs );
-  CPPUNIT_TEST ( testIsMulti );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -24,8 +22,6 @@ class ParserTest : public CPPUNIT_NS::TestFixture
   void tearDown();
 
   protected:
-  void testIs();
-  void testIsMulti();
 };
 
 #endif

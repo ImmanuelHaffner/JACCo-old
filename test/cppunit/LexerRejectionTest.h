@@ -26,6 +26,12 @@ class LexerRejectionTest : public CPPUNIT_NS::TestFixture
   protected:
 	void testEmptyCharConst();
 	void testIllegalComments();
+
+  private:
+  std::stringstream out_buf;
+  std::stringstream err_buf;
+  std::streambuf * out_bak;
+  std::streambuf * err_bak;
 };
 
 #endif
