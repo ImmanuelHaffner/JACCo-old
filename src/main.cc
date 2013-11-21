@@ -130,6 +130,7 @@ int main(int, char** const argv)
 
       if ( symbols )
         std::cout << Symbol::size() << " symbols created\n";
+      Symbol::destroy();
     }
   } catch (std::exception const& e) {
     errorf("caught exception: %s", e.what());

@@ -88,65 +88,65 @@ namespace C4
     struct Token
     {
       // KEYWORD
-      static Token & Keyword( Pos const &pos, char const * const text )
+      static Token Keyword( Pos const &pos, char const * const text )
       {
-        return *( new Token( pos, TK::KEYWORD, text ) );
+        return Token( pos, TK::KEYWORD, text );
       }
 
-      static Token & Keyword( Pos const &pos, std::string const &text )
+      static Token Keyword( Pos const &pos, std::string const &text )
       {
         return Keyword( pos, text.c_str() );
       }
 
       // IDENTIFIER
-      static Token & Identifier( Pos const &pos, char const * const text )
+      static Token Identifier( Pos const &pos, char const * const text )
       {
-        return *( new Token( pos, TK::IDENTIFIER, text ) );
+        return Token( pos, TK::IDENTIFIER, text );
       }
 
-      static Token & Identifier( Pos const &pos, std::string const &text )
+      static Token Identifier( Pos const &pos, std::string const &text )
       {
         return Identifier( pos, text.c_str() );
       }
 
       // CONSTANT
-      static Token & Constant( Pos const &pos, char const * const text )
+      static Token Constant( Pos const &pos, char const * const text )
       {
-        return *( new Token( pos, TK::CONSTANT, text ) );
+        return Token( pos, TK::CONSTANT, text );
       }
 
-      static Token & Constant( Pos const &pos, std::string const &text )
+      static Token Constant( Pos const &pos, std::string const &text )
       {
         return Constant( pos, text.c_str() );
       }
 
       // STRING-LITERAL
-      static Token & StringLiteral( Pos const &pos, char const * const text )
+      static Token StringLiteral( Pos const &pos, char const * const text )
       {
-        return *( new Token( pos, TK::STRING_LITERAL, text ) );
+        return Token( pos, TK::STRING_LITERAL, text );
       }
 
-      static Token & StringLiteral( Pos const &pos, std::string const &text )
+      static Token StringLiteral( Pos const &pos, std::string const &text )
       {
         return StringLiteral( pos, text.c_str() );
       }
 
       // PUNCTUATOR
-      static Token & Punctuator( Pos const &pos, TK tk,
+      static Token Punctuator( Pos const &pos, TK tk,
           char const * const text )
       {
-        return *( new Token( pos, tk, text ) );
+        return Token( pos, tk, text );
       }
 
-      static Token & Punctuator( Pos const &pos, TK tk, std::string const &text )
+      static Token Punctuator( Pos const &pos, TK tk, std::string const &text )
       {
         return Punctuator( pos, tk, text.c_str() );
       }
 
       // END-OF-FILE
-      static Token & EndOfFile( Pos const &pos )
+      static Token EndOfFile( Pos const &pos )
       {
-        return *( new Token( pos, TK::END_OF_FILE, "" ) );
+        return Token( pos, TK::END_OF_FILE, "" );
       }
 
 
