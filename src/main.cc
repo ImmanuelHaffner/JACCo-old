@@ -26,6 +26,8 @@ int main(int, char** const argv)
   try {
     char** i = argv + 1;
 
+    bool symbols = false;
+
     Mode mode = Mode::COMPILE;
     for (; auto const arg = *i; ++i) {
       if (arg[0] != '-') {
@@ -38,6 +40,8 @@ int main(int, char** const argv)
         mode = Mode::PRINT_AST;
       } else if (strEq(arg, "--compile")) {
         mode = Mode::COMPILE;
+      } else if (strEq(arg, "--symbols")) {
+        symbols = true;
       } else if (strEq(arg, "-")) {
         break;
       } else if (strEq(arg, "--")) {
@@ -123,6 +127,8 @@ int main(int, char** const argv)
         }
         //fclose ( f );
       }
+
+      std::cout << Symbol::size() << " symbols created\n";
     }
   } catch (std::exception const& e) {
     errorf("caught exception: %s", e.what());

@@ -456,7 +456,7 @@ Token Lexer::lexKeywordOrIdentifier()
     buf += c;
     nextChar();
   }
-  auto it = Keywords.find( buf ) ;
+  auto it = Keywords.find( buf.c_str() ) ;
   if ( it != Keywords.end() )
     return Token::Keyword( start, buf );
 
