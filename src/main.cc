@@ -128,7 +128,8 @@ int main(int, char** const argv)
         //fclose ( f );
       }
 
-      std::cout << Symbol::size() << " symbols created\n";
+      if ( symbols )
+        std::cout << Symbol::size() << " symbols created\n";
     }
   } catch (std::exception const& e) {
     errorf("caught exception: %s", e.what());
