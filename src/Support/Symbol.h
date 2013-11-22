@@ -70,6 +70,15 @@ namespace std {
         return std::hash< char const * >()( symbol.str() );
       }
     };
+
+  template<>
+    struct equal_to< C4::Symbol >
+    {
+      size_t operator()( C4::Symbol sym0, C4::Symbol sym1 ) const
+      {
+        return sym0.str() == sym1.str();
+      }
+    };
 } // end namespace std
 
 #endif
