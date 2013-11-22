@@ -9,7 +9,6 @@
 #include "Parser.h"
 
 using namespace C4;
-using namespace AST;
 using namespace Parse;
 using namespace Lex;
 

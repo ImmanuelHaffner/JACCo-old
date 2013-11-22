@@ -14,10 +14,6 @@
 #include "../diagnostic.h"
 #include "../Lex/Token.h"
 #include "../Lex/Lexer.h"
-#include "../AST/AST.h"
-#include "../AST/Identifier.h"
-#include "../AST/Constant.h"
-#include "../AST/StringLiteral.h"
 
 
 //===----------------------------------------------------------------------===//

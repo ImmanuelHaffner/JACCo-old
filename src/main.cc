@@ -5,13 +5,11 @@
 #include "diagnostic.h"
 #include "util.h"
 #include "Lex/Lexer.h"
-#include "AST/AST.h"
 #include "Parse/Parser.h"
 
 
 using namespace C4;
 using namespace Lex;
-using namespace AST;
 using namespace Parse;
 
 enum class Mode {
