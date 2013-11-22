@@ -63,14 +63,13 @@ namespace C4
 namespace std {
 
   template<>
-    struct hash < C4::Symbol > {
+    struct hash< C4::Symbol >
+    {
       size_t operator()( C4::Symbol symbol ) const
       {
-        C4::StrHash hash;
-        return hash.operator()( symbol.str() );
+        return std::hash< char const * >()( symbol.str() );
       }
     };
-
 } // end namespace std
 
 #endif
