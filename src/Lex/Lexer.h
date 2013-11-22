@@ -16,6 +16,7 @@
 #include "../Support/File.h"
 #include "../Support/RegularFile.h"
 #include "../Support/MemMapFile.h"
+#include "../Support/StrBuf.h"
 
 namespace C4
 {
@@ -43,7 +44,7 @@ namespace C4
 
       private:
         char c = ' ';
-        std::string buf;
+        StrBuf buf;
         Pos pos;
         File &file;
 

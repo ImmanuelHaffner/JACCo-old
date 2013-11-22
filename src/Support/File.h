@@ -13,11 +13,12 @@ namespace C4
 {
   struct File
   {
-    virtual ~File() {}
+    virtual ~File() = 0;
     virtual int get() = 0;
     virtual int peek() = 0;
     virtual int peek( int c ) = 0;
   };
+  inline File::~File() {}
 } // end namespace C4
 
 #endif

@@ -451,16 +451,17 @@ Token Lexer::lexKeywordOrIdentifier()
     nextChar();
     errorf( start, "%s %s", buf.c_str(), "illegal identifier" );
   }
-  while ( isalnum( c ) || c == '_' )
-  {
-    buf += c;
-    nextChar();
-  }
+  else
+    while ( isalnum( c ) || c == '_' )
+    {
+      buf += c;
+      nextChar();
+    }
   auto it = Keywords.find( buf.c_str() ) ;
   if ( it != Keywords.end() )
-    return Token::Keyword( start, buf );
+    return Token::Keyword( start, buf.c_str() );
 
-  return Token::Identifier( start, buf );
+  return Token::Identifier( start, buf.c_str() );
 }
 
 //
@@ -474,7 +475,7 @@ Token Lexer::lexNumericalConstant()
     buf += c;
     nextChar();
   }
-  return Token::Constant( start, buf );
+  return Token::Constant( start, buf.c_str() );
 }
 
 Token Lexer::lexCharConstOrStringLiteral()
@@ -535,8 +536,8 @@ Token Lexer::lexCharConstOrStringLiteral()
         "illegal escape sequence" );
 
   if ( terminator == '\'' )
-    return Token::Constant( start, buf );
-  return Token::StringLiteral( start, buf );
+    return Token::Constant( start, buf.c_str() );
+  return Token::StringLiteral( start, buf.c_str() );
 
 newline:
   if ( c == '"' )
@@ -545,18 +546,5 @@ newline:
   else
     errorf( start, "%s %s - %s", "constant", buf.c_str(),
         "missing terminating apostrophe" );
-  return Token::StringLiteral( start, buf );
+  return Token::StringLiteral( start, buf.c_str() );
 }
-
-//}
-////
-////  Punctuator
-////
-//else
-//{
-//switch ( c )
-//{
-//// Punctuators that consist of a single character
-//}
-//}
-//}
