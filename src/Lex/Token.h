@@ -21,7 +21,6 @@ namespace C4
 {
   namespace Lex
   {
-
 		/// The kind of a token.
     enum class TK
     {
@@ -98,6 +97,11 @@ namespace C4
         return Keyword( pos, text.c_str() );
       }
 
+      static Token Keyword( Pos const &pos, Symbol const &sym )
+      {
+        return Token( pos, TK::KEYWORD, sym );
+      }
+
       // IDENTIFIER
       static Token Identifier( Pos const &pos, char const * const text )
       {
@@ -107,6 +111,11 @@ namespace C4
       static Token Identifier( Pos const &pos, std::string const &text )
       {
         return Identifier( pos, text.c_str() );
+      }
+
+      static Token Identifier( Pos const &pos, Symbol const &sym )
+      {
+        return Token( pos, TK::IDENTIFIER, sym );
       }
 
       // CONSTANT
@@ -158,6 +167,10 @@ namespace C4
         pos(pos), kind(kind), sym(text)
       {}
 
+      Token( Pos const &pos, TK kind, Symbol const &sym ) :
+        pos(pos), kind(kind), sym(sym)
+      {}
+
       ~Token() {}
 
       friend std::ostream & operator<<( std::ostream &out, Token const &tok );
@@ -166,58 +179,12 @@ namespace C4
       Pos const pos;
       TK const kind;
       Symbol sym;
-    };
+
+      static std::unordered_set< Symbol > KeywordsTable;
+      static void INIT_KEYWORDS_TABLE();
+    }; // end struct Token
 
     std::ostream & operator<<( std::ostream &out, Token const &tok );
-
-
-    static std::unordered_set< char const *, StrHash, StrEqual > Keywords =
-    {
-      "auto",
-      "break",
-      "case",
-      "char",
-      "const",
-      "continue",
-      "default",
-      "do",
-      "double",
-      "else",
-      "enum",
-      "extern",
-      "float",
-      "for",
-      "goto",
-      "if",
-      "inline",
-      "int",
-      "long",
-      "register",
-      "restrict",
-      "return",
-      "short",
-      "signed",
-      "sizeof",
-      "static",
-      "struct",
-      "switch",
-      "typedef",
-      "union",
-      "unsigned",
-      "void",
-      "volatile",
-      "while",
-      "_Alignas",
-      "_Alignof",
-      "_Atomic",
-      "_Bool",
-      "_Complex",
-      "_Generic",
-      "_Imaginary",
-      "_Noreturn",
-      "_Static_assert",
-      "_Thread_local",
-    };
   } // end namespace Lex
 } // end namespace C4
 

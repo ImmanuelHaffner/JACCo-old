@@ -13,7 +13,8 @@
 
 using namespace C4;
 
-StrBuf::StrBuf() : StrBuf( 256 )
+
+StrBuf::StrBuf() : StrBuf( 255 )
 {}
 
 StrBuf::StrBuf( size_t size ) : data( (char*) calloc( size, 1 )  ),
@@ -69,4 +70,10 @@ void StrBuf::enlarge()
   current = NEW_current;
 
   assert( (size_t) ( end - data) == size && "wrong size or borders" );
+}
+
+std::ostream & C4::operator<<( std::ostream &out, StrBuf const &buf )
+{
+  out << buf.data;
+  return out;
 }

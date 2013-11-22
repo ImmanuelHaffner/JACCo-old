@@ -55,6 +55,8 @@ int main(int, char** const argv)
     if (!*i)
       errorf("no input files specified");
 
+    Token::INIT_KEYWORDS_TABLE(); // initialize the symbol table for keywords
+
     if (!hasNewErrors()) {
       for (; char const *name = *i; ++i) {
         FILE* f;

@@ -457,11 +457,13 @@ Token Lexer::lexKeywordOrIdentifier()
       buf += c;
       nextChar();
     }
-  auto it = Keywords.find( buf.c_str() ) ;
-  if ( it != Keywords.end() )
-    return Token::Keyword( start, buf.c_str() );
 
-  return Token::Identifier( start, buf.c_str() );
+  Symbol sym( buf.c_str() );
+  auto it = Token::KeywordsTable.find ( sym );
+  if ( it != Token::KeywordsTable.end() )
+    return Token::Keyword( start, sym );
+
+  return Token::Identifier( start, sym );
 }
 
 //

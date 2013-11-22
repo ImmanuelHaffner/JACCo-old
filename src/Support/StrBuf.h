@@ -10,6 +10,7 @@
 #define C4_STRBUF_H
 
 #include <cstring>
+#include <iostream>
 
 namespace C4
 {
@@ -28,13 +29,18 @@ namespace C4
     inline char * c_str() { return data; }
     void enlarge();
 
+    friend std::ostream & operator<<( std::ostream &out, StrBuf const &buf );
+    void dump() const { std::cout << *this; std::cout.flush(); }
+
     char * data;
 
     private:
     char * current; // points to the last element (which is '\0')
     char * end; // points to the first byte behind the buffer
     size_t size;
-  };
+  }; // end struct StrBuf
+
+  std::ostream & operator<<( std::ostream &out, StrBuf const &buf );
 } // end namespace C4
 
 #endif

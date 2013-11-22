@@ -13,9 +13,13 @@
 
 #include <iostream>
 
+#include "../../src/Lex/Token.h"
+
 int main()
 {
 	std::cout << "Start Unit Tests:" << std::endl;
+
+  C4::Lex::Token::INIT_KEYWORDS_TABLE();
 
 	// informs the test listener about test results
 	CPPUNIT_NS :: TestResult TestResult;
