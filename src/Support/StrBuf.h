@@ -30,7 +30,7 @@ namespace C4
     void enlarge();
 
     friend std::ostream & operator<<( std::ostream &out, StrBuf const &buf );
-    void dump() const { std::cout << *this; std::cout.flush(); }
+    void dump() const;
 
     char * data;
 

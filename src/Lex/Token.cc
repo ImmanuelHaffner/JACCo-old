@@ -71,7 +71,7 @@ std::ostream & Lex::operator<<( std::ostream &out, Token const &tok )
     case TK::IDENTIFIER:      out << "identifier"; break;
     case TK::CONSTANT:        out << "constant"; break;
     case TK::STRING_LITERAL:  out << "string-literal"; break;
-    case TK::END_OF_FILE:     out << "end-of-file"; break;
+    case TK::END_OF_FILE:     out << "end-of-file"; return out;
     default:                  out << "punctuator";
   }
   out << " " << tok.sym;
@@ -80,6 +80,5 @@ std::ostream & Lex::operator<<( std::ostream &out, Token const &tok )
 
 void Token::dump() const
 {
-  std::cout << *this;
-  std::cout.flush();
+  std::cout << *this << std::endl;
 }

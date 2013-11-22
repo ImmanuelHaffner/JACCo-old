@@ -3,7 +3,6 @@
 std::ostream & operator<<( std::ostream &out, Pos const &pos )
 {
   out << pos.name << ":";
-
   if ( pos.line )
     out << pos.line << ":";
   if ( pos.column )
@@ -14,5 +13,5 @@ std::ostream & operator<<( std::ostream &out, Pos const &pos )
 
 void Pos::dump() const
 {
-  std::cout << *this;
+  std::cout << *this << std::endl;
 }

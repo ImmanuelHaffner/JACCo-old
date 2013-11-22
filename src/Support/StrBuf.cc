@@ -77,3 +77,9 @@ std::ostream & C4::operator<<( std::ostream &out, StrBuf const &buf )
   out << buf.data;
   return out;
 }
+
+void StrBuf::dump()
+{
+  std::cout << "size: " << size << " current: " << ( current - data )
+    << "\ndata: " << *this << std::endl;
+}
