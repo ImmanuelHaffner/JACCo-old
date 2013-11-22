@@ -1,11 +1,27 @@
+# Generated files
 doc/
-*.cfg
 build/
+
+# Vim Swap Files
 .*.sw*
+
+# Cleanup Shell Script
 cleanup.sh
+
+# Archives
 *.tar
 *.tar.gz
 
-# test dir stuff
+# Testing
 test/.gitignore
 test/cppunit/default/
+
+# Text files
+*.txt
+
+# Source Files at the project root
+/*.c
+/*.cc
+/*.cpp
+/*.h
+/*.hpp
