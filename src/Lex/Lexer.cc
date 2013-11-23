@@ -461,7 +461,7 @@ Token Lexer::lexKeywordOrIdentifier()
   Symbol sym( buf.c_str() );
   auto it = Token::KeywordsTable.find ( sym );
   if ( it != Token::KeywordsTable.end() )
-    return Token::Keyword( start, sym );
+    return Token::Keyword( start, it->second, sym );
 
   return Token::Identifier( start, sym );
 }
@@ -486,7 +486,7 @@ Token Lexer::lexCharConstOrStringLiteral()
   Pos * illegalEscapeSequence = 0;
   buf += c;
   int terminator = c;
-  bool empty = true;
+  size_t length = 0;
   nextChar();
   for (;;)
   {
@@ -527,11 +527,17 @@ Token Lexer::lexCharConstOrStringLiteral()
 
     buf += c;
     nextChar();
-    empty = false;
+    ++length;
   }
 
-  if ( empty && terminator == '\'' )
-    errorf( start, "%s - %s", buf.c_str(), "empty character constant" );
+  if ( terminator == '\'' )
+  {
+    if ( length == 0 )
+      errorf( start, "%s - %s", buf.c_str(), "empty character constant" );
+    else if ( length > 1 )
+      errorf( start, "%s - %s", buf.c_str(),
+          "character constant with multiple characters" );
+  }
 
   if ( illegalEscapeSequence )
     errorf( *illegalEscapeSequence, "%s - %s", buf.c_str(),

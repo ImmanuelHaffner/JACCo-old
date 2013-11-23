@@ -22,14 +22,13 @@ namespace C4
     ///
     struct StringLiteral : Expression
     {
-      explicit StringLiteral( Lex::Token tok );
+      explicit StringLiteral( Lex::Token const tok );
       ~StringLiteral() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           StringLiteral const &lit );
 
-      private:
-      Lex::Token tok;
+      Lex::Token const tok;
     }; // end struct Variable
 
     std::ostream & operator<<( std::ostream &out, StringLiteral const &lit );

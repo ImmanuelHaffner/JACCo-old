@@ -22,14 +22,13 @@ namespace C4
     ///
     struct Variable : Expression
     {
-      explicit Variable( Lex::Token tok );
+      explicit Variable( Lex::Token const tok );
       ~Variable() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           Variable const &var );
 
-      private:
-      Lex::Token tok;
+      Lex::Token const tok;
     }; // end struct Variable
 
     std::ostream & operator<<( std::ostream &out, Variable const &var );

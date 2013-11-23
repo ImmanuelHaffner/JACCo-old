@@ -22,14 +22,13 @@ namespace C4
     ///
     struct Constant : Expression
     {
-      explicit Constant( Lex::Token tok );
+      explicit Constant( Lex::Token const tok );
       ~Constant() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           Constant const &con );
 
-      private:
-      Lex::Token tok;
+      Lex::Token const tok;
     }; // end struct Variable
 
     std::ostream & operator<<( std::ostream &out, Constant const &con );

@@ -53,9 +53,9 @@ int main(int, char** const argv)
     if (!*i)
       errorf("no input files specified");
 
-    Token::INIT_KEYWORDS_TABLE(); // initialize the symbol table for keywords
 
     if (!hasNewErrors()) {
+      Token::INIT_KEYWORDS_TABLE(); // initialize the symbol table for keywords
       for (; char const *name = *i; ++i) {
         FILE* f;
         if (strEq(name, "-")) {
@@ -96,7 +96,6 @@ int main(int, char** const argv)
 
           case Mode::PARSE:
             {
-              break;
               Lexer * lexer;
               if ( f == stdin )
                 lexer = new Lexer;
@@ -107,12 +106,18 @@ int main(int, char** const argv)
 
               parser.parse();
 
-              if ( lexer->getToken().kind != TK::END_OF_FILE )
+              Token tok = lexer->getToken();
+              if ( tok.kind != TK::END_OF_FILE )
               {
-                errorf( "%s", "unparsed tokens:" );
-                do
-                  std::cout << "\t" << lexer->getToken() << "\n";
-                while ( lexer->getToken().kind != TK::END_OF_FILE );
+                errorf( "%s", "unparsed tokens" );
+                std::cout << "\t" << tok << "\n";
+
+                for (;;)
+                {
+                  Token tok_ = lexer->getToken();
+                  if ( tok.kind == TK::END_OF_FILE ) break;
+                  std::cout << "\t" << tok << "\n";
+                }
               }
 
               delete lexer;

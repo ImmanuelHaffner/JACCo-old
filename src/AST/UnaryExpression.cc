@@ -13,7 +13,8 @@ using namespace C4;
 using namespace AST;
 
 
-UnaryExpression::UnaryExpression( Expression &sub ) : subExpr(sub)
+UnaryExpression::UnaryExpression( Lex::Token const unOp, Expression &sub ) :
+  unOp(unOp), subExpr(sub)
 {}
 
 std::ostream & AST::operator<<( std::ostream &out, UnaryExpression const &expr )

@@ -11,6 +11,7 @@
 using namespace C4;
 using namespace Parse;
 using namespace Lex;
+using namespace AST;
 
 
 /*
@@ -19,7 +20,7 @@ using namespace Lex;
  *
  */
 
-Parser::Parser( Lexer &lexer ) : lexer( lexer ) {}
+Parser::Parser( Lexer &lexer ) : lexer(lexer), current(NULL), next(NULL) {}
 
 Parser::~Parser() {}
 

@@ -16,6 +16,7 @@
 #include "../pos.h"
 #include "../util.h"
 #include "../Support/Symbol.h"
+#include <unordered_map>
 
 namespace C4
 {
@@ -24,11 +25,56 @@ namespace C4
 		/// The kind of a token.
     enum class TK
     {
-      KEYWORD,
       IDENTIFIER,
       CONSTANT,
       STRING_LITERAL,
       END_OF_FILE,
+
+      // Keywords
+      Auto,
+      Break,
+      Case,
+      Char,
+      Const,
+      Continue,
+      Default,
+      Do,
+      Double,
+      Else,
+      Enum,
+      Extern,
+      Float,
+      For,
+      Goto,
+      If,
+      Inline,
+      Int,
+      Long,
+      Register,
+      Restrict,
+      Return,
+      Short,
+      Signed,
+      Sizeof,
+      Static,
+      Struct,
+      Switch,
+      Typedef,
+      Union,
+      Unsigned,
+      Void,
+      Volatile,
+      While,
+      Alignas,
+      Alignof,
+      Atomic,
+      Bool,
+      Complex,
+      Generic,
+      Imaginary,
+      Noreturn,
+      Static_assert,
+      Thread_local,
 
       // Punctuators
       LBracket,
@@ -81,25 +127,25 @@ namespace C4
       DHash
     };
 
-    std::ostream & operator<<( std::ostream &out, TK kind );
+    std::ostream & operator<<( std::ostream &out, TK tk );
 
     /// A token...
     struct Token
     {
       // KEYWORD
-      static Token Keyword( Pos const &pos, char const * const text )
+      static Token Keyword( Pos const &pos, TK tk, char const * const text )
       {
-        return Token( pos, TK::KEYWORD, text );
+        return Token( pos, tk, text );
       }
 
-      static Token Keyword( Pos const &pos, std::string const &text )
+      static Token Keyword( Pos const &pos, TK tk, std::string const &text )
       {
-        return Keyword( pos, text.c_str() );
+        return Keyword( pos, tk, text.c_str() );
       }
 
-      static Token Keyword( Pos const &pos, Symbol const &sym )
+      static Token Keyword( Pos const &pos, TK tk, Symbol const &sym )
       {
-        return Token( pos, TK::KEYWORD, sym );
+        return Token( pos, tk, sym );
       }
 
       // IDENTIFIER
@@ -180,8 +226,14 @@ namespace C4
       TK const kind;
       Symbol sym;
 
-      static std::unordered_set< Symbol > KeywordsTable;
+      static std::unordered_map< Symbol, TK > KeywordsTable;
       static void INIT_KEYWORDS_TABLE();
+
+      private:
+      inline bool isKeyword() const
+      {
+        return KeywordsTable.find( sym ) != KeywordsTable.end();
+      }
     }; // end struct Token
 
     std::ostream & operator<<( std::ostream &out, Token const &tok );

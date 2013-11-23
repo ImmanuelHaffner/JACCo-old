@@ -14,7 +14,7 @@ using namespace Lex;
 using namespace AST;
 
 
-Variable::Variable( Token tok ) : tok(tok)
+Variable::Variable( Token const tok ) : tok(tok)
 {
   assert( tok.kind == TK::IDENTIFIER && "token must be an identifier" );
 }

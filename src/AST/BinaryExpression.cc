@@ -13,8 +13,9 @@ using namespace C4;
 using namespace AST;
 
 
-BinaryExpression::BinaryExpression( Expression &lhs, Expression &rhs )
-  : lhs(lhs), rhs(rhs)
+BinaryExpression::BinaryExpression( Lex::Token const binOp, Expression &lhs,
+    Expression &rhs ) :
+  binOp(binOp), lhs(lhs), rhs(rhs)
 {}
 
 std::ostream & AST::operator<<( std::ostream &out,

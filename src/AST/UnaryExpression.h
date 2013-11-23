@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include "Expression.h"
-
+#include "../Lex/Token.h"
 
 namespace C4
 {
@@ -20,12 +20,14 @@ namespace C4
     ///
     struct UnaryExpression : Expression
     {
-      UnaryExpression( Expression &sub );
+      UnaryExpression( Lex::Token const unOp, Expression &sub );
       virtual ~UnaryExpression() {}
 
       Expression & getSubExpr() { return subExpr; }
       friend std::ostream & operator<<( std::ostream &out,
           UnaryExpression const &expr );
+
+      Lex::Token const unOp;
 
       private:
       Expression &subExpr;

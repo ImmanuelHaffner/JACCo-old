@@ -11,9 +11,12 @@
 
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
+#include "../util.h"
 #include "../diagnostic.h"
 #include "../Lex/Token.h"
 #include "../Lex/Lexer.h"
+#include "../AST/AST.h"
 
 
 //===----------------------------------------------------------------------===//
@@ -764,58 +767,116 @@
 
 // End First1
 
-
-//===----------------------------------------------------------------------===//
-//
-//  Operator Precedences
-//
-//===----------------------------------------------------------------------===//
-
-
-// End Operator Precedences
-
 namespace C4
 {
+
+  //===----------------------------------------------------------------------===//
+  //
+  //  Operator Precedences
+  //
+  //===----------------------------------------------------------------------===//
+
+
+  /// Binary Operator Precedences
+  ///
+  /// \return the precedence of the binary operator 'tok', or -1 iff tok is not a
+  /// binary operator
+  static int getBinOpPrecedence( Lex::TK tk )
+  {
+    switch ( tk )
+    {
+      case Lex::TK::Mul:
+      case Lex::TK::Div:
+      case Lex::TK::Mod:
+        return 100;
+
+      case Lex::TK::Plus:
+      case Lex::TK::Minus:
+        return 90;
+
+      case Lex::TK::RShift:
+      case Lex::TK::LShift:
+        return 80;
+
+      case Lex::TK::Le:
+      case Lex::TK::Gr:
+      case Lex::TK::LEq:
+      case Lex::TK::GEq:
+        return 70;
+
+      case Lex::TK::Eq:
+      case Lex::TK::NE:
+        return 60;
+
+      case Lex::TK::And:
+        return 50;
+
+      case Lex::TK::Xor:
+        return 40;
+
+      case Lex::TK::Or:
+        return 30;
+
+      case Lex::TK::LAnd:
+        return 20;
+
+      case Lex::TK::LOr:
+        return 10;
+
+        //
+        //  IMPORTANT:
+        //  0 not allowed as return value!!
+        //
+
+      default: return -1;
+    }
+  } // end getBinOpPrecedence
+  
+  static bool isUnaryOperator( Lex::TK tk )
+  {
+    switch ( tk )
+    {
+      case Lex::TK::And:
+      case Lex::TK::Mul:
+      case Lex::TK::Plus:
+      case Lex::TK::Minus:
+      case Lex::TK::Neg:
+      case Lex::TK::Not:
+        return true;
+
+      default: return false;
+    }
+  }
+
   namespace Parse
   {
+    /// \brief The parser.
     struct Parser
     {
       Parser( Lex::Lexer &lexer );
       ~Parser();
 
-      /*
-       *
-       * Parser Helper Functions
-       *
-       */
+      /// Parses the tokens returned by the lexer, and construct the
+      /// corresponding AST.
+      void parse();
 
-      /// Necessary for compatibility, does nothing.
-      void pout( std::ostream &out )
-      {
-        out.rdbuf();
-      }
 
-      /// Prints t to the ostream out.
-      inline void pout( std::ostream &out, Lex::TK t )
-      {
-        out << t;
-      }
+      private:
+      Lex::Lexer &lexer;
+      Lex::Token const * current;
+      Lex::Token const * next;
 
-      /// Prints t to the ostream out.
-      template < typename T >
-        void pout( std::ostream &out, T t )
-        {
-          out << "'" << t << "'";
-        }
 
-      /// Prints all arguments in the specified order to the ostream out.
-      template < typename T, typename... Args >
-        void pout( std::ostream &out, T t, Args... args )
-        {
-          pout( out, t );
-          out << ", ";
-          pout( out, args... );
-        }
+      //===----------------------------------------------------------------===//
+      //
+      //  Parser Helper Functions
+      //
+      //===----------------------------------------------------------------===//
+
+      /// This functions moves sets 'current' to 'next', and sets 'next' to the
+      /// token returned from the lexer.
+      /// This function offers a small, fixed-size token buffer.
+      void getNextToken();
 
       /// Necessary for compatibility, use neutral element of LOr
       ///
@@ -827,9 +888,9 @@ namespace C4
 
       /// \return true, iff the token peeked by the lexer is of the specified
       /// TK
-      inline bool is( Lex::TK tKind )
+      inline bool is( Lex::TK tk )
       {
-        return lexer.getToken().kind == tKind;
+        return current->kind == tk;
       }
 
       /// \return true, iff the text of the token, peeked py the lexer, equals
@@ -843,111 +904,80 @@ namespace C4
       /// the specified string
       inline bool is( char const * const s )
       {
-        return lexer.getToken().sym.str() == s;
+        return strEq( current->sym.str(), s );
+      }
+
+      /// \return true, iff the symbol of the current token equals the specified
+      /// symbol.
+      inline bool is( Symbol sym )
+      {
+        return current->sym == sym;
       }
 
       /// \return true, iff at least one of the specified arguments matches the
       /// token peeked by the lexer, i.e. if a call to is( ... ) for at least
       /// one argument yields true
       template < typename T, typename... Args >
-        bool is( T t, Args... args )
-        {
-          return is( t ) || is( args... );
-        }
+        bool is( T t, Args... args );
 
-      template < typename... Args >
-        void err( Args... args )
-        {
-          Lex::Token tok = lexer.getToken();
+      /// If the current token is "like" t, i.e. a call to is( t ) would return
+      /// true, gets the next token, otherwise prints an error message.
+      template < typename T >
+        void accept( T t );
 
-          switch ( tok.kind )
-          {
-            case Lex::TK::END_OF_FILE:
-              {
-                std::ostringstream oss;
-                oss << "unexpected end-of-file, expected one of: ";
-                pout( oss, args... );
-                errorf( tok.pos, "%s", oss.str().c_str() );
-              }
+      int getTokenPrecedence()
+      {
+        if ( ! this->current )
+          return -1;
 
-            default:
-              {
-                std::ostringstream oss;
-                oss << "unexpected '" << tok.sym << "', expected one of: ";
-                pout( oss, args... );
-                errorf( tok.pos, "%s", oss.str().c_str() );
-              }
-          }
-        }
+        int prec = getBinOpPrecedence( this->current->kind );
+        return  prec > 0 ? prec : -1;
+      }
 
-      /// Necessary for compatibility when using no follow-sets.
-      void until() {}
 
-      /// Gets tokens from the lexer, until a call to is( ... ) returns true.
-      /// This function is used to read tokens, until a token in a follow set is
-      /// found.
-      template < typename... Args >
-        void until( Args... args )
-        {
-          while ( ! is( args... ) )
-            lexer.getToken();
-        }
+      //===----------------------------------------------------------------===//
+      //
+      //  Parser Sub Functions
+      //
+      //  These functions parse particular rules of the grammar, e.g.
+      //  declarations or expressions.
+      //
+      //===----------------------------------------------------------------===//
 
-      /// Checks whether the token peeked by the lexer matches the first
-      /// argument, by invoking match( ... ). If the token matches, gets the
-      /// token from the lexer, else, invokes until( ... ) with the given follow
-      /// set.
-      template < typename T, typename... Args >
-        void accept( T t, Args... args )
-        {
-          if ( is( t ) )
-            lexer.getToken();
-          else
-            until( args... );
-        }
-
-      /// Parses the tokens returned by the lexer, and construct the
-      /// corresponding AST.
+      /// Parses an expression.
       ///
-      /// NOTE: This function may prompt errors/warnings to the console.
-      inline void parse()
-      {
+      /// \return the parsed expression
+      AST::Expression & parseExpression();
+      AST::Expression & parsePrimaryExpression();
+      AST::Expression & parseUnaryExpression();
+      AST::Expression & parseBinOpRHS( int exprPrec, AST::Expression &lhs );
 
+    }; // end struct Parser
+
+    //===------------------------------------------------------------------===//
+    //
+    //  Parser Helper Functions
+    //
+    //===------------------------------------------------------------------===//
+
+    template < typename T, typename... Args >
+      bool Parser::is( T t, Args... args )
+      {
+        return is( t ) || is( args... );
       }
 
-      /*
-       *
-       * Parser Sub Functions
-       *
-       */
-
-      template < typename... Args >
-      void parseAssignmentOperator( Args... args )
+    template < typename T >
+      void Parser::accept( T t )
       {
-        is( args... ); // TODO remove
+        if ( ! is( t ) )
+        {
+          std::ostringstream oss;
+          oss << "unexpected " << *current << ", expected " << t;
+          errorf( current->pos, "%s", oss.str().c_str() );
+        }
+        else
+          getNextToken();
       }
-
-      template < typename... Args >
-      void parseExpression( Args... args )
-      {
-        is( args... ); // TODO remove
-      }
-
-      template < typename... Args >
-      void parseStorageClassSpecifier( Args... args )
-      {
-        is( args... ); // TODO remove
-      }
-
-      template < typename... Args >
-      void parseTypeName( Args... args )
-      {
-        is( args... ); // TODO remove
-      }
-
-      private:
-      Lex::Lexer &lexer;
-    };
   } // end namespace Parse
 } // end namespace C4
 

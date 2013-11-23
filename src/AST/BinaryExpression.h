@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include "Expression.h"
+#include "../Lex/Token.h"
 
 
 namespace C4
@@ -20,13 +21,16 @@ namespace C4
     ///
     struct BinaryExpression : Expression
     {
-      BinaryExpression( Expression &lhs, Expression &rhs );
+      BinaryExpression( Lex::Token const binOp, Expression &lhs,
+          Expression &rhs );
       virtual ~BinaryExpression() {}
 
       Expression & getLHS() { return lhs; }
       Expression & getRHS() { return rhs; }
       friend std::ostream & operator<<( std::ostream &out,
           BinaryExpression const &expr );
+
+      Lex::Token const binOp;
 
       private:
       Expression &lhs;

@@ -14,7 +14,7 @@ using namespace Lex;
 using namespace AST;
 
 
-StringLiteral::StringLiteral( Token tok ) : tok(tok)
+StringLiteral::StringLiteral( Token const tok ) : tok(tok)
 {
   assert( tok.kind == TK::STRING_LITERAL && "token must be a string-literal" );
 }

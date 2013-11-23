@@ -151,7 +151,7 @@ void LexerTest::testReadKeywords()
   // auto
   {
     Token token = lexer.getToken();
-    CPPUNIT_ASSERT( token.kind  == TK::KEYWORD );
+    CPPUNIT_ASSERT( token.kind  == TK::Auto );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
     CPPUNIT_ASSERT( strcmp( token.sym.str(), "auto" ) == 0 );
@@ -160,7 +160,7 @@ void LexerTest::testReadKeywords()
   // break
   {
     Token token = lexer.getToken();
-    CPPUNIT_ASSERT( token.kind  == TK::KEYWORD );
+    CPPUNIT_ASSERT( token.kind  == TK::Break );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 6u, token.pos.column );
     CPPUNIT_ASSERT( strcmp( token.sym.str(), "break" ) == 0);
@@ -169,7 +169,7 @@ void LexerTest::testReadKeywords()
   // const
   {
     Token token = lexer.getToken();
-    CPPUNIT_ASSERT( token.kind  == TK::KEYWORD );
+    CPPUNIT_ASSERT( token.kind  == TK::Const );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
     CPPUNIT_ASSERT( strcmp( token.sym.str(), "const" ) == 0);
@@ -178,7 +178,7 @@ void LexerTest::testReadKeywords()
   // int
   {
     Token token = lexer.getToken();
-    CPPUNIT_ASSERT( token.kind  == TK::KEYWORD );
+    CPPUNIT_ASSERT( token.kind  == TK::Int );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
     CPPUNIT_ASSERT( strcmp( token.sym.str(), "int" ) == 0);
@@ -187,7 +187,7 @@ void LexerTest::testReadKeywords()
   // continue
   {
     Token token = lexer.getToken();
-    CPPUNIT_ASSERT( token.kind  == TK::KEYWORD );
+    CPPUNIT_ASSERT( token.kind  == TK::Continue );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
     CPPUNIT_ASSERT( strcmp( token.sym.str(), "continue" ) == 0);
@@ -196,7 +196,7 @@ void LexerTest::testReadKeywords()
   // while
   {
     Token token = lexer.getToken();
-    CPPUNIT_ASSERT( token.kind  == TK::KEYWORD );
+    CPPUNIT_ASSERT( token.kind  == TK::While );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 10u, token.pos.column );
     CPPUNIT_ASSERT( strcmp( token.sym.str(), "while" ) == 0);
@@ -205,7 +205,7 @@ void LexerTest::testReadKeywords()
   // for
   {
     Token token = lexer.getToken();
-    CPPUNIT_ASSERT( token.kind  == TK::KEYWORD );
+    CPPUNIT_ASSERT( token.kind  == TK::For );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 16u, token.pos.column );
     CPPUNIT_ASSERT( strcmp( token.sym.str(), "for" ) == 0);

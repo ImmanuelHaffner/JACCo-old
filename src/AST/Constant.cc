@@ -14,7 +14,7 @@ using namespace Lex;
 using namespace AST;
 
 
-Constant::Constant( Token tok ) : tok(tok)
+Constant::Constant( Token const tok ) : tok(tok)
 {
   assert( tok.kind == TK::CONSTANT && "token must be a constant" );
 }
