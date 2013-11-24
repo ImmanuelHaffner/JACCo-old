@@ -16,6 +16,7 @@ using namespace AST;
 std::ostream & AST::operator<<( std::ostream &out,
     IllegalExpression const &expr )
 {
+  (void) expr;  // suppress unused parameter warning
   out << "illegal expression";
   return out;
 }

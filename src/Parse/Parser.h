@@ -19,754 +19,6 @@
 #include "../AST/AST.h"
 
 
-//===----------------------------------------------------------------------===//
-//
-//  First1
-//
-//===----------------------------------------------------------------------===//
-
-#define PARAMETER_LIST \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define TYPE_SPECIFIER \
-  "char", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void"
-
-#define POSTFIX_EXPRESSION \
-  "(", \
-  Lex::TK::CONSTANT, \
-  Lex::TK::IDENTIFIER, \
-  Lex::TK::STRING_LITERAL
-
-#define FUNCTION_DEFINITION \
-  "(", \
-  "*", \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  Lex::TK::IDENTIFIER, \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define DECLARATOR \
-  "(", \
-  "*", \
-  Lex::TK::IDENTIFIER
-
-#define STATEMENT \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  ";", \
-  "{", \
-  "~", \
-  "break", \
-  "case", \
-  Lex::TK::CONSTANT, \
-  "continue", \
-  "dec_op", \
-  "default", \
-  "do", \
-  "for", \
-  "goto", \
-  Lex::TK::IDENTIFIER, \
-  "if", \
-  "inc_op", \
-  "return", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL, \
-  "switch", \
-  "while"
-
-#define UNARY_OPERATOR \
-  "!", \
-  "&", \
-  "*", \
-  "+", \
-  "-", \
-  "~"
-
-#define STRUCT_DECLARATOR_LIST \
-  "(", \
-  "*", \
-  ":", \
-  Lex::TK::IDENTIFIER
-
-#define ASSIGNMENT_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define INIT_DECLARATOR \
-  "(", \
-  "*", \
-  Lex::TK::IDENTIFIER
-
-#define ENUMERATOR \
-  Lex::TK::IDENTIFIER
-
-#define LABELED_STATEMENT \
-  "case", \
-  "default", \
-  Lex::TK::IDENTIFIER
-
-#define LOGICAL_OR_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define PARAMETER_TYPE_LIST \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define STATEMENT_LIST \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  ";", \
-  "{", \
-  "~", \
-  "break", \
-  "case", \
-  Lex::TK::CONSTANT, \
-  "continue", \
-  "dec_op", \
-  "default", \
-  "do", \
-  "for", \
-  "goto", \
-  Lex::TK::IDENTIFIER, \
-  "if", \
-  "inc_op", \
-  "return", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL, \
-  "switch", \
-  "while"
-
-#define STRUCT_DECLARATOR \
-  "(", \
-  "*", \
-  ":", \
-  Lex::TK::IDENTIFIER
-
-#define POINTER \
-  "*"
-
-#define INCLUSIVE_OR_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define EXPRESSION_STATEMENT \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  ";", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define ENUMERATOR_LIST \
-  Lex::TK::IDENTIFIER
-
-#define TYPE_QUALIFIER \
-  "const", \
-  "volatile"
-
-#define ENUM_SPECIFIER \
-  "enum"
-
-#define ARGUMENT_EXPRESSION_LIST \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define UNARY_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define IDENTIFIER_LIST \
-  Lex::TK::IDENTIFIER
-
-#define TYPE_NAME \
-  "char", \
-  "const", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define LOGICAL_AND_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define DIRECT_DECLARATOR \
-  "(", \
-  Lex::TK::IDENTIFIER
-
-#define STRUCT_DECLARATION \
-  "char", \
-  "const", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define ADDITIVE_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define DECLARATION_SPECIFIERS \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define MULTIPLICATIVE_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define AND_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define EXTERNAL_DECLARATION \
-  "(", \
-  "*", \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  Lex::TK::IDENTIFIER, \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define INIT_DECLARATOR_LIST \
-  "(", \
-  "*", \
-  Lex::TK::IDENTIFIER
-
-#define CONSTANT_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define ASSIGNMENT_OPERATOR \
-  "=", \
-  "add_assign", \
-  "and_assign", \
-  "div_assign", \
-  "left_assign", \
-  "mod_assign", \
-  "mul_assign", \
-  "or_assign", \
-  "right_assign", \
-  "sub_assign", \
-  "xor_assign"
-
-#define TYPE_QUALIFIER_LIST \
-  "const", \
-  "volatile"
-
-#define STRUCT_OR_UNION_SPECIFIER \
-  "struct"
-
-#define DIRECT_ABSTRACT_DECLARATOR \
-  "(", \
-  "["
-
-#define SHIFT_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define DECLARATION \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define STRUCT_DECLARATION_LIST \
-  "char", \
-  "const", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define INITIALIZER_LIST \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "{", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define JUMP_STATEMENT \
-  "break", \
-  "continue", \
-  "goto", \
-  "return"
-
-#define RELATIONAL_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define COMPOUND_STATEMENT \
-  "{"
-
-#define TRANSLATION_UNIT \
-  "(", \
-  "*", \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  Lex::TK::IDENTIFIER, \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define PARAMETER_DECLARATION \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define STRUCT_OR_UNION \
-  "struct"
-
-#define STORAGE_CLASS_SPECIFIER \
-  "auto", \
-  "extern", \
-  "register", \
-  "static", \
-  "typedef"
-
-#define EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define ABSTRACT_DECLARATOR \
-  "(", \
-  "*", \
-  "["
-
-#define EXCLUSIVE_OR_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define INITIALIZER \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "{", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define ITERATION_STATEMENT \
-  "do", \
-  "for", \
-  "while"
-
-#define DECLARATION_LIST \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define CAST_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define SPECIFIER_QUALIFIER_LIST \
-  "char", \
-  "const", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define PRIMARY_EXPRESSION \
-  "(", \
-  Lex::TK::CONSTANT, \
-  Lex::TK::IDENTIFIER, \
-  Lex::TK::STRING_LITERAL
-
-#define EQUALITY_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define CONDITIONAL_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define SELECTION_STATEMENT \
-  "if", \
-  "switch"
-
-
-// End First1
-
 namespace C4
 {
 
@@ -823,30 +75,9 @@ namespace C4
       case Lex::TK::LOr:
         return 10;
 
-        //
-        //  IMPORTANT:
-        //  0 not allowed as return value!!
-        //
-
       default: return -1;
     }
   } // end getBinOpPrecedence
-  
-  static bool isUnaryOperator( Lex::TK tk )
-  {
-    switch ( tk )
-    {
-      case Lex::TK::And:
-      case Lex::TK::Mul:
-      case Lex::TK::Plus:
-      case Lex::TK::Minus:
-      case Lex::TK::Neg:
-      case Lex::TK::Not:
-        return true;
-
-      default: return false;
-    }
-  }
 
   namespace Parse
   {
@@ -925,6 +156,11 @@ namespace C4
       template < typename T >
         void accept( T t );
 
+      /// If the current token is "like" args, i.e. a call to is( t ) would
+      /// return true, gets the next token, otherwise prints an error message.
+      template < typename... Args >
+        void accept( Args... args );
+
       int getTokenPrecedence()
       {
         if ( ! this->current )
@@ -947,10 +183,20 @@ namespace C4
       /// Parses an expression.
       ///
       /// \return the parsed expression
-      AST::Expression & parseExpression();
       AST::Expression & parsePrimaryExpression();
+      AST::Expression & parseArgumentExpressionList();
+      AST::Expression & parsePostfixExpression();
       AST::Expression & parseUnaryExpression();
+      AST::Expression & parseCastExpression();
+      AST::Expression & parseBinaryExpression();
       AST::Expression & parseBinOpRHS( int exprPrec, AST::Expression &lhs );
+      AST::Expression & parseConditionalExpression();
+      AST::Expression & parseAssignmentExpression();
+      AST::Expression & parseExpression();
+      inline AST::Expression & parseConstantExpression()
+      {
+        return parseConditionalExpression();
+      }
 
     }; // end struct Parser
 
@@ -972,7 +218,41 @@ namespace C4
         if ( ! is( t ) )
         {
           std::ostringstream oss;
-          oss << "unexpected " << *current << ", expected " << t;
+          oss << "unexpected " << *current << ", expected '" << t << "'";
+          errorf( current->pos, "%s", oss.str().c_str() );
+        }
+        else
+          getNextToken();
+      }
+
+    template < typename T >
+      static void _print( std::ostream &out, T t )
+      {
+        out << t;
+      }
+
+    template < typename T, typename... Args >
+      static void _print( std::ostream &out, T t, Args... args )
+      {
+        out << t << "', '";
+        _print( out, args... );
+      }
+
+    template < typename... Args >
+      static void print( std::ostream &out, Args... args )
+      {
+        out << "'"; _print( out, args... ); out << "'";
+      }
+
+    template < typename... Args >
+      void Parser::accept( Args... args )
+      {
+        if ( ! is( args... ) )
+        {
+          std::ostringstream oss;
+          oss << "unexpected " << *current << ", expected one of '";
+          print( oss, args... );
+          oss << "'";
           errorf( current->pos, "%s", oss.str().c_str() );
         }
         else

@@ -13,12 +13,12 @@ using namespace C4;
 using namespace AST;
 
 
-UnaryExpression::UnaryExpression( Lex::Token const unOp, Expression &sub ) :
-  unOp(unOp), subExpr(sub)
+UnaryExpression::UnaryExpression( Lex::Token const op, Expression &expr ) :
+  op(op), expr(expr)
 {}
 
 std::ostream & AST::operator<<( std::ostream &out, UnaryExpression const &expr )
 {
-  out << "unary expression";
+  out << "unary expression " << expr.op.kind << " " << expr.expr;
   return out;
 }

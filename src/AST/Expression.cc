@@ -15,6 +15,7 @@ using namespace AST;
 
 std::ostream & AST::operator<<( std::ostream &out, Expression const &expr )
 {
+  (void) expr; // suppress unused parameter warning
   out << "expression";
   return out;
 }

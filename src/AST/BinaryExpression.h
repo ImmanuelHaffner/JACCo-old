@@ -21,7 +21,7 @@ namespace C4
     ///
     struct BinaryExpression : Expression
     {
-      BinaryExpression( Lex::Token const binOp, Expression &lhs,
+      BinaryExpression( Lex::Token const op, Expression &lhs,
           Expression &rhs );
       virtual ~BinaryExpression() {}
 
@@ -30,7 +30,7 @@ namespace C4
       friend std::ostream & operator<<( std::ostream &out,
           BinaryExpression const &expr );
 
-      Lex::Token const binOp;
+      Lex::Token const op;
 
       private:
       Expression &lhs;

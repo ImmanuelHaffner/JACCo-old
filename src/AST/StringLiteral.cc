@@ -21,6 +21,6 @@ StringLiteral::StringLiteral( Token const tok ) : tok(tok)
 
 std::ostream & AST::operator<<( std::ostream &out, StringLiteral const &lit )
 {
-  out << "StringLiteral";
+  out << "StringLiteral " << lit.tok.sym;
   return out;
 }

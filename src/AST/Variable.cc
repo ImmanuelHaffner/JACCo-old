@@ -21,6 +21,6 @@ Variable::Variable( Token const tok ) : tok(tok)
 
 std::ostream & AST::operator<<( std::ostream &out, Variable const &var )
 {
-  out << "Variable";
+  out << "Variable " << var.tok.sym;
   return out;
 }

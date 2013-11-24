@@ -15,6 +15,7 @@ using namespace AST;
 
 std::ostream & AST::operator<<( std::ostream &out, Declaration const &decl )
 {
+  (void) decl; // suppress unused parameter warning
   out << "declaration";
   return out;
 }

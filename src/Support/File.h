@@ -16,7 +16,7 @@ namespace C4
     virtual ~File() = 0;
     virtual int get() = 0;
     virtual int peek() = 0;
-    virtual int peek( int c ) = 0;
+    virtual int peek( int n ) = 0;
   };
   inline File::~File() {}
 } // end namespace C4

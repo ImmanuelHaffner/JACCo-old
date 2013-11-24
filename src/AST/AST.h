@@ -17,6 +17,7 @@
 #include "Variable.h"
 #include "Constant.h"
 #include "StringLiteral.h"
+#include "PostfixExpression.h"
 #include "UnaryExpression.h"
 #include "BinaryExpression.h"
 

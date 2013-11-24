@@ -15,6 +15,7 @@ using namespace AST;
 
 std::ostream & AST::operator<<( std::ostream &out, Type const &type )
 {
+  (void) type; // suppress unused parameter warning
   out << "Type";
   return out;
 }

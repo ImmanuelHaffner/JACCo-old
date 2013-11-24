@@ -21,6 +21,6 @@ Constant::Constant( Token const tok ) : tok(tok)
 
 std::ostream & AST::operator<<( std::ostream &out, Constant const &con )
 {
-  out << "Constant";
+  out << "Constant " << con.tok.sym;
   return out;
 }

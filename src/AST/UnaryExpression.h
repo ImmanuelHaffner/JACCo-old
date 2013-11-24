@@ -20,17 +20,17 @@ namespace C4
     ///
     struct UnaryExpression : Expression
     {
-      UnaryExpression( Lex::Token const unOp, Expression &sub );
+      UnaryExpression( Lex::Token const op, Expression &expr );
       virtual ~UnaryExpression() {}
 
-      Expression & getSubExpr() { return subExpr; }
+      Expression & getSubExpr() { return expr; }
       friend std::ostream & operator<<( std::ostream &out,
           UnaryExpression const &expr );
 
-      Lex::Token const unOp;
+      Lex::Token const op;
 
       private:
-      Expression &subExpr;
+      Expression &expr;
     }; // end struct UnaryExpression
 
     std::ostream & operator<<( std::ostream &out, UnaryExpression const &expr );

@@ -13,14 +13,14 @@ using namespace C4;
 using namespace AST;
 
 
-BinaryExpression::BinaryExpression( Lex::Token const binOp, Expression &lhs,
+BinaryExpression::BinaryExpression( Lex::Token const op, Expression &lhs,
     Expression &rhs ) :
-  binOp(binOp), lhs(lhs), rhs(rhs)
+  op(op), lhs(lhs), rhs(rhs)
 {}
 
 std::ostream & AST::operator<<( std::ostream &out,
     BinaryExpression const &expr )
 {
-  out << "binary expression";
+  out << "binary expression " << expr.lhs << expr.op.kind << expr.rhs;
   return out;
 }
