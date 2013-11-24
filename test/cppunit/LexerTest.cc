@@ -7,6 +7,7 @@
 #include "LexerTest.h"
 
 #include "../../src/Lex/Lexer.h"
+#include "../../src/util.h"
 
 
 // register this test 
@@ -34,7 +35,7 @@ void LexerTest::testConstructor()
   CPPUNIT_ASSERT( lexer.fileName.compare( fileName ) == 0 );
 
   // check pos
-  CPPUNIT_ASSERT( strcmp( fileName, lexer.getPos().name ) == 0 );
+  CPPUNIT_ASSERT( strEq( fileName, lexer.getPos().name ) );
   CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().line );
   CPPUNIT_ASSERT_EQUAL( 0u, lexer.getPos().column );
 
@@ -89,7 +90,7 @@ void LexerTest::testEolStyles()
     CPPUNIT_ASSERT( token.kind == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "a" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "a" ) );
   }
 
   // b
@@ -98,7 +99,7 @@ void LexerTest::testEolStyles()
     CPPUNIT_ASSERT( token.kind == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "b" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "b" ) );
   }
 
   // c
@@ -107,7 +108,7 @@ void LexerTest::testEolStyles()
     CPPUNIT_ASSERT( token.kind == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "c" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "c" ) );
   }
 
   // d
@@ -116,7 +117,7 @@ void LexerTest::testEolStyles()
     CPPUNIT_ASSERT( token.kind == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "d" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "d" ) );
   }
 
 
@@ -131,7 +132,7 @@ void LexerTest::testEolStyles()
     CPPUNIT_ASSERT( token.kind == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 8u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "a" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "a" ) );
   }
 
 
@@ -154,7 +155,7 @@ void LexerTest::testReadKeywords()
     CPPUNIT_ASSERT( token.kind  == TK::Auto );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "auto" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "auto" ) );
   }
 
   // break
@@ -163,7 +164,7 @@ void LexerTest::testReadKeywords()
     CPPUNIT_ASSERT( token.kind  == TK::Break );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 6u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "break" ) == 0);
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "break" ) );
   }
 
   // const
@@ -172,7 +173,7 @@ void LexerTest::testReadKeywords()
     CPPUNIT_ASSERT( token.kind  == TK::Const );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "const" ) == 0);
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "const" ) );
   }
 
   // int
@@ -181,7 +182,7 @@ void LexerTest::testReadKeywords()
     CPPUNIT_ASSERT( token.kind  == TK::Int );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "int" ) == 0);
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "int" ) );
   }
 
   // continue
@@ -190,7 +191,7 @@ void LexerTest::testReadKeywords()
     CPPUNIT_ASSERT( token.kind  == TK::Continue );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "continue" ) == 0);
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "continue" ) );
   }
 
   // while
@@ -199,7 +200,7 @@ void LexerTest::testReadKeywords()
     CPPUNIT_ASSERT( token.kind  == TK::While );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 10u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "while" ) == 0);
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "while" ) );
   }
 
   // for
@@ -208,7 +209,7 @@ void LexerTest::testReadKeywords()
     CPPUNIT_ASSERT( token.kind  == TK::For );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 16u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "for" ) == 0);
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "for" ) );
   }
 
 
@@ -230,7 +231,7 @@ void LexerTest::testReadIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "a" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "a" ) );
   }
 
   // b
@@ -239,7 +240,7 @@ void LexerTest::testReadIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "b" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "b" ) );
   }
 
   // c
@@ -248,7 +249,7 @@ void LexerTest::testReadIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "c" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "c" ) );
   }
 
   // d
@@ -257,7 +258,7 @@ void LexerTest::testReadIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "d" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "d" ) );
   }
 
   // e
@@ -266,7 +267,7 @@ void LexerTest::testReadIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "e" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "e" ) );
   }
 
   // f1
@@ -275,7 +276,7 @@ void LexerTest::testReadIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "f1" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "f1" ) );
   }
 
   // _f2
@@ -284,7 +285,7 @@ void LexerTest::testReadIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 6u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "_f2" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "_f2" ) );
   }
 
 
@@ -307,7 +308,7 @@ void LexerTest::testReadDecimalConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "1" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "1" ) );
   }
 
   // 23
@@ -316,7 +317,7 @@ void LexerTest::testReadDecimalConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "23" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "23" ) );
   }
 
   // 4
@@ -325,7 +326,7 @@ void LexerTest::testReadDecimalConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "4" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "4" ) );
   }
 
   // 5
@@ -334,7 +335,7 @@ void LexerTest::testReadDecimalConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "5" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "5" ) );
   }
 
   // 67
@@ -343,7 +344,7 @@ void LexerTest::testReadDecimalConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "67" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "67" ) );
   }
 
   // 8
@@ -352,7 +353,7 @@ void LexerTest::testReadDecimalConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "8" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "8" ) );
   }
 
   // 90
@@ -361,7 +362,7 @@ void LexerTest::testReadDecimalConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 6u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "90" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "90" ) );
   }
 
 
@@ -384,7 +385,7 @@ void LexerTest::testReadNumericalAndIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "12" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "12" ) );
   }
 
   // a
@@ -393,7 +394,7 @@ void LexerTest::testReadNumericalAndIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "a" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "a" ) );
   }
 
   // 1
@@ -402,7 +403,7 @@ void LexerTest::testReadNumericalAndIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 5u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "1" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "1" ) );
   }
 
   // _
@@ -411,7 +412,7 @@ void LexerTest::testReadNumericalAndIdentifier()
     CPPUNIT_ASSERT( token.kind  == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 6u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "_" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "_" ) );
   }
 
 
@@ -434,7 +435,7 @@ void LexerTest::testReadCharacterConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "'a'" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "'a'" ) );
   }
 
   // b
@@ -443,7 +444,7 @@ void LexerTest::testReadCharacterConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 5u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "'b'" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "'b'" ) );
   }
 
   // c
@@ -452,7 +453,7 @@ void LexerTest::testReadCharacterConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "'c'" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "'c'" ) );
   }
 
   // d
@@ -461,7 +462,7 @@ void LexerTest::testReadCharacterConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "'d'" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "'d'" ) );
   }
 
   // e
@@ -470,7 +471,7 @@ void LexerTest::testReadCharacterConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "'e'" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "'e'" ) );
   }
 
   // \n
@@ -479,7 +480,7 @@ void LexerTest::testReadCharacterConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 5u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "'\\n'" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "'\\n'" ) );
   }
 
   // \\ (sym.str() to avoid two-line comment)
@@ -488,7 +489,7 @@ void LexerTest::testReadCharacterConstant()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 10u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "'\\\\'" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "'\\\\'" ) );
   }
 
 
@@ -511,7 +512,7 @@ void LexerTest::testReadStringLiteral()
     CPPUNIT_ASSERT( token.kind  == TK::STRING_LITERAL );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "\"a\"" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "\"a\"" ) );
   }
 
   // "bc"
@@ -520,7 +521,7 @@ void LexerTest::testReadStringLiteral()
     CPPUNIT_ASSERT( token.kind  == TK::STRING_LITERAL );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "\"bc\"" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "\"bc\"" ) );
   }
 
   // "d e "
@@ -529,7 +530,7 @@ void LexerTest::testReadStringLiteral()
     CPPUNIT_ASSERT( token.kind  == TK::STRING_LITERAL );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "\"d e \"" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "\"d e \"" ) );
   }
 
   // "\n bla"
@@ -538,7 +539,7 @@ void LexerTest::testReadStringLiteral()
     CPPUNIT_ASSERT( token.kind  == TK::STRING_LITERAL );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 8u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "\"\\n bla\"" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "\"\\n bla\"" ) );
   }
 
 
@@ -551,7 +552,7 @@ void LexerTest::testReadStringLiteral()
     CPPUNIT_ASSERT( token.kind  == TK::STRING_LITERAL );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "\"\"" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "\"\"" ) );
   }
 
 
@@ -574,7 +575,7 @@ void LexerTest::testReadPunctuator()
     CPPUNIT_ASSERT( token.kind  == TK::LBracket );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "[" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "[" ) );
   }
 
   // .
@@ -583,7 +584,7 @@ void LexerTest::testReadPunctuator()
     CPPUNIT_ASSERT( token.kind  == TK::PtrOp );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "->" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "->" ) );
   }
 
   // >>=
@@ -592,7 +593,7 @@ void LexerTest::testReadPunctuator()
     CPPUNIT_ASSERT( token.kind  == TK::RShiftAssign );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), ">>=" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), ">>=" ) );
   }
 
   // ...
@@ -601,7 +602,7 @@ void LexerTest::testReadPunctuator()
     CPPUNIT_ASSERT( token.kind  == TK::Ellipsis );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 7u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "..." ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "..." ) );
   }
 
   // .
@@ -610,7 +611,7 @@ void LexerTest::testReadPunctuator()
     CPPUNIT_ASSERT( token.kind  == TK::Dot );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 10u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "." ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "." ) );
   }
 
   // ||
@@ -619,7 +620,7 @@ void LexerTest::testReadPunctuator()
     CPPUNIT_ASSERT( token.kind  == TK::LOr );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 11u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "||" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "||" ) );
   }
 
   // |
@@ -628,7 +629,7 @@ void LexerTest::testReadPunctuator()
     CPPUNIT_ASSERT( token.kind  == TK::Or );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 13u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "|" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "|" ) );
   }
 
   // --
@@ -637,7 +638,7 @@ void LexerTest::testReadPunctuator()
     CPPUNIT_ASSERT( token.kind  == TK::DecOp );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 14u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "--" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "--" ) );
   }
 
   // =
@@ -646,7 +647,7 @@ void LexerTest::testReadPunctuator()
     CPPUNIT_ASSERT( token.kind  == TK::Assign );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 16u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "=" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "=" ) );
   }
 
 
@@ -670,7 +671,7 @@ void LexerTest::testReadPunctuatorDigraph()
     CPPUNIT_ASSERT( token.kind  == TK::LBracket );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "<:" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "<:" ) );
   }
 
   // :>
@@ -679,7 +680,7 @@ void LexerTest::testReadPunctuatorDigraph()
     CPPUNIT_ASSERT( token.kind  == TK::RBracket );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), ":>" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), ":>" ) );
   }
 
   // <%
@@ -688,7 +689,7 @@ void LexerTest::testReadPunctuatorDigraph()
     CPPUNIT_ASSERT( token.kind  == TK::LBrace );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 5u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "<%" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "<%" ) );
   }
 
   // %>
@@ -697,7 +698,7 @@ void LexerTest::testReadPunctuatorDigraph()
     CPPUNIT_ASSERT( token.kind  == TK::RBrace );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 7u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "%>" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "%>" ) );
   }
 
   // %:
@@ -706,7 +707,7 @@ void LexerTest::testReadPunctuatorDigraph()
     CPPUNIT_ASSERT( token.kind  == TK::Hash );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 9u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "%:" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "%:" ) );
   }
 
   // %:%:
@@ -715,7 +716,7 @@ void LexerTest::testReadPunctuatorDigraph()
     CPPUNIT_ASSERT( token.kind  == TK::DHash );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 12u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "%:%:" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "%:%:" ) );
   }
 
 
@@ -738,7 +739,7 @@ void LexerTest::testReadPunctuatorDots()
     CPPUNIT_ASSERT( token.kind  == TK::Ellipsis );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "..." ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "..." ) );
   }
 
   // ...
@@ -747,7 +748,7 @@ void LexerTest::testReadPunctuatorDots()
     CPPUNIT_ASSERT( token.kind  == TK::Ellipsis );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "..." ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "..." ) );
   }
 
   // .
@@ -756,7 +757,7 @@ void LexerTest::testReadPunctuatorDots()
     CPPUNIT_ASSERT( token.kind  == TK::Dot );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 7u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "." ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "." ) );
   }
 
   // .
@@ -765,7 +766,7 @@ void LexerTest::testReadPunctuatorDots()
     CPPUNIT_ASSERT( token.kind  == TK::Dot );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 8u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "." ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "." ) );
   }
 
 
@@ -788,7 +789,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::LBracket );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "<:" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "<:" ) );
   }
 
   // >
@@ -797,7 +798,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::Gr );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), ">" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), ">" ) );
   }
 
 
@@ -811,7 +812,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::LBrace );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "<%" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "<%" ) );
   }
 
   // >
@@ -820,7 +821,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::Gr );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), ">" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), ">" ) );
   }
 
 
@@ -834,7 +835,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::DHash );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "%:%:" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "%:%:" ) );
   }
 
   // %:
@@ -843,7 +844,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::Hash );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 5u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "%:" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "%:" ) );
   }
 
   // %
@@ -852,7 +853,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::Mod );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 7u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "%" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "%" ) );
   }
 
 
@@ -866,7 +867,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::LBrace );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "<%" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "<%" ) );
   }
 
   // :>
@@ -875,7 +876,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::RBracket );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), ":>" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), ":>" ) );
   }
 
 
@@ -889,7 +890,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::LShift );
     CPPUNIT_ASSERT_EQUAL( 5u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "<<" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "<<" ) );
   }
 
   // :
@@ -898,7 +899,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::Col );
     CPPUNIT_ASSERT_EQUAL( 5u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), ":" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), ":" ) );
   }
 
   // :>
@@ -907,7 +908,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::RBracket );
     CPPUNIT_ASSERT_EQUAL( 5u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), ":>" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), ":>" ) );
   }
 
   // >
@@ -916,7 +917,7 @@ void LexerTest::testReadPunctuatorDigraphAmbiguity()
     CPPUNIT_ASSERT( token.kind  == TK::Gr );
     CPPUNIT_ASSERT_EQUAL( 5u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 6u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), ">" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), ">" ) );
   }
 
 
@@ -1020,7 +1021,7 @@ void LexerTest::testReadCommentAsWhitespace()
     CPPUNIT_ASSERT( token.kind == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "abc" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "abc" ) );
   }
 
   // def
@@ -1029,7 +1030,7 @@ void LexerTest::testReadCommentAsWhitespace()
     CPPUNIT_ASSERT( token.kind == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 8u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "def" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "def" ) );
   }
 
 
@@ -1044,7 +1045,7 @@ void LexerTest::testReadCommentAsWhitespace()
     CPPUNIT_ASSERT( token.kind == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "au" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "au" ) );
   }
 
   // to
@@ -1053,7 +1054,7 @@ void LexerTest::testReadCommentAsWhitespace()
     CPPUNIT_ASSERT( token.kind == TK::IDENTIFIER );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 7u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "to" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "to" ) );
   }
 
 
@@ -1068,7 +1069,7 @@ void LexerTest::testReadCommentAsWhitespace()
     CPPUNIT_ASSERT( token.kind == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "123" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "123" ) );
   }
 
   // 456
@@ -1077,7 +1078,7 @@ void LexerTest::testReadCommentAsWhitespace()
     CPPUNIT_ASSERT( token.kind == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 8u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "456" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "456" ) );
   }
 
 
@@ -1092,7 +1093,7 @@ void LexerTest::testReadCommentAsWhitespace()
     CPPUNIT_ASSERT( token.kind == TK::Le );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "<" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "<" ) );
   }
 
   // <=
@@ -1101,7 +1102,7 @@ void LexerTest::testReadCommentAsWhitespace()
     CPPUNIT_ASSERT( token.kind == TK::LEq );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 6u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "<=" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "<=" ) );
   }
 
 

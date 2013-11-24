@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstring>
 #include "../../src/Lex/Token.h"
+#include "../../src/util.h"
 
 
 // register this test 
@@ -45,5 +46,5 @@ void TokenTest::testToken()
   CPPUNIT_ASSERT( TK::END_OF_FILE == token.kind );
 
   // check token string
-  CPPUNIT_ASSERT( strcmp( text, token.sym.str() ) == 0 );
+  CPPUNIT_ASSERT( strEq( text, token.sym.str() ) );
 }

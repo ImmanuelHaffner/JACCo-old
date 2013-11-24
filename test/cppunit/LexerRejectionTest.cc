@@ -46,7 +46,7 @@ void LexerRejectionTest::testEmptyCharConst()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "''" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "''" ) );
     CPPUNIT_ASSERT( hasNewErrors() );
   }
 
@@ -56,7 +56,7 @@ void LexerRejectionTest::testEmptyCharConst()
     CPPUNIT_ASSERT( token.kind  == TK::CONSTANT );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
-    CPPUNIT_ASSERT( strcmp( token.sym.str(), "''" ) == 0 );
+    CPPUNIT_ASSERT( strEq( token.sym.str(), "''" ) );
     CPPUNIT_ASSERT( hasNewErrors() );
   }
 
