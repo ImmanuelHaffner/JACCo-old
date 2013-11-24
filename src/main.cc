@@ -106,17 +106,20 @@ int main(int, char** const argv)
 
               parser.parse();
 
-              Token tok = lexer->getToken();
-              if ( tok.kind != TK::END_OF_FILE )
+              if ( parser.getCurTok().kind != TK::END_OF_FILE )
               {
                 errorf( "%s", "unparsed tokens" );
-                std::cout << "\t" << tok << "\n";
+                std::cout << "\t" << parser.getCurTok() << "\n";
 
-                for (;;)
+                if ( parser.getNextTok().kind != TK::END_OF_FILE )
                 {
-                  Token tok_ = lexer->getToken();
-                  if ( tok.kind == TK::END_OF_FILE ) break;
-                  std::cout << "\t" << tok << "\n";
+                  std::cout << "\t" << parser.getNextTok() << "\n";
+                  for (;;)
+                  {
+                    Token tok = lexer->getToken();
+                    if ( tok.kind == TK::END_OF_FILE ) break;
+                    std::cout << "\t" << tok << "\n";
+                  }
                 }
               }
 
@@ -134,7 +137,9 @@ int main(int, char** const argv)
       }
 
       if ( symbols )
-        std::cout << Symbol::size() << " symbols created\n";
+        std::cout
+          << Symbol::size() - Token::KeywordsTable.size() - 1 /* empty symbol */
+          << " symbols created\n";
       Symbol::destroy();
     }
   } catch (std::exception const& e) {

@@ -75,6 +75,11 @@ namespace C4
       case Lex::TK::LOr:
         return 10;
 
+        //
+        //  IMPORTANT:
+        //  Must never return 0.
+        //
+
       default: return -1;
     }
   } // end getBinOpPrecedence
@@ -90,6 +95,8 @@ namespace C4
       /// Parses the tokens returned by the lexer, and construct the
       /// corresponding AST.
       void parse();
+      Lex::Token const & getCurTok() { return *current; }
+      Lex::Token const & getNextTok() { return *next; }
 
 
       private:
