@@ -43,7 +43,7 @@ namespace C4
         std::string const fileName;
 
       private:
-        char c = ' ';
+        int c = ' ';
         StrBuf buf;
         Pos pos;
         File &file;
