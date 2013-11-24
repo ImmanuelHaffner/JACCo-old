@@ -187,9 +187,10 @@ namespace C4
       //
       //===----------------------------------------------------------------===//
 
-      /// Parses an expression.
-      ///
-      /// \return the parsed expression
+      //
+      //  Expressions
+      //
+
       AST::Expression & parsePrimaryExpression();
       AST::Expression & parseArgumentExpressionList();
       AST::Expression & parsePostfixExpression();
@@ -199,11 +200,22 @@ namespace C4
       AST::Expression & parseBinOpRHS( int exprPrec, AST::Expression &lhs );
       AST::Expression & parseConditionalExpression();
       AST::Expression & parseAssignmentExpression();
+
+      /// Parses an expression.
+      ///
+      /// \return the parsed expression
       AST::Expression & parseExpression();
       inline AST::Expression & parseConstantExpression()
       {
         return parseConditionalExpression();
       }
+
+      //
+      // Declarations
+      //
+
+      AST::Declaration & parseDeclaration();
+
 
     }; // end struct Parser
 

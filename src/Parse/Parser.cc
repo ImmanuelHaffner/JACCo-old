@@ -789,6 +789,7 @@ void Parser::parse()
   parseExpression();
 }
 
+
 //===----------------------------------------------------------------------===//
 //
 //  Parser Sub Functions
@@ -797,6 +798,10 @@ void Parser::parse()
 //  declarations or expressions.
 //
 //===----------------------------------------------------------------------===//
+
+//
+//  Expressions
+//
 
 Expression & Parser::parsePrimaryExpression()
 {
@@ -813,15 +818,17 @@ Expression & Parser::parsePrimaryExpression()
       expr = new StringLiteral( *current ); getNextToken(); break;
 
     case TK::LPar:
-      getNextToken(); // eat '('
-      parseExpression();
-      accept( TK::RPar ); // eat ')'
-      break;
+      {
+        getNextToken(); // eat '('
+        parseExpression();
+        accept( TK::RPar ); // eat ')'
+        break;
+      }
 
     default:
       {
         std::ostringstream oss;
-        oss << current;
+        oss << current->kind;
         errorf( current->pos, "%s - %s", oss.str().c_str(),
             "identifier, constant, string-literal or '(' expression ')' "
             "expected" );
@@ -895,6 +902,7 @@ Expression & Parser::parseUnaryExpression()
     case TK::DecOp:
       {
         getNextToken(); // eat operator
+        parseUnaryExpression();
         break;
       }
 
@@ -959,7 +967,7 @@ Expression & Parser::parseBinOpRHS( int exprPrec, AST::Expression &lhs )
   Token const * binOp = this->current;
   getNextToken(); // eat BinOp
 
-  Expression &rhs = parsePrimaryExpression();
+  Expression &rhs = parseUnaryExpression();
 
   // If binOp binds less with the RHS than the operator after RHS, let the
   // pending operator take RHS as its LHS.
@@ -1036,4 +1044,19 @@ Expression & Parser::parseExpression()
   }
 
   return *( new IllegalExpression() );
+} // end parseExpression
+
+
+//
+//  Declarations
+//
+
+AST::Declaration & Parser::parseDeclaration()
+{
+  // TODO parse declaration-specifiers
+  if ( current->kind != TK::SCol )
+  {}
+    // TODO parse init-declarator-list
+  accept( TK::SCol ); // eat ';'
+  return *( new IllegalDeclaration() );
 }
