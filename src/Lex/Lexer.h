@@ -64,7 +64,7 @@ namespace C4
 
         inline int updatePos( int c )
         {
-          if ( c == -1 )
+          if ( c == EOF )
             return c;
 
           if ( c == '\n' )

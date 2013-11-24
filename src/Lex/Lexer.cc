@@ -8,8 +8,10 @@
 
 #include "Lexer.h"
 
+#include <cstdio>
 #include <cctype>
 #include "../diagnostic.h"
+
 
 using namespace C4;
 using namespace Lex;
@@ -44,10 +46,10 @@ Token Lexer::getToken()
   {
     switch ( c )
     {
-      case -1:
+      case EOF:
         nextChar();
         // check whether we continue after an eof, for testing only
-        if ( c == -1 )
+        if ( c == EOF )
           return Token::EndOfFile( pos );
         else
           continue;
@@ -406,7 +408,7 @@ Token Lexer::getToken()
           case '/':
             do
               nextChar();
-            while ( c != -1 && c != '\n' );
+            while ( c != EOF && c != '\n' );
             continue;
 
             // Comment-block
@@ -414,13 +416,13 @@ Token Lexer::getToken()
             // read * to handle /*/
             do
               nextChar();
-            while ( c != -1 && ! ( c == '*' && file.peek() == '/' ) );
-            if ( c == -1 )
+            while ( c != EOF && ! ( c == '*' && file.peek() == '/' ) );
+            if ( c == EOF )
               errorf( start, "%s", "unterminated comment block" );
             else
             {
-              nextChar();
-              nextChar();
+              nextChar(); // eat '*'
+              nextChar(); // eat '/'
             }
             continue;
 
@@ -490,7 +492,7 @@ Token Lexer::lexCharConstOrStringLiteral()
   nextChar();
   for (;;)
   {
-    if ( c == -1 || c == '\n' )
+    if ( c == EOF || c == '\n' )
       goto newline;
 
     if ( c == terminator )

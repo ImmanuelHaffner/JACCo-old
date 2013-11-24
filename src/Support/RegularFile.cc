@@ -8,11 +8,14 @@
 
 #include "RegularFile.h"
 
+
 using namespace C4;
+
 
 int RegularFile::get()
 {
   int res = source.get();
+
   if ( res == '\r' )
   {
     if ( source.peek() == '\n' )

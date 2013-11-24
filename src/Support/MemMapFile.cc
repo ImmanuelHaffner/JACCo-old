@@ -8,12 +8,16 @@
 
 #include "MemMapFile.h"
 
+#include <cstdio>
+
+
 using namespace C4;
+
 
 int MemMapFile::get()
 {
   if ( current >= eof )
-    return -1;
+    return EOF;
 
   int res = *current;
   ++current;
@@ -31,7 +35,7 @@ int MemMapFile::get()
 int MemMapFile::peek()
 {
   if ( current >= eof )
-    return -1;
+    return EOF;
 
   if ( *current == '\r' )
     return '\n';
@@ -43,7 +47,7 @@ int MemMapFile::peek( int n )
 {
   char const *p = current + n;
   if ( source.data() > p || p >= eof )
-    return -1;
+    return EOF;
 
   if ( *p == '\r' )
     return '\n';
