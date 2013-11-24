@@ -2,6 +2,8 @@
 
 export C4="$(pwd)/../build/default/c4";
 
+FILTER=$1
+
 PASSES=0
 
 for path in $(find "resource/" -type d);
@@ -13,13 +15,16 @@ do
   do
     echo "testing $path/${test}";
 
-# contains floating point
-$(grep -e '\.[0-9]' -e '[0-9]\.' -e '[0-9]\+\(u\|U\|l\|L\)' \
-  -e '0\(x\|X\)' -e " L'" "$test" > /dev/null)
-    if [ $? -eq 0 ];
+    # contains floating point
+    if [ $FILTER ];
     then
-      rm "$test"
-      continue
+      $(grep -e '\.[0-9]' -e '[0-9]\.' -e '[0-9]\+\(u\|U\|l\|L\)' \
+        -e '0\(x\|X\)' -e " L'" "$test" > /dev/null)
+      if [ $? -eq 0 ];
+      then
+        rm "$test"
+        continue
+      fi
     fi
 
     testname=$(basename "${test}" .c);
