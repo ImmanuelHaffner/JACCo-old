@@ -52,7 +52,7 @@ do
               -      actual"
       colordiff -y --width=180 "${expected}" "${result}"
       echo "-> output differs: ${path}/${test}";
-      echo Passed tests: $PASSES
+      echo Tests passed: $PASSES
       exit 1;
     else
       echo "-> passed";
