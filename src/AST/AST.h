@@ -30,6 +30,7 @@
 //  Declaration
 //
 #include "Declaration.h"
+#include "IllegalDeclaration.h"
 
 //
 //  Type
