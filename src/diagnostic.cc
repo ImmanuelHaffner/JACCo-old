@@ -61,8 +61,9 @@ static void verrorf(Pos const* const pos, char const* fmt, va_list ap)
       out << pos->line << ":";
     if ( pos->column )
       out << pos->column << ":";
+    out << " ";
 	}
-  out << " error: ";
+  out << "error: ";
 
 	for (; auto f = strchr(fmt, '%'); fmt = f) {
     out.write( fmt, f - fmt );
