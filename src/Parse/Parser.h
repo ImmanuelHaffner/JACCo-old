@@ -114,7 +114,7 @@ namespace C4
       /// This functions moves sets 'current' to 'next', and sets 'next' to the
       /// token returned from the lexer.
       /// This function offers a small, fixed-size token buffer.
-      void getNextToken();
+      void readNextToken();
 
       /// Necessary for compatibility, use neutral element of LOr
       ///
@@ -215,6 +215,38 @@ namespace C4
       //
 
       AST::Declaration & parseDeclaration();
+      AST::Declaration & parseDeclarationSpecifiers();
+      AST::Declaration & parseInitDeclaratorList();
+      AST::Declaration & parseInitDeclarator();
+      AST::Declaration & parseTypeSpecifier();
+      AST::Declaration & parseStructOrUnionSpecifier();
+      AST::Declaration & parseStructOrUnion();
+      AST::Declaration & parseStructDeclarationList();
+      AST::Declaration & parseStructDeclaration();
+      AST::Declaration & parseSpecifierQualifierList();
+      AST::Declaration & parseStructDeclaratorList();
+      AST::Declaration & parseStructDeclarator();
+      AST::Declaration & parseDeclarator();
+      AST::Declaration & parseDirectDeclarator();
+      AST::Declaration & parsePointer();
+      AST::Declaration & parseParameterTypeList();
+      AST::Declaration & parseParameterList();
+      AST::Declaration & parseParameterDeclaration();
+      AST::Declaration & parseIdentifierList();
+      AST::Declaration & parseTypeName();
+      AST::Declaration & parseAbstractDeclarator();
+      AST::Declaration & parseDirectAbstractDeclarator();
+      AST::Declaration & parseMaybeAbstractDeclarator();
+      AST::Declaration & parseDirectMaybeAbstractDeclarator();
+
+      AST::Declaration & parseInitializer();
+      AST::Declaration & parseInitializerList();
+
+      //
+      //  Statements
+      //
+
+      AST::Statement & parseStatement();
 
 
     }; // end struct Parser
@@ -241,7 +273,7 @@ namespace C4
           errorf( current->pos, "%s", oss.str().c_str() );
         }
         else
-          getNextToken();
+          readNextToken();
       }
 
     template < typename T >
@@ -275,7 +307,7 @@ namespace C4
           errorf( current->pos, "%s", oss.str().c_str() );
         }
         else
-          getNextToken();
+          readNextToken();
       }
   } // end namespace Parse
 } // end namespace C4
