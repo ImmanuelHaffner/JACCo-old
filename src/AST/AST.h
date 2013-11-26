@@ -25,6 +25,7 @@
 //  Statement
 //
 #include "Statement.h"
+#include "IllegalStatement.h"
 
 //
 //  Declaration
