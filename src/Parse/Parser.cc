@@ -129,10 +129,10 @@ Expression & Parser::parsePostfixExpression()
           break;
         }
 
-      default: goto for_end0; // exit loop
+      default: goto for_end; // exit loop
     } // end switch
   } // end for
-for_end0:
+for_end:
   return *( new IllegalExpression() );
 } // end parsePostfixExpression
 
@@ -276,10 +276,10 @@ Expression & Parser::parseAssignmentExpression()
         parseConditionalExpression();
 
       default:
-        goto for_end1;
+        goto for_end;
     }
   }
-for_end1:
+for_end:
   return *( new IllegalExpression() );
 } // end parseAssignmentExpression
 
@@ -448,10 +448,10 @@ Declaration & Parser::parseSpecifierQualifierList()
 
         // Our C subset elides any other type specifier or qualifier.
 
-      default: goto for_end2;
+      default: goto for_end;
     }
   }
-for_end2:
+for_end:
   return *( new IllegalDeclaration() );
 } // end parseSpecifierQualifierList
 
@@ -561,10 +561,10 @@ Declaration & Parser::parseDirectDeclarator()
           break;
         }
 
-      default: goto for_end3;
+      default: goto for_end;
     } // end switch
   } // end for
-for_end3:
+for_end:
   return *( new IllegalDeclaration() );
 } // end parseDirectDeclarator
 
@@ -747,10 +747,10 @@ Declaration & Parser::parseDirectAbstractDeclarator()
         accept( TK::RPar );
         break;
 
-      default: goto for_end4;
+      default: goto for_end;
     } // end switch
   } // end for
-for_end4:
+for_end:
   return *( new IllegalDeclaration() );
 } // end parseDirectAbstractDeclarator
 
@@ -870,5 +870,336 @@ Declaration & Parser::parseInitializerList()
 
 Statement & Parser::parseStatement()
 {
+  // TODO
   return *( new IllegalStatement() );
 }
+
+Statement & Parser::parseLabeledStatement()
+{
+  switch ( current->kind )
+  {
+    case TK::IDENTIFIER:
+      readNextToken(); // eat identifier
+      accept( TK::Col ); // eat ':'
+      parseStatement();
+      break;
+
+    case TK::Case:
+      readNextToken(); // eat 'case'
+      parseConstantExpression();
+      accept( TK::Col ); // eat ':'
+      parseStatement();
+      break;
+
+    case TK::Default:
+      readNextToken(); // eat 'default'
+      accept( TK::Col ); // eat ':'
+      parseStatement();
+      break;
+
+    default:
+      {
+        std::ostringstream oss;
+        oss << current->kind;
+        errorf( current->pos, "%s - %s", oss.str().c_str(),
+            "identifier, 'case' or 'default' expected" );
+      }
+  } // end switch
+  return *( new IllegalStatement() );
+} // end parseLabeledStatement
+
+Statement & Parser::parseCompoundStatement()
+{
+  accept( TK::LBrace ); // eat '{'
+  switch ( current->kind )
+  {
+    case TK::Void:
+    case TK::Char:
+    case TK::Int:
+    case TK::Struct:
+      // TODO parse declaration-list
+      switch ( current->kind )
+      {
+        case TK::IDENTIFIER:
+        case TK::CONSTANT:
+        case TK::STRING_LITERAL:
+        case TK::Goto:
+        case TK::If:
+        case TK::For:
+        case TK::While:
+        case TK::Do:
+        case TK::Break:
+        case TK::Continue:
+        case TK::Switch:
+        case TK::Case:
+        case TK::Default:
+        case TK::IncOp:
+        case TK::DecOp:
+        case TK::Return:
+        case TK::Sizeof:
+        case TK::Not:
+        case TK::Neg:
+        case TK::And:
+        case TK::Mul:
+        case TK::Plus:
+        case TK::Minus:
+        case TK::LPar:
+        case TK::LBrace:
+        case TK::SCol:
+          // TODO parse statement-list
+          break;
+
+        default:;
+      } // end switch
+      break;
+
+    case TK::IDENTIFIER:
+    case TK::CONSTANT:
+    case TK::STRING_LITERAL:
+    case TK::Goto:
+    case TK::If:
+    case TK::For:
+    case TK::While:
+    case TK::Do:
+    case TK::Break:
+    case TK::Continue:
+    case TK::Switch:
+    case TK::Case:
+    case TK::Default:
+    case TK::IncOp:
+    case TK::DecOp:
+    case TK::Return:
+    case TK::Sizeof:
+    case TK::Not:
+    case TK::Neg:
+    case TK::And:
+    case TK::Mul:
+    case TK::Plus:
+    case TK::Minus:
+    case TK::LPar:
+    case TK::LBrace:
+    case TK::SCol:
+      // TODO parse statement-list
+      break;
+
+    default:
+      {
+        std::ostringstream oss;
+        oss << current->kind;
+        errorf( current->pos, "%s - %s", oss.str().c_str(),
+            "declaration or statement expected" );
+      }
+  } // end switch
+  accept( TK::RBrace ); // eat '}'
+  return *( new IllegalStatement() );
+} // end parseCompoundStatement
+
+Statement & Parser::parseDeclarationList()
+{
+  parseDeclaration();
+
+  for (;;)
+  {
+    switch ( current->kind )
+    {
+      case TK::Void:
+      case TK::Char:
+      case TK::Int:
+      case TK::Struct:
+        parseDeclaration();
+        break;
+
+      default: goto for_end;
+    }
+  } // end for
+for_end:
+  return *( new IllegalStatement() );
+} // end parseDeclarationList
+
+Statement & Parser::parseStatementList()
+{
+  parseStatement();
+
+  for (;;)
+  {
+    switch ( current->kind )
+    {
+      case TK::IDENTIFIER:
+      case TK::CONSTANT:
+      case TK::STRING_LITERAL:
+      case TK::Goto:
+      case TK::If:
+      case TK::For:
+      case TK::While:
+      case TK::Do:
+      case TK::Break:
+      case TK::Continue:
+      case TK::Switch:
+      case TK::Case:
+      case TK::Default:
+      case TK::IncOp:
+      case TK::DecOp:
+      case TK::Return:
+      case TK::Sizeof:
+      case TK::Not:
+      case TK::Neg:
+      case TK::And:
+      case TK::Mul:
+      case TK::Plus:
+      case TK::Minus:
+      case TK::LPar:
+      case TK::LBrace:
+      case TK::SCol:
+        parseStatement();
+        break;
+
+      default: goto for_end;
+    }
+  } // end for
+for_end:
+  return *( new IllegalStatement() );
+} // end parseStatementList
+
+Statement & Parser::parseExpressionStatement()
+{
+  if ( current->kind != TK::SCol )
+    parseExpression();
+  accept( TK::SCol );
+  return *( new IllegalStatement() );
+} // end parseExpressionStatement
+
+Statement & Parser::parseSelectionStatement()
+{
+  switch ( current->kind )
+  {
+    case TK::If:
+      readNextToken(); // eat 'if'
+      accept( TK::LPar ); // eat '('
+      parseExpression();
+      accept( TK::RPar ); // eat ')'
+      parseStatement();
+      if ( current->kind == TK::Else )
+      {
+        readNextToken(); // eat 'else'
+        parseStatement();
+      }
+      break;
+
+    case TK::Switch:
+      readNextToken(); // eat 'switch'
+      accept( TK::LPar ); // eat '('
+      parseExpression();
+      accept( TK::RPar ); // eat ')'
+      parseStatement();
+      break;
+
+    default:
+      {
+        std::ostringstream oss;
+        oss << current->kind;
+        errorf( current->pos, "%s - %s", oss.str().c_str(),
+            "'if' or 'switch' expected" );
+      }
+  } // end switch
+  return *( new IllegalStatement() );
+} // end parseSelectionStatement
+
+Statement & Parser::parseIterationStatement()
+{
+  switch ( current->kind )
+  {
+    case TK::For:
+      readNextToken(); // eat 'for'
+      accept( TK::LPar ); // eat '('
+      parseExpressionStatement(); // initialization
+      parseExpressionStatement(); // condition
+      if ( current->kind != TK::RPar )
+        parseExpression(); // increment
+      accept( TK::RPar ); // eat ')'
+      parseStatement(); // body
+      break;
+
+    case TK::While:
+      readNextToken(); // eat 'while'
+      accept( TK::LPar ); // eat '('
+      parseExpression(); // condition
+      accept( TK::RPar ); // eat ')'
+      parseStatement(); // body
+      break;
+
+    case TK::Do:
+      readNextToken(); // eat 'do'
+      parseStatement(); // body
+      accept( TK::While ); // eat 'while'
+      accept( TK::LPar ); // eat '('
+      parseExpression(); // condition
+      accept( TK::LPar ); // eat ')'
+      break;
+
+    default:
+      {
+        std::ostringstream oss;
+        oss << current->kind;
+        errorf( current->pos, "%s - %s", oss.str().c_str(),
+            "'for', 'do' or 'while' expected" );
+      }
+  } // end switch
+  return *( new IllegalStatement() );
+} // end parseIterationStatement
+
+Statement & Parser::parseJumpStatement()
+{
+  switch ( current->kind )
+  {
+    case TK::Goto:
+      readNextToken(); // eat 'goto'
+      accept( TK::IDENTIFIER ); // eat identifier
+      accept( TK::SCol ); // eat ';'
+      break;
+
+    case TK::Continue:
+      readNextToken(); // eat 'continue'
+      accept( TK::SCol ); // eat ';'
+      break;
+
+    case TK::Break:
+      readNextToken(); // eat 'break'
+      accept( TK::SCol ); // eat ';'
+      break;
+
+    case TK::Return:
+      readNextToken(); // eat 'return'
+      if ( current->kind != TK::SCol )
+        parseExpression();
+      accept( TK::SCol ); // eat ';'
+      break;
+
+    default:
+      {
+        std::ostringstream oss;
+        oss << current->kind;
+        errorf( current->pos, "%s - %s", oss.str().c_str(),
+            "'return', 'continue', 'break' or 'goto' expected" );
+      }
+  } // end switch
+  return *( new IllegalStatement() );
+} // end parseJumpStatement
+
+Statement & Parser::parseTranslationUnit()
+{
+  do
+    parseExternalDeclaration();
+  while ( current->kind != TK::END_OF_FILE );
+  return *( new IllegalStatement() );
+} // end parseTranslationUnit
+
+Statement & Parser::parseExternalDeclaration()
+{
+  return *( new IllegalStatement() );
+} // end parseExternalDeclaration
+
+Statement & Parser::parseFunctionDefinition()
+{
+  // TODO implement
+  return *( new IllegalStatement() );
+} // end parseFunctionDefinition

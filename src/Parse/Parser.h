@@ -247,6 +247,18 @@ namespace C4
       //
 
       AST::Statement & parseStatement();
+      AST::Statement & parseLabeledStatement();
+      AST::Statement & parseCompoundStatement();
+      AST::Statement & parseDeclarationList();
+      AST::Statement & parseStatementList();
+      AST::Statement & parseExpressionStatement();
+      AST::Statement & parseSelectionStatement();
+      AST::Statement & parseIterationStatement();
+      AST::Statement & parseJumpStatement();
+
+      AST::Statement & parseTranslationUnit();
+      AST::Statement & parseExternalDeclaration();
+      AST::Statement & parseFunctionDefinition();
 
 
     }; // end struct Parser
