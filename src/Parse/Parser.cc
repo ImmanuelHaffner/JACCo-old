@@ -32,6 +32,8 @@ void Parser::readNextToken()
   next = new Lex::Token( lexer.getToken() );
 }
 
+//REVIEW
+//
 void Parser::parse()
 {
   readNextToken();
@@ -142,6 +144,7 @@ Expression & Parser::parseArgumentExpressionList()
   while ( current->kind == TK::Comma )
     parseAssignmentExpression();
   return *( new IllegalExpression() );
+//REVIEW
 }
 
 Expression & Parser::parseUnaryExpression()
