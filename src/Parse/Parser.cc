@@ -32,8 +32,6 @@ void Parser::readNextToken()
   next = new Lex::Token( lexer.getToken() );
 }
 
-//REVIEW
-//
 void Parser::parse()
 {
   readNextToken();
@@ -144,8 +142,7 @@ Expression & Parser::parseArgumentExpressionList()
   while ( current->kind == TK::Comma )
     parseAssignmentExpression();
   return *( new IllegalExpression() );
-//REVIEW
-}
+} // end parseArgumentExpressionList
 
 Expression & Parser::parseUnaryExpression()
 {
@@ -559,7 +556,7 @@ Declaration & Parser::parseDirectDeclarator()
                     "identifier, 'void', 'char', 'int', 'struct' or ')' "
                     "expected" );
               }
-          }
+          } // end switch
           accept( TK::RPar ); // eat ')'
           break;
         }
@@ -916,6 +913,9 @@ Statement & Parser::parseCompoundStatement()
   accept( TK::LBrace ); // eat '{'
   switch ( current->kind )
   {
+    case TK::RBrace:
+      break;
+
     case TK::Void:
     case TK::Char:
     case TK::Int:
