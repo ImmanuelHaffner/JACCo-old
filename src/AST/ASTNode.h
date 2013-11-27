@@ -11,7 +11,7 @@
 #define C4_ASTNODE_H
 
 #include <iostream>
-
+#include "ASTNodeVisitor.h"
 
 namespace C4
 {

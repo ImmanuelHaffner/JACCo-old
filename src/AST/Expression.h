@@ -10,14 +10,15 @@
 #define C4_EXPRESSION_H
 
 #include <iostream>
-
+#include "ASTNode.h"
+#include "ASTNodeVisitor.h"
 
 namespace C4
 {
   namespace AST
   {
     ///
-    struct Expression
+    struct Expression : ASTNode
     {
       virtual ~Expression() {}
 
