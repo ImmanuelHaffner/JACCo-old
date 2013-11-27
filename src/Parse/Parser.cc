@@ -36,7 +36,7 @@ void Parser::parse()
 {
   readNextToken();
   readNextToken();
-  parseExpression();
+  parseTranslationUnit();
 }
 
 
@@ -79,7 +79,7 @@ Expression & Parser::parsePrimaryExpression()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "identifier, constant, string-literal or '(' expression ')' "
             "expected" );
         expr = new IllegalExpression();
@@ -354,7 +354,7 @@ Declaration & Parser::parseTypeSpecifier()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "'void', 'char', 'int' or 'struct' expected" );
       }
   }
@@ -386,7 +386,7 @@ Declaration & Parser::parseStructOrUnionSpecifier()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "identifier or '{' expected" );
       }
   }
@@ -406,7 +406,7 @@ Declaration & Parser::parseStructOrUnion()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "'struct' expected" );
       }
   }
@@ -511,7 +511,7 @@ Declaration & Parser::parseDirectDeclarator()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "identifier or '(' expected" );
       }
   } // end switch
@@ -552,7 +552,7 @@ Declaration & Parser::parseDirectDeclarator()
               {
                 std::ostringstream oss;
                 oss << current->kind;
-                errorf( current->pos, "%s - %s", oss.str().c_str(),
+                errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
                     "identifier, 'void', 'char', 'int', 'struct' or ')' "
                     "expected" );
               }
@@ -671,7 +671,7 @@ Declaration & Parser::parseAbstractDeclarator()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "'*', '(', or '[' expected" );
       }
   } // end switch
@@ -705,7 +705,7 @@ Declaration & Parser::parseDirectAbstractDeclarator()
           {
             std::ostringstream oss;
             oss << current->kind;
-            errorf( current->pos, "%s - %s", oss.str().c_str(),
+            errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
                 "'*', '(', '[', 'void', 'char', 'int', 'struct' or ')' "
                 "expected" );
           }
@@ -724,7 +724,7 @@ Declaration & Parser::parseDirectAbstractDeclarator()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "'(' or '[' expected" );
       }
   } // end switch
@@ -794,7 +794,7 @@ Declaration & Parser::parseMaybeAbstractDeclarator()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "identifier, '*', '(' or '[' expected" );
       }
   } // end switch
@@ -830,7 +830,7 @@ Declaration & Parser::parseDirectMaybeAbstractDeclarator()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "'*', '(', '[', 'void', 'char', 'int' or 'struct' expected" );
       }
   } // end switch
@@ -901,7 +901,7 @@ Statement & Parser::parseLabeledStatement()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "identifier, 'case' or 'default' expected" );
       }
   } // end switch
@@ -986,7 +986,7 @@ Statement & Parser::parseCompoundStatement()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "declaration or statement expected" );
       }
   } // end switch
@@ -1097,7 +1097,7 @@ Statement & Parser::parseSelectionStatement()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "'if' or 'switch' expected" );
       }
   } // end switch
@@ -1140,7 +1140,7 @@ Statement & Parser::parseIterationStatement()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "'for', 'do' or 'while' expected" );
       }
   } // end switch
@@ -1178,7 +1178,7 @@ Statement & Parser::parseJumpStatement()
       {
         std::ostringstream oss;
         oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
             "'return', 'continue', 'break' or 'goto' expected" );
       }
   } // end switch
@@ -1195,11 +1195,98 @@ Statement & Parser::parseTranslationUnit()
 
 Statement & Parser::parseExternalDeclaration()
 {
+  switch ( current->kind )
+  {
+    case TK::IDENTIFIER:
+    case TK::Mul:
+    case TK::LPar:
+      // declarator
+      parseDeclarator();
+      switch ( current->kind )
+      {
+        case TK::Void:
+        case TK::Char:
+        case TK::Int:
+        case TK::Struct:
+          parseDeclarationList();
+          break;
+
+        default:;
+      } // end switch
+      parseCompoundStatement();
+      break; // end declarator
+
+    case TK::Void:
+    case TK::Char:
+    case TK::Int:
+    case TK::Struct:
+      // declaration-specifiers
+      parseDeclarationSpecifiers();
+      /*
+       * Since init-declarator is defined as
+       *    init-declarator:
+       *      declarator
+       *
+       * we can simply check whether another init-declarator immediately
+       * follows, to detect the init-declarator-list.
+       *
+       * If we later on allow assignments in init-declarator, we have to check,
+       * whether the first parsed init-declarator actually contains an
+       * assignment, or is just a declaration, such that we can decide for
+       * init-declarator-list or just declarator.
+       */
+
+      // could contain an assignment, and such would be part of an
+      // init-declarator-list
+      parseInitDeclarator();
+
+      switch ( current->kind )
+      {
+        case TK::SCol:
+          // init-declarator-list
+          readNextToken(); // eat ';'
+          break;
+
+        case TK::Comma:
+          // init-declarator-list
+          readNextToken(); // eat ','
+          parseInitDeclaratorList();
+          accept( TK::SCol ); // eat ';'
+          break;
+
+        case TK::Void:
+        case TK::Char:
+        case TK::Int:
+        case TK::Struct:
+          // declaration-list compound-statement
+          parseDeclarationList();
+          parseCompoundStatement();
+          break;
+
+        case TK::LBrace:
+          parseCompoundStatement();
+          break;
+
+        default:
+          {
+            // If the first parsed init-declarator contains an assignment,
+            // we would only expect comma ',' or semi-colon ';'.
+            std::ostringstream oss;
+            oss << current->kind;
+            errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
+                "';', ',', 'void', 'char', 'int', 'struct' or '{' expected" );
+          }
+      } // end switch
+      break; // end declaration-specifiers
+
+    default:
+      {
+        std::ostringstream oss;
+        oss << current->kind;
+        errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
+            "identifier, constant, string-literal or '(' expression ')' "
+            "expected" );
+      }
+  } // end switch
   return *( new IllegalStatement() );
 } // end parseExternalDeclaration
-
-Statement & Parser::parseFunctionDefinition()
-{
-  // TODO implement
-  return *( new IllegalStatement() );
-} // end parseFunctionDefinition

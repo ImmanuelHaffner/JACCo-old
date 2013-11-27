@@ -258,7 +258,6 @@ namespace C4
 
       AST::Statement & parseTranslationUnit();
       AST::Statement & parseExternalDeclaration();
-      AST::Statement & parseFunctionDefinition();
 
 
     }; // end struct Parser
@@ -281,7 +280,19 @@ namespace C4
         if ( ! is( t ) )
         {
           std::ostringstream oss;
-          oss << "unexpected " << *current << ", expected '" << t << "'";
+          oss << "unexpected ";
+          switch ( current->kind )
+          {
+            case Lex::TK::IDENTIFIER:
+            case Lex::TK::CONSTANT:
+            case Lex::TK::STRING_LITERAL:
+              oss << *current;
+              break;
+
+            default:
+              oss << "'" << current->kind << "'";
+          }
+          oss << ", expected '" << t << "'";
           errorf( current->pos, "%s", oss.str().c_str() );
         }
         else
