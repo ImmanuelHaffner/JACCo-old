@@ -59,13 +59,19 @@ Expression & Parser::parsePrimaryExpression()
   switch( current->kind )
   {
     case TK::IDENTIFIER:
-      expr = new Variable( *current ); readNextToken(); break;
+      expr = new Variable( *current );
+      readNextToken(); // eat identifier
+      break;
 
     case TK::CONSTANT:
-      expr = new Constant( *current ); readNextToken(); break;
+      expr = new Constant( *current );
+      readNextToken(); // eat constant
+      break;
 
     case TK::STRING_LITERAL:
-      expr = new StringLiteral( *current ); readNextToken(); break;
+      expr = new StringLiteral( *current );
+      readNextToken(); // eat string-literal
+      break;
 
     case TK::LPar:
       {
@@ -84,7 +90,7 @@ Expression & Parser::parsePrimaryExpression()
             "expected" );
         expr = new IllegalExpression();
       }
-  }
+  } // end switch
 
   return *expr;
 } // end parsePrimaryExpression
@@ -526,17 +532,14 @@ Declaration & Parser::parseDirectDeclarator()
           if ( current->kind != TK::RBracket )
             parseConstantExpression();
           accept( TK::RBracket ); // eat ']'
-          break;
         }
+        break;
 
       case TK::LPar:
         {
           readNextToken(); // eat '('
           switch ( current->kind )
           {
-            case TK::RPar:
-              break;
-
             case TK::IDENTIFIER:
               parseIdentifierList();
               break;
@@ -548,18 +551,11 @@ Declaration & Parser::parseDirectDeclarator()
               parseParameterTypeList();
               break;
 
-            default:
-              {
-                std::ostringstream oss;
-                oss << current->kind;
-                errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
-                    "identifier, 'void', 'char', 'int', 'struct' or ')' "
-                    "expected" );
-              }
+            default:;
           } // end switch
           accept( TK::RPar ); // eat ')'
-          break;
         }
+        break;
 
       default: goto for_end;
     } // end switch
@@ -1191,6 +1187,7 @@ Statement & Parser::parseJumpStatement()
 Statement & Parser::parseTranslationUnit()
 {
   do
+    // TODO stop or recover, if a corrupted external declaration was found
     parseExternalDeclaration();
   while ( current->kind != TK::END_OF_FILE );
   return *( new IllegalStatement() );
@@ -1287,7 +1284,7 @@ Statement & Parser::parseExternalDeclaration()
         std::ostringstream oss;
         oss << current->kind;
         errorf( current->pos, "unexpected '%s' - %s", oss.str().c_str(),
-            "identifier, constant, string-literal or '(' expression ')' "
+            "identifier, '*', '(', 'void', 'char', 'int' or 'struct' "
             "expected" );
       }
   } // end switch
