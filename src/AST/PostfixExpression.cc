@@ -22,3 +22,7 @@ std::ostream & AST::operator<<( std::ostream &out, PostfixExpression const &expr
   out << "postfix expression " << expr.expr << " " << expr.op.kind;
   return out;
 }
+
+void PostfixExpression::accept ( ASTNodeVisitor & visitor ) {
+    visitor.visit ( * this );
+}

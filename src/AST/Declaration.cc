@@ -19,3 +19,7 @@ std::ostream & AST::operator<<( std::ostream &out, Declaration const &decl )
   out << "declaration";
   return out;
 }
+
+void Declaration::accept ( ASTNodeVisitor & visitor ) {
+    visitor.visit ( * this );
+}

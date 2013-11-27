@@ -20,13 +20,11 @@ namespace C4
     ///
     struct ASTNode 
     {
-      virtual void accept ( ASTNodeVisitor );
+      virtual void accept ( ASTNodeVisitor & visitor );
       private:
-      String printed;
+      std::string printed;
     }; 
 
-    std::ostream & operator<<( std::ostream &out,
-        BinaryExpression const &expr );
   } // end namespace AST
 } // end namespace C4
 

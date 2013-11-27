@@ -19,3 +19,7 @@ std::ostream & AST::operator<<( std::ostream &out, Expression const &expr )
   out << "expression";
   return out;
 }
+
+void Expression::accept ( ASTNodeVisitor & visitor ) {
+    visitor.visit ( * this );
+}

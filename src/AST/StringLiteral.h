@@ -29,6 +29,7 @@ namespace C4
           StringLiteral const &lit );
 
       Lex::Token const tok;
+      void accept ( ASTNodeVisitor & visitor );
     }; // end struct Variable
 
     std::ostream & operator<<( std::ostream &out, StringLiteral const &lit );

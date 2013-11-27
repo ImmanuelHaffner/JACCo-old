@@ -11,19 +11,22 @@
 
 #include <iostream>
 #include "ASTNode.h"
-#include "ASTNodeVisitor.h"
+
+
 
 namespace C4
 {
   namespace AST
   {
-    ///
+    struct ASTNodeVisitor;
+    ////
     struct Expression : ASTNode
     {
       virtual ~Expression() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           Expression const &expr );
+    void accept ( ASTNodeVisitor & visitor );
     }; // end struct Expression
 
     std::ostream & operator<<( std::ostream &out, Expression const &expr );

@@ -24,3 +24,7 @@ std::ostream & AST::operator<<( std::ostream &out, StringLiteral const &lit )
   out << "StringLiteral " << lit.tok.sym;
   return out;
 }
+
+void StringLiteral::accept ( ASTNodeVisitor & visitor ) {
+    visitor.visit ( * this );
+}

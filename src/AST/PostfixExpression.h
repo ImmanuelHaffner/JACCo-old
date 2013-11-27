@@ -31,6 +31,7 @@ namespace C4
 
       private:
       Expression &expr;
+      void accept ( ASTNodeVisitor & visitor );
     }; // end struct PostfixExpression
 
     std::ostream & operator<<( std::ostream &out,

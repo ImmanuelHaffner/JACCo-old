@@ -22,3 +22,8 @@ std::ostream & AST::operator<<( std::ostream &out, UnaryExpression const &expr )
   out << "unary expression " << expr.op.kind << " " << expr.expr;
   return out;
 }
+
+void UnaryExpression::accept ( ASTNodeVisitor & visitor ) {
+    expr.accept ( visitor );
+    visitor.visit ( * this );
+}

@@ -28,7 +28,7 @@ namespace C4
           UnaryExpression const &expr );
 
       Lex::Token const op;
-
+    void accept ( ASTNodeVisitor & visitor );
       private:
       Expression &expr;
     }; // end struct UnaryExpression

@@ -31,7 +31,7 @@ namespace C4
           BinaryExpression const &expr );
 
       Lex::Token const op;
-
+      void accept ( ASTNodeVisitor & visitor );
       private:
       Expression &lhs;
       Expression &rhs;

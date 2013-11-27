@@ -24,3 +24,7 @@ std::ostream & AST::operator<<( std::ostream &out, Constant const &con )
   out << "Constant " << con.tok.sym;
   return out;
 }
+
+void Constant::accept ( ASTNodeVisitor & visitor ) {
+    visitor.visit ( * this );
+}

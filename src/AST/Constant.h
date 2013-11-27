@@ -29,9 +29,11 @@ namespace C4
           Constant const &con );
 
       Lex::Token const tok;
+      void accept ( ASTNodeVisitor & visitor );
     }; // end struct Variable
 
     std::ostream & operator<<( std::ostream &out, Constant const &con );
+
   } // end namespace AST
 } // end namespace C4
 

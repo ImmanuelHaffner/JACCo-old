@@ -29,6 +29,8 @@ namespace C4
           Variable const &var );
 
       Lex::Token const tok;
+    void accept ( ASTNodeVisitor & visitor );
+
     }; // end struct Variable
 
     std::ostream & operator<<( std::ostream &out, Variable const &var );

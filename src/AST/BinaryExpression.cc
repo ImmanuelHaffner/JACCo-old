@@ -24,3 +24,9 @@ std::ostream & AST::operator<<( std::ostream &out,
   out << "binary expression " << expr.lhs << expr.op.kind << expr.rhs;
   return out;
 }
+
+void BinaryExpression::accept ( ASTNodeVisitor & visitor ) {
+    lhs.accept ( visitor );
+    rhs.accept ( visitor );
+    visitor.visit ( * this );
+}
