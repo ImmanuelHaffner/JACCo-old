@@ -156,17 +156,14 @@ namespace C4
       /// token peeked by the lexer, i.e. if a call to is( ... ) for at least
       /// one argument yields true
       template < typename T, typename... Args >
-        bool is( T t, Args... args );
+        bool is( T t, Args... args )
+        {
+          return is( t ) || is( args... );
+        }
 
-      /// If the current token is "like" t, i.e. a call to is( t ) would return
-      /// true, gets the next token, otherwise prints an error message.
-      template < typename T >
-        void accept( T t );
-
-      /// If the current token is "like" args, i.e. a call to is( t ) would
+      /// If the current token is of kind tk, i.e. a call to is( tk ) would
       /// return true, gets the next token, otherwise prints an error message.
-      template < typename... Args >
-        void accept( Args... args );
+      void accept( Lex::TK tk );
 
       int getTokenPrecedence()
       {
@@ -258,80 +255,7 @@ namespace C4
 
       AST::Statement & parseTranslationUnit();
       AST::Statement & parseExternalDeclaration();
-
-
     }; // end struct Parser
-
-    //===------------------------------------------------------------------===//
-    //
-    //  Parser Helper Functions
-    //
-    //===------------------------------------------------------------------===//
-
-    template < typename T, typename... Args >
-      bool Parser::is( T t, Args... args )
-      {
-        return is( t ) || is( args... );
-      }
-
-    template < typename T >
-      void Parser::accept( T t )
-      {
-        if ( ! is( t ) )
-        {
-          std::ostringstream oss;
-          oss << "unexpected ";
-          switch ( current->kind )
-          {
-            case Lex::TK::IDENTIFIER:
-            case Lex::TK::CONSTANT:
-            case Lex::TK::STRING_LITERAL:
-              oss << *current;
-              break;
-
-            default:
-              oss << "'" << current->kind << "'";
-          }
-          oss << ", expected '" << t << "'";
-          errorf( current->pos, "%s", oss.str().c_str() );
-        }
-        else
-          readNextToken();
-      }
-
-    template < typename T >
-      static void _print( std::ostream &out, T t )
-      {
-        out << t;
-      }
-
-    template < typename T, typename... Args >
-      static void _print( std::ostream &out, T t, Args... args )
-      {
-        out << t << "', '";
-        _print( out, args... );
-      }
-
-    template < typename... Args >
-      static void print( std::ostream &out, Args... args )
-      {
-        out << "'"; _print( out, args... ); out << "'";
-      }
-
-    template < typename... Args >
-      void Parser::accept( Args... args )
-      {
-        if ( ! is( args... ) )
-        {
-          std::ostringstream oss;
-          oss << "unexpected " << *current << ", expected one of '";
-          print( oss, args... );
-          oss << "'";
-          errorf( current->pos, "%s", oss.str().c_str() );
-        }
-        else
-          readNextToken();
-      }
   } // end namespace Parse
 } // end namespace C4
 
