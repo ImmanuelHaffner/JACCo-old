@@ -91,8 +91,8 @@ int main(int, char** const argv)
                 std::cout << tok.pos << " " << tok << "\n";
               }
               delete lexer;
-              break;
             }
+            break;
 
           case Mode::PARSE:
             {
