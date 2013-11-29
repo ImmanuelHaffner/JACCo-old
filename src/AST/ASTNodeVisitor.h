@@ -33,18 +33,18 @@ namespace C4
     ///
     struct ASTNodeVisitor 
     {
-      virtual void visit ( BinaryExpression & binaryExpression );
-      virtual void visit ( Constant & constant );
-      virtual void visit ( Declaration & declaration );
-      virtual void visit ( Expression & expression );     
-      virtual void visit ( IllegalDeclaration & illegalDeclaration );      
-      virtual void visit ( IllegalExpression & illegalExpression );
-      virtual void visit ( PostfixExpression & postfixExpression );     
-      virtual void visit ( Statement & statement );      
-      virtual void visit ( StringLiteral & stringLiteral );
-      virtual void visit ( Type & type );
-      virtual void visit ( UnaryExpression & unaryExpression );
-      virtual void visit ( Variable & variable );
+      virtual void visit ( BinaryExpression & binaryExpression ) = 0;
+      virtual void visit ( Constant & constant ) = 0;
+      virtual void visit ( Declaration & declaration ) = 0;
+      virtual void visit ( Expression & expression ) = 0;     
+      virtual void visit ( IllegalDeclaration & illegalDeclaration ) = 0;      
+      virtual void visit ( IllegalExpression & illegalExpression ) = 0;
+      virtual void visit ( PostfixExpression & postfixExpression ) = 0;     
+      virtual void visit ( Statement & statement ) = 0;      
+      virtual void visit ( StringLiteral & stringLiteral ) = 0;
+      virtual void visit ( Type & type ) = 0;
+      virtual void visit ( UnaryExpression & unaryExpression ) = 0;
+      virtual void visit ( Variable & variable ) = 0;
     }; 
 
   } // end namespace AST

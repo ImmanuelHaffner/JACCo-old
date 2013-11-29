@@ -20,9 +20,7 @@ namespace C4
     ///
     struct ASTNode 
     {
-      virtual void accept ( ASTNodeVisitor & visitor );
-      private:
-      std::string printed;
+      virtual void accept ( ASTNodeVisitor & visitor ) = 0;
     }; 
 
   } // end namespace AST
