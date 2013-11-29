@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include "Locatable.h"
+#include "Printable.h"
 
 
 namespace C4
@@ -18,10 +19,13 @@ namespace C4
   namespace AST
   {
     ///
-    struct Expr : Locatable
+    struct Expr : Locatable, Printable
     {
       Expr( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Expr() {}
+
+      // TODO implement in sub-classes
+      virtual void print() {}
 
       friend std::ostream & operator<<( std::ostream &out, Expr const &expr );
     }; // end struct Expression
