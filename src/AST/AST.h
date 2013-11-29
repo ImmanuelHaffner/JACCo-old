@@ -12,14 +12,14 @@
 //
 //  Expression
 //
-#include "Expression.h"
-#include "IllegalExpression.h"
+#include "Expr.h"
+#include "IllegalExpr.h"
 #include "Variable.h"
 #include "Constant.h"
 #include "StringLiteral.h"
-#include "PostfixExpression.h"
-#include "UnaryExpression.h"
-#include "BinaryExpression.h"
+#include "PostfixExpr.h"
+#include "UnaryExpr.h"
+#include "BinaryExpr.h"
 
 //
 //  Statement

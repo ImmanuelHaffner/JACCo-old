@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-#include "Expression.h"
+#include "Expr.h"
 #include "../Lex/Token.h"
 
 
@@ -20,16 +20,18 @@ namespace C4
   namespace AST
   {
     ///
-    struct StringLiteral : Expression
+    struct StringLiteral : Expr
     {
-      explicit StringLiteral( Lex::Token const tok );
+      explicit StringLiteral( Lex::Token const &tok ) : Expr(tok)
+      {
+        assert( tok.kind == Lex::TK::STRING_LITERAL
+            && "token must be a string-literal" );
+      }
+
       ~StringLiteral() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           StringLiteral const &lit );
-
-      Lex::Token const tok;
-      void accept ( ASTNodeVisitor & visitor );
     }; // end struct Variable
 
     std::ostream & operator<<( std::ostream &out, StringLiteral const &lit );

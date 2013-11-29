@@ -14,17 +14,8 @@ using namespace Lex;
 using namespace AST;
 
 
-Variable::Variable( Token const tok ) : tok(tok)
-{
-  assert( tok.kind == TK::IDENTIFIER && "token must be an identifier" );
-}
-
 std::ostream & AST::operator<<( std::ostream &out, Variable const &var )
 {
   out << "Variable " << var.tok.sym;
   return out;
-}
-
-void Variable::accept ( ASTNodeVisitor & visitor ) {
-    visitor.visit ( * this );
 }

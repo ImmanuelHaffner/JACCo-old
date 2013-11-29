@@ -14,17 +14,8 @@ using namespace Lex;
 using namespace AST;
 
 
-Constant::Constant( Token const tok ) : tok(tok)
-{
-  assert( tok.kind == TK::CONSTANT && "token must be a constant" );
-}
-
 std::ostream & AST::operator<<( std::ostream &out, Constant const &con )
 {
   out << "Constant " << con.tok.sym;
   return out;
-}
-
-void Constant::accept ( ASTNodeVisitor & visitor ) {
-    visitor.visit ( * this );
 }

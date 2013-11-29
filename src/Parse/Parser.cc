@@ -124,9 +124,9 @@ void Parser::parse()
 //  Expressions
 //
 
-Expression & Parser::parsePrimaryExpression()
+Expr & Parser::parsePrimaryExpr()
 {
-  Expression * expr = NULL;
+  Expr * expr = NULL;
   switch( current->kind )
   {
     case TK::IDENTIFIER:
@@ -147,7 +147,7 @@ Expression & Parser::parsePrimaryExpression()
     case TK::LPar:
       {
         readNextToken(); // eat '('
-        parseExpression();
+        parseExpr();
         accept( TK::RPar ); // eat ')'
         break;
       }
@@ -155,16 +155,16 @@ Expression & Parser::parsePrimaryExpression()
     default:
       {
         ERROR( "identifier, constant, string-literal or '(' expression ')'" );
-        expr = new IllegalExpression();
+        expr = new IllegalExpr( *current );
       }
   } // end switch
 
   return *expr;
-} // end parsePrimaryExpression
+} // end parsePrimaryExpr
 
-Expression & Parser::parsePostfixExpression()
+Expr & Parser::parsePostfixExpr()
 {
-  parsePrimaryExpression();
+  parsePrimaryExpr();
 
   for (;;)
   {
@@ -173,7 +173,7 @@ Expression & Parser::parsePostfixExpression()
       case TK::LBracket:
         {
           readNextToken(); // eat '['
-          parseExpression();
+          parseExpr();
           accept( TK::RBracket ); // eat ']'
           break;
         }
@@ -182,7 +182,7 @@ Expression & Parser::parsePostfixExpression()
         {
           readNextToken(); // eat '('
           if ( current->kind != TK::RPar )
-            parseArgumentExpressionList();
+            parseArgumentExprList();
           accept( TK::RPar ); // eat ')'
           break;
         }
@@ -206,18 +206,18 @@ Expression & Parser::parsePostfixExpression()
     } // end switch
   } // end for
 for_end:
-  return *( new IllegalExpression() );
-} // end parsePostfixExpression
+  return *( new IllegalExpr( *current ) );
+} // end parsePostfixExpr
 
-Expression & Parser::parseArgumentExpressionList()
+Expr & Parser::parseArgumentExprList()
 {
-  parseAssignmentExpression();
+  parseAssignmentExpr();
   while ( current->kind == TK::Comma )
-    parseAssignmentExpression();
-  return *( new IllegalExpression() );
-} // end parseArgumentExpressionList
+    parseAssignmentExpr();
+  return *( new IllegalExpr( *current ) );
+} // end parseArgumentExprList
 
-Expression & Parser::parseUnaryExpression()
+Expr & Parser::parseUnaryExpr()
 {
   switch ( current->kind )
   {
@@ -225,7 +225,7 @@ Expression & Parser::parseUnaryExpression()
     case TK::DecOp:
       {
         readNextToken(); // eat operator
-        parseUnaryExpression();
+        parseUnaryExpr();
         break;
       }
 
@@ -239,7 +239,7 @@ Expression & Parser::parseUnaryExpression()
           accept( TK::RPar ); // eat ')'
         }
         else
-          parseUnaryExpression();
+          parseUnaryExpr();
         break;
       }
 
@@ -251,17 +251,17 @@ Expression & Parser::parseUnaryExpression()
     case Lex::TK::Not:
       {
         readNextToken(); // eat unary operator
-        parseCastExpression();
+        parseCastExpr();
         break;
       }
 
     default:
-      return parsePostfixExpression();
+      return parsePostfixExpr();
   }
-  return *( new IllegalExpression() );
-} // end parseUnaryExpression
+  return *( new IllegalExpr( *current ) );
+} // end parseUnaryExpr
 
-Expression & Parser::parseCastExpression()
+Expr & Parser::parseCastExpr()
 {
   while ( current->kind == TK::LPar )
   {
@@ -269,17 +269,17 @@ Expression & Parser::parseCastExpression()
     parseTypeName();
     accept( TK::RPar ); // eat ')'
   }
-  parseUnaryExpression();
-  return *( new IllegalExpression() );
-} // end parseCastExpression
+  parseUnaryExpr();
+  return *( new IllegalExpr( *current ) );
+} // end parseCastExpr
 
-Expression & Parser::parseBinaryExpression()
+Expr & Parser::parseBinaryExpr()
 {
-  Expression &lhs = parseCastExpression();
+  Expr &lhs = parseCastExpr();
   return parseBinOpRHS( 0, lhs );
-} // end parseBinaryExpression
+} // end parseBinaryExpr
 
-Expression & Parser::parseBinOpRHS( int exprPrec, AST::Expression &lhs )
+Expr & Parser::parseBinOpRHS( int exprPrec, AST::Expr &lhs )
 {
   int tokPrec = getTokenPrecedence();
 
@@ -290,32 +290,32 @@ Expression & Parser::parseBinOpRHS( int exprPrec, AST::Expression &lhs )
   Token const * binOp = this->current;
   readNextToken(); // eat BinOp
 
-  Expression &rhs = parseCastExpression();
+  Expr &rhs = parseCastExpr();
 
   // If binOp binds less with the RHS than the operator after RHS, let the
   // pending operator take RHS as its LHS.
   int nextPrec = getTokenPrecedence();
   if ( tokPrec < nextPrec )
-    return *( new BinaryExpression( *binOp, lhs,
+    return *( new BinaryExpr( *binOp, lhs,
           parseBinOpRHS( tokPrec + 1, rhs ) ) );
 
-  return *( new BinaryExpression( *binOp, lhs, rhs ) );
+  return *( new BinaryExpr( *binOp, lhs, rhs ) );
 } // end parseBinOpRHS
 
-Expression & Parser::parseConditionalExpression()
+Expr & Parser::parseConditionalExpr()
 {
-  parseBinaryExpression();
+  parseBinaryExpr();
 
   if ( current->kind == TK::QMark )
   {
     readNextToken(); // eat '?'
-    parseExpression();
+    parseExpr();
     accept( TK::Col ); // eat ':'
-    parseConditionalExpression();
+    parseConditionalExpr();
   }
 
-  return *( new IllegalExpression() );
-} // end parseConditionalExpression
+  return *( new IllegalExpr( *current ) );
+} // end parseConditionalExpr
 
 /// Note: we diverge from the ANSI-C grammar when parsing the
 /// assignment-expression production. ANSI-C specifies that the LHS of an
@@ -326,9 +326,9 @@ Expression & Parser::parseConditionalExpression()
 /// produce. Because we want consistency, we parse the LHS as a
 /// conditional-expression, then check for l-value-ness in semantic analysis
 /// stages.
-Expression & Parser::parseAssignmentExpression()
+Expr & Parser::parseAssignmentExpr()
 {
-  parseConditionalExpression();
+  parseConditionalExpr();
 
   for (;;)
   {
@@ -346,28 +346,28 @@ Expression & Parser::parseAssignmentExpression()
       case TK::XorAssign:
       case TK::OrAssign:
         readNextToken(); // eat assignment-operator
-        parseConditionalExpression();
+        parseConditionalExpr();
 
       default:
         goto for_end;
     }
   }
 for_end:
-  return *( new IllegalExpression() );
-} // end parseAssignmentExpression
+  return *( new IllegalExpr( *current ) );
+} // end parseAssignmentExpr
 
-Expression & Parser::parseExpression()
+Expr & Parser::parseExpr()
 {
-  parseAssignmentExpression();
+  parseAssignmentExpr();
 
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    parseAssignmentExpression();
+    parseAssignmentExpr();
   }
 
-  return *( new IllegalExpression() );
-} // end parseExpression
+  return *( new IllegalExpr( *current ) );
+} // end parseExpr
 
 
 //
@@ -535,7 +535,7 @@ Declaration & Parser::parseStructDeclarator()
   if ( current->kind == TK::Col )
   {
     readNextToken(); // eat ':'
-    parseConstantExpression();
+    parseConstantExpr();
   }
   else
   {
@@ -543,7 +543,7 @@ Declaration & Parser::parseStructDeclarator()
     if ( current->kind == TK::Col )
     {
       readNextToken(); // eat ':'
-      parseConstantExpression();
+      parseConstantExpr();
     }
   }
   return *( new IllegalDeclaration() );
@@ -585,7 +585,7 @@ Declaration & Parser::parseDirectDeclarator()
         {
           readNextToken(); // eat '['
           if ( current->kind != TK::RBracket )
-            parseConstantExpression();
+            parseConstantExpr();
           accept( TK::RBracket ); // eat ']'
         }
         break;
@@ -761,7 +761,7 @@ Declaration & Parser::parseDirectAbstractDeclarator()
     case TK::LBracket:
       readNextToken(); // eat '['
       if ( current->kind != TK::RBracket )
-        parseConstantExpression();
+        parseConstantExpr();
       accept( TK::RBracket ); // eat ']'
       break;
 
@@ -779,7 +779,7 @@ Declaration & Parser::parseDirectAbstractDeclarator()
       case TK::LBracket:
         readNextToken(); // eat '['
         if ( current->kind != TK::RBracket )
-          parseConstantExpression();
+          parseConstantExpr();
         accept( TK::RBracket ); // eat ']'
         break;
 
@@ -902,7 +902,7 @@ Declaration & Parser::parseInitializer()
     case TK::Minus:
     case TK::Not:
     case TK::Neg:
-      parseAssignmentExpression();
+      parseAssignmentExpr();
       break;
 
     default:
@@ -934,7 +934,7 @@ Statement & Parser::parseStatement()
       if ( next->kind == TK::Col )
         parseLabeledStatement();
       else
-        parseExpressionStatement();
+        parseExprStatement();
       break;
 
     case TK::Case:
@@ -977,7 +977,7 @@ Statement & Parser::parseStatement()
     case TK::Minus:
     case TK::Not:
     case TK::Neg:
-      parseExpressionStatement();
+      parseExprStatement();
       break;
 
     default:
@@ -1000,7 +1000,7 @@ Statement & Parser::parseLabeledStatement()
 
     case TK::Case:
       readNextToken(); // eat 'case'
-      parseConstantExpression();
+      parseConstantExpr();
       accept( TK::Col ); // eat ':'
       parseStatement();
       break;
@@ -1171,13 +1171,13 @@ for_end:
   return *( new IllegalStatement() );
 } // end parseStatementList
 
-Statement & Parser::parseExpressionStatement()
+Statement & Parser::parseExprStatement()
 {
   if ( current->kind != TK::SCol )
-    parseExpression();
+    parseExpr();
   accept( TK::SCol );
   return *( new IllegalStatement() );
-} // end parseExpressionStatement
+} // end parseExprStatement
 
 Statement & Parser::parseSelectionStatement()
 {
@@ -1186,7 +1186,7 @@ Statement & Parser::parseSelectionStatement()
     case TK::If:
       readNextToken(); // eat 'if'
       accept( TK::LPar ); // eat '('
-      parseExpression();
+      parseExpr();
       accept( TK::RPar ); // eat ')'
       parseStatement();
       if ( current->kind == TK::Else )
@@ -1199,7 +1199,7 @@ Statement & Parser::parseSelectionStatement()
     case TK::Switch:
       readNextToken(); // eat 'switch'
       accept( TK::LPar ); // eat '('
-      parseExpression();
+      parseExpr();
       accept( TK::RPar ); // eat ')'
       parseStatement();
       break;
@@ -1219,10 +1219,10 @@ Statement & Parser::parseIterationStatement()
     case TK::For:
       readNextToken(); // eat 'for'
       accept( TK::LPar ); // eat '('
-      parseExpressionStatement(); // initialization
-      parseExpressionStatement(); // condition
+      parseExprStatement(); // initialization
+      parseExprStatement(); // condition
       if ( current->kind != TK::RPar )
-        parseExpression(); // increment
+        parseExpr(); // increment
       accept( TK::RPar ); // eat ')'
       parseStatement(); // body
       break;
@@ -1230,7 +1230,7 @@ Statement & Parser::parseIterationStatement()
     case TK::While:
       readNextToken(); // eat 'while'
       accept( TK::LPar ); // eat '('
-      parseExpression(); // condition
+      parseExpr(); // condition
       accept( TK::RPar ); // eat ')'
       parseStatement(); // body
       break;
@@ -1240,7 +1240,7 @@ Statement & Parser::parseIterationStatement()
       parseStatement(); // body
       accept( TK::While ); // eat 'while'
       accept( TK::LPar ); // eat '('
-      parseExpression(); // condition
+      parseExpr(); // condition
       accept( TK::LPar ); // eat ')'
       break;
 
@@ -1275,7 +1275,7 @@ Statement & Parser::parseJumpStatement()
     case TK::Return:
       readNextToken(); // eat 'return'
       if ( current->kind != TK::SCol )
-        parseExpression();
+        parseExpr();
       accept( TK::SCol ); // eat ';'
       break;
 

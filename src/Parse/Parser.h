@@ -188,23 +188,23 @@ namespace C4
       //  Expressions
       //
 
-      AST::Expression & parsePrimaryExpression();
-      AST::Expression & parseArgumentExpressionList();
-      AST::Expression & parsePostfixExpression();
-      AST::Expression & parseUnaryExpression();
-      AST::Expression & parseCastExpression();
-      AST::Expression & parseBinaryExpression();
-      AST::Expression & parseBinOpRHS( int exprPrec, AST::Expression &lhs );
-      AST::Expression & parseConditionalExpression();
-      AST::Expression & parseAssignmentExpression();
+      AST::Expr & parsePrimaryExpr();
+      AST::Expr & parseArgumentExprList();
+      AST::Expr & parsePostfixExpr();
+      AST::Expr & parseUnaryExpr();
+      AST::Expr & parseCastExpr();
+      AST::Expr & parseBinaryExpr();
+      AST::Expr & parseBinOpRHS( int exprPrec, AST::Expr &lhs );
+      AST::Expr & parseConditionalExpr();
+      AST::Expr & parseAssignmentExpr();
 
       /// Parses an expression.
       ///
       /// \return the parsed expression
-      AST::Expression & parseExpression();
-      inline AST::Expression & parseConstantExpression()
+      AST::Expr & parseExpr();
+      inline AST::Expr & parseConstantExpr()
       {
-        return parseConditionalExpression();
+        return parseConditionalExpr();
       }
 
       //
@@ -248,7 +248,7 @@ namespace C4
       AST::Statement & parseCompoundStatement();
       AST::Statement & parseDeclarationList();
       AST::Statement & parseStatementList();
-      AST::Statement & parseExpressionStatement();
+      AST::Statement & parseExprStatement();
       AST::Statement & parseSelectionStatement();
       AST::Statement & parseIterationStatement();
       AST::Statement & parseJumpStatement();

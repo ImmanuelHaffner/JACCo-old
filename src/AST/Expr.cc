@@ -1,4 +1,4 @@
-//===--- IllegalExpression.cc ---------------------------------------------===//
+//===--- Expr.cc ----------------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -6,17 +6,16 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "IllegalExpression.h"
+#include "Expr.h"
 
 
 using namespace C4;
 using namespace AST;
 
 
-std::ostream & AST::operator<<( std::ostream &out,
-    IllegalExpression const &expr )
+std::ostream & AST::operator<<( std::ostream &out, Expr const &expr )
 {
   (void) expr; // suppress unused parameter warning
-  out << "illegal expression";
+  out << "expression";
   return out;
 }

@@ -22,7 +22,7 @@ namespace C4
       virtual ~Type() {}
 
       friend std::ostream & operator<<( std::ostream &out, Type const &decl );
-    };
+    }; // end struct Type
 
     std::ostream & operator<<( std::ostream &out, Type const &type );
   } // end namespace AST

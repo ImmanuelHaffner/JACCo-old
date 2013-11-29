@@ -1,5 +1,4 @@
-
-//===--- ASTNode.h --------------------------------------------------------===//
+//===--- Visitable.h --------------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -7,22 +6,23 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef C4_ASTNODE_H
-#define C4_ASTNODE_H
+#ifndef C4_VISITABLE_H
+#define C4_VISITABLE_H
 
 #include <iostream>
-#include "ASTNodeVisitor.h"
+
 
 namespace C4
 {
   namespace AST
   {
-    ///
-    struct ASTNode 
-    {
-      virtual void accept ( ASTNodeVisitor & visitor ) = 0;
-    }; 
+    struct ASTVisitor; // forward-declaration
 
+    ///
+    struct Visitable 
+    {
+      virtual void accept( ASTVisitor &visitor ) = 0;
+    };  // end struct Visitable
   } // end namespace AST
 } // end namespace C4
 

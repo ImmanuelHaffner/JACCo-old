@@ -1,4 +1,4 @@
-//===--- Expression.cc ----------------------------------------------------===//
+//===--- BinaryExpr.cc ----------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -6,20 +6,16 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Expression.h"
+#include "BinaryExpr.h"
 
 
 using namespace C4;
 using namespace AST;
 
 
-std::ostream & AST::operator<<( std::ostream &out, Expression const &expr )
+std::ostream & AST::operator<<( std::ostream &out, BinaryExpr const &expr )
 {
   (void) expr; // suppress unused parameter warning
-  out << "expression";
+  out << "binary expression";
   return out;
-}
-
-void Expression::accept ( ASTNodeVisitor & visitor ) {
-    visitor.visit ( * this );
 }

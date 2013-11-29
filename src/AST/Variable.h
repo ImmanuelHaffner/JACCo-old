@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-#include "Expression.h"
+#include "Expr.h"
 #include "../Lex/Token.h"
 
 
@@ -20,17 +20,18 @@ namespace C4
   namespace AST
   {
     ///
-    struct Variable : Expression
+    struct Variable : Expr
     {
-      explicit Variable( Lex::Token const tok );
+      explicit Variable( Lex::Token const &tok ) : Expr(tok)
+      {
+        assert( tok.kind == Lex::TK::IDENTIFIER
+            && "token must be an identifier" );
+      }
+
       ~Variable() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           Variable const &var );
-
-      Lex::Token const tok;
-    void accept ( ASTNodeVisitor & visitor );
-
     }; // end struct Variable
 
     std::ostream & operator<<( std::ostream &out, Variable const &var );
