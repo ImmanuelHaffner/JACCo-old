@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include "Locatable.h"
-#include "Visitable.h"
 
 
 namespace C4
