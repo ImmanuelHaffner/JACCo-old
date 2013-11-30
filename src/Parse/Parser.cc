@@ -85,7 +85,7 @@ static inline void printTok( std::ostream &out, Token const * const tok )
 
 /// If the current token is of kind tk, i.e. a call to is( tk ) would
 /// return true, gets the next token, otherwise prints an error message.
-void Parser::accept( Lex::TK tk )
+bool Parser::accept( Lex::TK tk )
 {
   if ( ! is( tk ) )
   {
@@ -96,9 +96,11 @@ void Parser::accept( Lex::TK tk )
     printTok( actual, current );
 
     errorpf( current->pos, expected.str().c_str(), actual.str().c_str() );
+    return false;
   }
   else
     readNextToken(); // eat token
+  return true;
 } // end accept
 // End Parser Helper Functions
 
@@ -126,7 +128,7 @@ void Parser::parse()
 
 Expr & Parser::parsePrimaryExpr()
 {
-  Expr * expr = NULL;
+  Expr *expr = NULL;
   switch( current->kind )
   {
     case TK::IDENTIFIER:
@@ -147,7 +149,7 @@ Expr & Parser::parsePrimaryExpr()
     case TK::LPar:
       {
         readNextToken(); // eat '('
-        parseExpr();
+        expr = & parseExpr();
         accept( TK::RPar ); // eat ')'
         break;
       }
@@ -164,7 +166,7 @@ Expr & Parser::parsePrimaryExpr()
 
 Expr & Parser::parsePostfixExpr()
 {
-  parsePrimaryExpr();
+  Expr *expr = & parsePrimaryExpr();
 
   for (;;)
   {
@@ -172,41 +174,62 @@ Expr & Parser::parsePostfixExpr()
     {
       case TK::LBracket:
         {
+          Token tok( *current );
           readNextToken(); // eat '['
-          parseExpr();
+          Expr const &subscript = parseExpr();
           accept( TK::RBracket ); // eat ']'
-          break;
+          expr = new SubscriptExpr( tok, *expr, subscript );
         }
+        break;
 
       case TK::LPar:
         {
+          Token tok( *current );
           readNextToken(); // eat '('
           if ( current->kind != TK::RPar )
             parseArgumentExprList();
           accept( TK::RPar ); // eat ')'
-          break;
+          // TODO add arg-expr-list
+          expr = new SignatureExpr( tok, *expr );
         }
+        break;
 
       case TK::PtrOp:
+        {
+          Token tok( *current );
+          readNextToken(); // eat operator
+          Token id( *current );
+          if ( accept( TK::IDENTIFIER ) ) // eat Identifier
+            expr = new ArrowExpr( tok, *expr, id );
+          else
+            expr = new IllegalExpr( id );
+        }
+        break;
+
       case TK::Dot:
         {
+          Token tok( *current );
           readNextToken(); // eat operator
-          accept( TK::IDENTIFIER ); // eat Identifier
-          break;
+          Token id( *current );
+          if ( accept( TK::IDENTIFIER ) ) // eat Identifier
+            expr = new DotExpr( tok, *expr, id );
+          else
+            expr = new IllegalExpr( id );
         }
+        break;
 
       case TK::IncOp:
       case TK::DecOp:
         {
           readNextToken(); // eat operator
-          break;
         }
+        break;
 
       default: goto for_end; // exit loop
     } // end switch
   } // end for
 for_end:
-  return *( new IllegalExpr( *current ) );
+  return *expr;
 } // end parsePostfixExpr
 
 Expr & Parser::parseArgumentExprList()

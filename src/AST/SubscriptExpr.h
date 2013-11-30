@@ -20,13 +20,15 @@ namespace C4
     ///
     struct SubscriptExpr : PostfixExpr
     {
-      SubscriptExpr( Lex::Token const &tok, Expr const &index ) :
-        PostfixExpr(tok), index(index) {}
+      SubscriptExpr( Lex::Token const &tok, Expr const &expr,
+          Expr const &index ) :
+        PostfixExpr(tok), expr(expr), index(index) {}
       ~SubscriptExpr() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           SubscriptExpr const &expr );
 
+      Expr const &expr;
       Expr const &index;
     }; // end struct SubscriptExpr
 

@@ -20,8 +20,9 @@ namespace C4
     ///
     struct ArrowExpr : DotExpr
     {
-      ArrowExpr( Lex::Token const &tok, Expr const &rhs ) :
-        DotExpr(tok, rhs) {}
+      ArrowExpr( Lex::Token const &tok, Expr const &lhs,
+          Lex::Token const &rhs ) :
+        DotExpr(tok, lhs, rhs) {}
       ~ArrowExpr() {}
 
       friend std::ostream & operator<<( std::ostream &out,

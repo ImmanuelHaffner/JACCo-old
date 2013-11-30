@@ -20,14 +20,19 @@ namespace C4
     ///
     struct DotExpr : PostfixExpr
     {
-      DotExpr( Lex::Token const &tok, Expr const &rhs ) :
-        PostfixExpr(tok), rhs(rhs) {}
-      ~DotExpr() {}
+      DotExpr( Lex::Token const &tok, Expr const &lhs, Lex::Token const &rhs ) :
+        PostfixExpr(tok), lhs(lhs), rhs(rhs) {}
+      ~DotExpr()
+      {
+        assert( rhs.kind == Lex::TK::IDENTIFIER &&
+            "rhs of subscript must be an identifier" );
+      }
 
       friend std::ostream & operator<<( std::ostream &out,
           DotExpr const &expr );
 
-      Expr const &rhs;
+      Expr const &lhs;
+      Lex::Token const &rhs;
     }; // end struct SubscriptExpr
 
     std::ostream & operator<<( std::ostream &out, DotExpr const &expr );

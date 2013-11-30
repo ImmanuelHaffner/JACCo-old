@@ -163,7 +163,7 @@ namespace C4
 
       /// If the current token is of kind tk, i.e. a call to is( tk ) would
       /// return true, gets the next token, otherwise prints an error message.
-      void accept( Lex::TK tk );
+      bool accept( Lex::TK tk );
 
       int getTokenPrecedence()
       {
@@ -189,8 +189,8 @@ namespace C4
       //
 
       AST::Expr & parsePrimaryExpr();
-      AST::Expr & parseArgumentExprList();
       AST::Expr & parsePostfixExpr();
+      AST::Expr & parseArgumentExprList();
       AST::Expr & parseUnaryExpr();
       AST::Expr & parseCastExpr();
       AST::Expr & parseBinaryExpr();

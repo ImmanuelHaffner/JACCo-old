@@ -20,12 +20,15 @@ namespace C4
     ///
     struct SignatureExpr : PostfixExpr
     {
-      SignatureExpr( Lex::Token const &tok /* TODO add argument-expr-list */ ) :
-        PostfixExpr(tok) {}
+      SignatureExpr( Lex::Token const &tok, Expr const &expr
+          /* TODO add argument-expr-list */ ) :
+        PostfixExpr(tok), expr(expr) {}
       ~SignatureExpr() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           SignatureExpr const &expr );
+
+      Expr const &expr;
     }; // end struct SignatureExpr
 
     std::ostream & operator<<( std::ostream &out, SignatureExpr const &expr );
