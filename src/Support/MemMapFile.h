@@ -35,8 +35,8 @@ namespace C4
     
     private:
     InputMemoryFile source;
-    unsigned char const * current;
-    unsigned char const * const eof; // points to the first byte BEHIND the buffer
+    char const * current;
+    char const * const eof; // points to the first byte BEHIND the buffer
   };
 } // end namespace C4
 
