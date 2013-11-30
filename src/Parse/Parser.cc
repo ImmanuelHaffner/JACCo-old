@@ -173,56 +173,51 @@ Expr & Parser::parsePostfixExpr()
     switch ( current->kind )
     {
       case TK::LBracket:
-        {
-          Token tok( *current );
-          readNextToken(); // eat '['
-          Expr const &subscript = parseExpr();
-          accept( TK::RBracket ); // eat ']'
-          expr = new SubscriptExpr( tok, *expr, subscript );
-        }
+        Token tok( *current );
+        readNextToken(); // eat '['
+        Expr const &subscript = parseExpr();
+        accept( TK::RBracket ); // eat ']'
+        expr = new SubscriptExpr( tok, *expr, subscript );
         break;
 
       case TK::LPar:
-        {
-          Token tok( *current );
-          readNextToken(); // eat '('
-          if ( current->kind != TK::RPar )
-            parseArgumentExprList();
-          accept( TK::RPar ); // eat ')'
+        Token tok( *current );
+        readNextToken(); // eat '('
+        if ( current->kind != TK::RPar )
           // TODO add arg-expr-list
-          expr = new SignatureExpr( tok, *expr );
-        }
+          parseArgumentExprList();
+        accept( TK::RPar ); // eat ')'
+        expr = new SignatureExpr( tok, *expr );
         break;
 
       case TK::PtrOp:
-        {
-          Token tok( *current );
-          readNextToken(); // eat operator
-          Token id( *current );
-          if ( accept( TK::IDENTIFIER ) ) // eat Identifier
-            expr = new ArrowExpr( tok, *expr, id );
-          else
-            expr = new IllegalExpr( id );
-        }
+        Token tok( *current );
+        readNextToken(); // eat '->'
+        Token id( *current );
+        if ( accept( TK::IDENTIFIER ) ) // eat Identifier
+          expr = new ArrowExpr( tok, *expr, id );
+        else
+          expr = new IllegalExpr( id );
         break;
 
       case TK::Dot:
-        {
-          Token tok( *current );
-          readNextToken(); // eat operator
-          Token id( *current );
-          if ( accept( TK::IDENTIFIER ) ) // eat Identifier
-            expr = new DotExpr( tok, *expr, id );
-          else
-            expr = new IllegalExpr( id );
-        }
+        Token tok( *current );
+        readNextToken(); // eat '.'
+        Token id( *current );
+        if ( accept( TK::IDENTIFIER ) ) // eat Identifier
+          expr = new DotExpr( tok, *expr, id );
+        else
+          expr = new IllegalExpr( id );
         break;
 
       case TK::IncOp:
+        expr = new PostIncExpr( *current, *expr );
+        readNextToken(); // eat '++'
+        break;
+
       case TK::DecOp:
-        {
-          readNextToken(); // eat operator
-        }
+        expr = new PostDecExpr( *current, *expr );
+        readNextToken(); // eat '--'
         break;
 
       default: goto for_end; // exit loop
