@@ -226,22 +226,30 @@ Expr & Parser::parseUnaryExpr()
       {
         readNextToken(); // eat operator
         parseUnaryExpr();
-        break;
       }
+      break;
 
     case TK::Sizeof:
       {
         readNextToken(); // eat 'sizeof'
-        if ( next->kind == TK::LPar )
-        {
-          readNextToken(); // eat '('
-          parseTypeName();
-          accept( TK::RPar ); // eat ')'
-        }
-        else
-          parseUnaryExpr();
-        break;
+        if ( current->kind == TK::LPar )
+          switch ( next->kind )
+          {
+            case TK::Void:
+            case TK::Char:
+            case TK::Int:
+            case TK::Struct:
+              readNextToken(); // eat '('
+              parseTypeName();
+              accept( TK::RPar ); // eat ')'
+              goto brk;
+
+            default:;
+          } // end switch
+        parseUnaryExpr();
       }
+brk:
+      break;
 
     case Lex::TK::And:
     case Lex::TK::Mul:
@@ -252,8 +260,8 @@ Expr & Parser::parseUnaryExpr()
       {
         readNextToken(); // eat unary operator
         parseCastExpr();
-        break;
       }
+      break;
 
     default:
       return parsePostfixExpr();
@@ -1386,7 +1394,7 @@ Statement & Parser::parseExternalDeclaration()
 
     default:
       {
-        ERROR( "declaration or function-definition expected" );
+        ERROR( "declaration or function-definition" );
       }
   } // end switch
   return *( new IllegalStatement() );
