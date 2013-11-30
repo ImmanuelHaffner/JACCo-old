@@ -45,7 +45,7 @@ int MemMapFile::peek()
 
 int MemMapFile::peek( int n )
 {
-  char const *p = current + n;
+  unsigned char const *p = current + n;
   if ( source.data() > p || p >= eof )
     return EOF;
 
