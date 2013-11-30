@@ -23,7 +23,7 @@ namespace C4
     {
       ConditionalExpr( Lex::Token const &tok, Expr const &cond,
           Expr const  &lhs, Expr const &rhs );
-      virtual ~ConditionalExpr() {}
+      ~ConditionalExpr() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           ConditionalExpr const &expr );
@@ -33,8 +33,7 @@ namespace C4
       Expr const &rhs;
     }; // end struct ConditionalExpr
 
-    std::ostream & operator<<( std::ostream &out,
-        ConditionalExpr const &expr );
+    std::ostream & operator<<( std::ostream &out, ConditionalExpr const &expr );
   } // end namespace AST
 } // end namespace C4
 

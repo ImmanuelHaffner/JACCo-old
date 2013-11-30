@@ -10,7 +10,7 @@
 #define C4_ASSIGNMENT_EXPR_H
 
 #include <iostream>
-#include "Expr.h"
+#include "BinaryExpr.h"
 #include "../Lex/Token.h"
 
 
@@ -19,26 +19,15 @@ namespace C4
   namespace AST
   {
     ///
-    struct AssignmentExpr : Expr
+    struct AssignmentExpr : BinaryExpr
     {
-      AssignmentExpr( Lex::Token const op, Expr &lhs, Expr &rhs );
-      virtual ~AssignmentExpr() {}
+      AssignmentExpr( Lex::Token const op, Expr const &lhs, Expr const &rhs ) :
+        BinaryExpr(op, lhs, rhs) {}
 
-      Expr & getLHS() { return lhs; }
-      Expr & getRHS() { return rhs; }
-      Lex::Token getOperator() { return op; }
-      friend std::ostream & operator<<( std::ostream &out,
-          AssignmentExpr const &expr );
-
-      Lex::Token const op;
-
-      private:
-      Expr &lhs;
-      Expr &rhs;
+      ~AssignmentExpr() {}
     }; // end struct AssignmentExpr
 
-    std::ostream & operator<<( std::ostream &out,
-        AssignmentExpr const &expr );
+    std::ostream & operator<<( std::ostream &out, AssignmentExpr const &expr );
   } // end namespace AST
 } // end namespace C4
 

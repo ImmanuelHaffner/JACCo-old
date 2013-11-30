@@ -10,7 +10,7 @@
 #define C4_POSTFIX_EXPR_H
 
 #include <iostream>
-#include "Expr.h"
+#include "UnaryExpr.h"
 #include "../Lex/Token.h"
 
 namespace C4
@@ -18,9 +18,9 @@ namespace C4
   namespace AST
   {
     ///
-    struct PostfixExpr : Expr
+    struct PostfixExpr : UnaryExpr
     {
-      PostfixExpr( Lex::Token const &tok ) : Expr(tok) {}
+      PostfixExpr( Lex::Token const &tok ) : UnaryExpr(tok) {}
       virtual ~PostfixExpr() {}
 
       friend std::ostream & operator<<( std::ostream &out,

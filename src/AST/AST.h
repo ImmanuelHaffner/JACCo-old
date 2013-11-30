@@ -17,9 +17,25 @@
 #include "Variable.h"
 #include "Constant.h"
 #include "StringLiteral.h"
-#include "PostfixExpr.h"
-#include "UnaryExpr.h"
+#include "ConditionalExpr.h"
+#include "CastExpr.h"
+
 #include "BinaryExpr.h"
+#include "AssignmentExpr.h"
+
+#include "UnaryExpr.h"
+#include "PreIncExpr.h"
+#include "PreDecExpr.h"
+#include "SizeofExpr.h"
+#include "SizeofTypeExpr.h"
+
+#include "PostfixExpr.h"
+#include "SubscriptExpr.h"
+#include "SignatureExpr.h"
+#include "PostIncExpr.h"
+#include "PostDecExpr.h"
+#include "DotExpr.h"
+#include "ArrowExpr.h"
 
 //
 //  Statement

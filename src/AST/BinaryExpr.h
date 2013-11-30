@@ -22,8 +22,7 @@ namespace C4
     struct BinaryExpr : Expr
     {
       BinaryExpr( Lex::Token const &tok, Expr const &lhs, Expr const &rhs ) :
-        Expr(tok), lhs(lhs), rhs(rhs)
-      {}
+        Expr(tok), lhs(lhs), rhs(rhs) {}
 
       virtual ~BinaryExpr() {}
 
