@@ -31,6 +31,71 @@ Parser::~Parser() {}
 //
 //===------------------------------------------------------------------===//
 
+
+/// Binary Operator Precedences
+///
+/// \return the precedence of the binary operator 'tok', or -1 iff tok is not a
+/// binary operator
+static int getBinOpPrecedence( Lex::TK tk )
+{
+  switch ( tk )
+  {
+    case Lex::TK::Mul:
+    case Lex::TK::Div:
+    case Lex::TK::Mod:
+      return 100;
+
+    case Lex::TK::Plus:
+    case Lex::TK::Minus:
+      return 90;
+
+    case Lex::TK::RShift:
+    case Lex::TK::LShift:
+      return 80;
+
+    case Lex::TK::Le:
+    case Lex::TK::Gr:
+    case Lex::TK::LEq:
+    case Lex::TK::GEq:
+      return 70;
+
+    case Lex::TK::Eq:
+    case Lex::TK::NE:
+      return 60;
+
+    case Lex::TK::And:
+      return 50;
+
+    case Lex::TK::Xor:
+      return 40;
+
+    case Lex::TK::Or:
+      return 30;
+
+    case Lex::TK::LAnd:
+      return 20;
+
+    case Lex::TK::LOr:
+      return 10;
+
+      //
+      //  IMPORTANT:
+      //  Must never return 0.
+      //
+
+    default: return -1;
+  }
+} // end getBinOpPrecedence
+
+int Parser::getTokenPrecedence()
+{
+  if ( ! this->current )
+    return -1;
+
+  int prec = getBinOpPrecedence( this->current->kind );
+  return  prec > 0 ? prec : -1;
+}
+
 void Parser::readNextToken()
 {
   if ( current ) delete current;
@@ -128,40 +193,42 @@ void Parser::parse()
 
 Expr & Parser::parsePrimaryExpr()
 {
-  Expr *expr = NULL;
   switch( current->kind )
   {
     case TK::IDENTIFIER:
-      expr = new Variable( *current );
-      readNextToken(); // eat identifier
-      break;
+      {
+        Expr *expr = new Variable( *current );
+        readNextToken(); // eat identifier
+        return *expr;
+      }
 
     case TK::CONSTANT:
-      expr = new Constant( *current );
-      readNextToken(); // eat constant
-      break;
+      {
+        Expr *expr = new Constant( *current );
+        readNextToken(); // eat constant
+        return *expr;
+      }
 
     case TK::STRING_LITERAL:
-      expr = new StringLiteral( *current );
-      readNextToken(); // eat string-literal
-      break;
+      {
+        Expr *expr = new StringLiteral( *current );
+        readNextToken(); // eat string-literal
+        return *expr;
+      }
 
     case TK::LPar:
       {
         readNextToken(); // eat '('
-        expr = & parseExpr();
+        Expr *expr = & parseExpr();
         accept( TK::RPar ); // eat ')'
-        break;
+        return *expr;
       }
 
     default:
-      {
-        ERROR( "identifier, constant, string-literal or '(' expression ')'" );
-        expr = new IllegalExpr( *current );
-      }
-  } // end switch
+      ERROR( "identifier, constant, string-literal or '(' expression ')'" );
 
-  return *expr;
+  } // end switch
+  return *( new IllegalExpr( *current ) );
 } // end parsePrimaryExpr
 
 Expr & Parser::parsePostfixExpr()
@@ -173,41 +240,49 @@ Expr & Parser::parsePostfixExpr()
     switch ( current->kind )
     {
       case TK::LBracket:
-        Token tok( *current );
-        readNextToken(); // eat '['
-        Expr const &subscript = parseExpr();
-        accept( TK::RBracket ); // eat ']'
-        expr = new SubscriptExpr( tok, *expr, subscript );
+        {
+          Token const tok( *current );
+          readNextToken(); // eat '['
+          Expr const &subscript = parseExpr();
+          accept( TK::RBracket ); // eat ']'
+          expr = new SubscriptExpr( tok, *expr, subscript );
+        }
         break;
 
       case TK::LPar:
-        Token tok( *current );
-        readNextToken(); // eat '('
-        if ( current->kind != TK::RPar )
-          // TODO add arg-expr-list
-          parseArgumentExprList();
-        accept( TK::RPar ); // eat ')'
-        expr = new SignatureExpr( tok, *expr );
+        {
+          Token const tok( *current );
+          readNextToken(); // eat '('
+          if ( current->kind != TK::RPar )
+            // TODO add arg-expr-list
+            parseArgumentExprList();
+          accept( TK::RPar ); // eat ')'
+          expr = new SignatureExpr( tok, *expr );
+        }
         break;
 
       case TK::PtrOp:
-        Token tok( *current );
-        readNextToken(); // eat '->'
-        Token id( *current );
-        if ( accept( TK::IDENTIFIER ) ) // eat Identifier
-          expr = new ArrowExpr( tok, *expr, id );
-        else
-          expr = new IllegalExpr( id );
+        {
+          Token const  tok( *current );
+          readNextToken(); // eat '->'
+          Token const id( *current );
+          if ( accept( TK::IDENTIFIER ) ) // eat Identifier
+            expr = new ArrowExpr( tok, *expr, id );
+          else
+            expr = new IllegalExpr( id );
+        }
         break;
 
       case TK::Dot:
-        Token tok( *current );
-        readNextToken(); // eat '.'
-        Token id( *current );
-        if ( accept( TK::IDENTIFIER ) ) // eat Identifier
-          expr = new DotExpr( tok, *expr, id );
-        else
-          expr = new IllegalExpr( id );
+        {
+          Token const tok( *current );
+          readNextToken(); // eat '.'
+          Token const id( *current );
+          if ( accept( TK::IDENTIFIER ) ) // eat Identifier
+            expr = new DotExpr( tok, *expr, id );
+          else
+            expr = new IllegalExpr( id );
+        }
         break;
 
       case TK::IncOp:
@@ -240,15 +315,22 @@ Expr & Parser::parseUnaryExpr()
   switch ( current->kind )
   {
     case TK::IncOp:
+      {
+        Token const tok( *current );
+        readNextToken(); // eat '++'
+        return *( new PreIncExpr( tok, parseUnaryExpr() ) );
+      }
+
     case TK::DecOp:
       {
-        readNextToken(); // eat operator
-        parseUnaryExpr();
+        Token const tok( *current );
+        readNextToken(); // eat '--'
+        return *( new PreDecExpr( tok, parseUnaryExpr() ) );
       }
-      break;
 
     case TK::Sizeof:
       {
+        Token const tok( *current );
         readNextToken(); // eat 'sizeof'
         if ( current->kind == TK::LPar )
           switch ( next->kind )
@@ -257,17 +339,17 @@ Expr & Parser::parseUnaryExpr()
             case TK::Char:
             case TK::Int:
             case TK::Struct:
-              readNextToken(); // eat '('
-              parseTypeName();
-              accept( TK::RPar ); // eat ')'
-              goto brk;
+              {
+                readNextToken(); // eat '('
+                Type &type = parseTypeName();
+                accept( TK::RPar ); // eat ')'
+                return *( new SizeofTypeExpr( tok, type ) );
+              }
 
             default:;
           } // end switch
-        parseUnaryExpr();
+        return *( new SizeofExpr( tok, parseUnaryExpr() ) );
       }
-brk:
-      break;
 
     case Lex::TK::And:
     case Lex::TK::Mul:
@@ -276,14 +358,16 @@ brk:
     case Lex::TK::Neg:
     case Lex::TK::Not:
       {
+        Token const tok( *current );
         readNextToken(); // eat unary operator
+        // TODO
         parseCastExpr();
       }
       break;
 
     default:
       return parsePostfixExpr();
-  }
+  } // end switch
   return *( new IllegalExpr( *current ) );
 } // end parseUnaryExpr
 
@@ -313,7 +397,7 @@ Expr & Parser::parseBinOpRHS( int exprPrec, AST::Expr &lhs )
   if ( tokPrec < exprPrec )
     return lhs;
 
-  Token const * binOp = this->current;
+  Token const binOp( *current );
   readNextToken(); // eat BinOp
 
   Expr &rhs = parseCastExpr();
@@ -322,25 +406,26 @@ Expr & Parser::parseBinOpRHS( int exprPrec, AST::Expr &lhs )
   // pending operator take RHS as its LHS.
   int nextPrec = getTokenPrecedence();
   if ( tokPrec < nextPrec )
-    return *( new BinaryExpr( *binOp, lhs,
+    return *( new BinaryExpr( binOp, lhs,
           parseBinOpRHS( tokPrec + 1, rhs ) ) );
 
-  return *( new BinaryExpr( *binOp, lhs, rhs ) );
+  return *( new BinaryExpr( binOp, lhs, rhs ) );
 } // end parseBinOpRHS
 
 Expr & Parser::parseConditionalExpr()
 {
-  parseBinaryExpr();
+  Expr &expr = parseBinaryExpr();
 
   if ( current->kind == TK::QMark )
   {
+    Token const tok( *current );
     readNextToken(); // eat '?'
-    parseExpr();
+    Expr &lhs = parseExpr();
     accept( TK::Col ); // eat ':'
-    parseConditionalExpr();
+    return *( new ConditionalExpr( tok, expr, lhs, parseConditionalExpr() ) );
   }
 
-  return *( new IllegalExpr( *current ) );
+  return expr;
 } // end parseConditionalExpr
 
 /// Note: we diverge from the ANSI-C grammar when parsing the
@@ -354,36 +439,36 @@ Expr & Parser::parseConditionalExpr()
 /// stages.
 Expr & Parser::parseAssignmentExpr()
 {
-  parseConditionalExpr();
+  Expr &expr = parseConditionalExpr();
 
-  for (;;)
+  switch ( current->kind )
   {
-    switch ( current->kind )
-    {
-      case TK::Assign:
-      case TK::MulAssign:
-      case TK::DivAssign:
-      case TK::ModAssign:
-      case TK::AddAssign:
-      case TK::SubAssign:
-      case TK::LShiftAssign:
-      case TK::RShiftAssign:
-      case TK::AndAssign:
-      case TK::XorAssign:
-      case TK::OrAssign:
+    case TK::Assign:
+    case TK::MulAssign:
+    case TK::DivAssign:
+    case TK::ModAssign:
+    case TK::AddAssign:
+    case TK::SubAssign:
+    case TK::LShiftAssign:
+    case TK::RShiftAssign:
+    case TK::AndAssign:
+    case TK::XorAssign:
+    case TK::OrAssign:
+      {
+        Token const tok( *current );
         readNextToken(); // eat assignment-operator
-        parseConditionalExpr();
+        return *( new AssignmentExpr( tok, expr, parseAssignmentExpr() ) );
+      }
 
-      default:
-        goto for_end;
-    }
-  }
-for_end:
-  return *( new IllegalExpr( *current ) );
+    default:;
+  } // end switch
+
+  return expr;
 } // end parseAssignmentExpr
 
 Expr & Parser::parseExpr()
 {
+  // TODO
   parseAssignmentExpr();
 
   while ( current->kind == TK::Comma )
@@ -705,7 +790,7 @@ Declaration & Parser::parseIdentifierList()
   return *( new IllegalDeclaration() );
 } // end parseIdentifierList
 
-Declaration & Parser::parseTypeName()
+Type & Parser::parseTypeName()
 {
   parseSpecifierQualifierList();
 
@@ -719,7 +804,7 @@ Declaration & Parser::parseTypeName()
 
     default:;
   }
-  return *( new IllegalDeclaration() );
+  return *( new IllegalType( *current ) );
 } // end parseTypeName
 
 Declaration & Parser::parseAbstractDeclarator()

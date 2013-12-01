@@ -21,69 +21,6 @@
 
 namespace C4
 {
-
-  //===----------------------------------------------------------------------===//
-  //
-  //  Operator Precedences
-  //
-  //===----------------------------------------------------------------------===//
-
-
-  /// Binary Operator Precedences
-  ///
-  /// \return the precedence of the binary operator 'tok', or -1 iff tok is not a
-  /// binary operator
-  static int getBinOpPrecedence( Lex::TK tk )
-  {
-    switch ( tk )
-    {
-      case Lex::TK::Mul:
-      case Lex::TK::Div:
-      case Lex::TK::Mod:
-        return 100;
-
-      case Lex::TK::Plus:
-      case Lex::TK::Minus:
-        return 90;
-
-      case Lex::TK::RShift:
-      case Lex::TK::LShift:
-        return 80;
-
-      case Lex::TK::Le:
-      case Lex::TK::Gr:
-      case Lex::TK::LEq:
-      case Lex::TK::GEq:
-        return 70;
-
-      case Lex::TK::Eq:
-      case Lex::TK::NE:
-        return 60;
-
-      case Lex::TK::And:
-        return 50;
-
-      case Lex::TK::Xor:
-        return 40;
-
-      case Lex::TK::Or:
-        return 30;
-
-      case Lex::TK::LAnd:
-        return 20;
-
-      case Lex::TK::LOr:
-        return 10;
-
-        //
-        //  IMPORTANT:
-        //  Must never return 0.
-        //
-
-      default: return -1;
-    }
-  } // end getBinOpPrecedence
-
   namespace Parse
   {
     /// \brief The parser.
@@ -110,6 +47,13 @@ namespace C4
       //  Parser Helper Functions
       //
       //===----------------------------------------------------------------===//
+
+      /// If the current token is a binary operator, returns its precedence,
+      /// otherwise -1 is returned.
+      /// Will never return 0.
+      ///
+      /// \return the precedence of the current token
+      int getTokenPrecedence();
 
       /// This functions moves sets 'current' to 'next', and sets 'next' to the
       /// token returned from the lexer.
@@ -164,15 +108,6 @@ namespace C4
       /// If the current token is of kind tk, i.e. a call to is( tk ) would
       /// return true, gets the next token, otherwise prints an error message.
       bool accept( Lex::TK tk );
-
-      int getTokenPrecedence()
-      {
-        if ( ! this->current )
-          return -1;
-
-        int prec = getBinOpPrecedence( this->current->kind );
-        return  prec > 0 ? prec : -1;
-      }
 
 
       //===----------------------------------------------------------------===//
@@ -230,7 +165,6 @@ namespace C4
       AST::Declaration & parseParameterList();
       AST::Declaration & parseParameterDeclaration();
       AST::Declaration & parseIdentifierList();
-      AST::Declaration & parseTypeName();
       AST::Declaration & parseAbstractDeclarator();
       AST::Declaration & parseDirectAbstractDeclarator();
       AST::Declaration & parseMaybeAbstractDeclarator();
@@ -238,6 +172,12 @@ namespace C4
 
       AST::Declaration & parseInitializer();
       AST::Declaration & parseInitializerList();
+
+      //
+      //  Type
+      //
+
+      AST::Type & parseTypeName();
 
       //
       //  Statements
