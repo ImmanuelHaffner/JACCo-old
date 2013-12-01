@@ -25,7 +25,7 @@ namespace C4
         Expr(tok), lhs(lhs), rhs(rhs) {}
 
       virtual ~BinaryExpr() {}
-
+    void print();
       friend std::ostream & operator<<( std::ostream &out,
           BinaryExpr const &expr );
 

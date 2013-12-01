@@ -19,3 +19,6 @@ std::ostream & AST::operator<<( std::ostream &out, BinaryExpr const &expr )
   out << "binary expression";
   return out;
 }
+
+void BinaryExpr::print() {
+    stdout << lhs.print() << " " << token.sym.str() << " " << rhs.print();
