@@ -53,5 +53,6 @@
 //  Type
 //
 #include "Type.h"
+#include "IllegalType.h"
 
 #endif

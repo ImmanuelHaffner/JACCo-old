@@ -10,6 +10,8 @@
 #define C4_TYPE_H
 
 #include <iostream>
+#include "Locatable.h"
+#include "Printable.h"
 
 
 namespace C4
@@ -17,9 +19,13 @@ namespace C4
   namespace AST
   {
     ///
-    struct Type
+    struct Type : Locatable, Printable
     {
+      Type( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Type() {}
+
+      // TODO implement in sub-classes
+      virtual void print() {}
 
       friend std::ostream & operator<<( std::ostream &out, Type const &decl );
     }; // end struct Type
