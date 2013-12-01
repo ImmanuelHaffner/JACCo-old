@@ -16,10 +16,17 @@ namespace C4
 {
   namespace AST
   {
+    /// \brief Holds properties necessary for pretty-printing.
+    struct Printer
+    {
+      std::ostream &out;
+      char indent;
+    };
+
     ///
     struct Printable
     {
-      virtual void print() = 0;
+      virtual void print( Printer const p ) = 0;
     }; // end struct Printable
   } // end namespace AST
 } // end namespace C4

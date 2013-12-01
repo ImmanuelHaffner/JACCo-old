@@ -25,7 +25,7 @@ namespace C4
       virtual ~Expr() {}
 
       // TODO implement in sub-classes
-      virtual void print() {}
+      virtual void print( Printer const ) {}
 
       friend std::ostream & operator<<( std::ostream &out, Expr const &expr );
     }; // end struct Expression

@@ -30,6 +30,8 @@ namespace C4
 
       ~Variable() {}
 
+      void print( Printer const p );
+
       friend std::ostream & operator<<( std::ostream &out,
           Variable const &var );
     }; // end struct Variable
