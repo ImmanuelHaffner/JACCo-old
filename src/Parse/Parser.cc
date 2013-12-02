@@ -906,10 +906,6 @@ Declaration const * Parser::parseMaybeAbstractDeclarator()
           parseDirectDeclarator();
           break;
 
-        case TK::LBracket:
-          parseDirectAbstractDeclarator();
-          break;
-
         case TK::LPar:
           parseDirectMaybeAbstractDeclarator();
           break;
