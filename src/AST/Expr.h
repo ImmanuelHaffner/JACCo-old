@@ -28,9 +28,6 @@ namespace C4
       explicit Expr( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Expr() {}
 
-      // TODO implement in sub-classes
-      virtual void print( Printer const ) const {}
-
       friend std::ostream & operator<<( std::ostream &out, Expr const &expr );
     }; // end struct Expression
     std::ostream & operator<<( std::ostream &out, Expr const &expr );
@@ -41,6 +38,7 @@ namespace C4
       explicit IllegalExpr( Lex::Token const &tok ) : Expr(tok) {}
       virtual ~IllegalExpr() {}
 
+      virtual void print( Printer const p ) const;
       friend std::ostream & operator<<( std::ostream &out,
           IllegalExpr const &expr );
     }; // end struct IllegalExpression
@@ -52,6 +50,7 @@ namespace C4
       explicit ExprList( Lex::Token const &tok ) : Expr(tok) {}
       virtual ~ExprList() {}
 
+      void print( Printer const p ) const;
       friend std::ostream & operator<<( std::ostream &out,
           ExprList const &expr );
     }; // end struct ExprList
@@ -65,8 +64,8 @@ namespace C4
         assert( tok.kind == Lex::TK::IDENTIFIER
             && "token must be an identifier" );
       }
-
       ~Variable() {}
+
       void print( Printer const p ) const;
       friend std::ostream & operator<<( std::ostream &out,
           Variable const &var );
@@ -80,12 +79,11 @@ namespace C4
       {
         assert( tok.kind == Lex::TK::CONSTANT && "token must be a constant" );
       }
-
       ~Constant() {}
 
+      void print( Printer const p ) const;
       friend std::ostream & operator<<( std::ostream &out,
           Constant const &con ); 
-      void print( Printer const ) const;
     }; // end struct Constant
     std::ostream & operator<<( std::ostream &out, Constant const &con );
 
@@ -97,9 +95,9 @@ namespace C4
         assert( tok.kind == Lex::TK::STRING_LITERAL
             && "token must be a string-literal" );
       }
-
       ~StringLiteral() {}
 
+      void print( Printer const p ) const;
       friend std::ostream & operator<<( std::ostream &out,
           StringLiteral const &lit );
     }; // end struct StringLiteral
@@ -112,6 +110,7 @@ namespace C4
         Expr(tok), expr(expr) {}
       virtual ~CastExpr() {}
 
+      void print( Printer const p ) const;
       friend std::ostream & operator<<( std::ostream &out,
           CastExpr const &expr );
 
@@ -125,8 +124,8 @@ namespace C4
     {
       BinaryExpr( Lex::Token const &tok, Expr const * const lhs,
           Expr const * const rhs ) : Expr(tok), lhs(lhs), rhs(rhs) {}
-
       virtual ~BinaryExpr() {}
+
       void print( Printer const p ) const;
       friend std::ostream & operator<<( std::ostream &out,
           BinaryExpr const &expr );
@@ -144,14 +143,13 @@ namespace C4
         Expr(tok), cond(cond), lhs(lhs), rhs(rhs) {}
       ~ConditionalExpr() {}
 
+      void print( Printer const ) const;
       friend std::ostream & operator<<( std::ostream &out,
           ConditionalExpr const &expr );
 
       Expr const * const cond;
       Expr const * const lhs;
       Expr const * const rhs;
-      void print( Printer const ) const;
-
     }; // end struct ConditionalExpr
     std::ostream & operator<<( std::ostream &out, ConditionalExpr const &expr );
 
@@ -161,8 +159,8 @@ namespace C4
       AssignmentExpr( Lex::Token const & tok, Expr const * const lhs,
           Expr const * const rhs ) :
         BinaryExpr(tok, lhs, rhs) {}
-
       ~AssignmentExpr() {};
+
       virtual void print( Printer const ) const;
     }; // end struct AssignmentExpr
     std::ostream & operator<<( std::ostream &out, AssignmentExpr const &expr );
@@ -210,20 +208,19 @@ namespace C4
     struct DotExpr : PostfixExpr
     {
       DotExpr( Lex::Token const &tok, Expr const &lhs, Lex::Token const &rhs ) :
-        PostfixExpr(tok), lhs(lhs), rhs(rhs) {}
-      ~DotExpr()
+        PostfixExpr(tok), lhs(lhs), rhs(rhs)
       {
         assert( rhs.kind == Lex::TK::IDENTIFIER &&
             "rhs of subscript must be an identifier" );
       }
+      ~DotExpr() {}
 
+      virtual void print( Printer const ) const;
       friend std::ostream & operator<<( std::ostream &out,
           DotExpr const &expr );
 
       Expr const &lhs;
       Lex::Token const &rhs;
-      virtual void print( Printer const ) const;
-
     }; // end struct DotExpr
     std::ostream & operator<<( std::ostream &out, DotExpr const &expr );
 

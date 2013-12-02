@@ -14,6 +14,11 @@ using namespace C4;
 using namespace AST;
 
 
+void IllegalExpr::print( Printer const p ) const
+{
+  p.out << "illegal expression " << this->tok.sym;
+}
+
 void Variable::print( Printer const p ) const
 {
   p.out << this->tok.sym;
@@ -40,21 +45,21 @@ void PostDecExpr::print( Printer const p ) const
 
 void ArrowExpr::print( Printer const p ) const
 {
-  this->lhs.print( p );
-  p.out << "->" << this->tok.sym;
+  this->lhs.print( p ); // lhs
+  p.out << "->" << this->rhs.sym; // -> IDENTIFIER
 }
 
 void DotExpr::print( Printer const p ) const
 {
-  this->lhs.print( p );
-  p.out << "." << this->tok.sym;
+  this->lhs.print( p ); // lhs
+  p.out << "." << this->rhs.sym; // . IDENTIFIER
 }
 
 void AssignmentExpr::print( Printer const p ) const
 {
-  this->lhs->print( p );
-  p.out << " " << this->tok.sym << " ";
-  this->rhs->print( p );
+  this->lhs->print( p ); // lhs
+  p.out << " " << this->tok.sym << " "; // assignment operator
+  this->rhs->print( p ); // rhs
 }
 
 void ConditionalExpr::print( Printer const p ) const
@@ -67,6 +72,11 @@ void ConditionalExpr::print( Printer const p ) const
 }
 
 void Constant::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
+}
+
+void StringLiteral::print( Printer const p ) const
 {
   p.out << this->tok.sym;
 }
@@ -110,6 +120,11 @@ void SubscriptExpr::print( Printer const p ) const
   p.out << this->expr << "[";
   this->index->print( p );
   p.out << "]";
+}
+
+void CastExpr::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
 }
 
 void Type::print( Printer const p ) const
