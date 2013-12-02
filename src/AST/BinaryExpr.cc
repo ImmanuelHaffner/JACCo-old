@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "BinaryExpr.h"
+#include "Expr.h"
 
 using namespace C4;
 using namespace AST;
