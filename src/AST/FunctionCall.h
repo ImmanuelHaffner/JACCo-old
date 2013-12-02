@@ -28,7 +28,8 @@ namespace C4
       friend std::ostream & operator<<( std::ostream &out,
           FunctionCall const &expr );
 
-      Expr const &expr;
+      Expr const &expr; 
+      void print( Printer const p ) const;
     }; // end struct FunctionCall
 
     std::ostream & operator<<( std::ostream &out, FunctionCall const &expr );

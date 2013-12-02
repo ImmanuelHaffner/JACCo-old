@@ -27,7 +27,8 @@ namespace C4
       friend std::ostream & operator<<( std::ostream &out,
           PreDecExpr const &expr );
 
-      Expr const &expr;
+      Expr const &expr; 
+      void print( Printer const ) const;
     }; // end struct PreDecExpr
 
     std::ostream & operator<<( std::ostream &out, PreDecExpr const &expr );

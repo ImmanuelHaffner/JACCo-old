@@ -28,7 +28,8 @@ namespace C4
       friend std::ostream & operator<<( std::ostream &out,
           SizeofTypeExpr const &expr );
 
-      Type const &type;
+      Type const &type; 
+      void print( Printer const p ) const;
     }; // end struct UnaryExpr
 
     std::ostream & operator<<( std::ostream &out, SizeofTypeExpr const &expr );

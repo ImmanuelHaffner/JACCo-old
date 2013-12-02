@@ -31,6 +31,8 @@ namespace C4
       Expr const &cond;
       Expr const &lhs;
       Expr const &rhs;
+      void print( Printer const ) const;
+
     }; // end struct ConditionalExpr
 
     std::ostream & operator<<( std::ostream &out, ConditionalExpr const &expr );

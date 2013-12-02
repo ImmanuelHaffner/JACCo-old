@@ -33,6 +33,8 @@ namespace C4
 
       Expr const &lhs;
       Lex::Token const &rhs;
+      virtual void print( Printer const ) const;
+
     }; // end struct SubscriptExpr
 
     std::ostream & operator<<( std::ostream &out, DotExpr const &expr );

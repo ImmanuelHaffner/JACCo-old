@@ -25,7 +25,7 @@ namespace C4
       virtual ~Type() {}
 
       // TODO implement in sub-classes
-      virtual void print( Printer const ) {}
+      virtual void print( Printer const ) const; 
 
       friend std::ostream & operator<<( std::ostream &out, Type const &decl );
     }; // end struct Type

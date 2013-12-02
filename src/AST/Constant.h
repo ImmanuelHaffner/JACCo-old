@@ -30,7 +30,8 @@ namespace C4
       ~Constant() {}
 
       friend std::ostream & operator<<( std::ostream &out,
-          Constant const &con );
+          Constant const &con ); 
+      void print( Printer const ) const;
     }; // end struct Variable
 
     std::ostream & operator<<( std::ostream &out, Constant const &con );

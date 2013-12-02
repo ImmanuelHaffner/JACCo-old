@@ -26,13 +26,7 @@ namespace C4
     ///
     struct Printable
     {
-<<<<<<< HEAD
-      virtual void print( Printer const p ) = 0;
-||||||| merged common ancestors
-      virtual void print() = 0;
-=======
-      virtual void print() const = 0;
->>>>>>> stuff
+      virtual void print( Printer const p ) const = 0;
     }; // end struct Printable
   } // end namespace AST
 } // end namespace C4

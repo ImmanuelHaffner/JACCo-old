@@ -29,7 +29,8 @@ namespace C4
           SubscriptExpr const &expr );
 
       Expr const &expr;
-      Expr const &index;
+      Expr const &index; 
+      void print( Printer const p ) const;
     }; // end struct SubscriptExpr
 
     std::ostream & operator<<( std::ostream &out, SubscriptExpr const &expr );

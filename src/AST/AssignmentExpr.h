@@ -21,10 +21,11 @@ namespace C4
     ///
     struct AssignmentExpr : BinaryExpr
     {
-      AssignmentExpr( Lex::Token const op, Expr const &lhs, Expr const &rhs ) :
-        BinaryExpr(op, lhs, rhs) {}
+      AssignmentExpr( Lex::Token const & tok, Expr const &lhs, Expr const &rhs ) :
+        BinaryExpr(tok, lhs, rhs) {}
 
-      ~AssignmentExpr() {}
+      ~AssignmentExpr() {};
+      virtual void print( Printer const ) const;
     }; // end struct AssignmentExpr
 
     std::ostream & operator<<( std::ostream &out, AssignmentExpr const &expr );

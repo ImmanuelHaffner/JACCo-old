@@ -27,6 +27,8 @@ namespace C4
 
       friend std::ostream & operator<<( std::ostream &out,
           ArrowExpr const &expr );
+    void print( Printer const ) const;
+
     }; // end struct SubscriptExpr
 
     std::ostream & operator<<( std::ostream &out, ArrowExpr const &expr );

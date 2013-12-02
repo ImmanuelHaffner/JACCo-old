@@ -28,6 +28,8 @@ namespace C4
           PostIncExpr const &expr );
 
       Expr const &expr;
+        void print( Printer const ) const;
+
     }; // end struct PostIncExpr
 
     std::ostream & operator<<( std::ostream &out, PostIncExpr const &expr );
