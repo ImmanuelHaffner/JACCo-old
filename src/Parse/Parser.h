@@ -183,18 +183,18 @@ namespace C4
       //  Statements
       //
 
-      AST::Statement & parseStatement();
-      AST::Statement & parseLabeledStatement();
-      AST::Statement & parseCompoundStatement();
-      AST::Statement & parseDeclarationList();
-      AST::Statement & parseStatementList();
-      AST::Statement & parseExprStatement();
-      AST::Statement & parseSelectionStatement();
-      AST::Statement & parseIterationStatement();
-      AST::Statement & parseJumpStatement();
+      AST::Stmt & parseStmt();
+      AST::Stmt & parseLabeledStmt();
+      AST::Stmt & parseCompoundStmt();
+      AST::Stmt & parseDeclarationList();
+      AST::Stmt & parseStmtList();
+      AST::Stmt & parseExprStmt();
+      AST::Stmt & parseSelectionStmt();
+      AST::Stmt & parseIterationStmt();
+      AST::Stmt & parseJumpStmt();
 
-      AST::Statement & parseTranslationUnit();
-      AST::Statement & parseExternalDeclaration();
+      AST::Stmt & parseTranslationUnit();
+      AST::Stmt & parseExternalDeclaration();
     }; // end struct Parser
   } // end namespace Parse
 } // end namespace C4

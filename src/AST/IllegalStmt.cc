@@ -1,4 +1,4 @@
-//===--- IllegalStatement.cc ---------------------------------------------===//
+//===--- IllegalStmt.cc ----------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -6,15 +6,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "IllegalStatement.h"
+#include "IllegalStmt.h"
 
 
 using namespace C4;
 using namespace AST;
 
 
-std::ostream & AST::operator<<( std::ostream &out,
-    IllegalStatement const &stmt )
+std::ostream & AST::operator<<( std::ostream &out, IllegalStmt const &stmt )
 {
   (void) stmt; // suppress unused parameter warning
   out << "illegal statement";

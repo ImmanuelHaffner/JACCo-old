@@ -1,4 +1,4 @@
-//===--- Statement.cc -----------------------------------------------------===//
+//===--- Stmt.cc -----------------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -6,14 +6,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Statement.h"
+#include "Stmt.h"
 
 
 using namespace C4;
 using namespace AST;
 
 
-std::ostream & AST::operator<<( std::ostream &out, Statement const &stmt )
+std::ostream & AST::operator<<( std::ostream &out, Stmt const &stmt )
 {
   (void) stmt; // suppress unused parameter warning
   out << "statement";

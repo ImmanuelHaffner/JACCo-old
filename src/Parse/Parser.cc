@@ -1022,43 +1022,43 @@ Declaration & Parser::parseInitializerList()
   return *( new IllegalDeclaration() );
 } // end parseInitializerList
 
-Statement & Parser::parseStatement()
+Stmt & Parser::parseStmt()
 {
   switch ( current->kind )
   {
     case TK::IDENTIFIER:
       // labeled-statement or expression-statement
       if ( next->kind == TK::Col )
-        parseLabeledStatement();
+        parseLabeledStmt();
       else
-        parseExprStatement();
+        parseExprStmt();
       break;
 
     case TK::Case:
     case TK::Default:
-      parseLabeledStatement();
+      parseLabeledStmt();
       break;
 
     case TK::LBrace:
-      parseCompoundStatement();
+      parseCompoundStmt();
       break;
 
     case TK::If:
     case TK::Switch:
-      parseSelectionStatement();
+      parseSelectionStmt();
       break;
 
     case TK::For:
     case TK::While:
     case TK::Do:
-      parseIterationStatement();
+      parseIterationStmt();
       break;
 
     case TK::Goto:
     case TK::Break:
     case TK::Continue:
     case TK::Return:
-      parseJumpStatement();
+      parseJumpStmt();
       break;
 
     case TK::CONSTANT:
@@ -1074,7 +1074,7 @@ Statement & Parser::parseStatement()
     case TK::Minus:
     case TK::Not:
     case TK::Neg:
-      parseExprStatement();
+      parseExprStmt();
       break;
 
     default:
@@ -1082,30 +1082,30 @@ Statement & Parser::parseStatement()
         ERROR( "statement" );
       }
   } // end switch
-  return *( new IllegalStatement() );
-} // end parseStatement
+  return *( new IllegalStmt() );
+} // end parseStmt
 
-Statement & Parser::parseLabeledStatement()
+Stmt & Parser::parseLabeledStmt()
 {
   switch ( current->kind )
   {
     case TK::IDENTIFIER:
       readNextToken(); // eat identifier
       accept( TK::Col ); // eat ':'
-      parseStatement();
+      parseStmt();
       break;
 
     case TK::Case:
       readNextToken(); // eat 'case'
       parseConstantExpr();
       accept( TK::Col ); // eat ':'
-      parseStatement();
+      parseStmt();
       break;
 
     case TK::Default:
       readNextToken(); // eat 'default'
       accept( TK::Col ); // eat ':'
-      parseStatement();
+      parseStmt();
       break;
 
     default:
@@ -1113,10 +1113,10 @@ Statement & Parser::parseLabeledStatement()
         ERROR( "identifier, 'case' or 'default'" );
       }
   } // end switch
-  return *( new IllegalStatement() );
-} // end parseLabeledStatement
+  return *( new IllegalStmt() );
+} // end parseLabeledStmt
 
-Statement & Parser::parseCompoundStatement()
+Stmt & Parser::parseCompoundStmt()
 {
   accept( TK::LBrace ); // eat '{'
   switch ( current->kind )
@@ -1157,7 +1157,7 @@ Statement & Parser::parseCompoundStatement()
         case TK::LPar:
         case TK::LBrace:
         case TK::SCol:
-          parseStatement();
+          parseStmt();
           break;
 
         default:;
@@ -1190,7 +1190,7 @@ Statement & Parser::parseCompoundStatement()
     case TK::LPar:
     case TK::LBrace:
     case TK::SCol:
-      parseStatementList();
+      parseStmtList();
       break;
 
     default:
@@ -1199,10 +1199,10 @@ Statement & Parser::parseCompoundStatement()
       }
   } // end switch
   accept( TK::RBrace ); // eat '}'
-  return *( new IllegalStatement() );
-} // end parseCompoundStatement
+  return *( new IllegalStmt() );
+} // end parseCompoundStmt
 
-Statement & Parser::parseDeclarationList()
+Stmt & Parser::parseDeclarationList()
 {
   parseDeclaration();
 
@@ -1221,12 +1221,12 @@ Statement & Parser::parseDeclarationList()
     }
   } // end for
 for_end:
-  return *( new IllegalStatement() );
+  return *( new IllegalStmt() );
 } // end parseDeclarationList
 
-Statement & Parser::parseStatementList()
+Stmt & Parser::parseStmtList()
 {
-  parseStatement();
+  parseStmt();
 
   for (;;)
   {
@@ -1258,25 +1258,25 @@ Statement & Parser::parseStatementList()
       case TK::LPar:
       case TK::LBrace:
       case TK::SCol:
-        parseStatement();
+        parseStmt();
         break;
 
       default: goto for_end;
     }
   } // end for
 for_end:
-  return *( new IllegalStatement() );
-} // end parseStatementList
+  return *( new IllegalStmt() );
+} // end parseStmtList
 
-Statement & Parser::parseExprStatement()
+Stmt & Parser::parseExprStmt()
 {
   if ( current->kind != TK::SCol )
     parseExpr();
   accept( TK::SCol );
-  return *( new IllegalStatement() );
-} // end parseExprStatement
+  return *( new IllegalStmt() );
+} // end parseExprStmt
 
-Statement & Parser::parseSelectionStatement()
+Stmt & Parser::parseSelectionStmt()
 {
   switch ( current->kind )
   {
@@ -1285,11 +1285,11 @@ Statement & Parser::parseSelectionStatement()
       accept( TK::LPar ); // eat '('
       parseExpr();
       accept( TK::RPar ); // eat ')'
-      parseStatement();
+      parseStmt();
       if ( current->kind == TK::Else )
       {
         readNextToken(); // eat 'else'
-        parseStatement();
+        parseStmt();
       }
       break;
 
@@ -1298,7 +1298,7 @@ Statement & Parser::parseSelectionStatement()
       accept( TK::LPar ); // eat '('
       parseExpr();
       accept( TK::RPar ); // eat ')'
-      parseStatement();
+      parseStmt();
       break;
 
     default:
@@ -1306,22 +1306,22 @@ Statement & Parser::parseSelectionStatement()
         ERROR( "'if' or 'switch'" );
       }
   } // end switch
-  return *( new IllegalStatement() );
-} // end parseSelectionStatement
+  return *( new IllegalStmt() );
+} // end parseSelectionStmt
 
-Statement & Parser::parseIterationStatement()
+Stmt & Parser::parseIterationStmt()
 {
   switch ( current->kind )
   {
     case TK::For:
       readNextToken(); // eat 'for'
       accept( TK::LPar ); // eat '('
-      parseExprStatement(); // initialization
-      parseExprStatement(); // condition
+      parseExprStmt(); // initialization
+      parseExprStmt(); // condition
       if ( current->kind != TK::RPar )
         parseExpr(); // increment
       accept( TK::RPar ); // eat ')'
-      parseStatement(); // body
+      parseStmt(); // body
       break;
 
     case TK::While:
@@ -1329,12 +1329,12 @@ Statement & Parser::parseIterationStatement()
       accept( TK::LPar ); // eat '('
       parseExpr(); // condition
       accept( TK::RPar ); // eat ')'
-      parseStatement(); // body
+      parseStmt(); // body
       break;
 
     case TK::Do:
       readNextToken(); // eat 'do'
-      parseStatement(); // body
+      parseStmt(); // body
       accept( TK::While ); // eat 'while'
       accept( TK::LPar ); // eat '('
       parseExpr(); // condition
@@ -1346,10 +1346,10 @@ Statement & Parser::parseIterationStatement()
         ERROR( "'for', 'do' or 'while'" );
       }
   } // end switch
-  return *( new IllegalStatement() );
-} // end parseIterationStatement
+  return *( new IllegalStmt() );
+} // end parseIterationStmt
 
-Statement & Parser::parseJumpStatement()
+Stmt & Parser::parseJumpStmt()
 {
   switch ( current->kind )
   {
@@ -1381,10 +1381,10 @@ Statement & Parser::parseJumpStatement()
         ERROR( "'return', 'continue', 'break' or 'goto'" );
       }
   } // end switch
-  return *( new IllegalStatement() );
-} // end parseJumpStatement
+  return *( new IllegalStmt() );
+} // end parseJumpStmt
 
-Statement & Parser::parseTranslationUnit()
+Stmt & Parser::parseTranslationUnit()
 {
   do
   {
@@ -1395,10 +1395,10 @@ Statement & Parser::parseTranslationUnit()
       readNextToken();
   }
   while ( current->kind != TK::END_OF_FILE );
-  return *( new IllegalStatement() );
+  return *( new IllegalStmt() );
 } // end parseTranslationUnit
 
-Statement & Parser::parseExternalDeclaration()
+Stmt & Parser::parseExternalDeclaration()
 {
   switch ( current->kind )
   {
@@ -1418,7 +1418,7 @@ Statement & Parser::parseExternalDeclaration()
 
         default:;
       } // end switch
-      parseCompoundStatement();
+      parseCompoundStmt();
       break; // end declarator
 
     case TK::Void:
@@ -1465,11 +1465,11 @@ Statement & Parser::parseExternalDeclaration()
         case TK::Struct:
           // declaration-list compound-statement
           parseDeclarationList();
-          parseCompoundStatement();
+          parseCompoundStmt();
           break;
 
         case TK::LBrace:
-          parseCompoundStatement();
+          parseCompoundStmt();
           break;
 
         default:
@@ -1486,5 +1486,5 @@ Statement & Parser::parseExternalDeclaration()
         ERROR( "declaration or function-definition" );
       }
   } // end switch
-  return *( new IllegalStatement() );
+  return *( new IllegalStmt() );
 } // end parseExternalDeclaration

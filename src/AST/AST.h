@@ -41,8 +41,8 @@
 //
 //  Statement
 //
-#include "Statement.h"
-#include "IllegalStatement.h"
+#include "Stmt.h"
+#include "IllegalStmt.h"
 
 //
 //  Declaration
