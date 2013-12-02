@@ -10,13 +10,7 @@
 #define C4_AST_H
 
 #include "Expr.h"
-
-//
-//  Statement
-//
 #include "Stmt.h"
-#include "IllegalStmt.h"
-#include "IfStmt.h"
 
 //
 //  Declaration

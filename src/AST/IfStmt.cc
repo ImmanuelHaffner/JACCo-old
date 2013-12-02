@@ -1,4 +1,4 @@
-//===--- IllegalStmt.cc ----------------------------------------------------===//
+//===--- IfStmt.cc ----------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -13,9 +13,9 @@ using namespace C4;
 using namespace AST;
 
 
-std::ostream & AST::operator<<( std::ostream &out, IllegalStmt const &stmt )
+std::ostream & AST::operator<<( std::ostream &out, IfStmt const &stmt )
 {
   (void) stmt; // suppress unused parameter warning
-  out << "illegal statement";
+  out << "if statement";
   return out;
 }

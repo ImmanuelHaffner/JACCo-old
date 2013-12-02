@@ -12,13 +12,16 @@
 #include <iostream>
 #include "Locatable.h"
 #include "Printable.h"
-#include "Type.h"
 
 
 namespace C4
 {
   namespace AST
   {
+    // Forward declaration
+    struct Type;
+
+
     /// Expression
     struct Expr : Locatable, Printable
     {
@@ -32,6 +35,7 @@ namespace C4
     }; // end struct Expression
     std::ostream & operator<<( std::ostream &out, Expr const &expr );
 
+    /// Illegal Expression
     struct IllegalExpr : Expr
     {
       explicit IllegalExpr( Lex::Token const &tok ) : Expr(tok) {}
@@ -42,7 +46,7 @@ namespace C4
     }; // end struct IllegalExpression
     std::ostream & operator<<( std::ostream &out, IllegalExpr const &expr );
 
-    /// Expression list
+    /// Expression List
     struct ExprList : Expr
     {
       explicit ExprList( Lex::Token const &tok ) : Expr(tok) {}
