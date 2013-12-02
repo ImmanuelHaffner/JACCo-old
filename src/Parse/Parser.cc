@@ -257,7 +257,7 @@ Expr & Parser::parsePostfixExpr()
             // TODO add arg-expr-list
             parseArgumentExprList();
           accept( TK::RPar ); // eat ')'
-          expr = new SignatureExpr( tok, *expr );
+          expr = new FunctionCall( tok, *expr );
         }
         break;
 

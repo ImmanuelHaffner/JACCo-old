@@ -1,4 +1,4 @@
-//===--- SignatureExpr.h --------------------------------------------------===//
+//===--- FunctionCall.h ---------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -6,8 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef C4_SIGNATURE_EXPR_H
-#define C4_SIGNATURE_EXPR_H
+#ifndef C4_FUNCTION_CALL_H
+#define C4_FUNCTION_CALL_H
 
 #include <iostream>
 #include "PostfixExpr.h"
@@ -18,20 +18,20 @@ namespace C4
   namespace AST
   {
     ///
-    struct SignatureExpr : PostfixExpr
+    struct FunctionCall : PostfixExpr
     {
-      SignatureExpr( Lex::Token const &tok, Expr const &expr
+      FunctionCall( Lex::Token const &tok, Expr const &expr
           /* TODO add argument-expr-list */ ) :
         PostfixExpr(tok), expr(expr) {}
-      ~SignatureExpr() {}
+      ~FunctionCall() {}
 
       friend std::ostream & operator<<( std::ostream &out,
-          SignatureExpr const &expr );
+          FunctionCall const &expr );
 
       Expr const &expr;
-    }; // end struct SignatureExpr
+    }; // end struct FunctionCall
 
-    std::ostream & operator<<( std::ostream &out, SignatureExpr const &expr );
+    std::ostream & operator<<( std::ostream &out, FunctionCall const &expr );
   } // end namespace AST
 } // end namespace C4
 

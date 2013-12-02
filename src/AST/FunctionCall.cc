@@ -1,4 +1,4 @@
-//===--- SignatureExpr.cc -------------------------------------------------===//
+//===--- FunctionCall.cc --------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -6,14 +6,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "SignatureExpr.h"
+#include "FunctionCall.h"
 
 
 using namespace C4;
 using namespace AST;
 
 
-std::ostream & AST::operator<<( std::ostream &out, SignatureExpr const &expr )
+std::ostream & AST::operator<<( std::ostream &out, FunctionCall const &expr )
 {
   (void) expr; // suppress unused parameter warning
   out << "signature expression";
