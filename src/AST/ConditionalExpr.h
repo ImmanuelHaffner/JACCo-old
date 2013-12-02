@@ -21,16 +21,17 @@ namespace C4
     ///
     struct ConditionalExpr : Expr
     {
-      ConditionalExpr( Lex::Token const &tok, Expr const &cond,
-          Expr const  &lhs, Expr const &rhs );
+      ConditionalExpr( Lex::Token const &tok, Expr const * const cond,
+          Expr const * const lhs, Expr const * const rhs ) :
+				Expr(tok), cond(cond), lhs(lhs), rhs(rhs) {}
       ~ConditionalExpr() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           ConditionalExpr const &expr );
 
-      Expr const &cond;
-      Expr const &lhs;
-      Expr const &rhs;
+      Expr const * const cond;
+      Expr const * const lhs;
+      Expr const * const rhs;
       void print( Printer const ) const;
 
     }; // end struct ConditionalExpr

@@ -20,14 +20,14 @@ namespace C4
     ///
     struct SizeofExpr : UnaryExpr
     {
-      SizeofExpr( Lex::Token const &tok, Expr const &expr ) :
+      SizeofExpr( Lex::Token const &tok, Expr const * const expr ) :
         UnaryExpr(tok), expr(expr) {}
       ~SizeofExpr() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           SizeofExpr const &expr );
 
-      Expr const &expr; 
+      Expr const * const expr; 
       void print( Printer const p ) const;
     }; // end struct UnaryExpr
 

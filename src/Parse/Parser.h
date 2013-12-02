@@ -32,8 +32,8 @@ namespace C4
       /// Parses the tokens returned by the lexer, and construct the
       /// corresponding AST.
       void parse();
-      Lex::Token const & getCurTok() { return *current; }
-      Lex::Token const & getNextTok() { return *next; }
+      Lex::Token const * getCurTok() { return current; }
+      Lex::Token const * getNextTok() { return next; }
 
 
       private:
@@ -123,21 +123,22 @@ namespace C4
       //  Expressions
       //
 
-      AST::Expr & parsePrimaryExpr();
-      AST::Expr & parsePostfixExpr();
-      AST::Expr & parseArgumentExprList();
-      AST::Expr & parseUnaryExpr();
-      AST::Expr & parseCastExpr();
-      AST::Expr & parseBinaryExpr();
-      AST::Expr & parseBinOpRHS( int exprPrec, AST::Expr &lhs );
-      AST::Expr & parseConditionalExpr();
-      AST::Expr & parseAssignmentExpr();
+      AST::Expr const * parsePrimaryExpr();
+      AST::Expr const * parsePostfixExpr();
+      AST::Expr const * parseArgumentExprList();
+      AST::Expr const * parseUnaryExpr();
+      AST::Expr const * parseCastExpr();
+      AST::Expr const * parseBinaryExpr();
+      AST::Expr const * parseBinOpRHS( int exprPrec,
+          AST::Expr const * const lhs );
+      AST::Expr const * parseConditionalExpr();
+      AST::Expr const * parseAssignmentExpr();
 
       /// Parses an expression.
       ///
       /// \return the parsed expression
-      AST::Expr & parseExpr();
-      inline AST::Expr & parseConstantExpr()
+      AST::Expr const * parseExpr();
+      inline AST::Expr const * parseConstantExpr()
       {
         return parseConditionalExpr();
       }
@@ -146,55 +147,55 @@ namespace C4
       // Declarations
       //
 
-      AST::Declaration & parseDeclaration();
-      AST::Declaration & parseDeclarationSpecifiers();
-      AST::Declaration & parseInitDeclaratorList();
-      AST::Declaration & parseInitDeclarator();
-      AST::Declaration & parseTypeSpecifier();
-      AST::Declaration & parseStructOrUnionSpecifier();
-      AST::Declaration & parseStructOrUnion();
-      AST::Declaration & parseStructDeclarationList();
-      AST::Declaration & parseStructDeclaration();
-      AST::Declaration & parseSpecifierQualifierList();
-      AST::Declaration & parseStructDeclaratorList();
-      AST::Declaration & parseStructDeclarator();
-      AST::Declaration & parseDeclarator();
-      AST::Declaration & parseDirectDeclarator();
-      AST::Declaration & parsePointer();
-      AST::Declaration & parseParameterTypeList();
-      AST::Declaration & parseParameterList();
-      AST::Declaration & parseParameterDeclaration();
-      AST::Declaration & parseIdentifierList();
-      AST::Declaration & parseAbstractDeclarator();
-      AST::Declaration & parseDirectAbstractDeclarator();
-      AST::Declaration & parseMaybeAbstractDeclarator();
-      AST::Declaration & parseDirectMaybeAbstractDeclarator();
+      AST::Declaration const * parseDeclaration();
+      AST::Declaration const * parseDeclarationSpecifiers();
+      AST::Declaration const * parseInitDeclaratorList();
+      AST::Declaration const * parseInitDeclarator();
+      AST::Declaration const * parseTypeSpecifier();
+      AST::Declaration const * parseStructOrUnionSpecifier();
+      AST::Declaration const * parseStructOrUnion();
+      AST::Declaration const * parseStructDeclarationList();
+      AST::Declaration const * parseStructDeclaration();
+      AST::Declaration const * parseSpecifierQualifierList();
+      AST::Declaration const * parseStructDeclaratorList();
+      AST::Declaration const * parseStructDeclarator();
+      AST::Declaration const * parseDeclarator();
+      AST::Declaration const * parseDirectDeclarator();
+      AST::Declaration const * parsePointer();
+      AST::Declaration const * parseParameterTypeList();
+      AST::Declaration const * parseParameterList();
+      AST::Declaration const * parseParameterDeclaration();
+      AST::Declaration const * parseIdentifierList();
+      AST::Declaration const * parseAbstractDeclarator();
+      AST::Declaration const * parseDirectAbstractDeclarator();
+      AST::Declaration const * parseMaybeAbstractDeclarator();
+      AST::Declaration const * parseDirectMaybeAbstractDeclarator();
 
-      AST::Declaration & parseInitializer();
-      AST::Declaration & parseInitializerList();
+      AST::Declaration const * parseInitializer();
+      AST::Declaration const * parseInitializerList();
 
       //
       //  Type
       //
 
-      AST::Type & parseTypeName();
+      AST::Type const * parseTypeName();
 
       //
       //  Statements
       //
 
-      AST::Stmt & parseStmt();
-      AST::Stmt & parseLabeledStmt();
-      AST::Stmt & parseCompoundStmt();
-      AST::Stmt & parseDeclarationList();
-      AST::Stmt & parseStmtList();
-      AST::Stmt & parseExprStmt();
-      AST::Stmt & parseSelectionStmt();
-      AST::Stmt & parseIterationStmt();
-      AST::Stmt & parseJumpStmt();
+      AST::Stmt const * parseStmt();
+      AST::Stmt const * parseLabeledStmt();
+      AST::Stmt const * parseCompoundStmt();
+      AST::Stmt const * parseDeclarationList();
+      AST::Stmt const * parseStmtList();
+      AST::Stmt const * parseExprStmt();
+      AST::Stmt const * parseSelectionStmt();
+      AST::Stmt const * parseIterationStmt();
+      AST::Stmt const * parseJumpStmt();
 
-      AST::Stmt & parseTranslationUnit();
-      AST::Stmt & parseExternalDeclaration();
+      AST::Stmt const * parseTranslationUnit();
+      AST::Stmt const * parseExternalDeclaration();
     }; // end struct Parser
   } // end namespace Parse
 } // end namespace C4

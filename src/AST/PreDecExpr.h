@@ -20,14 +20,14 @@ namespace C4
     ///
     struct PreDecExpr : UnaryExpr
     {
-      PreDecExpr( Lex::Token const &tok, Expr const &expr ) :
+      PreDecExpr( Lex::Token const &tok, Expr const * const expr ) :
         UnaryExpr(tok), expr(expr) {}
       ~PreDecExpr() {}
 
       friend std::ostream & operator<<( std::ostream &out,
           PreDecExpr const &expr );
 
-      Expr const &expr; 
+      Expr const * const expr; 
       void print( Printer const ) const;
     }; // end struct PreDecExpr
 

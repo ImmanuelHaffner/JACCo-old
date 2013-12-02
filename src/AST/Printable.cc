@@ -21,9 +21,9 @@ void Variable::print( Printer const p ) const
 
 void BinaryExpr::print( Printer const p ) const
 {
-  this->lhs.print( p );
+  this->lhs->print( p );
   p.out << " " << this->tok.sym << " "; 
-  this->rhs.print( p );
+  this->rhs->print( p );
 }
 
 void PostIncExpr::print( Printer const p ) const
@@ -52,18 +52,18 @@ void DotExpr::print( Printer const p ) const
 
 void AssignmentExpr::print( Printer const p ) const
 {
-  this->lhs.print( p );
+  this->lhs->print( p );
   p.out << " " << this->tok.sym << " ";
-  this->rhs.print( p );
+  this->rhs->print( p );
 }
 
 void ConditionalExpr::print( Printer const p ) const
 {
-  this->cond.print( p );
+  this->cond->print( p );
   p.out << " ? ";
-  this->lhs.print( p );
+  this->lhs->print( p );
   p.out << " : ";
-  this->rhs.print ( p );
+  this->rhs->print ( p );
 }
 
 void Constant::print( Printer const p ) const
@@ -74,13 +74,13 @@ void Constant::print( Printer const p ) const
 void PreDecExpr::print( Printer const p ) const
 {
   p.out << "--";
-  this->expr.print( p );
+  this->expr->print( p );
 }
 
 void PreIncExpr::print( Printer const p ) const
 {
   p.out << "++";
-  this->expr.print( p );
+  this->expr->print( p );
 }
 
 void FunctionCall::print( Printer const p ) const
@@ -92,7 +92,7 @@ void FunctionCall::print( Printer const p ) const
 void SizeofExpr::print( Printer const p ) const
 {
   p.out << this->tok.sym << " ";
-  this->expr.print( p );
+  this->expr->print( p );
 }
 
 void SizeofTypeExpr::print( Printer const p ) const
@@ -108,7 +108,7 @@ void SizeofTypeExpr::print( Printer const p ) const
 void SubscriptExpr::print( Printer const p ) const
 {
   p.out << this->expr << "[";
-  this->index.print( p );
+  this->index->print( p );
   p.out << "]";
 }
 

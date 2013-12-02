@@ -21,7 +21,8 @@ namespace C4
     ///
     struct AssignmentExpr : BinaryExpr
     {
-      AssignmentExpr( Lex::Token const & tok, Expr const &lhs, Expr const &rhs ) :
+      AssignmentExpr( Lex::Token const & tok, Expr const * const lhs,
+					Expr const * const rhs ) :
         BinaryExpr(tok, lhs, rhs) {}
 
       ~AssignmentExpr() {};
