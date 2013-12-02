@@ -17,6 +17,7 @@
 #include "Variable.h"
 #include "Constant.h"
 #include "StringLiteral.h"
+#include "ExprList.h"
 #include "ConditionalExpr.h"
 #include "CastExpr.h"
 
