@@ -683,9 +683,8 @@ Declaration & Parser::parseDirectDeclarator()
       break;
 
     default:
-      {
         ERROR( "identifier or '(' declarator ')'" );
-      }
+
   } // end switch
 
   for (;;)
@@ -704,21 +703,8 @@ Declaration & Parser::parseDirectDeclarator()
       case TK::LPar:
         {
           readNextToken(); // eat '('
-          switch ( current->kind )
-          {
-            case TK::IDENTIFIER:
-              parseIdentifierList();
-              break;
-
-            case TK::Void:
-            case TK::Char:
-            case TK::Int:
-            case TK::Struct:
-              parseParameterTypeList();
-              break;
-
-            default:;
-          } // end switch
+          if ( current->kind != TK::RPar )
+            parseParameterTypeList();
           accept( TK::RPar ); // eat ')'
         }
         break;
@@ -776,19 +762,19 @@ Declaration & Parser::parseParameterDeclaration()
   return *( new IllegalDeclaration() );
 } // end parseParameterDeclaration
 
-Declaration & Parser::parseIdentifierList()
-{
-  for (;;)
-  {
-    if ( current->kind == TK::IDENTIFIER )
-      readNextToken(); // eat identifier
-    if ( current->kind == TK::Comma )
-      readNextToken(); // eat ','
-    else
-      break;
-  }
-  return *( new IllegalDeclaration() );
-} // end parseIdentifierList
+//Declaration & Parser::parseIdentifierList()
+//{
+  //for (;;)
+  //{
+    //if ( current->kind == TK::IDENTIFIER )
+      //readNextToken(); // eat identifier
+    //if ( current->kind == TK::Comma )
+      //readNextToken(); // eat ','
+    //else
+      //break;
+  //}
+  //return *( new IllegalDeclaration() );
+//} // end parseIdentifierList
 
 Type & Parser::parseTypeName()
 {
