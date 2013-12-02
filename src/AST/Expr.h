@@ -25,7 +25,13 @@ namespace C4
       virtual ~Expr() {}
 
       // TODO implement in sub-classes
+<<<<<<< HEAD
       virtual void print( Printer const ) {}
+||||||| merged common ancestors
+      virtual void print() {}
+=======
+      virtual void print() const {}
+>>>>>>> stuff
 
       friend std::ostream & operator<<( std::ostream &out, Expr const &expr );
     }; // end struct Expression
