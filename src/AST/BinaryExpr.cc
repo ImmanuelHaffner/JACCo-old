@@ -18,9 +18,3 @@ std::ostream & AST::operator<<( std::ostream &out, BinaryExpr const &expr )
   out << "binary expression";
   return out;
 }
-
-void BinaryExpr::print() const {
-    lhs.print();
-    std::cout << " " << tok.sym.str() << " "; 
-    rhs.print();
-}
