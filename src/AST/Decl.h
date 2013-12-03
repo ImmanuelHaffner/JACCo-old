@@ -33,7 +33,25 @@ namespace C4
 
       void print( Printer const p ) const;
     }; // end struct IllegalDeclaration
-  } // end namespace AST
+
+    /// Type Specifier
+    struct TypeSpecifier : Locatable, Printable
+    {
+      TypeSpecifier( Lex::Token const &tok, Decl *, Decl * ) : Locatable(tok) {}
+      virtual ~TypeSpecifier() {}
+      
+      void print( Printer const p ) const;
+    };
+
+    /// Type Specifier
+    struct IllegalTypeSpecifier : TypeSpecifier 
+    {
+      IllegalTypeSpecifier( Lex::Token const &tok, Decl * a, Decl * b ) : TypeSpecifier(tok,a,b) {}
+      virtual ~IllegalTypeSpecifier() {}
+      
+      void print( Printer const p ) const;
+    };
+      } // end namespace AST
 } // end namespace C4
 
 #endif

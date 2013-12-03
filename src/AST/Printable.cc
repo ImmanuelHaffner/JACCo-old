@@ -159,11 +159,21 @@ void IllegalStmt::print( Printer const p ) const
 //
 //===----------------------------------------------------------------------===//
 
-/*Lazyness void IllegalDecl::print( Printer const p ) const
+void IllegalDecl::print( Printer const p ) const
 {
   p.out << this->tok.sym;
-}*/
+}
 
+void TypeSpecifier::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
+  //TODO: Structs
+}
+
+void IllegalTypeSpecifier::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
+}
 
 //===----------------------------------------------------------------------===//
 //

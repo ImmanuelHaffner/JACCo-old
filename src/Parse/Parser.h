@@ -148,8 +148,8 @@ namespace C4
       //
 
       AST::Decl const * parseDecl();
-      AST::Decl const * parseTypeSpecifier();
-      AST::Decl const * parseStructOrUnionSpecifier();
+      AST::TypeSpecifier const * parseTypeSpecifier();
+      AST::TypeSpecifier const * parseStructSpecifier();
       AST::Decl const * parseStruct();
       AST::Decl const * parseStructDeclList();
       AST::Decl const * parseStructDecl();

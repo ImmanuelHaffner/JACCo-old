@@ -13,9 +13,4 @@ using namespace C4;
 using namespace AST;
 
 
-std::ostream & AST::operator<<( std::ostream &out, Decl const &decl )
-{
-  (void) decl; // suppress unused parameter warning
-  out << "declaration";
-  return out;
-}
+

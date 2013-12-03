@@ -499,26 +499,28 @@ TypeSpecifier const * Parser::parseTypeSpecifier()
   switch ( current->kind )
   {
     case TK::Void:
+      readNextToken();
+      return new TypeSpecifier( *current, NULL, NULL);
     case TK::Char:
+      readNextToken();
+      return new TypeSpecifier( *current, NULL, NULL );
     case TK::Int:
       readNextToken();
-      break;
-
+      return new TypeSpecifier( *current, NULL, NULL  ); 
     case TK::Struct:
-      parseStructOrUnionSpecifier();
-      break;
+      return parseStructSpecifier();
 
     default:
       {
         ERROR( "type-specifier ('void', 'char', 'int' or 'struct')" );
       }
   } // end switch
-  return new IllegalDecl( *current );
+  return new IllegalTypeSpecifier( *current, NULL, NULL );
 } // end parseTypeSpecifier
 
-Decl const * Parser::parseStructOrUnionSpecifier()
+TypeSpecifier const * Parser::parseStructSpecifier()
 {
-  parseStruct();
+  accept( TK::Struct );
   switch ( current->kind )
   {
     case TK::IDENTIFIER:
@@ -542,14 +544,8 @@ Decl const * Parser::parseStructOrUnionSpecifier()
         ERROR( "identifier or '{' struct-declaration-list '}'" );
       }
   } // end switch
-  return new IllegalDecl( *current );
+  return new IllegalTypeSpecifier( *current, NULL, NULL );
 } // end parseStructOrUnionSpecifier
-
-Decl const * Parser::parseStruct()
-{
-  accept( TK::Struct );
-  return new IllegalDecl( *current );
-} // end parseStruct
 
 Decl const * Parser::parseStructDeclList()
 {
@@ -575,7 +571,7 @@ Decl const * Parser::parseStructDeclaratorList()
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    parseStructDeclarator();
+    parseDeclarator();
   }
   return new IllegalDecl( *current );
 } // end parseStructDeclaratorList
@@ -613,7 +609,7 @@ Decl const * Parser::parseDirectDeclarator()
     parseParameterList();
     accept( TK::RPar ); // eat ')'
   } // end while
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseDirectDeclarator
 
 Decl const * Parser::parsePointer()
@@ -654,24 +650,9 @@ Decl const * Parser::parseParameterDecl()
   return new IllegalDecl( *current );
 } // end parseParameterDecl
 
-//Decl const * Parser::parseIdentifierList()
-//{
-  //for (;;)
-  //{
-    //if ( current->kind == TK::IDENTIFIER )
-      //readNextToken(); // eat identifier
-    //if ( current->kind == TK::Comma )
-      //readNextToken(); // eat ','
-    //else
-      //break;
-  //}
-  //return new IllegalDecl( *current );
-//} // end parseIdentifierList
-
-/* I guess we don't need it
 Type const * Parser::parseTypeName()
 {
-  parseSpecifierQualifierList();
+  //parseSpecifierQualifierList();
 
   switch ( current->kind )
   {
@@ -685,7 +666,6 @@ Type const * Parser::parseTypeName()
   }
   return new IllegalType( *current );
 } // end parseTypeName
-*/
 
 Decl const * Parser::parseAbstractDeclarator()
 {
