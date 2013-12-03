@@ -143,7 +143,7 @@ type_specifier
   : VOID
   | CHAR
   | INT
-  | struct_or_union_specifier
+  | struct_specifier
   ;
 
 struct_specifier
