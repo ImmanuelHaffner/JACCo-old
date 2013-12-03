@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include "Locatable.h"
-#include "Printable.h"
 
 
 namespace C4
@@ -22,7 +21,7 @@ namespace C4
     struct Expr;
 
     /// Statement
-    struct Stmt : Locatable, Printable
+    struct Stmt : Locatable
     {
       Stmt( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Stmt() {}

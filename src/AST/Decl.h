@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include "Locatable.h"
-#include "Printable.h"
 
 
 namespace C4
@@ -19,7 +18,7 @@ namespace C4
   namespace AST
   {
     /// Declaration
-    struct Decl : Locatable, Printable
+    struct Decl : Locatable
     {
       Decl( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Decl() {}
