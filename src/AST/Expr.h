@@ -27,10 +27,7 @@ namespace C4
     {
       explicit Expr( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Expr() {}
-
-      friend std::ostream & operator<<( std::ostream &out, Expr const &expr );
     }; // end struct Expression
-    std::ostream & operator<<( std::ostream &out, Expr const &expr );
 
     /// Illegal Expression
     struct IllegalExpr : Expr
@@ -39,10 +36,7 @@ namespace C4
       virtual ~IllegalExpr() {}
 
       virtual void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          IllegalExpr const &expr );
     }; // end struct IllegalExpression
-    std::ostream & operator<<( std::ostream &out, IllegalExpr const &expr );
 
     /// Expression List
     struct ExprList : Expr
@@ -51,10 +45,7 @@ namespace C4
       virtual ~ExprList() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          ExprList const &expr );
     }; // end struct ExprList
-    std::ostream & operator<<( std::ostream &out, ExprList const &list );
 
     /// Variable
     struct Variable : Expr
@@ -67,10 +58,7 @@ namespace C4
       ~Variable() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          Variable const &var );
     }; // end struct Variable
-    std::ostream & operator<<( std::ostream &out, Variable const &var );
 
     /// Constant
     struct Constant : Expr
@@ -82,10 +70,7 @@ namespace C4
       ~Constant() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          Constant const &con ); 
     }; // end struct Constant
-    std::ostream & operator<<( std::ostream &out, Constant const &con );
 
     /// String-Literal
     struct StringLiteral : Expr
@@ -98,26 +83,20 @@ namespace C4
       ~StringLiteral() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          StringLiteral const &lit );
     }; // end struct StringLiteral
-    std::ostream & operator<<( std::ostream &out, StringLiteral const &lit );
 
     /// Cast Expression
     struct CastExpr : Expr
     {
-      CastExpr( Lex::Token const &tok, Expr const &expr ) :
+      CastExpr( Lex::Token const &tok, Expr const * const expr ) :
         Expr(tok), expr(expr) {}
       virtual ~CastExpr() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          CastExpr const &expr );
 
       // TODO type
-      Expr const &expr;
+      Expr const * const expr;
     }; // end struct CastExpr
-    std::ostream & operator<<( std::ostream &out, CastExpr const &expr );
 
     /// Binary Expression
     struct BinaryExpr : Expr
@@ -127,13 +106,10 @@ namespace C4
       virtual ~BinaryExpr() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          BinaryExpr const &expr );
 
       Expr const * const lhs;
       Expr const * const rhs;
     }; // end struct BinaryExpr
-    std::ostream & operator<<( std::ostream &out, BinaryExpr const &expr );
 
     /// Conditional Expression
     struct ConditionalExpr : Expr
@@ -144,14 +120,11 @@ namespace C4
       ~ConditionalExpr() {}
 
       void print( Printer const ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          ConditionalExpr const &expr );
 
       Expr const * const cond;
       Expr const * const lhs;
       Expr const * const rhs;
     }; // end struct ConditionalExpr
-    std::ostream & operator<<( std::ostream &out, ConditionalExpr const &expr );
 
     /// Assignment Expression
     struct AssignmentExpr : BinaryExpr
@@ -163,7 +136,6 @@ namespace C4
 
       virtual void print( Printer const ) const;
     }; // end struct AssignmentExpr
-    std::ostream & operator<<( std::ostream &out, AssignmentExpr const &expr );
 
     /// Unary Expression
     struct UnaryExpr : Expr
@@ -171,21 +143,14 @@ namespace C4
       UnaryExpr( Lex::Token const &tok ) : Expr(tok) {}
       virtual ~UnaryExpr() {}
 
-      friend std::ostream & operator<<( std::ostream &out,
-          UnaryExpr const &expr );
     }; // end struct UnaryExpr
-    std::ostream & operator<<( std::ostream &out, UnaryExpr const &expr );
 
     /// Postfix Expression
     struct PostfixExpr : UnaryExpr
     {
       PostfixExpr( Lex::Token const &tok ) : UnaryExpr(tok) {}
       virtual ~PostfixExpr() {}
-
-      friend std::ostream & operator<<( std::ostream &out,
-          PostfixExpr const &expr );
     }; // end struct PostfixExpression
-    std::ostream & operator<<( std::ostream &out, PostfixExpr const &expr );
 
     /// Subscript Expression
     struct SubscriptExpr : PostfixExpr
@@ -196,13 +161,10 @@ namespace C4
       ~SubscriptExpr() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          SubscriptExpr const &expr );
 
       Expr const * const expr;
       Expr const * const index; 
     }; // end struct SubscriptExpr
-    std::ostream & operator<<( std::ostream &out, SubscriptExpr const &expr );
 
     /// Dot Expression
     struct DotExpr : PostfixExpr
@@ -216,13 +178,10 @@ namespace C4
       ~DotExpr() {}
 
       virtual void print( Printer const ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          DotExpr const &expr );
 
       Expr const &lhs;
       Lex::Token const &rhs;
     }; // end struct DotExpr
-    std::ostream & operator<<( std::ostream &out, DotExpr const &expr );
 
     /// Arrow Expression
     struct ArrowExpr : DotExpr
@@ -233,10 +192,7 @@ namespace C4
       ~ArrowExpr() {}
 
       void print( Printer const ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          ArrowExpr const &expr );
     }; // end struct ArrowExpr
-    std::ostream & operator<<( std::ostream &out, ArrowExpr const &expr );
 
     /// Function Call Expression
     struct FunctionCall : PostfixExpr
@@ -247,12 +203,9 @@ namespace C4
       ~FunctionCall() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          FunctionCall const &expr );
 
       Expr const &expr; 
     }; // end struct FunctionCall
-    std::ostream & operator<<( std::ostream &out, FunctionCall const &expr );
 
     /// Post Increment Expression
     struct PostIncExpr : PostfixExpr
@@ -262,12 +215,9 @@ namespace C4
       ~PostIncExpr() {}
 
       void print( Printer const ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          PostIncExpr const &expr );
 
       Expr const &expr;
     }; // end struct PostIncExpr
-    std::ostream & operator<<( std::ostream &out, PostIncExpr const &expr );
 
     /// Post Decrement Expression
     struct PostDecExpr : PostfixExpr
@@ -277,12 +227,9 @@ namespace C4
       ~PostDecExpr() {}
 
       void print( Printer const ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          PostDecExpr const &expr );
 
       Expr const &expr;
     }; // end struct PostDecExpr
-    std::ostream & operator<<( std::ostream &out, PostDecExpr const &expr );
 
     /// Pre Increment Expression
     struct PreIncExpr : UnaryExpr
@@ -292,12 +239,9 @@ namespace C4
       ~PreIncExpr() {}
 
       void print( Printer const ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          PreIncExpr const &expr );
 
       Expr const * const expr; 
     }; // end struct PreIncExpr
-    std::ostream & operator<<( std::ostream &out, PreIncExpr const &expr );
 
     /// Pre Decrement Expression
     struct PreDecExpr : UnaryExpr
@@ -307,12 +251,9 @@ namespace C4
       ~PreDecExpr() {}
 
       void print( Printer const ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          PreDecExpr const &expr );
 
       Expr const * const expr; 
     }; // end struct PreDecExpr
-    std::ostream & operator<<( std::ostream &out, PreDecExpr const &expr );
 
     /// Sizeof Expression
     struct SizeofExpr : UnaryExpr
@@ -322,12 +263,9 @@ namespace C4
       ~SizeofExpr() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          SizeofExpr const &expr );
 
       Expr const * const expr; 
     }; // end struct UnaryExpr
-    std::ostream & operator<<( std::ostream &out, SizeofExpr const &expr );
 
     /// Sizeof Type Expression
     struct SizeofTypeExpr : UnaryExpr
@@ -337,12 +275,9 @@ namespace C4
       ~SizeofTypeExpr() {}
 
       void print( Printer const p ) const;
-      friend std::ostream & operator<<( std::ostream &out,
-          SizeofTypeExpr const &expr );
 
       Type const * const type; 
     }; // end struct UnaryExpr
-    std::ostream & operator<<( std::ostream &out, SizeofTypeExpr const &expr );
   } // end namespace AST
 } // end namespace C4
 

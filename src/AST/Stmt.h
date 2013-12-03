@@ -10,42 +10,56 @@
 #define C4_STMT_H
 
 #include <iostream>
+#include "Locatable.h"
+#include "Printable.h"
 
 
 namespace C4
 {
   namespace AST
   {
-    /// Statement
-    struct Stmt
-    {
-      virtual ~Stmt() {}
+    // Forward declaration
+    struct Expr;
 
-      friend std::ostream & operator<<( std::ostream &out, Stmt const &stmt );
+    /// Statement
+    struct Stmt : Locatable, Printable
+    {
+      Stmt( Lex::Token const &tok ) : Locatable(tok) {}
+      virtual ~Stmt() {}
     }; // end struct Stmt
-    std::ostream & operator<<( std::ostream &out, Stmt const &stmt );
 
     /// Illegal Statement
     struct IllegalStmt : Stmt
     {
-      IllegalStmt() {}
+      IllegalStmt( Lex::Token const &tok ) : Stmt(tok) {}
       virtual ~IllegalStmt() {}
 
-      friend std::ostream & operator<<( std::ostream &out,
-          IllegalStmt const &stmt );
+      void print ( Printer const p ) const;
     }; // end struct IllegalStmt
-    std::ostream & operator<<( std::ostream &out, IllegalStmt const &stmt );
 
     /// If Statement
     struct IfStmt : Stmt
     {
-      IfStmt() {}
-      virtual ~IfStmt() {}
+      IfStmt( Lex::Token const tok, Expr const * const Cond,
+          Stmt const * const Then, Stmt const * const Else ) :
+      Stmt(tok), Cond(Cond), Then(Then), Else(Else) {}
+      ~IfStmt() {}
 
-      friend std::ostream & operator<<( std::ostream &out,
-          IfStmt const &stmt );
+      Expr const * const Cond;
+      Stmt const * const Then;
+      Stmt const * const Else;
     }; // end struct IfStmt
-    std::ostream & operator<<( std::ostream &out, IfStmt const &stmt );
+
+    // Switch Statement
+    struct SwitchStmt : Stmt
+    {
+      SwitchStmt( Lex::Token const &tok, Expr const * const expr,
+          Stmt const * const stmt ) : Stmt(tok), expr(expr), stmt(stmt) {}
+      ~SwitchStmt() {}
+
+      Expr const * const expr;
+      Stmt const * const stmt;
+    };
   } // end namespace AST
 } // end namespace C4
 

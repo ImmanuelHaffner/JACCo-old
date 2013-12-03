@@ -19,6 +19,8 @@ namespace C4
     /// \brief Holds properties necessary for pretty-printing.
     struct Printer
     {
+      explicit Printer( std::ostream &out, char indent = 0 ) :
+        out(out), indent(indent) {}
       std::ostream &out;
       char indent;
     };
@@ -27,7 +29,10 @@ namespace C4
     struct Printable
     {
       virtual void print( Printer const p ) const = 0;
+      friend std::ostream & operator<<( std::ostream &out, Printable const &p );
     }; // end struct Printable
+
+    std::ostream & operator<<( std::ostream &out, Printable const &p );
   } // end namespace AST
 } // end namespace C4
 

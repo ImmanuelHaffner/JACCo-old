@@ -485,42 +485,15 @@ Expr const * Parser::parseExpr()
 //  Declarations
 //
 
-Declaration const * Parser::parseDeclaration()
+Decl const * Parser::parseDecl()
 {
   parseTypeSpecifier();
   if ( current->kind != TK::SCol )
     parseDeclarator();
   accept( TK::SCol ); // eat ';'
-  return new IllegalDeclaration();
-} // end parseDeclaration
+  return new IllegalDecl( *current );
+} // end parseDecl
 
-/*Not needed
- * Declaration const * Parser::parseDeclarationSpecifiers()
-{
-  parseTypeSpecifier();
-  while ( is( TK::Void, TK::Char, TK::Int, TK::Struct ) )
-    parseTypeSpecifier();
-  return new IllegalDeclaration();
-} // end parseDeclarationSpecifiers
-
-Declaration const * Parser::parseInitDeclaratorList()
-{
-  parseInitDeclarator();
-  while ( current->kind == TK::Comma )
-  {
-    readNextToken();
-    parseInitDeclarator();
-  }
-  return new IllegalDeclaration();
-} // end parseInitDeclaratorList
-
-Declaration const * Parser::parseInitDeclarator()
-{
-  parseDeclarator();
-  // Our C subset elides initialization
-  return new IllegalDeclaration();
-} // end parseInitDeclarator
-*/
 TypeSpecifier const * Parser::parseTypeSpecifier()
 {
   switch ( current->kind )
@@ -540,10 +513,10 @@ TypeSpecifier const * Parser::parseTypeSpecifier()
         ERROR( "type-specifier ('void', 'char', 'int' or 'struct')" );
       }
   } // end switch
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseTypeSpecifier
 
-Declaration const * Parser::parseStructOrUnionSpecifier()
+Decl const * Parser::parseStructOrUnionSpecifier()
 {
   parseStruct();
   switch ( current->kind )
@@ -553,14 +526,14 @@ Declaration const * Parser::parseStructOrUnionSpecifier()
       if ( current->kind == TK::LBrace )
       {
         readNextToken(); // eat '{'
-        parseStructDeclarationList();
+        parseStructDeclList();
         accept( TK::RBrace ); // eat '}'
       }
       break;
 
     case TK::LBrace:
       readNextToken(); // eat '{'
-      parseStructDeclarationList();
+      parseStructDeclList();
       accept( TK::RBrace ); // eat '}'
       break;
 
@@ -569,53 +542,53 @@ Declaration const * Parser::parseStructOrUnionSpecifier()
         ERROR( "identifier or '{' struct-declaration-list '}'" );
       }
   } // end switch
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseStructOrUnionSpecifier
 
-Declaration const * Parser::parseStruct()
+Decl const * Parser::parseStruct()
 {
   accept( TK::Struct );
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseStruct
 
-Declaration const * Parser::parseStructDeclarationList()
+Decl const * Parser::parseStructDeclList()
 {
   do
   {
-    parseStructDeclaration();
+    parseStructDecl();
   }
   while ( current->kind != TK::RBrace );
-  return new IllegalDeclaration();
-} // end parseStructDeclarationList
+  return new IllegalDecl( *current );
+} // end parseStructDeclList
 
-Declaration const * Parser::parseStructDeclaration()
+Decl const * Parser::parseStructDecl()
 {
   parseTypeSpecifier();
   parseStructDeclaratorList();
   accept( TK::SCol ); // eat ';'
-  return new IllegalDeclaration();
-} // end parseStructDeclaration
+  return new IllegalDecl( *current );
+} // end parseStructDecl
 
-Declaration const * Parser::parseStructDeclaratorList()
+Decl const * Parser::parseStructDeclaratorList()
 {
   parseDeclarator();
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    parseDeclarator();
+    parseStructDeclarator();
   }
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseStructDeclaratorList
 
-Declaration const * Parser::parseDeclarator()
+Decl const * Parser::parseDeclarator()
 {
   if ( current->kind == TK::Mul )
     parsePointer();
   parseDirectDeclarator();
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseDeclarator
 
-Declaration const * Parser::parseDirectDeclarator()
+Decl const * Parser::parseDirectDeclarator()
 {
   switch ( current->kind )
   {
@@ -643,26 +616,26 @@ Declaration const * Parser::parseDirectDeclarator()
   return new IllegalDeclaration();
 } // end parseDirectDeclarator
 
-Declaration const * Parser::parsePointer()
+Decl const * Parser::parsePointer()
 {
   accept( TK::Mul ); // '*'
   while ( current->kind == TK::Mul )
     readNextToken(); // eat '*'
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parsePointer
 
-Declaration const * Parser::parseParameterList()
+Decl const * Parser::parseParameterList()
 {
-  parseParameterDeclaration();
+  parseParameterDecl();
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    parseParameterDeclaration();
+    parseParameterDecl();
   }
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseParameterList
 
-Declaration const * Parser::parseParameterDeclaration()
+Decl const * Parser::parseParameterDecl()
 {
   parseTypeSpecifier();
   switch ( current->kind )
@@ -678,10 +651,10 @@ Declaration const * Parser::parseParameterDeclaration()
 
     default:;
   }
-  return new IllegalDeclaration();
-} // end parseParameterDeclaration
+  return new IllegalDecl( *current );
+} // end parseParameterDecl
 
-//Declaration const * Parser::parseIdentifierList()
+//Decl const * Parser::parseIdentifierList()
 //{
   //for (;;)
   //{
@@ -692,7 +665,7 @@ Declaration const * Parser::parseParameterDeclaration()
     //else
       //break;
   //}
-  //return new IllegalDeclaration();
+  //return new IllegalDecl( *current );
 //} // end parseIdentifierList
 
 /* I guess we don't need it
@@ -714,7 +687,7 @@ Type const * Parser::parseTypeName()
 } // end parseTypeName
 */
 
-Declaration const * Parser::parseAbstractDeclarator()
+Decl const * Parser::parseAbstractDeclarator()
 {
   switch ( current->kind )
   {
@@ -741,10 +714,10 @@ Declaration const * Parser::parseAbstractDeclarator()
         ERROR( "'*' or direct-abstract-declarator" );
       }
   } // end switch
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseAbstractDeclarator
 
-Declaration const * Parser::parseDirectAbstractDeclarator()
+Decl const * Parser::parseDirectAbstractDeclarator()
 {
   switch ( current->kind )
   {
@@ -789,10 +762,10 @@ Declaration const * Parser::parseDirectAbstractDeclarator()
     accept( TK::RPar );
 
   } // end while
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseDirectAbstractDeclarator
 
-Declaration const * Parser::parseMaybeAbstractDeclarator()
+Decl const * Parser::parseMaybeAbstractDeclarator()
 {
   switch ( current->kind )
   {
@@ -828,10 +801,10 @@ Declaration const * Parser::parseMaybeAbstractDeclarator()
       }
   } // end switch
 
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseMaybeAbstractDeclarator
 
-Declaration const * Parser::parseDirectMaybeAbstractDeclarator()
+Decl const * Parser::parseDirectMaybeAbstractDeclarator()
 {
   assert( current->kind == TK::LPar &&
       "correct decision should have been taken by the caller" );
@@ -860,9 +833,8 @@ Declaration const * Parser::parseDirectMaybeAbstractDeclarator()
             "'(' parameter-list ')'" );
       }
   } // end switch
-  return new IllegalDeclaration();
+  return new IllegalDecl( *current );
 } // end parseDirectMaybeAbstractDeclarator
-
 
 Stmt const * Parser::parseStmt()
 {
@@ -924,7 +896,7 @@ Stmt const * Parser::parseStmt()
         ERROR( "statement" );
       }
   } // end switch
-  return new IllegalStmt();
+  return new IllegalStmt( *current );
 } // end parseStmt
 
 Stmt const * Parser::parseLabeledStmt()
@@ -955,7 +927,7 @@ Stmt const * Parser::parseLabeledStmt()
         ERROR( "identifier, 'case' or 'default'" );
       }
   } // end switch
-  return new IllegalStmt();
+  return new IllegalStmt( *current );
 } // end parseLabeledStmt
 
 Stmt const * Parser::parseCompoundStmt()
@@ -970,7 +942,7 @@ Stmt const * Parser::parseCompoundStmt()
     case TK::Char:
     case TK::Int:
     case TK::Struct:
-      parseDeclarationList();
+      parseDeclList();
       switch ( current->kind )
       {
         case TK::IDENTIFIER:
@@ -1041,12 +1013,12 @@ Stmt const * Parser::parseCompoundStmt()
       }
   } // end switch
   accept( TK::RBrace ); // eat '}'
-  return new IllegalStmt();
+  return new IllegalStmt( *current );
 } // end parseCompoundStmt
 
-Stmt const * Parser::parseDeclarationList()
+Stmt const * Parser::parseDeclList()
 {
-  parseDeclaration();
+  parseDecl();
 
   for (;;)
   {
@@ -1056,15 +1028,15 @@ Stmt const * Parser::parseDeclarationList()
       case TK::Char:
       case TK::Int:
       case TK::Struct:
-        parseDeclaration();
+        parseDecl();
         break;
 
       default: goto for_end;
     }
   } // end for
 for_end:
-  return new IllegalStmt();
-} // end parseDeclarationList
+  return new IllegalStmt( * current );
+} // end parseDeclList
 
 Stmt const * Parser::parseStmtList()
 {
@@ -1107,7 +1079,7 @@ Stmt const * Parser::parseStmtList()
     }
   } // end for
 for_end:
-  return new IllegalStmt();
+  return new IllegalStmt( *current );
 } // end parseStmtList
 
 Stmt const * Parser::parseExprStmt()
@@ -1115,7 +1087,7 @@ Stmt const * Parser::parseExprStmt()
   if ( current->kind != TK::SCol )
     parseExpr();
   accept( TK::SCol );
-  return new IllegalStmt();
+  return new IllegalStmt( *current );
 } // end parseExprStmt
 
 Stmt const * Parser::parseSelectionStmt()
@@ -1148,7 +1120,7 @@ Stmt const * Parser::parseSelectionStmt()
         ERROR( "'if' or 'switch'" );
       }
   } // end switch
-  return new IllegalStmt();
+  return new IllegalStmt( *current );
 } // end parseSelectionStmt
 
 Stmt const * Parser::parseIterationStmt()
@@ -1188,7 +1160,7 @@ Stmt const * Parser::parseIterationStmt()
         ERROR( "'for', 'do' or 'while'" );
       }
   } // end switch
-  return new IllegalStmt();
+  return new IllegalStmt( *current );
 } // end parseIterationStmt
 
 Stmt const * Parser::parseJumpStmt()
@@ -1223,7 +1195,7 @@ Stmt const * Parser::parseJumpStmt()
         ERROR( "'return', 'continue', 'break' or 'goto'" );
       }
   } // end switch
-  return new IllegalStmt();
+  return new IllegalStmt( *current );
 } // end parseJumpStmt
 
 Stmt const * Parser::parseTranslationUnit()
@@ -1232,15 +1204,15 @@ Stmt const * Parser::parseTranslationUnit()
   {
     // TODO stop or recover, if a corrupted external declaration was found
     Token const *prev = current;
-    parseExternalDeclaration();
+    parseExternalDecl();
     if ( prev == current )
       readNextToken();
   }
   while ( current->kind != TK::END_OF_FILE );
-  return new IllegalStmt();
+  return new IllegalStmt( *current );
 } // end parseTranslationUnit
 
-Stmt const * Parser::parseExternalDeclaration()
+Stmt const * Parser::parseExternalDecl()
 {
   switch ( current->kind )
   {
@@ -1255,7 +1227,7 @@ Stmt const * Parser::parseExternalDeclaration()
         case TK::Char:
         case TK::Int:
         case TK::Struct:
-          parseDeclarationList();
+          parseDeclList();
           break;
 
         default:;
@@ -1306,7 +1278,7 @@ Stmt const * Parser::parseExternalDeclaration()
         case TK::Int:
         case TK::Struct:
           // declaration-list compound-statement
-          parseDeclarationList();
+          parseDeclList();
           parseCompoundStmt();
           break;
 
@@ -1328,5 +1300,5 @@ Stmt const * Parser::parseExternalDeclaration()
         ERROR( "declaration or function-definition" );
       }
   } // end switch
-  return new IllegalStmt();
-} // end parseExternalDeclaration
+  return new IllegalStmt( *current );
+} // end parseExternalDecl

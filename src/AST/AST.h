@@ -12,11 +12,6 @@
 #include "Expr.h"
 #include "Stmt.h"
 #include "Decl.h"
-
-//
-//  Type
-//
 #include "Type.h"
-#include "IllegalType.h"
 
 #endif

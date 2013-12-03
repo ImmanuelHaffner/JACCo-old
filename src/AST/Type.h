@@ -18,19 +18,21 @@ namespace C4
 {
   namespace AST
   {
-    ///
+    /// Type
     struct Type : Locatable, Printable
     {
       Type( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Type() {}
-
-      // TODO implement in sub-classes
-      virtual void print( Printer const ) const; 
-
-      friend std::ostream & operator<<( std::ostream &out, Type const &decl );
     }; // end struct Type
 
-    std::ostream & operator<<( std::ostream &out, Type const &type );
+    /// Illegal Type
+    struct IllegalType : Type
+    {
+      IllegalType( Lex::Token const &tok ) : Type(tok) {}
+      virtual ~IllegalType() {}
+
+      void print( Printer const p ) const; 
+    }; // end struct IllegalType
   } // end namespace AST
 } // end namespace C4
 
