@@ -144,25 +144,25 @@ namespace C4
       }
 
       //
-      // Declarations
+      // Decls
       //
 
-      AST::Declaration const * parseDecl();
-      AST::Declaration const * parseTypeSpecifier();
-      AST::Declaration const * parseStructOrUnionSpecifier();
-      AST::Declaration const * parseStruct();
-      AST::Declaration const * parseStructDeclList();
-      AST::Declaration const * parseStructDecl();
-      AST::Declaration const * parseStructDeclaratorList();
-      AST::Declaration const * parseDeclarator();
-      AST::Declaration const * parseDirectDeclarator();
-      AST::Declaration const * parsePointer();
-      AST::Declaration const * parseParameterList();
-      AST::Declaration const * parseParameterDecl();
-      AST::Declaration const * parseAbstractDeclarator();
-      AST::Declaration const * parseDirectAbstractDeclarator();
-      AST::Declaration const * parseMaybeAbstractDeclarator();
-      AST::Declaration const * parseDirectMaybeAbstractDeclarator();
+      AST::Decl const * parseDecl();
+      AST::Decl const * parseTypeSpecifier();
+      AST::Decl const * parseStructOrUnionSpecifier();
+      AST::Decl const * parseStruct();
+      AST::Decl const * parseStructDeclList();
+      AST::Decl const * parseStructDecl();
+      AST::Decl const * parseStructDeclaratorList();
+      AST::Decl const * parseDeclarator();
+      AST::Decl const * parseDirectDeclarator();
+      AST::Decl const * parsePointer();
+      AST::Decl const * parseParameterList();
+      AST::Decl const * parseParameterDecl();
+      AST::Decl const * parseAbstractDeclarator();
+      AST::Decl const * parseDirectAbstractDeclarator();
+      AST::Decl const * parseMaybeAbstractDeclarator();
+      AST::Decl const * parseDirectMaybeAbstractDeclarator();
       //
       //  Type
       //

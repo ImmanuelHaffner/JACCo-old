@@ -1,4 +1,4 @@
-//===--- Decl.h------------------------------------------------------------===//
+///===--- Decl.h -----------------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -6,37 +6,33 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef C4_DECLARATION_H
-#define C4_DECLARATION_H
+#ifndef C4_DECL_H
+#define C4_DECL_H
 
 #include <iostream>
+#include "Locatable.h"
+#include "Printable.h"
+
 
 namespace C4
 {
   namespace AST
   {
-    ///
-    struct Declaration
+    /// Declaration
+    struct Decl : Locatable, Printable
     {
-      virtual ~Declaration() {}
+      Decl( Lex::Token const &tok ) : Locatable(tok) {}
+      virtual ~Decl() {}
+    }; // end struct Declaration
 
-      friend std::ostream & operator<<( std::ostream &out,
-          Declaration const &decl );
-    };
-
-    std::ostream & operator<<( std::ostream &out, Declaration const &decl );
-
-    struct IllegalDeclaration : Declaration
+    /// Illegal Declaration
+    struct IllegalDecl : Decl
     {
-      virtual ~IllegalDeclaration() {}
+      IllegalDecl( Lex::Token const &tok ) : Decl(tok) {}
+      virtual ~IllegalDecl() {}
 
-      friend std::ostream & operator<<( std::ostream &out,
-          IllegalDeclaration const &decl );
-    };
-
-    std::ostream & operator<<( std::ostream &out,
-        IllegalDeclaration const &decl );
-
+      void print( Printer const p ) const;
+    }; // end struct IllegalDeclaration
   } // end namespace AST
 } // end namespace C4
 
