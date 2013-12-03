@@ -174,11 +174,6 @@ direct_declarator
   | '(' declarator ')'
   ;
 
-direct_abstract_declarator
-  : '(' abstract_declarator ')'
-  | '(' parameter_list ')'
-  | '(' ')
-
 pointer
   : '*'
   | '*' pointer
@@ -204,6 +199,12 @@ abstract_declarator
   : pointer
   | direct_abstract_declarator
   | pointer direct_abstract_declarator
+  ;
+
+direct_abstract_declarator
+  : '(' abstract_declarator ')'
+  | '(' parameter_list ')'
+  | '(' ')'
   ;
 
 statement

@@ -138,10 +138,7 @@ namespace C4
       ///
       /// \return the parsed expression
       AST::Expr const * parseExpr();
-      inline AST::Expr const * parseConstantExpr()
-      {
-        return parseConditionalExpr();
-      }
+      AST::Expr const * parseConstantExpr();
 
       //
       // Decls

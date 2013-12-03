@@ -306,7 +306,10 @@ Expr const * Parser::parseArgumentExprList()
 {
   parseAssignmentExpr();
   while ( current->kind == TK::Comma )
+  {
+    readNextToken(); // eat ','
     parseAssignmentExpr();
+  }
   return new IllegalExpr( *current );
 } // end parseArgumentExprList
 
@@ -365,22 +368,14 @@ Expr const * Parser::parseUnaryExpr()
       }
       break;
 
-    default:
-      return parsePostfixExpr();
+    default:;
   } // end switch
-  return new IllegalExpr( *current );
+  return parsePostfixExpr();
 } // end parseUnaryExpr
 
 Expr const * Parser::parseCastExpr()
 {
-  while ( current->kind == TK::LPar )
-  {
-    readNextToken(); // eat '('
-    parseTypeName();
-    accept( TK::RPar ); // eat ')'
-  }
-  parseUnaryExpr();
-  return new IllegalExpr( *current );
+  return parseUnaryExpr();
 } // end parseCastExpr
 
 Expr const * Parser::parseBinaryExpr()
@@ -480,6 +475,11 @@ Expr const * Parser::parseExpr()
   return new IllegalExpr( *current );
 } // end parseExpr
 
+Expr const * Parser::parseConstantExpr()
+{
+  return parseConditionalExpr();
+} // end parseConstantExpr
+
 
 //
 //  Declarations
@@ -499,28 +499,27 @@ TypeSpecifier const * Parser::parseTypeSpecifier()
   switch ( current->kind )
   {
     case TK::Void:
-      readNextToken();
-      return new TypeSpecifier( *current, NULL, NULL);
     case TK::Char:
-      readNextToken();
-      return new TypeSpecifier( *current, NULL, NULL );
     case TK::Int:
-      readNextToken();
-      return new TypeSpecifier( *current, NULL, NULL  ); 
+      {
+        Token tok( *current );
+        readNextToken(); // eat type
+        return new TypeSpecifier( tok, NULL, NULL  );
+      }
+
     case TK::Struct:
       return parseStructSpecifier();
 
     default:
-      {
         ERROR( "type-specifier ('void', 'char', 'int' or 'struct')" );
-      }
+
   } // end switch
   return new IllegalTypeSpecifier( *current, NULL, NULL );
 } // end parseTypeSpecifier
 
 TypeSpecifier const * Parser::parseStructSpecifier()
 {
-  accept( TK::Struct );
+  accept( TK::Struct ); // eat 'struct'
   switch ( current->kind )
   {
     case TK::IDENTIFIER:
@@ -540,9 +539,8 @@ TypeSpecifier const * Parser::parseStructSpecifier()
       break;
 
     default:
-      {
         ERROR( "identifier or '{' struct-declaration-list '}'" );
-      }
+
   } // end switch
   return new IllegalTypeSpecifier( *current, NULL, NULL );
 } // end parseStructOrUnionSpecifier
@@ -553,7 +551,7 @@ Decl const * Parser::parseStructDeclList()
   {
     parseStructDecl();
   }
-  while ( current->kind != TK::RBrace );
+  while ( current->kind != TK::RBrace ); // until '}'
   return new IllegalDecl( *current );
 } // end parseStructDeclList
 
@@ -603,10 +601,11 @@ Decl const * Parser::parseDirectDeclarator()
 
   } // end switch
 
-  while (current->kind == TK::LPar)
+  if (current->kind == TK::LPar)
   {
     readNextToken(); // eat '('
-    parseParameterList();
+    if ( current->kind != TK::LPar )
+      parseParameterList();
     accept( TK::RPar ); // eat ')'
   } // end while
   return new IllegalDecl( *current );
@@ -614,9 +613,9 @@ Decl const * Parser::parseDirectDeclarator()
 
 Decl const * Parser::parsePointer()
 {
-  accept( TK::Mul ); // '*'
-  while ( current->kind == TK::Mul )
-    readNextToken(); // eat '*'
+  do
+    accept( TK::Mul ); // eat '*'
+  while ( current->kind == TK::Mul );
   return new IllegalDecl( *current );
 } // end parsePointer
 
@@ -636,6 +635,8 @@ Decl const * Parser::parseParameterDecl()
   parseTypeSpecifier();
   switch ( current->kind )
   {
+    // FIXME this is currently broken (e.g. ( IDENTIFIER ) is being parsed
+    // incorrectly)
     case TK::IDENTIFIER:
       parseDeclarator();
       break;
@@ -652,13 +653,12 @@ Decl const * Parser::parseParameterDecl()
 
 Type const * Parser::parseTypeName()
 {
-  //parseSpecifierQualifierList();
+  parseTypeSpecifier();
 
   switch ( current->kind )
   {
     case TK::Mul:
     case TK::LPar:
-    case TK::LBracket:
       parseAbstractDeclarator();
       break;
 
@@ -679,9 +679,7 @@ Decl const * Parser::parseAbstractDeclarator()
           parseDirectAbstractDeclarator();
           break;
 
-        default:
-          //return AbstractDeclarator;
-          ;
+        default:;
       } // end switch
       break;
 
@@ -690,58 +688,37 @@ Decl const * Parser::parseAbstractDeclarator()
       break;
 
     default:
-      {
         ERROR( "'*' or direct-abstract-declarator" );
-      }
+
   } // end switch
   return new IllegalDecl( *current );
 } // end parseAbstractDeclarator
 
 Decl const * Parser::parseDirectAbstractDeclarator()
 {
+  accept( TK::LPar ); // eat '('
   switch ( current->kind )
   {
+    case TK::RPar:
+      break;
+
+    case TK::Mul:
     case TK::LPar:
-      readNextToken(); // eat '('
-      switch ( current->kind )
-      {
-        case TK::RPar:
-          break;
+      parseAbstractDeclarator();
+      break;
 
-        case TK::Mul:
-        case TK::LPar:
-          parseAbstractDeclarator();
-          break;
-
-        case TK::Void:
-        case TK::Char:
-        case TK::Int:
-        case TK::Struct:
-          parseParameterList();
-          break;
-
-        default:
-          {
-            ERROR( "abstract-declarator or parameter-type-list" );
-          }
-      } // end switch
-      accept( TK::RPar ); // eat ')'
+    case TK::Void:
+    case TK::Char:
+    case TK::Int:
+    case TK::Struct:
+      parseParameterList();
       break;
 
     default:
-      {
-        ERROR( "(abstract-declarator|parameter-type-list)" );
-      }
+      ERROR( "')', abstract-declarator or parameter-list" );
+
   } // end switch
-
-  while ( current->kind == TK::LPar )
-  {
-    readNextToken(); // eat '('
-    if ( current->kind != TK::RPar )
-      parseParameterList();
-    accept( TK::RPar );
-
-  } // end while
+  accept( TK::RPar ); // eat ')'
   return new IllegalDecl( *current );
 } // end parseDirectAbstractDeclarator
 
@@ -872,9 +849,8 @@ Stmt const * Parser::parseStmt()
       break;
 
     default:
-      {
         ERROR( "statement" );
-      }
+
   } // end switch
   return new IllegalStmt( *current );
 } // end parseStmt
@@ -988,9 +964,8 @@ Stmt const * Parser::parseCompoundStmt()
       break;
 
     default:
-      {
         ERROR( "declaration or statement" );
-      }
+
   } // end switch
   accept( TK::RBrace ); // eat '}'
   return new IllegalStmt( *current );
