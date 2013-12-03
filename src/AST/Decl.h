@@ -1,4 +1,4 @@
-//===--- Declaration.h ----------------------------------------------------===//
+//===--- Decl.h------------------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -25,6 +25,18 @@ namespace C4
     };
 
     std::ostream & operator<<( std::ostream &out, Declaration const &decl );
+
+    struct IllegalDeclaration : Declaration
+    {
+      virtual ~IllegalDeclaration() {}
+
+      friend std::ostream & operator<<( std::ostream &out,
+          IllegalDeclaration const &decl );
+    };
+
+    std::ostream & operator<<( std::ostream &out,
+        IllegalDeclaration const &decl );
+
   } // end namespace AST
 } // end namespace C4
 

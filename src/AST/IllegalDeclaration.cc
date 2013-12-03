@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "IllegalDeclaration.h"
+#include "Decl.h"
 
 
 using namespace C4;
