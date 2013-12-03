@@ -11,17 +11,7 @@
 
 #include "Expr.h"
 #include "Stmt.h"
-
-//
-//  Declaration
-//
-#include "Declaration.h"
-#include "IllegalDeclaration.h"
-
-//
-//  Type
-//
+#include "Decl.h"
 #include "Type.h"
-#include "IllegalType.h"
 
 #endif

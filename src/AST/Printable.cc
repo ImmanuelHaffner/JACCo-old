@@ -14,6 +14,19 @@ using namespace C4;
 using namespace AST;
 
 
+std::ostream & AST::operator<<( std::ostream &out, Printable const &p )
+{
+  p.print( Printer(out) );
+  return out;
+}
+
+
+//===----------------------------------------------------------------------===//
+//
+//  Expressions
+//
+//===----------------------------------------------------------------------===//
+
 void IllegalExpr::print( Printer const p ) const
 {
   p.out << "illegal expression " << this->tok.sym;
@@ -127,7 +140,38 @@ void CastExpr::print( Printer const p ) const
   p.out << this->tok.sym;
 }
 
-void Type::print( Printer const p ) const
+
+//===----------------------------------------------------------------------===//
+//
+//  Statements
+//
+//===----------------------------------------------------------------------===//
+
+void IllegalStmt::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
+}
+
+
+//===----------------------------------------------------------------------===//
+//
+//  Declaration
+//
+//===----------------------------------------------------------------------===//
+
+void IllegalDecl::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
+}
+
+
+//===----------------------------------------------------------------------===//
+//
+//  Type
+//
+//===----------------------------------------------------------------------===//
+
+void IllegalType::print( Printer const p ) const
 {
   p.out << this->tok.sym;
 }
