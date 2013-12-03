@@ -203,6 +203,11 @@ parameter_declaration
   | type_specifier
   ;
 
+type_name
+  : type_specifier 
+  | type_specifier abstract_declarator
+  ;
+
 abstract_declarator
   : pointer
   | direct_abstract_declarator
