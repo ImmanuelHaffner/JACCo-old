@@ -7,7 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "Parser.h"
-#include <list>
+#include <vector>
 
 using namespace C4;
 using namespace Parse;
@@ -619,16 +619,16 @@ Decl const * Parser::parsePointer()
   return new IllegalDecl( *current );
 } // end parsePointer
 
-std::list<Decl const *> Parser::parseParameterList()
+DeclList const * Parser::parseParameterList()
 {
-  std::list<Decl const *> declList;
-  declList.push_back( parseParameterDecl() );
+  std::vector<Decl const *> declVector;
+  declVector.push_back( parseParameterDecl() );
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    declList.push_back( parseParameterDecl() );
+    declVector.push_back( parseParameterDecl() );
   }
-  return declList;
+  return new DeclList( *current, declVector );
 } // end parseParameterList
 
 Decl const * Parser::parseParameterDecl()
@@ -973,10 +973,10 @@ CompoundStmt const * Parser::parseCompoundStmt()
   return NULL; 
 } // end parseCompoundStmt
 
-std::list<Decl const *> Parser::parseDeclList()
+DeclList const * Parser::parseDeclList()
 {
-  std::list<Decl const *> declList;
-  declList.push_back( parseDecl() );
+  std::vector<Decl const *> declVector;
+  declVector.push_back( parseDecl() );
 
   for (;;)
   {
@@ -986,14 +986,14 @@ std::list<Decl const *> Parser::parseDeclList()
       case TK::Char:
       case TK::Int:
       case TK::Struct:
-        declList.push_back( parseDecl() );
+        declVector.push_back( parseDecl() );
         break;
 
       default: goto for_end;
     }
   } // end for
 for_end:
-  return declList;
+  return new DeclList( *current, declVector );
 } // end parseDeclList
 
 Stmt const * Parser::parseStmtList()
@@ -1173,7 +1173,7 @@ Stmt const * Parser::parseTranslationUnit()
 FunctionDef const * Parser::parseFunctionDef(
     TypeSpecifier const * typeSpecifier, Declarator const *  declarator )
 { 
-  std::list<Decl const *> declList;
+  DeclList const * declList = NULL;
   CompoundStmt const * compoundStmt;
   switch ( current->kind )
   {
@@ -1204,7 +1204,7 @@ FunctionDef const * Parser::parseFunctionDef(
 
 ExternalDecl const * Parser::parseExternalDecl()
 {
-  TypeSpecifier const * * tSpP;
+  TypeSpecifier const * * tSpP = NULL;
   bool typeSpecified = false;
   switch ( current->kind )
   {

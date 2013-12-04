@@ -154,13 +154,13 @@ namespace C4
       AST::Declarator const * parseDeclarator();
       AST::Declarator const * parseDirectDeclarator();
       AST::Decl const * parsePointer();
-      std::list<AST::Decl const *> parseParameterList();
+      AST::DeclList const * parseParameterList();
       AST::Decl const * parseParameterDecl();
       AST::Declarator const * parseAbstractDeclarator();
       AST::Declarator const * parseDirectAbstractDeclarator();
       AST::Declarator const * parseMaybeAbstractDeclarator();
       AST::Declarator const * parseDirectMaybeAbstractDeclarator();
-      std::list<AST::Decl const *> parseDeclList();
+      AST::DeclList const * parseDeclList();
       AST::FunctionDef const * parseFunctionDef( AST::TypeSpecifier const *, AST::Declarator const * );
       //
       //  Type
