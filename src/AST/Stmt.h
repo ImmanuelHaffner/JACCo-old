@@ -10,6 +10,7 @@
 #define C4_STMT_H
 
 #include <iostream>
+#include <vector>
 #include "../util.h"
 #include "Locatable.h"
 
@@ -20,6 +21,8 @@ namespace C4
   {
     // Forward declaration
     struct Expr;
+    struct ConstExpr;
+    struct DeclList;
 
     /// Statement
     struct Stmt : Locatable
@@ -27,6 +30,46 @@ namespace C4
       Stmt( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Stmt() {}
     }; // end struct Stmt
+
+    /// Statement List
+    struct StmtList : Locatable
+    {
+      ~StmtList() {}
+
+      inline void append( Stmt const * const stmt )
+      {
+        stmts.push_back( stmt );
+      }
+
+      inline StmtList & operator+=( Stmt const * const stmt )
+      {
+        this->append( stmt );
+        return *this;
+      }
+
+      std::vector< Stmt const * >::iterator begin()
+      {
+        return stmts.begin();
+      }
+
+      std::vector< Stmt const * >::const_iterator begin() const
+      {
+        return stmts.begin();
+      }
+
+      std::vector< Stmt const * >::iterator end()
+      {
+        return stmts.end();
+      }
+
+      std::vector< Stmt const * >::const_iterator end() const
+      {
+        return stmts.end();
+      }
+
+      private:
+      std::vector< Stmt const * > stmts;
+    }; // end struct StmtList
 
     /// Illegal Statement
     struct IllegalStmt : Stmt
@@ -49,10 +92,37 @@ namespace C4
       Expr const * const expr;
     }; // end struct ExprStmt
 
+    /// Case Statement
+    struct CaseStmt : Stmt
+    {
+      CaseStmt( Lex::Token const &tok, ConstExpr const * const expr,
+          Stmt const * const stmt )
+        : Stmt(tok), expr(expr), stmt(stmt)
+      {}
+
+      ConstExpr const * const expr;
+      Stmt const * const stmt;
+    }; // end struct CaseStmt
+
+    /// Label Statement
+    struct LabelStmt : Stmt
+    {
+      LabelStmt( Lex::Token const &tok, Stmt const * const stmt )
+        : Stmt(tok), stmt(stmt)
+      {
+        assert( ( tok.kind == Lex::TK::Default ||
+              tok.kind == Lex ::TK::IDENTIFIER ) &&
+            "label name must be 'default' or identifier" );
+      }
+      ~LabelStmt() {}
+
+      Stmt const * const stmt;
+    }; // end struct CaseStmt
+
     /// If Statement
     struct IfStmt : Stmt
     {
-      IfStmt( Lex::Token const tok, Expr const * const Cond,
+      IfStmt( Lex::Token const &tok, Expr const * const Cond,
           Stmt const * const Then, Stmt const * const Else = NULL )
         : Stmt(tok), Cond(nonNull(Cond)), Then(nonNull(Then)), Else(Else)
       {}
@@ -109,14 +179,14 @@ namespace C4
     /// For Statement
     struct ForStmt : Stmt
     {
-      ForStmt( Lex::Token const tok, ExprStmt const * const Init,
+      ForStmt( Lex::Token const &tok, ExprStmt const * const Init,
           ExprStmt const * const Cond, Expr const * const Step,
           Stmt const * const Body )
         : Stmt(tok), Init(nonNull(Init)), Cond(nonNull(Cond)), Step(Step),
         Body(Body)
       {}
 
-      ForStmt( Lex::Token const tok, ExprStmt const * const Init,
+      ForStmt( Lex::Token const &tok, ExprStmt const * const Init,
           ExprStmt const * const Cond, Stmt const * const Body )
         : ForStmt(tok, Init, Cond, NULL, Body)
       {}
@@ -154,6 +224,32 @@ namespace C4
 
       ~GotoStmt() {}
     }; // end struct GotoStmt
+
+    /// Return Statement
+    struct ReturnStmt : Stmt
+    {
+      ReturnStmt( Lex::Token const &tok, Expr const * const expr = NULL )
+        : Stmt(tok), expr(expr)
+      {}
+
+      ~ReturnStmt() {}
+
+      Expr const * const expr;
+    }; // end struct ReturnStmt
+
+    /// Compound Statement
+    struct CompoundStmt : Stmt
+    {
+      CompoundStmt( Lex::Token const &tok, DeclList const * const decls = NULL,
+          StmtList const * const stmts = NULL )
+        : Stmt(tok), decls(decls), stmts(stmts)
+      {}
+
+      ~CompoundStmt() {}
+
+      DeclList const * const decls;
+      StmtList const * const stmts;
+    }; // end struct CompoundStmt
   } // end namespace AST
 } // end namespace C4
 
