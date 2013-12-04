@@ -40,8 +40,13 @@ namespace C4
     struct IfStmt : Stmt
     {
       IfStmt( Lex::Token const tok, Expr const * const Cond,
+          Stmt const * const Then ) :
+      Stmt(tok), Cond(Cond), Then(Then), Else(NULL) {}
+
+      IfStmt( Lex::Token const tok, Expr const * const Cond,
           Stmt const * const Then, Stmt const * const Else ) :
       Stmt(tok), Cond(Cond), Then(Then), Else(Else) {}
+
       ~IfStmt() {}
 
       Expr const * const Cond;
@@ -52,13 +57,34 @@ namespace C4
     // Switch Statement
     struct SwitchStmt : Stmt
     {
-      SwitchStmt( Lex::Token const &tok, Expr const * const expr,
-          Stmt const * const stmt ) : Stmt(tok), expr(expr), stmt(stmt) {}
+      SwitchStmt( Lex::Token const &tok, Expr const * const Cond,
+          Stmt const * const Body ) : Stmt(tok), Cond(Cond), Body(Body) {}
       ~SwitchStmt() {}
 
-      Expr const * const expr;
-      Stmt const * const stmt;
-    };
+      Expr const * const Cond;
+      Stmt const * const Body;
+    }; // end struct SwitchStmt
+
+    // While Statement
+    struct WhileStmt : Stmt
+    {
+      WhileStmt( Lex::Token const &tok, Expr const * const Cond,
+          Stmt const * const Body ) : Stmt(tok), Cond(Cond), Body(Body) {}
+      ~WhileStmt() {}
+
+      Expr const * const Cond;
+      Stmt const * const Body;
+    }; // end struct WhileStmt
+
+    // Do-While Statement
+    struct DoStmt : Stmt
+    {
+      DoStmt( Lex::Token const &tok, Stmt const * const Body,
+          Expr const * const Cond ) : Stmt(tok), Body(Body), Cond(Cond) {}
+
+      Stmt const * const Body;
+      Expr const * const Cond;
+    }; // end struct DoStmt
   } // end namespace AST
 } // end namespace C4
 
