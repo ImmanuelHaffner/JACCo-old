@@ -37,6 +37,26 @@ namespace C4
         return *this;
       }
 
+      std::vector< ExtDecl const * >::iterator begin()
+      {
+        return extDecls.begin();
+      }
+
+      std::vector< ExtDecl const * >::const_iterator begin() const
+      {
+        return extDecls.begin();
+      }
+
+      std::vector< ExtDecl const * >::iterator end()
+      {
+        return extDecls.end();
+      }
+
+      std::vector< ExtDecl const * >::const_iterator end() const
+      {
+        return extDecls.end();
+      }
+
       private:
       std::vector< ExtDecl const * > extDecls;
     }; // end struct TranslationUnit

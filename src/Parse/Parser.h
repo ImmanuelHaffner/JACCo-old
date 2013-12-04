@@ -133,12 +133,9 @@ namespace C4
           AST::Expr const * const lhs );
       AST::Expr const * parseConditionalExpr();
       AST::Expr const * parseAssignmentExpr();
-
-      /// Parses an expression.
-      ///
-      /// \return the parsed expression
       AST::Expr const * parseExpr();
       AST::Expr const * parseConstantExpr();
+
 
       //
       // Decls
@@ -162,11 +159,14 @@ namespace C4
       AST::Declarator const * parseDirectMaybeAbstractDeclarator();
       std::list<AST::Decl const *> parseDeclList();
       AST::FunctionDef const * parseFunctionDef( AST::TypeSpecifier const *, AST::Declarator const * );
+
+
       //
       //  Type
       //
 
       AST::Type const * parseTypeName();
+
 
       //
       //  Statements
