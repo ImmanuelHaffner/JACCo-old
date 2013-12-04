@@ -177,32 +177,43 @@ void IllegalTypeSpecifier::print( Printer const p ) const
 
 void ExternalDecl::print( Printer const p ) const
 {
-  
+  //TODO 
+  (void) p;
 }
 
 void IllegalExternalDecl::print( Printer const p ) const
 {
-  
+  //TODO 
+  (void) p;
+
 }
 
 void Declarator::print( Printer const p ) const
 {
-  
+  //TODO 
+  (void) p;
+
 }
 
 void IllegalDeclarator::print( Printer const p ) const
 {
-  
+  //TODO 
+  (void) p;
+
 }
 
 void FunctionDef::print( Printer const p ) const
 {
-  
+  //TODO 
+  (void) p;
+
 }
 
 void IllegalFunctionDef::print( Printer const p ) const
 {
-  
+  //TODO 
+  (void) p;
+
 }
 
 
