@@ -182,7 +182,7 @@ namespace C4
       AST::Stmt const * parseJumpStmt();
 
       AST::ExtDecl const * parseExtDecl();
-      AST::Stmt const * parseTranslationUnit();
+      AST::TranslationUnit const * parseTranslationUnit();
     }; // end struct Parser
   } // end namespace Parse
 } // end namespace C4

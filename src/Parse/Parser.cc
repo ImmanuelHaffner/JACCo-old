@@ -1156,8 +1156,9 @@ Stmt const * Parser::parseJumpStmt()
   return new IllegalStmt( *current );
 } // end parseJumpStmt
 
-Stmt const * Parser::parseTranslationUnit()
+TranslationUnit const * Parser::parseTranslationUnit()
 {
+  TranslationUnit const * const unit = new TranslationUnit();
   do
   {
     // TODO stop or recover, if a corrupted external declaration was found
@@ -1167,7 +1168,7 @@ Stmt const * Parser::parseTranslationUnit()
       readNextToken();
   }
   while ( current->kind != TK::END_OF_FILE );
-  return new IllegalStmt( *current );
+  return unit;
 } // end parseTranslationUnit
 
 FunctionDef const * Parser::parseFunctionDef(
