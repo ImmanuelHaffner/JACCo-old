@@ -168,7 +168,8 @@ declarator
   ;
 
 direct_declarator
-  : IDENTIFIER
+  : pointer 
+  | IDENTIFIER
   | IDENTIFIER '(' parameter_list ')'
   | IDENTIFIER '(' ')'
   | '(' declarator ')'
@@ -263,11 +264,6 @@ jump_statement
   | BREAK ';'
   | RETURN ';'
   | RETURN expression ';'
-  ;
-
-translation_unit
-  : external_declaration
-  | translation_unit external_declaration
   ;
 
 external_declaration

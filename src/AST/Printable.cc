@@ -175,6 +175,37 @@ void IllegalTypeSpecifier::print( Printer const p ) const
   p.out << this->tok.sym;
 }
 
+void ExternalDecl::print( Printer const p ) const
+{
+  
+}
+
+void IllegalExternalDecl::print( Printer const p ) const
+{
+  
+}
+
+void Declarator::print( Printer const p ) const
+{
+  
+}
+
+void IllegalDeclarator::print( Printer const p ) const
+{
+  
+}
+
+void FunctionDef::print( Printer const p ) const
+{
+  
+}
+
+void IllegalFunctionDef::print( Printer const p ) const
+{
+  
+}
+
+
 //===----------------------------------------------------------------------===//
 //
 //  Type

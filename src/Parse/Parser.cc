@@ -7,7 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "Parser.h"
-
+#include <list>
 
 using namespace C4;
 using namespace Parse;
@@ -402,7 +402,7 @@ Expr const * Parser::parseBinOpRHS( int exprPrec, Expr const * const lhs )
   int nextPrec = getTokenPrecedence();
   if ( tokPrec < nextPrec )
     return new BinaryExpr( binOp, lhs,
-          parseBinOpRHS( tokPrec + 1, rhs ) );
+        parseBinOpRHS( tokPrec + 1, rhs ) );
 
   return new BinaryExpr( binOp, lhs, rhs );
 } // end parseBinOpRHS
@@ -511,7 +511,7 @@ TypeSpecifier const * Parser::parseTypeSpecifier()
       return parseStructSpecifier();
 
     default:
-        ERROR( "type-specifier ('void', 'char', 'int' or 'struct')" );
+      ERROR( "type-specifier ('void', 'char', 'int' or 'struct')" );
 
   } // end switch
   return new IllegalTypeSpecifier( *current, NULL, NULL );
@@ -539,7 +539,7 @@ TypeSpecifier const * Parser::parseStructSpecifier()
       break;
 
     default:
-        ERROR( "identifier or '{' struct-declaration-list '}'" );
+      ERROR( "identifier or '{' struct-declaration-list '}'" );
 
   } // end switch
   return new IllegalTypeSpecifier( *current, NULL, NULL );
@@ -574,15 +574,15 @@ Decl const * Parser::parseStructDeclaratorList()
   return new IllegalDecl( *current );
 } // end parseStructDeclaratorList
 
-Decl const * Parser::parseDeclarator()
+Declarator const * Parser::parseDeclarator()
 {
   if ( current->kind == TK::Mul )
     parsePointer();
   parseDirectDeclarator();
-  return new IllegalDecl( *current );
+  return new IllegalDeclarator( *current );
 } // end parseDeclarator
 
-Decl const * Parser::parseDirectDeclarator()
+Declarator const * Parser::parseDirectDeclarator()
 {
   switch ( current->kind )
   {
@@ -597,7 +597,7 @@ Decl const * Parser::parseDirectDeclarator()
       break;
 
     default:
-        ERROR( "identifier or '(' declarator ')'" );
+      ERROR( "identifier or '(' declarator ')'" );
 
   } // end switch
 
@@ -608,7 +608,7 @@ Decl const * Parser::parseDirectDeclarator()
       parseParameterList();
     accept( TK::RPar ); // eat ')'
   } // end while
-  return new IllegalDecl( *current );
+  return new IllegalDeclarator( *current );
 } // end parseDirectDeclarator
 
 Decl const * Parser::parsePointer()
@@ -619,15 +619,16 @@ Decl const * Parser::parsePointer()
   return new IllegalDecl( *current );
 } // end parsePointer
 
-Decl const * Parser::parseParameterList()
+std::list<Decl const *> Parser::parseParameterList()
 {
-  parseParameterDecl();
+  std::list<Decl const *> declList;
+  declList.push_back( parseParameterDecl() );
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    parseParameterDecl();
+    declList.push_back( parseParameterDecl() );
   }
-  return new IllegalDecl( *current );
+  return declList;
 } // end parseParameterList
 
 Decl const * Parser::parseParameterDecl()
@@ -667,7 +668,7 @@ Type const * Parser::parseTypeName()
   return new IllegalType( *current );
 } // end parseTypeName
 
-Decl const * Parser::parseAbstractDeclarator()
+Declarator const * Parser::parseAbstractDeclarator()
 {
   switch ( current->kind )
   {
@@ -688,13 +689,13 @@ Decl const * Parser::parseAbstractDeclarator()
       break;
 
     default:
-        ERROR( "'*' or direct-abstract-declarator" );
+      ERROR( "'*' or direct-abstract-declarator" );
 
   } // end switch
-  return new IllegalDecl( *current );
+  return new IllegalDeclarator( *current );
 } // end parseAbstractDeclarator
 
-Decl const * Parser::parseDirectAbstractDeclarator()
+Declarator const * Parser::parseDirectAbstractDeclarator()
 {
   accept( TK::LPar ); // eat '('
   switch ( current->kind )
@@ -719,10 +720,10 @@ Decl const * Parser::parseDirectAbstractDeclarator()
 
   } // end switch
   accept( TK::RPar ); // eat ')'
-  return new IllegalDecl( *current );
+  return new IllegalDeclarator( *current );
 } // end parseDirectAbstractDeclarator
 
-Decl const * Parser::parseMaybeAbstractDeclarator()
+Declarator const * Parser::parseMaybeAbstractDeclarator()
 {
   switch ( current->kind )
   {
@@ -758,10 +759,10 @@ Decl const * Parser::parseMaybeAbstractDeclarator()
       }
   } // end switch
 
-  return new IllegalDecl( *current );
+  return new IllegalDeclarator( *current );
 } // end parseMaybeAbstractDeclarator
 
-Decl const * Parser::parseDirectMaybeAbstractDeclarator()
+Declarator const * Parser::parseDirectMaybeAbstractDeclarator()
 {
   assert( current->kind == TK::LPar &&
       "correct decision should have been taken by the caller" );
@@ -790,7 +791,7 @@ Decl const * Parser::parseDirectMaybeAbstractDeclarator()
             "'(' parameter-list ')'" );
       }
   } // end switch
-  return new IllegalDecl( *current );
+  return new IllegalDeclarator( *current );
 } // end parseDirectMaybeAbstractDeclarator
 
 Stmt const * Parser::parseStmt()
@@ -849,7 +850,7 @@ Stmt const * Parser::parseStmt()
       break;
 
     default:
-        ERROR( "statement" );
+      ERROR( "statement" );
 
   } // end switch
   return new IllegalStmt( *current );
@@ -886,7 +887,7 @@ Stmt const * Parser::parseLabeledStmt()
   return new IllegalStmt( *current );
 } // end parseLabeledStmt
 
-Stmt const * Parser::parseCompoundStmt()
+CompoundStmt const * Parser::parseCompoundStmt()
 {
   accept( TK::LBrace ); // eat '{'
   switch ( current->kind )
@@ -964,16 +965,18 @@ Stmt const * Parser::parseCompoundStmt()
       break;
 
     default:
-        ERROR( "declaration or statement" );
+      ERROR( "declaration or statement" );
 
   } // end switch
   accept( TK::RBrace ); // eat '}'
-  return new IllegalStmt( *current );
+  //TODO: Merge with Immanuels branch
+  return NULL; 
 } // end parseCompoundStmt
 
-Stmt const * Parser::parseDeclList()
+std::list<Decl const *> Parser::parseDeclList()
 {
-  parseDecl();
+  std::list<Decl const *> declList;
+  declList.push_back( parseDecl() );
 
   for (;;)
   {
@@ -983,14 +986,14 @@ Stmt const * Parser::parseDeclList()
       case TK::Char:
       case TK::Int:
       case TK::Struct:
-        parseDecl();
+        declList.push_back( parseDecl() );
         break;
 
       default: goto for_end;
     }
   } // end for
 for_end:
-  return new IllegalStmt( * current );
+  return declList;
 } // end parseDeclList
 
 Stmt const * Parser::parseStmtList()
@@ -1167,93 +1170,67 @@ Stmt const * Parser::parseTranslationUnit()
   return new IllegalStmt( *current );
 } // end parseTranslationUnit
 
-Stmt const * Parser::parseExternalDecl()
-{
+FunctionDef const * Parser::parseFunctionDef(
+    TypeSpecifier const * typeSpecifier, Declarator const *  declarator )
+{ 
+  std::list<Decl const *> declList;
+  CompoundStmt const * compoundStmt;
   switch ( current->kind )
   {
-    case TK::IDENTIFIER:
-    case TK::Mul:
-    case TK::LPar:
-      // declarator
-      parseDeclarator();
-      switch ( current->kind )
+    case TK::Void:
+    case TK::Char:
+    case TK::Int:
+    case TK::Struct:
+      // declaration-list compound-statement
+      declList = parseDeclList();
+      compoundStmt = parseCompoundStmt();
+      break;
+
+    case TK::LBrace:
+      compoundStmt = parseCompoundStmt();
+      break;
+
+    default:
       {
-        case TK::Void:
-        case TK::Char:
-        case TK::Int:
-        case TK::Struct:
-          parseDeclList();
-          break;
+        // If the first parsed init-declarator contains an assignment,
+        // we would only expect comma ',' or semi-colon ';'.
+        ERROR( "'{' or type-specifier" );
+        return new IllegalFunctionDef( *current );
+      }
+  } // end switch
+  return new FunctionDef( *current, typeSpecifier, declarator, declList,
+      compoundStmt );
+} // end parseFunctionDefinition
 
-        default:;
-      } // end switch
-      parseCompoundStmt();
-      break; // end declarator
-
+ExternalDecl const * Parser::parseExternalDecl()
+{
+  TypeSpecifier const * * tSpP;
+  bool typeSpecified = false;
+  switch ( current->kind )
+  {
     case TK::Void:
     case TK::Char:
     case TK::Int:
     case TK::Struct:
       // declaration-specifiers
-      parseTypeSpecifier();
-      /*
-       * Since init-declarator is defined as
-       *    init-declarator:
-       *      declarator
-       *
-       * we can simply check whether another init-declarator immediately
-       * follows, to detect the init-declarator-list.
-       *
-       * If we later on allow assignments in init-declarator, we have to check,
-       * whether the first parsed init-declarator actually contains an
-       * assignment, or is just a declaration, such that we can decide for
-       * init-declarator-list or just declarator.
-       */
-
-      // could contain an assignment, and such would be part of an
-      // init-declarator-list
-      parseDeclarator();
-
-      switch ( current->kind )
+      TypeSpecifier const * typeSpecifier = parseTypeSpecifier();
+      tSpP = & typeSpecifier;
+      typeSpecified = true;
+      // Could be a declaration without declarator
+      if ( current->kind == TK::END_OF_FILE )
       {
-        case TK::SCol:
-          // init-declarator-list
-          readNextToken(); // eat ';'
-          break;
-
-        case TK::Comma:
-          // init-declarator-list
-          readNextToken(); // eat ','
-          //parseInitDeclaratorList();
-          accept( TK::SCol ); // eat ';'
-          break;
-
-        case TK::Void:
-        case TK::Char:
-        case TK::Int:
-        case TK::Struct:
-          // declaration-list compound-statement
-          parseDeclList();
-          parseCompoundStmt();
-          break;
-
-        case TK::LBrace:
-          parseCompoundStmt();
-          break;
-
-        default:
-          {
-            // If the first parsed init-declarator contains an assignment,
-            // we would only expect comma ',' or semi-colon ';'.
-            ERROR( "';', '{', ',' or type-specifier" );
-          }
-      } // end switch
-      break; // end declaration-specifiers
-
-    default:
-      {
-        ERROR( "declaration or function-definition" );
+        return new Decl( *current, typeSpecifier, NULL );
       }
-  } // end switch
-  return new IllegalStmt( *current );
+      break;
+  } //end of switch
+  Declarator const * declarator = parseDeclarator();
+  // Are we parsing a declaration?
+  if ( current->kind == TK::END_OF_FILE )
+  {
+    if ( !typeSpecified ) 
+      return new IllegalFunctionDef( *current );
+    return new Decl( *current, *tSpP, declarator );
+  }
+  // Try to parse remaining parts of function definition
+  return parseFunctionDef( *tSpP, declarator );
 } // end parseExternalDecl
