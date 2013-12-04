@@ -41,7 +41,7 @@ namespace C4
         stmts.push_back( stmt );
       }
 
-      inline StmtList & operator+=( Stmt const * const stmt )
+      StmtList & operator+=( Stmt const * const stmt )
       {
         this->append( stmt );
         return *this;

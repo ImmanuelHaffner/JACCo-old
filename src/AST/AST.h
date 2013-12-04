@@ -9,6 +9,7 @@
 #ifndef C4_AST_H
 #define C4_AST_H
 
+#include "TranslationUnit.h"
 #include "Expr.h"
 #include "Stmt.h"
 #include "Decl.h"
