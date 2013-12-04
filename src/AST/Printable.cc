@@ -6,7 +6,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Printable.h"
 #include "AST.h"
 
 
@@ -18,6 +17,19 @@ std::ostream & AST::operator<<( std::ostream &out, Printable const &p )
 {
   p.print( Printer(out) );
   return out;
+}
+
+
+//===----------------------------------------------------------------------===//
+//
+//  Translation Unit
+//
+//===----------------------------------------------------------------------===//
+
+void TranslationUnit::print( Printer const p ) const
+{
+  // TODO
+  p.out << "translation unit";
 }
 
 

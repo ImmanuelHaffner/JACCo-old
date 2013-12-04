@@ -26,6 +26,8 @@ namespace C4
     {
       ~TranslationUnit() {}
 
+      void print( Printer const p ) const;
+
       inline void append( ExtDecl const * const extDecl )
       {
         extDecls.push_back( extDecl );
