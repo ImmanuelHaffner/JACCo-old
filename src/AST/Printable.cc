@@ -216,6 +216,21 @@ void IllegalFunctionDef::print( Printer const p ) const
 
 }
 
+void DeclList::print( Printer const p ) const
+{
+  //TODO 
+  (void) p;
+
+}
+
+void IllegalDeclList::print( Printer const p ) const
+{
+  //TODO 
+  (void) p;
+
+}
+
+
 
 //===----------------------------------------------------------------------===//
 //

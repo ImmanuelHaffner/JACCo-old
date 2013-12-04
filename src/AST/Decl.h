@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include "Locatable.h"
-#include <list>
+#include <vector>
 
 namespace C4
 {
@@ -96,11 +96,34 @@ namespace C4
       
       void print( Printer const p ) const;
     };
+    
+    /// DeclList 
+    struct DeclList : Locatable
+    {
+      DeclList( Lex::Token const &tok, std::vector<Decl const *> declVector ) :
+        Locatable(tok), declVector(declVector) {}
+      virtual ~DeclList() {}
+
+      void print( Printer const p ) const;
+      
+      std::vector<Decl const *> declVector;
+    };
+
+    // IllegalDeclList
+    struct IllegalDeclList : DeclList 
+    {
+      IllegalDeclList( Lex::Token const &tok, std::vector<Decl const *> declVector ) :
+        DeclList(tok, declVector) {}
+      virtual ~IllegalDeclList() {}
+      
+      void print( Printer const p ) const;
+    };
+
    /// FunctionDef
     struct FunctionDef : ExtDecl 
     {
       FunctionDef( Lex::Token const &tok, TypeSpecifier const * typeSpec,
-         Declarator const * declarator, std::list<Decl const *> declList,
+         Declarator const * declarator, DeclList const * declList,
          CompoundStmt const * cStmt ) :
        ExtDecl(tok), typeSpec(typeSpec), declarator(declarator),
      declList(declList), cStmt(cStmt) {}
@@ -109,14 +132,14 @@ namespace C4
       void print( Printer const p ) const;
       TypeSpecifier const * typeSpec;
       Declarator const * declarator;
-      std::list<Decl const *> declList;
+      DeclList const * declList;
       CompoundStmt const * cStmt;
     };
     /// IllegalFunctionDef
     struct IllegalFunctionDef : FunctionDef 
     {
       IllegalFunctionDef( Lex::Token const &tok ) :
-        FunctionDef(tok, NULL, NULL, * new std::list<Decl const *>, NULL ) {}
+        FunctionDef(tok, NULL, NULL, NULL, NULL ) {}
       virtual ~IllegalFunctionDef() {}
       
       void print( Printer const p ) const;
