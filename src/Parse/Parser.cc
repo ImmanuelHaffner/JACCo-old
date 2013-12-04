@@ -1212,16 +1212,18 @@ ExternalDecl const * Parser::parseExternalDecl()
     case TK::Char:
     case TK::Int:
     case TK::Struct:
-      // declaration-specifiers
-      TypeSpecifier const * typeSpecifier = parseTypeSpecifier();
-      tSpP = & typeSpecifier;
-      typeSpecified = true;
-      // Could be a declaration without declarator
-      if ( current->kind == TK::END_OF_FILE )
-      {
-        return new Decl( *current, typeSpecifier, NULL );
+      {   // declaration-specifiers
+        TypeSpecifier const * typeSpecifier = parseTypeSpecifier();
+        tSpP = & typeSpecifier;
+        typeSpecified = true;
+        // Could be a declaration without declarator
+        if ( current->kind == TK::END_OF_FILE )
+        {
+          return new Decl( *current, typeSpecifier, NULL );
+        }
+        break;
       }
-      break;
+    default:;
   } //end of switch
   Declarator const * declarator = parseDeclarator();
   // Are we parsing a declaration?

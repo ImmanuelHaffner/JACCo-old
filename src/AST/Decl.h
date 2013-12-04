@@ -62,8 +62,10 @@ namespace C4
     {
       Decl( Lex::Token const &tok, TypeSpecifier const * typeSpec,
           Declarator const * declarator )
-          : ExternalDecl(tok) {}
+          : ExternalDecl(tok), typeSpec(typeSpec), declarator(declarator)  {}
       virtual ~Decl() {}
+      TypeSpecifier const * typeSpec;
+      Declarator const * declarator;
     }; // end struct Declaration
 
     /// Illegal Declaration
@@ -100,10 +102,15 @@ namespace C4
       FunctionDef( Lex::Token const &tok, TypeSpecifier const * typeSpec,
          Declarator const * declarator, std::list<Decl const *> declList,
          CompoundStmt const * cStmt ) :
-       ExternalDecl(tok) {}
+       ExternalDecl(tok), typeSpec(typeSpec), declarator(declarator),
+     declList(declList), cStmt(cStmt) {}
       virtual ~FunctionDef() {}
       
       void print( Printer const p ) const;
+      TypeSpecifier const * typeSpec;
+      Declarator const * declarator;
+      std::list<Decl const *> declList;
+      CompoundStmt const * cStmt;
     };
     /// IllegalFunctionDef
     struct IllegalFunctionDef : FunctionDef 
