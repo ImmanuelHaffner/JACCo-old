@@ -1162,7 +1162,7 @@ Stmt const * Parser::parseTranslationUnit()
   {
     // TODO stop or recover, if a corrupted external declaration was found
     Token const *prev = current;
-    parseExternalDecl();
+    parseExtDecl();
     if ( prev == current )
       readNextToken();
   }
@@ -1202,7 +1202,7 @@ FunctionDef const * Parser::parseFunctionDef(
       compoundStmt );
 } // end parseFunctionDefinition
 
-ExternalDecl const * Parser::parseExternalDecl()
+ExtDecl const * Parser::parseExtDecl()
 {
   TypeSpecifier const * * tSpP;
   bool typeSpecified = false;
@@ -1235,4 +1235,4 @@ ExternalDecl const * Parser::parseExternalDecl()
   }
   // Try to parse remaining parts of function definition
   return parseFunctionDef( *tSpP, declarator );
-} // end parseExternalDecl
+} // end parseExtDecl

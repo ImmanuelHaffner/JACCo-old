@@ -17,21 +17,21 @@ namespace C4
 {
   namespace AST
   {
-  /// ExternalDecl
-    struct ExternalDecl : Locatable 
+  /// External Declaration
+    struct ExtDecl : Locatable 
     {
-      ExternalDecl( Lex::Token const &tok ) :
+      ExtDecl( Lex::Token const &tok ) :
         Locatable(tok) {}
-      virtual ~ExternalDecl() {}
+      virtual ~ExtDecl() {}
       
       void print( Printer const p ) const;
     };
 
     /// Illegal Declaration
-    struct IllegalExternalDecl : ExternalDecl
+    struct IllegalExtDecl : ExtDecl
     {
-      IllegalExternalDecl( Lex::Token const &tok ) : ExternalDecl(tok) {}
-      virtual ~IllegalExternalDecl() {}
+      IllegalExtDecl( Lex::Token const &tok ) : ExtDecl(tok) {}
+      virtual ~IllegalExtDecl() {}
 
       void print( Printer const p ) const;
     }; // end struct IllegalDeclaration
@@ -58,11 +58,11 @@ namespace C4
     };
     
     /// Declaration
-    struct Decl : ExternalDecl
+    struct Decl : ExtDecl
     {
       Decl( Lex::Token const &tok, TypeSpecifier const * typeSpec,
           Declarator const * declarator )
-          : ExternalDecl(tok), typeSpec(typeSpec), declarator(declarator)  {}
+          : ExtDecl(tok), typeSpec(typeSpec), declarator(declarator)  {}
       virtual ~Decl() {}
       TypeSpecifier const * typeSpec;
       Declarator const * declarator;
@@ -97,12 +97,12 @@ namespace C4
       void print( Printer const p ) const;
     };
    /// FunctionDef
-    struct FunctionDef : ExternalDecl 
+    struct FunctionDef : ExtDecl 
     {
       FunctionDef( Lex::Token const &tok, TypeSpecifier const * typeSpec,
          Declarator const * declarator, std::list<Decl const *> declList,
          CompoundStmt const * cStmt ) :
-       ExternalDecl(tok), typeSpec(typeSpec), declarator(declarator),
+       ExtDecl(tok), typeSpec(typeSpec), declarator(declarator),
      declList(declList), cStmt(cStmt) {}
       virtual ~FunctionDef() {}
       

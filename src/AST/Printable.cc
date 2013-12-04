@@ -175,13 +175,13 @@ void IllegalTypeSpecifier::print( Printer const p ) const
   p.out << this->tok.sym;
 }
 
-void ExternalDecl::print( Printer const p ) const
+void ExtDecl::print( Printer const p ) const
 {
   //TODO 
   (void) p;
 }
 
-void IllegalExternalDecl::print( Printer const p ) const
+void IllegalExtDecl::print( Printer const p ) const
 {
   //TODO 
   (void) p;
