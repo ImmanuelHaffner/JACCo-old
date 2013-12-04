@@ -17,9 +17,6 @@ namespace C4
 {
   namespace AST
   {
-    //Declaration of CompoundStmt for compiling, to be removed
-    struct CompoundStmt {};
- 
   /// ExternalDecl
     struct ExternalDecl : Locatable 
     {
