@@ -46,7 +46,7 @@ namespace C4
     {
       TypeSpecifier( Lex::Token const &tok, Decl const *, Decl const * ) : Locatable(tok) {}
       virtual ~TypeSpecifier() {}
-      
+
       void print( Printer const p ) const;
     };
     
@@ -79,12 +79,12 @@ namespace C4
     }; // end struct IllegalDeclaration
 
     /// Type Specifier
-    struct IllegalTypeSpecifier : TypeSpecifier 
+    struct IllegalTypeSpecifier : TypeSpecifier
     {
       IllegalTypeSpecifier( Lex::Token const &tok, Decl * a, Decl * b ) :
         TypeSpecifier(tok,a,b) {}
       virtual ~IllegalTypeSpecifier() {}
-      
+
       void print( Printer const p ) const;
     };
 
