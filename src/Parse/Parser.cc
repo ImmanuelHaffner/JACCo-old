@@ -1218,7 +1218,7 @@ ExtDecl const * Parser::parseExtDecl()
         tSpP = & typeSpecifier;
         typeSpecified = true;
         // Could be a declaration without declarator
-        if ( current->kind == TK::END_OF_FILE )
+        if ( current->kind == TK::Scol )
         {
           return new Decl( *current, typeSpecifier, NULL );
         }
@@ -1228,7 +1228,7 @@ ExtDecl const * Parser::parseExtDecl()
   } //end of switch
   Declarator const * declarator = parseDeclarator();
   // Are we parsing a declaration?
-  if ( current->kind == TK::END_OF_FILE )
+  if ( current->kind == TK::SCol )
   {
     if ( !typeSpecified ) 
       return new IllegalFunctionDef( *current );
