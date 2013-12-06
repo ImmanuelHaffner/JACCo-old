@@ -173,7 +173,7 @@ struct_declarator_list
 
 direct_declarator_start
   : IDENTIFIER
-  | '(' declarator_start ')'
+  | '(' declarator ')'
 
 pointer
   : '*'
@@ -193,18 +193,18 @@ parameter_declaration
 
 type_name
   : type_specifier 
-  | type_specifier abstract_declarator_start
+  | type_specifier abstract_declarator
   ;
 
 abstract_declarator
- : paran_pointers
- | paran_pointers '(' ')'
- | paran_pointers '(' parameter_list ')'
+ : abstract_declarator_start
+ | abstract_declarator_start '(' ')'
+ | abstract_declarator_start '(' parameter_list ')'
 
-paran_pointers
+abstract_declarator_start
   : pointer
-  | '(' paran_pointers ')'
-  | pointer '(' paran_pointers ')' 
+  | '(' abstract_declarator_start ')'
+  | pointer '(' abstract_declarator ')' 
   ;
 
 statement
