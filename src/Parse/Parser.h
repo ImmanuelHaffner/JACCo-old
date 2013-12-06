@@ -150,7 +150,7 @@ namespace C4
       AST::Decl const * parseStructDeclaratorList();
       AST::Declarator const * parseDeclarator();
       AST::Declarator const * parseDirectDeclarator();
-      AST::Decl const * parsePointer();
+      int parsePointer();
       AST::DeclList const * parseParameterList();
       AST::Decl const * parseParameterDecl();
       AST::Declarator const * parseAbstractDeclarator();

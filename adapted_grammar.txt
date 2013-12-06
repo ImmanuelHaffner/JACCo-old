@@ -135,6 +135,15 @@ declaration
   | type_specifier declarator ';'
   ;
 
+declarator
+ : declarator_start
+ | declarator_start '(' ')'
+ | declarator_start '(' parameter_list ')'
+
+declarator_start
+  : pointer direct_declarator_start
+  | direct_declarator_start 
+
 type_specifier
   : VOID
   | CHAR
@@ -162,18 +171,9 @@ struct_declarator_list
   | struct_declarator_list ',' declarator
   ;
 
-declarator
-  : pointer direct_declarator
-  | direct_declarator
-  ;
-
-direct_declarator
-  : pointer 
-  | IDENTIFIER
-  | IDENTIFIER '(' parameter_list ')'
-  | IDENTIFIER '(' ')'
-  | '(' declarator ')'
-  ;
+direct_declarator_start
+  : IDENTIFIER
+  | '(' declarator_start ')'
 
 pointer
   : '*'
@@ -187,25 +187,24 @@ parameter_list
 
 parameter_declaration
   : type_specifier declarator
-  | type_specifier abstract_declarator
+  | type_specifier abstract_declarator 
   | type_specifier
   ;
 
 type_name
   : type_specifier 
-  | type_specifier abstract_declarator
+  | type_specifier abstract_declarator_start
   ;
 
 abstract_declarator
-  : pointer
-  | direct_abstract_declarator
-  | pointer direct_abstract_declarator
-  ;
+ : paran_pointers
+ | paran_pointers '(' ')'
+ | paran_pointers '(' parameter_list ')'
 
-direct_abstract_declarator
-  : '(' abstract_declarator ')'
-  | '(' parameter_list ')'
-  | '(' ')'
+paran_pointers
+  : pointer
+  | '(' paran_pointers ')'
+  | pointer '(' paran_pointers ')' 
   ;
 
 statement

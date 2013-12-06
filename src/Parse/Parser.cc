@@ -611,12 +611,16 @@ Declarator const * Parser::parseDirectDeclarator()
   return new IllegalDeclarator( *current );
 } // end parseDirectDeclarator
 
-Decl const * Parser::parsePointer()
+int Parser::parsePointer()
 {
+  int pointerCount = 0;
   do
+  {
     accept( TK::Mul ); // eat '*'
+    pointerCount++;
+  }
   while ( current->kind == TK::Mul );
-  return new IllegalDecl( *current );
+  return pointerCount; 
 } // end parsePointer
 
 DeclList const * Parser::parseParameterList()
@@ -631,25 +635,29 @@ DeclList const * Parser::parseParameterList()
   return new DeclList( *current, declVector );
 } // end parseParameterList
 
+
 Decl const * Parser::parseParameterDecl()
 {
-  parseTypeSpecifier();
+  TypeSpecifier const * typeSpecifier = parseTypeSpecifier();
   switch ( current->kind )
   {
     // FIXME this is currently broken (e.g. ( IDENTIFIER ) is being parsed
     // incorrectly)
     case TK::IDENTIFIER:
-      parseDeclarator();
+          return new Decl ( *current, typeSpecifier, parseDeclarator() );
       break;
 
     case TK::Mul:
     case TK::LPar:
-      parseMaybeAbstractDeclarator();
+          return new Decl ( *current, typeSpecifier, parseMaybeAbstractDeclarator() );
       break;
 
-    default:;
+    case TK::Comma:
+      return new Decl( *current, typeSpecifier, NULL );
+
+    default:
+      return new IllegalDecl( *current );
   }
-  return new IllegalDecl( *current );
 } // end parseParameterDecl
 
 Type const * Parser::parseTypeName()
@@ -772,8 +780,10 @@ Declarator const * Parser::parseDirectMaybeAbstractDeclarator()
     case TK::RPar:
       break;
 
-    case TK::Mul:
     case TK::IDENTIFIER:
+      parseDeclarator();
+      break;
+    case TK::Mul:
     case TK::LPar:
       parseMaybeAbstractDeclarator();
       break;
@@ -1218,7 +1228,7 @@ ExtDecl const * Parser::parseExtDecl()
         tSpP = & typeSpecifier;
         typeSpecified = true;
         // Could be a declaration without declarator
-        if ( current->kind == TK::Scol )
+        if ( current->kind == TK::SCol )
         {
           return new Decl( *current, typeSpecifier, NULL );
         }
