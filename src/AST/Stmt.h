@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include "../util.h"
+#include "List.h"
 #include "Locatable.h"
 
 
@@ -32,43 +33,9 @@ namespace C4
     }; // end struct Stmt
 
     /// Statement List
-    struct StmtList : Locatable
+    struct StmtList : List< Stmt >
     {
       ~StmtList() {}
-
-      inline void append( Stmt const * const stmt )
-      {
-        stmts.push_back( stmt );
-      }
-
-      StmtList & operator+=( Stmt const * const stmt )
-      {
-        this->append( stmt );
-        return *this;
-      }
-
-      std::vector< Stmt const * >::iterator begin()
-      {
-        return stmts.begin();
-      }
-
-      std::vector< Stmt const * >::const_iterator begin() const
-      {
-        return stmts.begin();
-      }
-
-      std::vector< Stmt const * >::iterator end()
-      {
-        return stmts.end();
-      }
-
-      std::vector< Stmt const * >::const_iterator end() const
-      {
-        return stmts.end();
-      }
-
-      private:
-      std::vector< Stmt const * > stmts;
     }; // end struct StmtList
 
     /// Illegal Statement

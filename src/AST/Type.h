@@ -10,6 +10,7 @@
 #define C4_TYPE_H
 
 #include <iostream>
+#include "../util.h"
 #include "Locatable.h"
 
 
@@ -17,6 +18,9 @@ namespace C4
 {
   namespace AST
   {
+    // Forward Declarations
+    struct StructDeclList;
+
     /// Type
     struct Type : Locatable
     {
@@ -30,8 +34,51 @@ namespace C4
       IllegalType( Lex::Token const &tok ) : Type(tok) {}
       virtual ~IllegalType() {}
 
-      void print( Printer const p ) const; 
+      void print( Printer const p ) const;
     }; // end struct IllegalType
+
+    /// Type Specifier
+    struct StructSpecifier;
+    struct TypeSpecifier : Type
+    {
+      TypeSpecifier( Lex::Token const &tok,
+          StructSpecifier const * const strct = NULL )
+        : Type(tok), strct(strct) {}
+
+      virtual ~TypeSpecifier() {}
+
+      void print( Printer const p ) const;
+
+      StructSpecifier const * const strct;
+    }; // end struct TypeSpecifier
+
+    /// Illegal Type Specifier
+    struct IllegalTypeSpecifier : TypeSpecifier
+    {
+      IllegalTypeSpecifier( Lex::Token const &tok ) : TypeSpecifier(tok) {}
+      ~IllegalTypeSpecifier() {}
+
+      void print( Printer const p ) const;
+    }; // end struct IllegalTypeSpecifier
+
+    /// Struct Specifier
+    struct StructSpecifier : TypeSpecifier
+    {
+      StructSpecifier( Lex::Token const &tok, Lex::Token const * const name,
+          StructDeclList const * const structDecls = NULL )
+        : TypeSpecifier(tok), name(nonNull(name)), structDecls(structDecls)
+      {}
+
+      StructSpecifier( Lex::Token const &tok, StructDeclList const * const
+          structDecls )
+        : TypeSpecifier(tok), name(NULL), structDecls(nonNull(structDecls))
+      {}
+
+      ~StructSpecifier() {}
+
+      Lex::Token const * const name;
+      StructDeclList const * const structDecls;
+    }; // end struct StructSpecifier
   } // end namespace AST
 } // end namespace C4
 
