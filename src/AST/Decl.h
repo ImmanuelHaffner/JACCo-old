@@ -1,4 +1,4 @@
-///===--- Decl.h -----------------------------------------------------------===//
+///===--- Decl.h ----------------------------------------------------------===//
 //
 //	~~~ The C4 Compiler ~~~
 //
@@ -11,139 +11,133 @@
 
 #include <iostream>
 #include "Locatable.h"
+#include "List.h"
+#include "../util.h"
 #include <vector>
 
 namespace C4
 {
   namespace AST
   {
-  /// External Declaration
-    struct ExtDecl : Locatable 
-    {
-      ExtDecl( Lex::Token const &tok ) :
-        Locatable(tok) {}
-      virtual ~ExtDecl() {}
-      
-      void print( Printer const p ) const;
-    };
+    // Forward declarations
+    struct TypeSpecifier;
 
-    /// Illegal Declaration
+    /// External Declaration
+    struct ExtDecl : Locatable
+    {
+      ExtDecl( Lex::Token const &tok ) : Locatable(tok) {}
+      virtual ~ExtDecl() {}
+
+      void print( Printer const p ) const;
+    }; // end struct ExtDecl
+
+    /// Illegal External Declaration
     struct IllegalExtDecl : ExtDecl
     {
       IllegalExtDecl( Lex::Token const &tok ) : ExtDecl(tok) {}
-      virtual ~IllegalExtDecl() {}
+      ~IllegalExtDecl() {}
 
       void print( Printer const p ) const;
-    }; // end struct IllegalDeclaration
+    }; // end struct IllegalExtDecl
 
-
-    struct Decl;
-     /// Type Specifier
-    struct TypeSpecifier : Locatable
-    {
-      TypeSpecifier( Lex::Token const &tok, Decl const *, Decl const * ) : Locatable(tok) {}
-      virtual ~TypeSpecifier() {}
-
-      void print( Printer const p ) const;
-    };
-    
-    /// Declarator
-    struct Declarator : Locatable 
-    {
-      Declarator( Lex::Token const &tok ) :
-        Locatable (tok) {}
-      virtual ~Declarator() {}
-      
-      void print( Printer const p ) const;
-    };
-    
     /// Declaration
+    struct Declarator;
     struct Decl : ExtDecl
     {
-      Decl( Lex::Token const &tok, TypeSpecifier const * typeSpec,
-          Declarator const * declarator )
-          : ExtDecl(tok), typeSpec(typeSpec), declarator(declarator)  {}
+      Decl( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
+          Declarator const * const declarator = NULL )
+        : ExtDecl(tok), typeSpec(nonNull(typeSpec)), declarator(declarator)
+      {}
+
       virtual ~Decl() {}
-      TypeSpecifier const * typeSpec;
-      Declarator const * declarator;
+
+      TypeSpecifier const * const typeSpec;
+      Declarator const * const declarator;
     }; // end struct Declaration
 
     /// Illegal Declaration
     struct IllegalDecl : Decl
     {
       IllegalDecl( Lex::Token const &tok ) : Decl(tok, NULL, NULL) {}
-      virtual ~IllegalDecl() {}
+      ~IllegalDecl() {}
 
       void print( Printer const p ) const;
-    }; // end struct IllegalDeclaration
+    }; // end struct IllegalDecl
 
-    /// Type Specifier
-    struct IllegalTypeSpecifier : TypeSpecifier
+    /// Struct Declaration List
+    struct StructDecl;
+    struct StructDeclList : List< StructDecl >
     {
-      IllegalTypeSpecifier( Lex::Token const &tok, Decl * a, Decl * b ) :
-        TypeSpecifier(tok,a,b) {}
-      virtual ~IllegalTypeSpecifier() {}
+      ~StructDeclList() {}
 
-      void print( Printer const p ) const;
-    };
+      void print( Printer const p );
+    }; // end struct StructDeclList
 
-    // IllegalDeclarator
-    struct IllegalDeclarator : Declarator 
+    /// Struct Declaration
+    struct StructDeclaratorList;
+    struct StructDecl
     {
-      IllegalDeclarator( Lex::Token const &tok ) :
-        Declarator(tok) {}
-      virtual ~IllegalDeclarator() {}
-      
-      void print( Printer const p ) const;
-    };
-    
-    /// DeclList 
-    struct DeclList : Locatable
+      StructDecl( TypeSpecifier const * const typeSpec,
+          StructDeclaratorList const * const structDeclarators )
+        : typeSpec(nonNull(typeSpec)),
+        structDeclarators(nonNull(structDeclarators))
+      {}
+
+      TypeSpecifier const * const typeSpec;
+      StructDeclaratorList const * const structDeclarators;
+    }; // end struct StructDecl
+
+    /// Declarator
+    struct Declarator : Locatable
     {
-      DeclList( Lex::Token const &tok, std::vector<Decl const *> declVector ) :
-        Locatable(tok), declVector(declVector) {}
-      virtual ~DeclList() {}
+      Declarator( Lex::Token const &tok ) : Locatable (tok) {}
+      virtual ~Declarator() {}
 
       void print( Printer const p ) const;
-      
-      std::vector<Decl const *> declVector;
-    };
+    }; // end struct Declarator
 
-    // IllegalDeclList
-    struct IllegalDeclList : DeclList 
+    /// Illegal Declarator
+    struct IllegalDeclarator : Declarator
     {
-      IllegalDeclList( Lex::Token const &tok, std::vector<Decl const *> declVector ) :
-        DeclList(tok, declVector) {}
-      virtual ~IllegalDeclList() {}
-      
-      void print( Printer const p ) const;
-    };
+      IllegalDeclarator( Lex::Token const &tok ) : Declarator(tok) {}
+      ~IllegalDeclarator() {}
 
-   /// FunctionDef
-    struct FunctionDef : ExtDecl 
+      void print( Printer const p ) const;
+    }; // end struct IllegalDeclarator
+
+    /// Declaration List
+    struct DeclList : List< Decl >
+    {
+      ~DeclList() {}
+    }; // end struct DeclList
+
+    /// Function Definition
+    struct FunctionDef : ExtDecl
     {
       FunctionDef( Lex::Token const &tok, TypeSpecifier const * typeSpec,
-         Declarator const * declarator, DeclList const * declList,
-         CompoundStmt const * cStmt ) :
-       ExtDecl(tok), typeSpec(typeSpec), declarator(declarator),
-     declList(declList), cStmt(cStmt) {}
+          Declarator const * declarator, DeclList const * declList,
+          CompoundStmt const * cStmt ) :
+        ExtDecl(tok), typeSpec(typeSpec), declarator(declarator),
+        declList(declList), cStmt(cStmt) {}
+
       virtual ~FunctionDef() {}
-      
+
       void print( Printer const p ) const;
       TypeSpecifier const * typeSpec;
       Declarator const * declarator;
       DeclList const * declList;
       CompoundStmt const * cStmt;
-    };
-    /// IllegalFunctionDef
-    struct IllegalFunctionDef : FunctionDef 
+    }; // end struct FunctionDef
+
+    /// Illegal Function Definition
+    struct IllegalFunctionDef : FunctionDef
     {
       IllegalFunctionDef( Lex::Token const &tok ) :
         FunctionDef(tok, NULL, NULL, NULL, NULL ) {}
-      virtual ~IllegalFunctionDef() {}
-      
+      ~IllegalFunctionDef() {}
+
       void print( Printer const p ) const;
-    };
+    }; // end struct IllegalFunctionDef
   } // end namespace AST
 } // end namespace C4
 
