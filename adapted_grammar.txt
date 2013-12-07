@@ -109,7 +109,7 @@ constant_expression
 //===----------------------------------------------------------------------===//
 
 declaration
-  : type_specifier [declarator] ';'
+  : type_specifier [declarator] ';'             // declarator is NORMAL
   ;
 
 type_specifier
