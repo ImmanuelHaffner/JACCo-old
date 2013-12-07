@@ -135,7 +135,7 @@ pointer
 direct_declarator
   : IDENTIFIER                                    // NORMAL
   | '(' declarator ')'
-  | '(' [parameter_list ')'                       // ABSTRACT
+  | '(' [parameter_list] ')'                      // ABSTRACT
   | direct_declarator '( [parameter_list] ')'
   ;
 

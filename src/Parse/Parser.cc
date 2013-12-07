@@ -584,16 +584,44 @@ StructDeclaratorList const * Parser::parseStructDeclaratorList()
 
 Declarator const * Parser::parseDeclarator( DeclaratorType const dt )
 {
+  size_t pointerCount = 0;
   if ( current->kind == TK::Mul )
-    parsePointer();
-
-  if ( dt == DeclaratorType::NORMAL )
-    parseDirectDeclarator();
-  else if ( current->kind == TK::LPar )
-    parseDirectDeclarator();
-
+    pointerCount = parsePointer();
+  switch ( current->kind )
+  {
+    case TK::Scol:
+    case TK::LBrace:
+    case TK::Struct:
+    case TK::Int:
+    case TK::Void:
+    case TK::Char:
+    case TK::RPAR:
+      if ( dt == DeclaratorType::ABSTRACT && pointerCount > 0 )
+        //return Declarator which is only a Pointer. Declarator with field
+        //pointerCount?
+        0;
+      break;
+    default:
+      // in case there is no pointer, just return DirectDeclarator
+      // with pointerCount 0?
+      parseDirectDeclarator();
+  }
   return new IllegalDeclarator( *current );
 } // end parseDeclarator
+
+size_t Parser::parsePointer()
+{
+  size_t pointerCount = 0;
+  if ( accept( TK::Mul ) ) // eat '*'
+    ++pointerCount;
+
+  while ( current->kind == TK::Mul )
+  {
+    readNextToken(); // eat '*'
+    pointerCount++;
+  }
+  return pointerCount;
+} // end parsePointer
 
 Declarator const * Parser::parseDirectDeclarator( DeclaratorType const dt )
 {
@@ -602,7 +630,7 @@ Declarator const * Parser::parseDirectDeclarator( DeclaratorType const dt )
     case TK::LPar:
       readNextToken(); // eat '('
       if ( dt == DeclaratorType::NORMAL )
-        parseDeclarator();
+        parseDeclarator( dt );
       else
       {
         switch ( current->kind )
@@ -620,10 +648,6 @@ Declarator const * Parser::parseDirectDeclarator( DeclaratorType const dt )
           case TK::Mul:
           case TK::LPar:
             parseDeclarator( dt );
-            break;
-
-          case TK::IDENTIFIER:
-            parseDeclarator( DeclaratorType::NORMAL );
             break;
 
           default:
@@ -679,20 +703,6 @@ AST::DeclaratorList const * Parser::parseDeclaratorList(
   }
   return NULL;
 } // end parseDeclaratorList
-
-size_t Parser::parsePointer()
-{
-  size_t pointerCount = 0;
-  if ( accept( TK::Mul ) ) // eat '*'
-    ++pointerCount;
-
-  while ( current->kind == TK::Mul )
-  {
-    readNextToken(); // eat '*'
-    pointerCount++;
-  }
-  return pointerCount;
-} // end parsePointer
 
 DeclList const * Parser::parseParameterList()
 {
