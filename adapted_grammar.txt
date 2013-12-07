@@ -99,18 +99,6 @@ declaration
   : type_specifier [declarator] ';'
   ;
 
-declarator
-  : [pointer] direct_declarator
-  | pointer                       // ABSTRACT
-  ;
-
-direct_declarator
-  : IDENTIFIER                                    // NORMAL
-  | '(' declarator ')'
-  | '(' [parameter_list ')'                       // ABSTRACT
-  | direct_declarator '( [parameter_list] ')'
-  ;
-
 type_specifier
   : VOID
   | CHAR
@@ -134,6 +122,21 @@ struct_declaration
 struct_declarator_list
   : declarator
   | struct_declarator_list ',' declarator
+  ;
+
+declarator
+  : [pointer] direct_declarator
+  | pointer                       // ABSTRACT
+  ;
+
+pointer
+  : '*' + 
+
+direct_declarator
+  : IDENTIFIER                                    // NORMAL
+  | '(' declarator ')'
+  | '(' [parameter_list ')'                       // ABSTRACT
+  | direct_declarator '( [parameter_list] ')'
   ;
 
 parameter_list
