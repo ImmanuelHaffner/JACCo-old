@@ -1158,9 +1158,17 @@ ExtDecl const * Parser::parseExtDecl()
             readNextToken(); // eat ';'
             return new Decl( typeSpec, declarator );
 
-          default:;
+          case TK::Void:
+          case TK::Char:
+          case TK::Int:
+          case TK::Struct:
+          case TK::LBrace:
+            return parseFunctionDef( typeSpec, declarator );
+
+          default:
+            ERROR( "';', ',' or function-definition" );
         } // end switch
-        return parseFunctionDef( typeSpec, declarator );
+        return new IllegalDecl( *current, typeSpec );
       }
 
     // declarator
@@ -1175,5 +1183,5 @@ ExtDecl const * Parser::parseExtDecl()
     default:
       ERROR( "function-definition or declaration" );
   } // end switch
-  return new IllegalDecl( *current );
+  return new IllegalExtDecl( *current );
 } // end parseExtDecl

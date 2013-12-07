@@ -171,6 +171,11 @@ void IllegalStmt::print( Printer const p ) const
 //
 //===----------------------------------------------------------------------===//
 
+void IllegalExtDecl::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
+}
+
 void TypeSpecifier::print( Printer const p ) const
 {
   p.out << this->tok.sym;

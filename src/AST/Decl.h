@@ -33,6 +33,16 @@ namespace C4
     }; // end struct ExtDecl
 
 
+    /// Illegal External Declaration
+    struct IllegalExtDecl : Locatable, ExtDecl
+    {
+      IllegalExtDecl( Lex::Token const &tok ) : Locatable(tok) {}
+      ~IllegalExtDecl() {}
+
+      void print( Printer const p ) const;
+    }; // end struct IllegalExtDecl
+
+
     /// Declaration
     struct Declarator;
     struct Decl : ExtDecl
@@ -51,9 +61,10 @@ namespace C4
     }; // end struct Declaration
 
 
-    struct IllegalDecl : Decl, Locatable
+    struct IllegalDecl : Locatable, Decl
     {
-      IllegalDecl( Lex::Token const &tok ) : Decl(NULL), Locatable(tok) {}
+      IllegalDecl( Lex::Token const &tok, TypeSpecifier const * const typeSpec )
+        : Locatable(tok), Decl(typeSpec) {}
       ~IllegalDecl() {}
 
       void print( Printer const p ) const;
