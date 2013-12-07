@@ -147,11 +147,6 @@ void SubscriptExpr::print( Printer const p ) const
   p.out << "]";
 }
 
-void CastExpr::print( Printer const p ) const
-{
-  p.out << this->tok.sym;
-}
-
 void ExprList::print( Printer const p ) const
 {
   p.out << this->tok.sym;

@@ -22,12 +22,14 @@ namespace C4
     struct Type;
 
 
+
     /// Expression
     struct Expr : Locatable
     {
       explicit Expr( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Expr() {}
     }; // end struct Expression
+
 
     /// Illegal Expression
     struct IllegalExpr : Expr
@@ -38,6 +40,7 @@ namespace C4
       void print( Printer const p ) const;
     }; // end struct IllegalExpression
 
+
     /// Expression List
     struct ExprList : Expr, List< Expr >
     {
@@ -46,6 +49,7 @@ namespace C4
 
       void print( Printer const p ) const;
     }; // end struct ExprList
+
 
     /// Variable
     struct Variable : Expr
@@ -60,6 +64,7 @@ namespace C4
       void print( Printer const p ) const;
     }; // end struct Variable
 
+
     /// Constant
     struct Constant : Expr
     {
@@ -71,6 +76,7 @@ namespace C4
 
       void print( Printer const p ) const;
     }; // end struct Constant
+
 
     /// String-Literal
     struct StringLiteral : Expr
@@ -85,18 +91,6 @@ namespace C4
       void print( Printer const p ) const;
     }; // end struct StringLiteral
 
-    /// Cast Expression
-    struct CastExpr : Expr
-    {
-      CastExpr( Lex::Token const &tok, Expr const * const expr ) :
-        Expr(tok), expr(expr) {}
-      virtual ~CastExpr() {}
-
-      void print( Printer const p ) const;
-
-      // TODO type
-      Expr const * const expr;
-    }; // end struct CastExpr
 
     /// Binary Expression
     struct BinaryExpr : Expr
@@ -110,6 +104,7 @@ namespace C4
       Expr const * const lhs;
       Expr const * const rhs;
     }; // end struct BinaryExpr
+
 
     /// Conditional Expression
     struct ConditionalExpr : Expr
@@ -126,6 +121,7 @@ namespace C4
       Expr const * const rhs;
     }; // end struct ConditionalExpr
 
+
     /// Assignment Expression
     struct AssignmentExpr : BinaryExpr
     {
@@ -137,6 +133,7 @@ namespace C4
       virtual void print( Printer const ) const;
     }; // end struct AssignmentExpr
 
+
     /// Unary Expression
     struct UnaryExpr : Expr
     {
@@ -145,12 +142,14 @@ namespace C4
 
     }; // end struct UnaryExpr
 
+
     /// Postfix Expression
     struct PostfixExpr : UnaryExpr
     {
       PostfixExpr( Lex::Token const &tok ) : UnaryExpr(tok) {}
       virtual ~PostfixExpr() {}
     }; // end struct PostfixExpression
+
 
     /// Subscript Expression
     struct SubscriptExpr : PostfixExpr
@@ -163,8 +162,9 @@ namespace C4
       void print( Printer const p ) const;
 
       Expr const * const expr;
-      Expr const * const index; 
+      Expr const * const index;
     }; // end struct SubscriptExpr
+
 
     /// Dot Expression
     struct DotExpr : PostfixExpr
@@ -183,6 +183,7 @@ namespace C4
       Lex::Token const &rhs;
     }; // end struct DotExpr
 
+
     /// Arrow Expression
     struct ArrowExpr : DotExpr
     {
@@ -194,6 +195,7 @@ namespace C4
       void print( Printer const ) const;
     }; // end struct ArrowExpr
 
+
     /// Function Call Expression
     struct FunctionCall : PostfixExpr
     {
@@ -204,8 +206,9 @@ namespace C4
 
       void print( Printer const p ) const;
 
-      Expr const &expr; 
+      Expr const &expr;
     }; // end struct FunctionCall
+
 
     /// Post Increment Expression
     struct PostIncExpr : PostfixExpr
@@ -219,6 +222,7 @@ namespace C4
       Expr const &expr;
     }; // end struct PostIncExpr
 
+
     /// Post Decrement Expression
     struct PostDecExpr : PostfixExpr
     {
@@ -231,6 +235,7 @@ namespace C4
       Expr const &expr;
     }; // end struct PostDecExpr
 
+
     /// Pre Increment Expression
     struct PreIncExpr : UnaryExpr
     {
@@ -240,8 +245,9 @@ namespace C4
 
       void print( Printer const ) const;
 
-      Expr const * const expr; 
+      Expr const * const expr;
     }; // end struct PreIncExpr
+
 
     /// Pre Decrement Expression
     struct PreDecExpr : UnaryExpr
@@ -252,8 +258,9 @@ namespace C4
 
       void print( Printer const ) const;
 
-      Expr const * const expr; 
+      Expr const * const expr;
     }; // end struct PreDecExpr
+
 
     /// Sizeof Expression
     struct SizeofExpr : UnaryExpr
@@ -264,8 +271,9 @@ namespace C4
 
       void print( Printer const p ) const;
 
-      Expr const * const expr; 
+      Expr const * const expr;
     }; // end struct UnaryExpr
+
 
     /// Sizeof Type Expression
     struct SizeofTypeExpr : UnaryExpr
@@ -276,7 +284,7 @@ namespace C4
 
       void print( Printer const p ) const;
 
-      Type const * const type; 
+      Type const * const type;
     }; // end struct UnaryExpr
   } // end namespace AST
 } // end namespace C4

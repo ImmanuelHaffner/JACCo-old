@@ -25,12 +25,12 @@ Parser::Parser( Lexer &lexer ) : lexer(lexer), current(NULL), next(NULL) {}
 
 Parser::~Parser() {}
 
+
 //===----------------------------------------------------------------------===//
 //
 //  Parser Helper Functions
 //
 //===----------------------------------------------------------------------===//
-
 
 /// Binary Operator Precedences
 ///
@@ -587,25 +587,18 @@ Declarator const * Parser::parseDeclarator( DeclaratorType const dt )
   size_t pointerCount = 0;
   if ( current->kind == TK::Mul )
     pointerCount = parsePointer();
-  switch ( current->kind )
+
+  Declarator const * decl = NULL;
+  if ( dt == DeclaratorType::NORMAL ||  // a direct declarator MUST follow
+      current->kind == TK::LPar )       // a direct declarator MIGHT follow
+    decl = parseDirectDeclarator( dt );
+
+  if ( pointerCount == 0 && ! decl )
   {
-    case TK::Scol:
-    case TK::LBrace:
-    case TK::Struct:
-    case TK::Int:
-    case TK::Void:
-    case TK::Char:
-    case TK::RPAR:
-      if ( dt == DeclaratorType::ABSTRACT && pointerCount > 0 )
-        //return Declarator which is only a Pointer. Declarator with field
-        //pointerCount?
-        0;
-      break;
-    default:
-      // in case there is no pointer, just return DirectDeclarator
-      // with pointerCount 0?
-      parseDirectDeclarator();
+    ERROR( "pointer or declarator" );
+    return new IllegalDeclarator( *current );
   }
+
   return new IllegalDeclarator( *current );
 } // end parseDeclarator
 
@@ -718,21 +711,23 @@ DeclList const * Parser::parseParameterList()
 
 Decl const * Parser::parseParameterDecl()
 {
-  TypeSpecifier const * typeSpecifier = parseTypeSpecifier();
+  TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   switch ( current->kind )
   {
     case TK::IDENTIFIER:
-      return NULL;
+      return new ParamDecl( typeSpec, parseDeclarator() );
 
     case TK::Mul:
     case TK::LPar:
-      parseDeclarator( DeclaratorType::UNKNOWN);
-      return NULL;
+      {
+        Declarator const * const declarator =
+          parseDeclarator( DeclaratorType::UNKNOWN);
+        return new ParamDecl( typeSpec, declarator );
+      }
 
-    default:
-      return NULL;
+    default:;
   }
-  return NULL;
+  return new ParamDecl( typeSpec );
 } // end parseParameterDecl
 
 Type const * Parser::parseTypeName()
@@ -1172,11 +1167,14 @@ ExtDecl const * Parser::parseExtDecl()
           return new Decl( typeSpec );
         }
         Declarator const * const declarator = parseDeclarator();
-        if ( current->kind == TK::SCol )
+        switch ( current->kind )
         {
-          readNextToken(); // eat ';'
-          return new Decl( typeSpec, declarator );
-        }
+          case TK::SCol:
+            readNextToken(); // eat ';'
+            return new Decl( typeSpec, declarator );
+
+          default:;
+        } // end switch
         return parseFunctionDef( typeSpec, declarator );
       }
 
@@ -1190,7 +1188,7 @@ ExtDecl const * Parser::parseExtDecl()
       }
 
     default:
-      ERROR( "type-specifier or declarator" );
+      ERROR( "function-definition or declaration" );
   } // end switch
   return new IllegalDecl( *current );
 } // end parseExtDecl

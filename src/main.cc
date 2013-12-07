@@ -106,23 +106,6 @@ int main(int, char** const argv)
 
               parser.parse();
 
-              if ( parser.getCurTok()->kind != TK::END_OF_FILE )
-              {
-                errorf( "%s", "unparsed tokens" );
-                std::cout << "\t" << *(parser.getCurTok()) << "\n";
-
-                if ( parser.getNextTok()->kind != TK::END_OF_FILE )
-                {
-                  std::cout << "\t" << *(parser.getNextTok()) << "\n";
-                  for (;;)
-                  {
-                    Token tok = lexer->getToken();
-                    if ( tok.kind == TK::END_OF_FILE ) break;
-                    std::cout << "\t" << tok << "\n";
-                  }
-                }
-              }
-
               delete lexer;
               break;
             }

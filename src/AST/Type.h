@@ -22,12 +22,14 @@ namespace C4
     struct StructDeclList;
 
 
+
     /// Type
     struct Type : Locatable
     {
       Type( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Type() {}
     }; // end struct Type
+
 
     /// Illegal Type
     struct IllegalType : Type
@@ -37,6 +39,7 @@ namespace C4
 
       void print( Printer const p ) const;
     }; // end struct IllegalType
+
 
     /// Type Specifier
     struct StructSpecifier;
@@ -48,6 +51,7 @@ namespace C4
       void print( Printer const p ) const;
     }; // end struct TypeSpecifier
 
+
     /// Illegal Type Specifier
     struct IllegalTypeSpecifier : TypeSpecifier
     {
@@ -56,6 +60,7 @@ namespace C4
 
       void print( Printer const p ) const;
     }; // end struct IllegalTypeSpecifier
+
 
     /// Struct Specifier
     struct StructSpecifier : TypeSpecifier

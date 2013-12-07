@@ -26,6 +26,7 @@ namespace C4
     struct DeclList;
 
 
+
     /// Statement
     struct Stmt : Locatable
     {
@@ -33,11 +34,13 @@ namespace C4
       virtual ~Stmt() {}
     }; // end struct Stmt
 
+
     /// Statement List
     struct StmtList : List< Stmt >
     {
       ~StmtList() {}
     }; // end struct StmtList
+
 
     /// Illegal Statement
     struct IllegalStmt : Stmt
@@ -47,6 +50,7 @@ namespace C4
 
       void print ( Printer const p ) const;
     }; // end struct IllegalStmt
+
 
     /// Expression Statement
     struct ExprStmt : Stmt
@@ -60,6 +64,7 @@ namespace C4
       Expr const * const expr;
     }; // end struct ExprStmt
 
+
     /// Case Statement
     struct CaseStmt : Stmt
     {
@@ -71,6 +76,7 @@ namespace C4
       ConstExpr const * const expr;
       Stmt const * const stmt;
     }; // end struct CaseStmt
+
 
     /// Label Statement
     struct LabelStmt : Stmt
@@ -87,6 +93,7 @@ namespace C4
       Stmt const * const stmt;
     }; // end struct CaseStmt
 
+
     /// If Statement
     struct IfStmt : Stmt
     {
@@ -102,6 +109,7 @@ namespace C4
       Stmt const * const Else;
     }; // end struct IfStmt
 
+
     /// Switch Statement
     struct SwitchStmt : Stmt
     {
@@ -115,6 +123,7 @@ namespace C4
       Expr const * const Cond;
       Stmt const * const Body;
     }; // end struct SwitchStmt
+
 
     /// While Statement
     struct WhileStmt : Stmt
@@ -130,6 +139,7 @@ namespace C4
       Stmt const * const Body;
     }; // end struct WhileStmt
 
+
     /// Do-While Statement
     struct DoStmt : Stmt
     {
@@ -143,6 +153,7 @@ namespace C4
       Stmt const * const Body;
       Expr const * const Cond;
     }; // end struct DoStmt
+
 
     /// For Statement
     struct ForStmt : Stmt
@@ -167,6 +178,7 @@ namespace C4
       Stmt const * const Body;
     }; // end struct ForStmt
 
+
     /// Break Statement
     struct BreakStmt : Stmt
     {
@@ -174,12 +186,14 @@ namespace C4
       ~BreakStmt() {}
     }; // end struct BreakStmt
 
+
     /// Continue Statement
     struct ContinueStmt : Stmt
     {
       ContinueStmt( Lex::Token const &tok ) : Stmt(tok) {}
       ~ContinueStmt() {}
     }; // end struct ContinueStmt
+
 
     /// Goto Statement
     struct GotoStmt : Stmt
@@ -193,6 +207,7 @@ namespace C4
       ~GotoStmt() {}
     }; // end struct GotoStmt
 
+
     /// Return Statement
     struct ReturnStmt : Stmt
     {
@@ -204,6 +219,7 @@ namespace C4
 
       Expr const * const expr;
     }; // end struct ReturnStmt
+
 
     /// Compound Statement
     struct CompoundStmt : Stmt

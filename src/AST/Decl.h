@@ -23,6 +23,7 @@ namespace C4
     struct TypeSpecifier;
 
 
+
     /// External Declaration
     struct ExtDecl : Printable
     {
@@ -30,6 +31,7 @@ namespace C4
 
       virtual void print( Printer const p ) const;
     }; // end struct ExtDecl
+
 
     /// Declaration
     struct Declarator;
@@ -48,6 +50,7 @@ namespace C4
       Declarator const * const declarator;
     }; // end struct Declaration
 
+
     struct IllegalDecl : Decl, Locatable
     {
       IllegalDecl( Lex::Token const &tok ) : Decl(NULL), Locatable(tok) {}
@@ -55,6 +58,7 @@ namespace C4
 
       void print( Printer const p ) const;
     }; // end IllegalDecl
+
 
     /// Struct Declaration List
     struct StructDecl;
@@ -76,6 +80,19 @@ namespace C4
       StructDeclaratorList const * const structDeclarators;
     }; // end struct StructDecl
 
+
+    /// Parameter Declaration
+    struct ParamDecl : Decl
+    {
+      ParamDecl( TypeSpecifier const * const typeSpec,
+          Declarator const * const declarator = NULL )
+        : Decl(typeSpec,declarator)
+      {}
+
+      ~ParamDecl() {}
+    }; // end struct ParamDecl
+
+
     /// Declarator
     struct Declarator : Locatable
     {
@@ -85,12 +102,14 @@ namespace C4
       void print( Printer const p ) const;
     }; // end struct Declarator
 
+
     /// Struct Declarator List
     struct StructDeclaratorList : List< Declarator >
     {
       ~StructDeclaratorList() {}
       void print( Printer const p ) const;
     }; // end struct StructDeclaratorList
+
 
     /// Illegal Declarator
     struct IllegalDeclarator : Declarator
@@ -101,11 +120,13 @@ namespace C4
       void print( Printer const p ) const;
     }; // end struct IllegalDeclarator
 
+
     struct DeclaratorList : List< Declarator >
     {
       ~DeclaratorList() {}
       void print( Printer const p ) const;
     }; // end struct DeclaratorList
+
 
     /// Declaration List
     struct DeclList : List< Decl >
@@ -113,6 +134,7 @@ namespace C4
       ~DeclList() {}
       void print( Printer const p ) const;
     }; // end struct DeclList
+
 
     /// Function Definition
     struct FunctionDef : ExtDecl
