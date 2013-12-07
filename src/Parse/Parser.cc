@@ -1166,7 +1166,7 @@ ExtDecl const * Parser::parseExtDecl()
             return parseFunctionDef( typeSpec, declarator );
 
           default:
-            ERROR( "';', ',' or function-definition" );
+            ERROR( "';' or function-definition" );
         } // end switch
         return new IllegalDecl( *current, typeSpec );
       }
