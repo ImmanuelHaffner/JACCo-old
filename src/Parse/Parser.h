@@ -154,8 +154,6 @@ namespace C4
           DeclaratorType const dt = DeclaratorType::NORMAL );
       AST::Declarator const * parseDirectDeclarator(
           DeclaratorType const dt = DeclaratorType::NORMAL );
-      AST::DeclaratorList const * parseDeclaratorList(
-          DeclaratorType const dt = DeclaratorType::NORMAL );
       size_t parsePointer();
       AST::DeclList const * parseParameterList();
       AST::Decl const * parseParameterDecl();

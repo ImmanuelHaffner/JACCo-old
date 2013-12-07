@@ -685,18 +685,6 @@ Declarator const * Parser::parseDirectDeclarator( DeclaratorType const dt )
   return new IllegalDeclarator( *current );
 } // end parseDirectDeclarator
 
-AST::DeclaratorList const * Parser::parseDeclaratorList(
-    DeclaratorType const dt )
-{
-  parseDeclarator( dt );
-  while ( current->kind == TK::Comma )
-  {
-    readNextToken(); // eat ','
-    parseDeclarator( dt );
-  }
-  return NULL;
-} // end parseDeclaratorList
-
 DeclList const * Parser::parseParameterList()
 {
   // TODO create ParameterList
@@ -719,11 +707,8 @@ Decl const * Parser::parseParameterDecl()
 
     case TK::Mul:
     case TK::LPar:
-      {
-        Declarator const * const declarator =
-          parseDeclarator( DeclaratorType::UNKNOWN);
-        return new ParamDecl( typeSpec, declarator );
-      }
+      return new ParamDecl( typeSpec,
+          parseDeclarator( DeclaratorType::UNKNOWN ) );
 
     default:;
   }
