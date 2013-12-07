@@ -12,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
+#include <cstring>
 #include "../util.h"
 #include "../diagnostic.h"
 #include "../Lex/Token.h"
@@ -145,18 +146,19 @@ namespace C4
       AST::TypeSpecifier const * parseTypeSpecifier();
       AST::TypeSpecifier const * parseStructSpecifier();
       AST::Decl const * parseStruct();
-      AST::Decl const * parseStructDeclList();
-      AST::Decl const * parseStructDecl();
-      AST::Decl const * parseStructDeclaratorList();
-      AST::Declarator const * parseDeclarator();
-      AST::Declarator const * parseDirectDeclarator();
-      int parsePointer();
+      AST::StructDeclList const * parseStructDeclList();
+      AST::StructDecl const * parseStructDecl();
+      AST::StructDeclaratorList const * parseStructDeclaratorList();
+      enum class DeclaratorType { NORMAL, ABSTRACT, UNKNOWN };
+      AST::Declarator const * parseDeclarator(
+          DeclaratorType const dt = DeclaratorType::NORMAL );
+      AST::Declarator const * parseDirectDeclarator(
+          DeclaratorType const dt = DeclaratorType::NORMAL );
+      AST::DeclaratorList const * parseDeclaratorList(
+          DeclaratorType const dt = DeclaratorType::NORMAL );
+      size_t parsePointer();
       AST::DeclList const * parseParameterList();
       AST::Decl const * parseParameterDecl();
-      AST::Declarator const * parseAbstractDeclarator();
-      AST::Declarator const * parseDirectAbstractDeclarator();
-      AST::Declarator const * parseMaybeAbstractDeclarator();
-      AST::Declarator const * parseDirectMaybeAbstractDeclarator();
       AST::DeclList const * parseDeclList();
       AST::FunctionDef const * parseFunctionDef( AST::TypeSpecifier const *, AST::Declarator const * );
 

@@ -22,68 +22,57 @@ namespace C4
     // Forward declarations
     struct TypeSpecifier;
 
+
     /// External Declaration
-    struct ExtDecl : Locatable
+    struct ExtDecl : Printable
     {
-      ExtDecl( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~ExtDecl() {}
 
-      void print( Printer const p ) const;
+      virtual void print( Printer const p ) const;
     }; // end struct ExtDecl
-
-    /// Illegal External Declaration
-    struct IllegalExtDecl : ExtDecl
-    {
-      IllegalExtDecl( Lex::Token const &tok ) : ExtDecl(tok) {}
-      ~IllegalExtDecl() {}
-
-      void print( Printer const p ) const;
-    }; // end struct IllegalExtDecl
 
     /// Declaration
     struct Declarator;
     struct Decl : ExtDecl
     {
-      Decl( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
+      Decl( TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
-        : ExtDecl(tok), typeSpec(nonNull(typeSpec)), declarator(declarator)
+        : typeSpec(nonNull(typeSpec)), declarator(declarator)
       {}
 
       virtual ~Decl() {}
+
+      virtual void print( Printer const p ) const;
 
       TypeSpecifier const * const typeSpec;
       Declarator const * const declarator;
     }; // end struct Declaration
 
-    /// Illegal Declaration
-    struct IllegalDecl : Decl
+    struct IllegalDecl : Decl, Locatable
     {
-      IllegalDecl( Lex::Token const &tok ) : Decl(tok, NULL, NULL) {}
+      IllegalDecl( Lex::Token const &tok ) : Decl(NULL), Locatable(tok) {}
       ~IllegalDecl() {}
 
       void print( Printer const p ) const;
-    }; // end struct IllegalDecl
+    }; // end IllegalDecl
 
     /// Struct Declaration List
     struct StructDecl;
     struct StructDeclList : List< StructDecl >
     {
       ~StructDeclList() {}
-
-      void print( Printer const p );
+      void print( Printer const p ) const;
     }; // end struct StructDeclList
 
     /// Struct Declaration
     struct StructDeclaratorList;
-    struct StructDecl
+    struct StructDecl : Decl
     {
       StructDecl( TypeSpecifier const * const typeSpec,
           StructDeclaratorList const * const structDeclarators )
-        : typeSpec(nonNull(typeSpec)),
-        structDeclarators(nonNull(structDeclarators))
+        : Decl(typeSpec), structDeclarators(nonNull(structDeclarators))
       {}
 
-      TypeSpecifier const * const typeSpec;
       StructDeclaratorList const * const structDeclarators;
     }; // end struct StructDecl
 
@@ -96,6 +85,13 @@ namespace C4
       void print( Printer const p ) const;
     }; // end struct Declarator
 
+    /// Struct Declarator List
+    struct StructDeclaratorList : List< Declarator >
+    {
+      ~StructDeclaratorList() {}
+      void print( Printer const p ) const;
+    }; // end struct StructDeclaratorList
+
     /// Illegal Declarator
     struct IllegalDeclarator : Declarator
     {
@@ -105,39 +101,38 @@ namespace C4
       void print( Printer const p ) const;
     }; // end struct IllegalDeclarator
 
+    struct DeclaratorList : List< Declarator >
+    {
+      ~DeclaratorList() {}
+      void print( Printer const p ) const;
+    }; // end struct DeclaratorList
+
     /// Declaration List
     struct DeclList : List< Decl >
     {
       ~DeclList() {}
+      void print( Printer const p ) const;
     }; // end struct DeclList
 
     /// Function Definition
     struct FunctionDef : ExtDecl
     {
-      FunctionDef( Lex::Token const &tok, TypeSpecifier const * typeSpec,
-          Declarator const * declarator, DeclList const * declList,
-          CompoundStmt const * cStmt ) :
-        ExtDecl(tok), typeSpec(typeSpec), declarator(declarator),
-        declList(declList), cStmt(cStmt) {}
+      FunctionDef( TypeSpecifier const * const typeSpec,
+          Declarator const * const declarator, DeclList const * const decls,
+          CompoundStmt const * compStmt )
+        : typeSpec(typeSpec), declarator(nonNull(declarator)), decls(decls),
+        compStmt(nonNull(compStmt))
+      {}
 
       virtual ~FunctionDef() {}
 
       void print( Printer const p ) const;
-      TypeSpecifier const * typeSpec;
-      Declarator const * declarator;
-      DeclList const * declList;
-      CompoundStmt const * cStmt;
+
+      TypeSpecifier const * const typeSpec;
+      Declarator const * const declarator;
+      DeclList const * const decls;
+      CompoundStmt const * const compStmt;
     }; // end struct FunctionDef
-
-    /// Illegal Function Definition
-    struct IllegalFunctionDef : FunctionDef
-    {
-      IllegalFunctionDef( Lex::Token const &tok ) :
-        FunctionDef(tok, NULL, NULL, NULL, NULL ) {}
-      ~IllegalFunctionDef() {}
-
-      void print( Printer const p ) const;
-    }; // end struct IllegalFunctionDef
   } // end namespace AST
 } // end namespace C4
 

@@ -21,6 +21,7 @@ namespace C4
     // Forward Declarations
     struct StructDeclList;
 
+
     /// Type
     struct Type : Locatable
     {
@@ -41,15 +42,10 @@ namespace C4
     struct StructSpecifier;
     struct TypeSpecifier : Type
     {
-      TypeSpecifier( Lex::Token const &tok,
-          StructSpecifier const * const strct = NULL )
-        : Type(tok), strct(strct) {}
-
+      TypeSpecifier( Lex::Token const &tok ) : Type(tok) {}
       virtual ~TypeSpecifier() {}
 
       void print( Printer const p ) const;
-
-      StructSpecifier const * const strct;
     }; // end struct TypeSpecifier
 
     /// Illegal Type Specifier
@@ -67,7 +63,10 @@ namespace C4
       StructSpecifier( Lex::Token const &tok, Lex::Token const * const name,
           StructDeclList const * const structDecls = NULL )
         : TypeSpecifier(tok), name(nonNull(name)), structDecls(structDecls)
-      {}
+      {
+        assert( tok.kind == Lex::TK::Struct &&
+            "struct specifier must start with the keyword 'struct'" );
+      }
 
       StructSpecifier( Lex::Token const &tok, StructDeclList const * const
           structDecls )

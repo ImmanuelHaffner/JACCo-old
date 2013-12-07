@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <vector>
+#include "Printable.h"
 #include "../Lex/Token.h"
 
 
@@ -20,47 +21,61 @@ namespace C4
   {
     /// List
     template< class T >
-      struct List
+      struct List : Printable
       {
         virtual ~List() {}
 
         typedef typename std::vector< T const * >::iterator iterator;
         typedef typename std::vector< T const * >::const_iterator const_iterator;
 
-        void append( T const * const t )
-        {
-          list.push_back( t );
-        }
-
-        List & operator+=( T const * const t )
-        {
-          append( t );
-          return *this;
-        }
-
-        iterator begin()
-        {
-          return list.begin();
-        }
-
-        const_iterator begin() const
-        {
-          return list.begin();
-        }
-
-        iterator end()
-        {
-          return list.end();
-        }
-
-        const_iterator end() const
-        {
-          return list.end();
-        }
+        void append( T const * const t );
+        List & operator+=( T const * const t );
+        iterator begin();
+        const_iterator begin() const;
+        iterator end();
+        const_iterator end() const;
 
         private:
           std::vector< T const * > list;
       }; // end struct List
+
+    template< class T >
+      void List<T>::append( T const * const t )
+      {
+        list.push_back( t );
+      }
+
+    template< class T >
+      List<T> & List<T>::operator+=( T const * const t )
+      {
+        append( t );
+        return *this;
+      }
+
+    template< class T >
+      typename List<T>::iterator List<T>::begin()
+      {
+        return list.begin();
+      }
+
+    template< class T >
+      typename List<T>::const_iterator List<T>::begin() const
+      {
+        return list.begin();
+      }
+
+    template< class T >
+      typename List<T>::iterator List<T>::end()
+      {
+        return list.end();
+      }
+
+    template< class T >
+      typename List<T>::const_iterator List<T>::end() const
+      {
+        return list.end();
+      }
+
   } // end namespace AST
 } // end namespace C4
 

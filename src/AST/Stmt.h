@@ -25,6 +25,7 @@ namespace C4
     struct ConstExpr;
     struct DeclList;
 
+
     /// Statement
     struct Stmt : Locatable
     {

@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <vector>
-#include "Printable.h"
+#include "List.h"
 
 
 namespace C4
@@ -22,45 +22,11 @@ namespace C4
     struct ExtDecl;
 
     /// Translation Unit
-    struct TranslationUnit : Printable
+    struct TranslationUnit : List< ExtDecl >
     {
       ~TranslationUnit() {}
 
       void print( Printer const p ) const;
-
-      inline void append( ExtDecl const * const extDecl )
-      {
-        extDecls.push_back( extDecl );
-      }
-
-      TranslationUnit & operator+=( ExtDecl const * const extDecl )
-      {
-        this->append( extDecl );
-        return *this;
-      }
-
-      std::vector< ExtDecl const * >::iterator begin()
-      {
-        return extDecls.begin();
-      }
-
-      std::vector< ExtDecl const * >::const_iterator begin() const
-      {
-        return extDecls.begin();
-      }
-
-      std::vector< ExtDecl const * >::iterator end()
-      {
-        return extDecls.end();
-      }
-
-      std::vector< ExtDecl const * >::const_iterator end() const
-      {
-        return extDecls.end();
-      }
-
-      private:
-      std::vector< ExtDecl const * > extDecls;
     }; // end struct TranslationUnit
   } // end namespace AST
 } // end namespace C4

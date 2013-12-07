@@ -152,6 +152,11 @@ void CastExpr::print( Printer const p ) const
   p.out << this->tok.sym;
 }
 
+void ExprList::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
+}
+
 
 //===----------------------------------------------------------------------===//
 //
@@ -171,11 +176,6 @@ void IllegalStmt::print( Printer const p ) const
 //
 //===----------------------------------------------------------------------===//
 
-void IllegalDecl::print( Printer const p ) const
-{
-  p.out << this->tok.sym;
-}
-
 void TypeSpecifier::print( Printer const p ) const
 {
   p.out << this->tok.sym;
@@ -193,55 +193,53 @@ void ExtDecl::print( Printer const p ) const
   (void) p;
 }
 
-void IllegalExtDecl::print( Printer const p ) const
+void Decl::print( Printer const p ) const
 {
-  //TODO 
-  (void) p;
+  this->typeSpec->print( p );
+  if ( this->declarator )
+    this->declarator->print( p );
+}
 
+void IllegalDecl::print( Printer const p ) const
+{
+  p.out << this->tok;
 }
 
 void Declarator::print( Printer const p ) const
 {
   //TODO 
   (void) p;
-
 }
 
 void IllegalDeclarator::print( Printer const p ) const
 {
   //TODO 
   (void) p;
-
 }
 
 void FunctionDef::print( Printer const p ) const
 {
   //TODO 
   (void) p;
-
-}
-
-void IllegalFunctionDef::print( Printer const p ) const
-{
-  //TODO 
-  (void) p;
-
 }
 
 void DeclList::print( Printer const p ) const
 {
   //TODO 
   (void) p;
-
 }
 
-void IllegalDeclList::print( Printer const p ) const
+void StructDeclList::print( Printer const p ) const
 {
-  //TODO 
-  (void) p;
-
+  for ( auto it = begin(); it != end(); ++it )
+    (*it)->print( p );
 }
 
+void StructDeclaratorList::print( Printer const p ) const
+{
+  for ( auto it = begin(); it != end(); ++it )
+    (*it)->print( p );
+}
 
 
 //===----------------------------------------------------------------------===//

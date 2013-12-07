@@ -10,6 +10,7 @@
 #define C4_EXPR_H
 
 #include <iostream>
+#include "List.h"
 #include "Locatable.h"
 
 
@@ -34,14 +35,14 @@ namespace C4
       explicit IllegalExpr( Lex::Token const &tok ) : Expr(tok) {}
       virtual ~IllegalExpr() {}
 
-      virtual void print( Printer const p ) const;
+      void print( Printer const p ) const;
     }; // end struct IllegalExpression
 
     /// Expression List
-    struct ExprList : Expr
+    struct ExprList : Expr, List< Expr >
     {
       explicit ExprList( Lex::Token const &tok ) : Expr(tok) {}
-      virtual ~ExprList() {}
+      ~ExprList() {}
 
       void print( Printer const p ) const;
     }; // end struct ExprList
