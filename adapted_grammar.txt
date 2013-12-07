@@ -1,3 +1,9 @@
+//===----------------------------------------------------------------------===//
+//
+// Expression
+//
+//===----------------------------------------------------------------------===//
+
 primary_expression
   : IDENTIFIER
   | CONSTANT
@@ -95,6 +101,13 @@ constant_expression
   : conditional_expression
   ;
 
+
+//===----------------------------------------------------------------------===//
+//
+// Declaration + Type
+//
+//===----------------------------------------------------------------------===//
+
 declaration
   : type_specifier [declarator] ';'
   ;
@@ -116,7 +129,7 @@ struct_declaration_list
   ;
 
 struct_declaration
-  : type_specifier struct_declarator_list ';'
+  : type_specifier [struct_declarator_list] ';'
   ;
 
 struct_declarator_list
@@ -130,7 +143,7 @@ declarator
   ;
 
 pointer
-  : '*' + 
+  : '*' +
 
 direct_declarator
   : IDENTIFIER                                    // NORMAL
@@ -145,12 +158,19 @@ parameter_list
   ;
 
 parameter_declaration
-  : type_specifier [declarator | abstract_declarator]
+  : type_specifier [declarator]                   // declarator is UNKNOWN
   ;
 
 type_name
-  : type_specifier [abstract_declarator]
+  : type_specifier [declarator]                   // declarator is ABSTRACT
   ;
+
+
+//===----------------------------------------------------------------------===//
+//
+// Statement
+//
+//===----------------------------------------------------------------------===//
 
 statement
   : labeled_statement
@@ -168,17 +188,12 @@ labeled_statement
   ;
 
 compound_statement
-  : '{' '}'
-  | '{' statement_list '}'
-  | '{' declaration_list [statement_list] '}'
+  : '{' block_item * '}'
   ;
 
-declaration_list
-  : declaration +
-  ;
-
-statement_list
-  : statement +
+block_item
+  : declaration
+  | statement
   ;
 
 expression_statement
@@ -193,7 +208,8 @@ selection_statement
 iteration_statement
   : WHILE '(' expression ')' statement
   | DO statement WHILE '(' expression ')' ';'
-  | FOR '(' expression_statement expression_statement [expression] ')' statement
+  | FOR '(' [expression] ; [expression] ; [expression] ')' statement
+  | FOR '(' declaration [expression] ; [expression] ')' statement
   ;
 
 jump_statement
@@ -208,6 +224,10 @@ external_declaration
   | declaration
   ;
 
+translation_unit
+  : external_declaration +
+  ;
+
 function_definition
-  : [type_specifier] declarator [declaration_list] compound_statement
+  : type_specifier declarator [declaration_list] compound_statement
   ;
