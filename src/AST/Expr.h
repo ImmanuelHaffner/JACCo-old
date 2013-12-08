@@ -169,44 +169,46 @@ namespace C4
     /// Dot Expression
     struct DotExpr : PostfixExpr
     {
-      DotExpr( Lex::Token const &tok, Expr const &lhs, Lex::Token const &rhs ) :
-        PostfixExpr(tok), lhs(lhs), rhs(rhs)
+      DotExpr( Lex::Token const &tok, Expr const * const expr,
+          Lex::Token const &id ) :
+        PostfixExpr(tok), expr(expr), id(id)
       {
-        assert( rhs.kind == Lex::TK::IDENTIFIER &&
+        assert( id.kind == Lex::TK::IDENTIFIER &&
             "rhs of subscript must be an identifier" );
       }
       ~DotExpr() {}
 
-      virtual void print( Printer const ) const;
+      virtual void print( Printer const p ) const;
 
-      Expr const &lhs;
-      Lex::Token const &rhs;
+      Expr const * const expr;
+      Lex::Token const &id;
     }; // end struct DotExpr
 
 
     /// Arrow Expression
     struct ArrowExpr : DotExpr
     {
-      ArrowExpr( Lex::Token const &tok, Expr const &lhs,
-          Lex::Token const &rhs ) :
-        DotExpr(tok, lhs, rhs) {}
+      ArrowExpr( Lex::Token const &tok, Expr const * const expr,
+          Lex::Token const &id ) :
+        DotExpr(tok, expr, id) {}
       ~ArrowExpr() {}
 
-      void print( Printer const ) const;
+      void print( Printer const p ) const;
     }; // end struct ArrowExpr
 
 
     /// Function Call Expression
     struct FunctionCall : PostfixExpr
     {
-      FunctionCall( Lex::Token const &tok, Expr const &expr
-          /* TODO add argument-expr-list */ ) :
-        PostfixExpr(tok), expr(expr) {}
+      FunctionCall( Lex::Token const &tok, Expr const * const fun,
+          Expr const * const args = NULL )
+        : PostfixExpr(tok), fun(nonNull(fun)), args(args) {}
       ~FunctionCall() {}
 
       void print( Printer const p ) const;
 
-      Expr const &expr;
+      Expr const * const fun;
+      Expr const * const args;
     }; // end struct FunctionCall
 
 

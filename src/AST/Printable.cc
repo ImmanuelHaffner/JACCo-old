@@ -68,16 +68,16 @@ void PostDecExpr::print( Printer const p ) const
   p.out << "--";
 }
 
-void ArrowExpr::print( Printer const p ) const
-{
-  this->lhs.print( p ); // lhs
-  p.out << "->" << this->rhs.sym; // -> IDENTIFIER
-}
-
 void DotExpr::print( Printer const p ) const
 {
-  this->lhs.print( p ); // lhs
-  p.out << "." << this->rhs.sym; // . IDENTIFIER
+  this->expr->print( p ); // lhs
+  p.out << "." << this->id.sym; // . IDENTIFIER
+}
+
+void ArrowExpr::print( Printer const p ) const
+{
+  this->expr->print( p ); // lhs
+  p.out << "->" << this->id.sym; // -> IDENTIFIER
 }
 
 void AssignmentExpr::print( Printer const p ) const

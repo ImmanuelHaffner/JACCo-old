@@ -257,7 +257,7 @@ Expr const * Parser::parsePostfixExpr()
             // TODO add arg-expr-list
             parseArgumentExprList();
           accept( TK::RPar ); // eat ')'
-          expr = new FunctionCall( tok, *expr );
+          expr = new FunctionCall( tok, expr );
         }
         break;
 
@@ -267,7 +267,7 @@ Expr const * Parser::parsePostfixExpr()
           readNextToken(); // eat '->'
           Token const id( *current );
           if ( accept( TK::IDENTIFIER ) ) // eat Identifier
-            expr = new ArrowExpr( tok, *expr, id );
+            expr = new ArrowExpr( tok, expr, id );
           else
             expr = new IllegalExpr( id );
         }
@@ -279,7 +279,7 @@ Expr const * Parser::parsePostfixExpr()
           readNextToken(); // eat '.'
           Token const id( *current );
           if ( accept( TK::IDENTIFIER ) ) // eat Identifier
-            expr = new DotExpr( tok, *expr, id );
+            expr = new DotExpr( tok, expr, id );
           else
             expr = new IllegalExpr( id );
         }
