@@ -170,6 +170,15 @@ void IllegalStmt::print( Printer const p ) const
   p.out << this->tok.sym;
 }
 
+void CompoundStmt::print( Printer const p ) const
+{
+  for ( auto it = begin(); it != end(); ++it )
+    if ( (*it)->stmt )
+      (*it)->stmt->print( p );
+    else
+      (*it)->decl->print( p );
+}
+
 
 //===----------------------------------------------------------------------===//
 //

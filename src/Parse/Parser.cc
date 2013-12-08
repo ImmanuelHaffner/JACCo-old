@@ -825,87 +825,68 @@ Stmt const * Parser::parseLabeledStmt()
 
 CompoundStmt const * Parser::parseCompoundStmt()
 {
+  CompoundStmt * const compStmt = new CompoundStmt( *current );
+
   accept( TK::LBrace ); // eat '{'
-  switch ( current->kind )
+
+  for (;;)
   {
-    case TK::RBrace:
-      break;
+    switch ( current->kind )
+    {
+      case TK::RBrace:
+        goto for_end;
 
-    case TK::Void:
-    case TK::Char:
-    case TK::Int:
-    case TK::Struct:
-      parseDeclList();
-      switch ( current->kind )
-      {
-        case TK::IDENTIFIER:
-        case TK::CONSTANT:
-        case TK::STRING_LITERAL:
-        case TK::Goto:
-        case TK::If:
-        case TK::For:
-        case TK::While:
-        case TK::Do:
-        case TK::Break:
-        case TK::Continue:
-        case TK::Switch:
-        case TK::Case:
-        case TK::Default:
-        case TK::IncOp:
-        case TK::DecOp:
-        case TK::Return:
-        case TK::Sizeof:
-        case TK::Not:
-        case TK::Neg:
-        case TK::And:
-        case TK::Mul:
-        case TK::Plus:
-        case TK::Minus:
-        case TK::LPar:
-        case TK::LBrace:
-        case TK::SCol:
-          parseStmt();
-          break;
+      case TK::Comma:
+        readNextToken(); // eat ','
+        break;
 
-        default:;
-      } // end switch
-      break;
+      case TK::Void:
+      case TK::Char:
+      case TK::Int:
+      case TK::Struct:
+        compStmt->append( new BlockItem( parseDecl() ) );
+        break;
 
-    case TK::IDENTIFIER:
-    case TK::CONSTANT:
-    case TK::STRING_LITERAL:
-    case TK::Goto:
-    case TK::If:
-    case TK::For:
-    case TK::While:
-    case TK::Do:
-    case TK::Break:
-    case TK::Continue:
-    case TK::Switch:
-    case TK::Case:
-    case TK::Default:
-    case TK::IncOp:
-    case TK::DecOp:
-    case TK::Return:
-    case TK::Sizeof:
-    case TK::Not:
-    case TK::Neg:
-    case TK::And:
-    case TK::Mul:
-    case TK::Plus:
-    case TK::Minus:
-    case TK::LPar:
-    case TK::LBrace:
-    case TK::SCol:
-      parseStmtList();
-      break;
+      case TK::IDENTIFIER:
+      case TK::CONSTANT:
+      case TK::STRING_LITERAL:
+      case TK::Goto:
+      case TK::If:
+      case TK::For:
+      case TK::While:
+      case TK::Do:
+      case TK::Break:
+      case TK::Continue:
+      case TK::Switch:
+      case TK::Case:
+      case TK::Default:
+      case TK::IncOp:
+      case TK::DecOp:
+      case TK::Return:
+      case TK::Sizeof:
+      case TK::Not:
+      case TK::Neg:
+      case TK::And:
+      case TK::Mul:
+      case TK::Plus:
+      case TK::Minus:
+      case TK::LPar:
+      case TK::LBrace:
+      case TK::SCol:
+        compStmt->append( new BlockItem( parseStmt() ) );
+        parseStmtList();
+        break;
 
-    default:
-      ERROR( "declaration or statement" );
+      default:
+        ERROR( "declaration or statement" );
+        goto for_end;
 
-  } // end switch
+    } // end switch
+  } // end for
+
+for_end:
   accept( TK::RBrace ); // eat '}'
-  return NULL;
+  return compStmt;
 } // end parseCompoundStmt
 
 DeclList const * Parser::parseDeclList()

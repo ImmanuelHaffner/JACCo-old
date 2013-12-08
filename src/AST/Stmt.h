@@ -22,6 +22,7 @@ namespace C4
   {
     // Forward declaration
     struct Expr;
+    struct Decl;
     struct ConstExpr;
     struct DeclList;
 
@@ -221,18 +222,25 @@ namespace C4
     }; // end struct ReturnStmt
 
 
-    /// Compound Statement
-    struct CompoundStmt : Stmt
+    /// Block Item
+    struct BlockItem
     {
-      CompoundStmt( Lex::Token const &tok, DeclList const * const decls = NULL,
-          StmtList const * const stmts = NULL )
-        : Stmt(tok), decls(decls), stmts(stmts)
-      {}
+      BlockItem( Stmt const * const stmt ) : stmt(nonNull(stmt)), decl(NULL) {}
+      BlockItem( Decl const * const decl ) : stmt(NULL), decl(nonNull(decl)) {}
+      ~BlockItem() {}
 
+      Stmt const * const stmt;
+      Decl const * const decl;
+    }; // end struct BlockItem
+
+
+    /// Compound Statement
+    struct CompoundStmt : Stmt, List< BlockItem >
+    {
+      CompoundStmt( Lex::Token const &tok ) : Stmt(tok) {}
       ~CompoundStmt() {}
 
-      DeclList const * const decls;
-      StmtList const * const stmts;
+      void print( Printer const p ) const;
     }; // end struct CompoundStmt
   } // end namespace AST
 } // end namespace C4
