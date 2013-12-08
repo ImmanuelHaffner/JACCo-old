@@ -110,8 +110,8 @@ static inline void errorpf( Pos pos, char const * const expected,
 }
 
 #define ERROR( MSG ) \
-  std::ostringstream actual; printTok( actual, current ); \
-errorpf( current->pos, ( MSG ), actual.str().c_str() )
+{ std::ostringstream actual; printTok( actual, current ); \
+errorpf( current->pos, ( MSG ), actual.str().c_str() ); }
 
 static inline void printTK( std::ostream &out, TK const tk )
 {
@@ -874,7 +874,6 @@ CompoundStmt const * Parser::parseCompoundStmt()
       case TK::LBrace:
       case TK::SCol:
         compStmt->append( new BlockItem( parseStmt() ) );
-        parseStmtList();
         break;
 
       default:
