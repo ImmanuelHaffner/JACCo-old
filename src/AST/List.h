@@ -42,6 +42,7 @@ namespace C4
     template< class T >
       void List<T>::append( T const * const t )
       {
+        assert( t && "must not append NULL" );
         list.push_back( t );
       }
 

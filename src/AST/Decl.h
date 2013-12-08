@@ -97,12 +97,21 @@ namespace C4
     {
       ParamDecl( TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
-        : Decl(typeSpec,declarator)
+        : Decl(typeSpec, declarator)
       {}
 
       ~ParamDecl() {}
+
+      void print( Printer const p ) const;
     }; // end struct ParamDecl
 
+
+    /// Parameter List
+    struct ParamList : List< ParamDecl >
+    {
+      ~ParamList() {}
+      void print( Printer const p ) const;
+    }; // end struct ParamList
 
     /// Declarator
     struct Declarator : Locatable

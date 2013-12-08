@@ -304,11 +304,12 @@ for_end:
 
 Expr const * Parser::parseArgumentExprList()
 {
-  parseAssignmentExpr();
+  ExprList * const args = new ExprList( *current );
+  args->append( parseAssignmentExpr() );
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    parseAssignmentExpr();
+    args->append( parseAssignmentExpr() );
   }
   return new IllegalExpr( *current );
 } // end parseArgumentExprList
@@ -364,10 +365,8 @@ Expr const * Parser::parseUnaryExpr()
       {
         Token const tok( *current );
         readNextToken(); // eat unary operator
-        // TODO
-        parseUnaryExpr();
+        return new UnaryOperation( tok, parseUnaryExpr() );
       }
-      break;
 
     default:;
   } // end switch
@@ -685,19 +684,19 @@ Declarator const * Parser::parseDirectDeclarator( DeclaratorType const dt )
   return new IllegalDeclarator( *current );
 } // end parseDirectDeclarator
 
-DeclList const * Parser::parseParameterList()
+ParamList const * Parser::parseParameterList()
 {
-  // TODO create ParameterList
-  parseParameterDecl();
+  ParamList * const params = new ParamList();
+  params->append( parseParameterDecl() );
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    parseParameterDecl();
+    params->append( parseParameterDecl() );
   }
-  return NULL;
+  return params;
 } // end parseParameterList
 
-Decl const * Parser::parseParameterDecl()
+ParamDecl const * Parser::parseParameterDecl()
 {
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   switch ( current->kind )

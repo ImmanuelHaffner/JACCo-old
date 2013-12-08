@@ -124,6 +124,12 @@ void FunctionCall::print( Printer const p ) const
   (void) p;
 }
 
+void UnaryOperation::print( Printer const p ) const
+{
+  p.out << this->tok;
+  this->expr->print( p );
+}
+
 void SizeofExpr::print( Printer const p ) const
 {
   p.out << this->tok.sym << " ";
@@ -236,6 +242,18 @@ void StructDeclList::print( Printer const p ) const
 }
 
 void StructDeclaratorList::print( Printer const p ) const
+{
+  for ( auto it = begin(); it != end(); ++it )
+    (*it)->print( p );
+}
+
+void ParamDecl::print( Printer const p ) const
+{
+  // TODO
+  (void) p;
+}
+
+void ParamList::print( Printer const p ) const
 {
   for ( auto it = begin(); it != end(); ++it )
     (*it)->print( p );

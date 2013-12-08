@@ -155,8 +155,8 @@ namespace C4
       AST::Declarator const * parseDirectDeclarator(
           DeclaratorType const dt = DeclaratorType::NORMAL );
       size_t parsePointer();
-      AST::DeclList const * parseParameterList();
-      AST::Decl const * parseParameterDecl();
+      AST::ParamList const * parseParameterList();
+      AST::ParamDecl const * parseParameterDecl();
       AST::DeclList const * parseDeclList();
       AST::FunctionDef const * parseFunctionDef( AST::TypeSpecifier const *, AST::Declarator const * );
 

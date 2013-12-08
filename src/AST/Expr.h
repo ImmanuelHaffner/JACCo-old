@@ -143,6 +143,19 @@ namespace C4
     }; // end struct UnaryExpr
 
 
+    /// Unary Operation
+    struct UnaryOperation : Expr
+    {
+      UnaryOperation( Lex::Token const &tok, Expr const * const expr )
+        : Expr(tok), expr(expr) {}
+      ~UnaryOperation() {}
+
+      void print( Printer const p ) const;
+
+      Expr const * const expr;
+    }; // end struct UnaryOperation
+
+
     /// Postfix Expression
     struct PostfixExpr : UnaryExpr
     {
