@@ -253,11 +253,11 @@ Expr const * Parser::parsePostfixExpr()
         {
           Token const tok( *current );
           readNextToken(); // eat '('
+          Expr const * args = NULL;
           if ( current->kind != TK::RPar )
-            // TODO add arg-expr-list
-            parseArgumentExprList();
+            args = parseArgumentExprList();
           accept( TK::RPar ); // eat ')'
-          expr = new FunctionCall( tok, expr );
+          expr = new FunctionCall( tok, expr, args );
         }
         break;
 
@@ -905,7 +905,6 @@ CompoundStmt const * Parser::parseCompoundStmt()
 
   } // end switch
   accept( TK::RBrace ); // eat '}'
-  //TODO: Merge with Immanuels branch
   return NULL;
 } // end parseCompoundStmt
 
