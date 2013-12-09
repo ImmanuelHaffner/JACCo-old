@@ -161,7 +161,7 @@ namespace C4
     {
       FunctionDef( TypeSpecifier const * const typeSpec,
           Declarator const * const declarator, DeclList const * const decls,
-          CompoundStmt const * compStmt )
+          CompoundStmt const * const compStmt )
         : typeSpec(typeSpec), declarator(nonNull(declarator)), decls(decls),
         compStmt(nonNull(compStmt))
       {}
