@@ -100,10 +100,7 @@ int main(int, char** const argv)
             {
               parser.parse();
               if ( mode == Mode::PRINT_AST )
-              {
-                parser.root->dump();
                 parser.root->print( Printer ( std::cout ) );
-              }
             }
             break;
           case Mode::COMPILE:
