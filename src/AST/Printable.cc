@@ -19,6 +19,11 @@ std::ostream & AST::operator<<( std::ostream &out, Printable const &p )
   return out;
 }
 
+void Printable::dump() const
+{
+  std::cout << *this << std::endl;
+}
+
 
 //===----------------------------------------------------------------------===//
 //
