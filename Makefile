@@ -43,9 +43,9 @@ DUMMY				:= $(shell mkdir -p $(sort $(dir $(TEST_OBJ))))
 #DEBUG				?= 1
 
 ifeq ($(DEBUG), 1)
-	CXXFLAGS	+= -g -DDEBUG
+	CFLAGS	+= -g -DDEBUG
 else
-	CXXFLAGS	?= -O2
+	CFLAGS	?= -O2
 endif
 
 ifeq ($(VERBOSE), 1)
