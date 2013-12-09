@@ -166,7 +166,7 @@ namespace C4
         compStmt(nonNull(compStmt))
       {}
 
-      virtual ~FunctionDef() {}
+      ~FunctionDef() {}
 
       void print( Printer const p ) const;
 
@@ -175,6 +175,43 @@ namespace C4
       DeclList const * const decls;
       CompoundStmt const * const compStmt;
     }; // end struct FunctionDef
+
+
+    /// Pointer
+    struct Pointer : Declarator
+    {
+      Pointer( Lex::Token const &tok, size_t starCount,
+          Declarator const * const subDec )
+        : Declarator(tok), starCount(starCount), subDec(subDec) {}
+      ~Pointer() {}
+
+      void print( Printer const p ) const;
+
+      size_t starCount;
+      Declarator const * const subDec;
+    }; // end struct Pointer
+
+    /// FunctionDeclarator
+    struct FunctionDeclarator : Declarator
+    {
+      FunctionDeclarator( Lex::Token const &tok,
+          Declarator const * const subDec, ParamList const * const paramList )
+        : Declarator(tok), subDec(subDec), paramList(paramList) {}
+      ~FunctionDeclarator() {}
+
+      void print( Printer const p ) const;
+
+      Declarator const * const subDec;
+      ParamList const * const paramList;
+    }; // end struct FunctionDeclarator
+
+    struct Identifier : Declarator
+    {
+      Identifier( Lex::Token const &tok ) : Declarator(tok) {}
+      ~Identifier() {}
+
+      void print( Printer const p ) const;
+    }; // end struct Identifier
   } // end namespace AST
 } // end namespace C4
 
