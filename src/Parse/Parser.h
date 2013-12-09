@@ -35,7 +35,9 @@ namespace C4
       void parse();
       Lex::Token const * getCurTok() { return current; }
       Lex::Token const * getNextTok() { return next; }
-
+      
+      // Holds the root
+      AST::TranslationUnit const * root;
 
       private:
       Lex::Lexer &lexer;

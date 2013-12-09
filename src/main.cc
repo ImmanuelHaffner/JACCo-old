@@ -6,11 +6,12 @@
 #include "util.h"
 #include "Lex/Lexer.h"
 #include "Parse/Parser.h"
-
+#include "AST/Printable.h"
 
 using namespace C4;
 using namespace Lex;
 using namespace Parse;
+using namespace AST;
 
 enum class Mode {
   TOKENIZE,
@@ -64,25 +65,27 @@ int main(int, char** const argv)
         } else {
           f = fopen(name, "rb");
           if (!f)
-					{
+          {
             errorErrno(Pos(name));
-						continue;
-					}
+            continue;
+          }
           fclose( f );
         }
 
         if (hasNewErrors())
           continue;
 
+        Lexer * lexer;
+        if ( f == stdin )
+          lexer = new Lexer;
+        else
+          lexer = new Lexer( name );
+
+        Parser parser( *lexer );
+
         switch (mode) {
           case Mode::TOKENIZE:
             {
-              C4::Lex::Lexer * lexer;
-              if ( f == stdin )
-                lexer = new Lexer;
-              else
-                lexer = new Lexer( name );
-
               while ( true )
               {
                 Token const tok = lexer->getToken();
@@ -90,33 +93,26 @@ int main(int, char** const argv)
                   break;
                 std::cout << tok.pos << " " << tok << "\n";
               }
-              delete lexer;
             }
             break;
-
+          case Mode::PRINT_AST:
           case Mode::PARSE:
             {
-              Lexer * lexer;
-              if ( f == stdin )
-                lexer = new Lexer;
-              else
-                lexer = new Lexer( name );
-
-              Parser parser( *lexer );
-
               parser.parse();
-
-              delete lexer;
-              break;
+              if ( mode == Mode::PRINT_AST )
+              {
+                parser.root->dump();
+                parser.root->print( Printer ( std::cout ) );
+              }
             }
-          case Mode::PRINT_AST:
-            {}
+            break;
           case Mode::COMPILE:
             {
               PANIC("TODO implement");
             }
         }
         //fclose ( f );
+        delete lexer;
       }
 
       if ( symbols )

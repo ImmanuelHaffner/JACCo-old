@@ -174,7 +174,7 @@ void Parser::parse()
 {
   readNextToken();
   readNextToken();
-  parseTranslationUnit();
+  this->root = parseTranslationUnit();
 }
 
 
@@ -903,7 +903,6 @@ DeclList const * Parser::parseDeclList()
 {
   DeclList * const declList = new DeclList();
   declList->append( parseDecl() );
-
   for (;;)
   {
     switch ( current->kind )
@@ -1084,12 +1083,12 @@ Stmt const * Parser::parseJumpStmt()
 
 TranslationUnit const * Parser::parseTranslationUnit()
 {
-  TranslationUnit const * const unit = new TranslationUnit();
+  TranslationUnit * unit = new TranslationUnit();
   do
   {
     // TODO stop or recover, if a corrupted external declaration was found
     Token const *prev = current;
-    parseExtDecl();
+    unit->append( parseExtDecl() );
     if ( prev == current )
       readNextToken();
   }
