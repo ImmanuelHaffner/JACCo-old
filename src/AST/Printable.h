@@ -30,6 +30,7 @@ namespace C4
     {
       virtual void print( Printer const p ) const = 0;
       friend std::ostream & operator<<( std::ostream &out, Printable const &p );
+      void dump() const;
     }; // end struct Printable
 
     std::ostream & operator<<( std::ostream &out, Printable const &p );
