@@ -273,6 +273,23 @@ void ParamList::print( Printer const p ) const
     (*it)->print( p );
 }
 
+void Pointer::print( Printer const p ) const
+{
+  // TODO
+  (void) p;
+}
+
+void Identifier::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
+}
+
+void FunctionDeclarator::print( Printer const p ) const
+{
+  // TODO
+  (void) p;
+}
+
 
 //===----------------------------------------------------------------------===//
 //

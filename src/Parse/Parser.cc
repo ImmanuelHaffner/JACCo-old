@@ -592,13 +592,16 @@ Declarator const * Parser::parseDeclarator( DeclaratorType const dt )
       current->kind == TK::LPar )       // a direct declarator MIGHT follow
     decl = parseDirectDeclarator( dt );
 
-  if ( pointerCount == 0 && ! decl )
+  if ( ( pointerCount == 0 || dt == DeclaratorType::NORMAL ) &&  ! decl )
   {
     ERROR( "pointer or declarator" );
     return new IllegalDeclarator( *current );
   }
 
-  return new IllegalDeclarator( *current );
+  if ( pointerCount == 0 )
+    return decl;
+
+  return new Pointer( *current, pointerCount, decl );
 } // end parseDeclarator
 
 size_t Parser::parsePointer()
