@@ -620,12 +620,14 @@ size_t Parser::parsePointer()
 
 Declarator const * Parser::parseDirectDeclarator( DeclaratorType const dt )
 {
+  Declarator const * decl = NULL;
+  ParamList const * paramList = NULL;
   switch ( current->kind )
   {
     case TK::LPar:
       readNextToken(); // eat '('
       if ( dt == DeclaratorType::NORMAL )
-        parseDeclarator( dt );
+        decl = parseDeclarator( dt );
       else
       {
         switch ( current->kind )
@@ -637,12 +639,13 @@ Declarator const * Parser::parseDirectDeclarator( DeclaratorType const dt )
           case TK::Char:
           case TK::Int:
           case TK::Struct:
-            parseParameterList();
-            break;
+            paramList = parseParameterList();
+            // Abstract Function Declarator
+            return new FunctionDeclarator( *current, NULL, paramList );
 
           case TK::Mul:
           case TK::LPar:
-            parseDeclarator( dt );
+            decl = parseDeclarator( dt );
             break;
 
           default:
@@ -655,6 +658,7 @@ Declarator const * Parser::parseDirectDeclarator( DeclaratorType const dt )
     case TK::IDENTIFIER:
       if ( dt == DeclaratorType::NORMAL )
       {
+        decl = new Identifier( *current );
         readNextToken(); // eat identifier
         break;
       }
@@ -677,14 +681,18 @@ Declarator const * Parser::parseDirectDeclarator( DeclaratorType const dt )
       case TK::Char:
       case TK::Int:
       case TK::Struct:
-        parseParameterList();
+        paramList = parseParameterList();
 
-      default:;
+      default:
+        paramList = new ParamList();
     }
     accept( TK::RPar ); // eat ')'
   }
-
-  return new IllegalDeclarator( *current );
+  
+  if ( paramList )
+    return new FunctionDeclarator( *current, decl, paramList );
+  
+  return decl; 
 } // end parseDirectDeclarator
 
 ParamList const * Parser::parseParameterList()
