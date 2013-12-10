@@ -32,12 +32,9 @@ namespace C4
 
       /// Parses the tokens returned by the lexer, and construct the
       /// corresponding AST.
-      void parse();
+      AST::TranslationUnit const *  parse();
       Lex::Token const * getCurTok() { return current; }
       Lex::Token const * getNextTok() { return next; }
-      
-      // Holds the root
-      AST::TranslationUnit const * root;
 
       private:
       Lex::Lexer &lexer;

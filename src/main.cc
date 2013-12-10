@@ -95,14 +95,18 @@ int main(int, char** const argv)
               }
             }
             break;
-          case Mode::PRINT_AST:
+
           case Mode::PARSE:
+            parser.parse();
+            break;
+
+          case Mode::PRINT_AST:
             {
-              parser.parse();
-              if ( mode == Mode::PRINT_AST )
-                parser.root->print( Printer ( std::cout ) );
+              TranslationUnit const * const unit = parser.parse();
+              unit->print( Printer ( std::cout ) );
             }
             break;
+
           case Mode::COMPILE:
             {
               PANIC("TODO implement");

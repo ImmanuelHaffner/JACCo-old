@@ -170,11 +170,11 @@ bool Parser::accept( Lex::TK tk )
 // End Parser Helper Functions
 
 
-void Parser::parse()
+TranslationUnit const * Parser::parse()
 {
   readNextToken();
   readNextToken();
-  this->root = parseTranslationUnit();
+  return parseTranslationUnit();
 }
 
 
