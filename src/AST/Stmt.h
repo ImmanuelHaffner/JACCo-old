@@ -23,7 +23,6 @@ namespace C4
     // Forward declaration
     struct Expr;
     struct Decl;
-    struct ConstExpr;
     struct DeclList;
 
 
@@ -69,12 +68,14 @@ namespace C4
     /// Case Statement
     struct CaseStmt : Stmt
     {
-      CaseStmt( Lex::Token const &tok, ConstExpr const * const expr,
+      CaseStmt( Lex::Token const &tok, Expr const * const expr,
           Stmt const * const stmt )
         : Stmt(tok), expr(expr), stmt(stmt)
       {}
 
-      ConstExpr const * const expr;
+      void print( Printer const p ) const;
+
+      Expr const * const expr;
       Stmt const * const stmt;
     }; // end struct CaseStmt
 
@@ -90,6 +91,8 @@ namespace C4
             "label name must be 'default' or identifier" );
       }
       ~LabelStmt() {}
+
+      void print( Printer const p ) const;
 
       Stmt const * const stmt;
     }; // end struct CaseStmt

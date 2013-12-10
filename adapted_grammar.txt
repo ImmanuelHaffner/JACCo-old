@@ -92,10 +92,6 @@ expression
   | expression ',' assignment_expression
   ;
 
-constant_expression
-  : conditional_expression
-  ;
-
 
 //===----------------------------------------------------------------------===//
 //
@@ -178,7 +174,7 @@ statement
 
 labeled_statement
   : IDENTIFIER ':' statement
-  | CASE constant_expression ':' statement
+  | CASE conditional_expression ':' statement
   | DEFAULT ':' statement
   ;
 

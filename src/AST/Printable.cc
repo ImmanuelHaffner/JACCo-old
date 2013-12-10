@@ -190,6 +190,18 @@ void CompoundStmt::print( Printer const p ) const
   p.out << p.indent << "}";
 }
 
+void LabelStmt::print( Printer const p ) const
+{
+  //TODO
+  (void) p;
+
+}
+
+void CaseStmt::print( Printer const p ) const
+{
+  //TODO
+  (void) p;
+}
 
 //===----------------------------------------------------------------------===//
 //

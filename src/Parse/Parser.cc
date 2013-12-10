@@ -470,11 +470,6 @@ Expr const * Parser::parseExpr()
   return new IllegalExpr( *current );
 } // end parseExpr
 
-Expr const * Parser::parseConstantExpr()
-{
-  return parseConditionalExpr();
-} // end parseConstantExpr
-
 
 //
 //  Declarations
@@ -748,36 +743,36 @@ Stmt const * Parser::parseStmt()
     case TK::IDENTIFIER:
       // labeled-statement or expression-statement
       if ( next->kind == TK::Col )
-        parseLabeledStmt();
+        return parseLabeledStmt();
       else
-        parseExprStmt();
+        return parseExprStmt();
       break;
 
     case TK::Case:
     case TK::Default:
-      parseLabeledStmt();
+      return parseLabeledStmt();
       break;
 
     case TK::LBrace:
-      parseCompoundStmt();
+      return parseCompoundStmt();
       break;
 
     case TK::If:
     case TK::Switch:
-      parseSelectionStmt();
+      return parseSelectionStmt();
       break;
 
     case TK::For:
     case TK::While:
     case TK::Do:
-      parseIterationStmt();
+      return parseIterationStmt();
       break;
 
     case TK::Goto:
     case TK::Break:
     case TK::Continue:
     case TK::Return:
-      parseJumpStmt();
+      return parseJumpStmt();
       break;
 
     case TK::CONSTANT:
@@ -793,7 +788,7 @@ Stmt const * Parser::parseStmt()
     case TK::Minus:
     case TK::Not:
     case TK::Neg:
-      parseExprStmt();
+      return parseExprStmt();
       break;
 
     default:
@@ -805,33 +800,34 @@ Stmt const * Parser::parseStmt()
 
 Stmt const * Parser::parseLabeledStmt()
 {
+  Lex::Token const * const t = current;
   switch ( current->kind )
   {
     case TK::IDENTIFIER:
       readNextToken(); // eat identifier
       accept( TK::Col ); // eat ':'
-      parseStmt();
       break;
 
     case TK::Case:
-      readNextToken(); // eat 'case'
-      parseConstantExpr();
-      accept( TK::Col ); // eat ':'
-      parseStmt();
-      break;
+      {
+        readNextToken(); // eat 'case'
+        Expr const * const expr = parseConditionalExpr();
+        accept( TK::Col ); // eat ':'
+        return new CaseStmt( *t, expr, parseStmt() );
+      }
 
     case TK::Default:
       readNextToken(); // eat 'default'
       accept( TK::Col ); // eat ':'
-      parseStmt();
       break;
 
     default:
       {
         ERROR( "identifier, 'case' or 'default'" );
+        return new IllegalStmt( *current );
       }
   } // end switch
-  return new IllegalStmt( *current );
+  return new LabelStmt( *t, parseStmt() );
 } // end parseLabeledStmt
 
 CompoundStmt const * Parser::parseCompoundStmt()
@@ -1114,8 +1110,8 @@ FunctionDef const * Parser::parseFunctionDef(
       break;
 
     default:
-        ERROR( "declaration" );
-        return NULL;
+      ERROR( "declaration" );
+      return NULL;
 
   } // end switch
 
@@ -1159,7 +1155,7 @@ ExtDecl const * Parser::parseExtDecl()
         return new IllegalDecl( *current, typeSpec );
       }
 
-    // declarator
+      // declarator
     case TK::IDENTIFIER:
     case TK::Mul:
     case TK::LPar:
