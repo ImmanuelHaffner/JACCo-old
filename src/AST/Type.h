@@ -80,6 +80,8 @@ namespace C4
 
       ~StructSpecifier() {}
 
+      void print( Printer const p ) const;
+
       Lex::Token const * const name;
       StructDeclList const * const structDecls;
     }; // end struct StructSpecifier

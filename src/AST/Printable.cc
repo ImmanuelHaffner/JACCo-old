@@ -193,13 +193,27 @@ void CompoundStmt::print( Printer const p ) const
 
 void IllegalExtDecl::print( Printer const p ) const
 {
-  p.out << this->tok.sym;
+  p.out << p.indent << this->tok.sym;
 }
 
 void TypeSpecifier::print( Printer const p ) const
 {
   p.out << this->tok.sym;
-  //TODO: Structs
+}
+
+void StructSpecifier::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
+  if ( this->name != NULL )
+    p.out << " " << this->name;
+  if ( this->structDecls )
+  {
+    p.out << "\\r\\n" << p.indent << "{\\r\\n";
+    Printer p2 = Printer( p.out, p.indent + 1 );
+    for ( const auto & decl : * this->structDecls )
+      p2.out << p2.indent << decl << "\\r\\n";
+    p.out << p.indent << "}";
+  }
 }
 
 void IllegalTypeSpecifier::print( Printer const p ) const
