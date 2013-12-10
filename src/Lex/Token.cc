@@ -193,7 +193,26 @@ std::ostream & Lex::operator<<( std::ostream &out, Token const &tok )
   return out;
 }
 
+std::ostream & Lex::operator<<( std::ostream &out, Token const * const tok )
+{
+  switch ( tok->kind )
+  {
+    case TK::IDENTIFIER:      out << "identifier"; break;
+    case TK::CONSTANT:        out << "constant"; break;
+    case TK::STRING_LITERAL:  out << "string-literal"; break;
+    case TK::END_OF_FILE:     out << "end-of-file"; return out;
+
+    default:
+      if ( tok->isKeyword() )
+        out << "keyword";
+      else
+        out << "punctuator";
+  }
+  out << " " << tok->sym;
+  return out;
+}
+
 void Token::dump() const
 {
-  std::cout << *this << std::endl;
+  std::cout << this << std::endl;
 }

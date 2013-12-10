@@ -239,7 +239,7 @@ Expr const * Parser::parsePostfixExpr()
   {
     switch ( current->kind )
     {
-      case TK::LBracket:
+      case TK::LBracket: // array subscript
         {
           Token const tok( *current );
           readNextToken(); // eat '['
@@ -249,7 +249,7 @@ Expr const * Parser::parsePostfixExpr()
         }
         break;
 
-      case TK::LPar:
+      case TK::LPar: // function call
         {
           Token const tok( *current );
           readNextToken(); // eat '('

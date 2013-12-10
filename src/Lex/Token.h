@@ -220,6 +220,8 @@ namespace C4
       ~Token() {}
 
       friend std::ostream & operator<<( std::ostream &out, Token const &tok );
+      friend std::ostream & operator<<( std::ostream &out,
+          Token const * const tok );
       void dump() const;
 
       Pos const pos;
@@ -237,6 +239,7 @@ namespace C4
     }; // end struct Token
 
     std::ostream & operator<<( std::ostream &out, Token const &tok );
+    std::ostream & operator<<( std::ostream &out, Token const * const tok );
   } // end namespace Lex
 } // end namespace C4
 
