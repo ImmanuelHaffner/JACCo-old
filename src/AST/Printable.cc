@@ -180,11 +180,14 @@ void IllegalStmt::print( Printer const p ) const
 
 void CompoundStmt::print( Printer const p ) const
 {
+  p.out << p.indent << "{"; 
+  Printer p2 = Printer( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
     if ( (*it)->stmt )
-      (*it)->stmt->print( p );
+      (*it)->stmt->print( p2 );
     else
-      (*it)->decl->print( p );
+      (*it)->decl->print( p2 );
+  p.out << p.indent << "}";
 }
 
 
@@ -234,6 +237,7 @@ void Decl::print( Printer const p ) const
 {
   this->typeSpec->print( p );
   if ( this->declarator )
+    p.out << " ";
     this->declarator->print( p );
 }
 
@@ -256,8 +260,11 @@ void IllegalDeclarator::print( Printer const p ) const
 
 void FunctionDef::print( Printer const p ) const
 {
-  //TODO 
-  (void) p;
+  this->typeSpec->print( p );
+  p.out << " ";
+  this->declarator->print( p ); 
+  p.out << "\n";
+  this->compStmt->print( p );
 }
 
 void DeclList::print( Printer const p ) const
@@ -280,8 +287,12 @@ void StructDeclaratorList::print( Printer const p ) const
 
 void ParamDecl::print( Printer const p ) const
 {
-  // TODO
-  (void) p;
+  this->typeSpec->print( p );
+  if ( this->declarator )
+  {
+    p.out << " ";
+    this->declarator->print( p );
+  }
 }
 
 void ParamList::print( Printer const p ) const
@@ -292,8 +303,13 @@ void ParamList::print( Printer const p ) const
 
 void Pointer::print( Printer const p ) const
 {
-  // TODO
-  (void) p;
+  for( size_t i = 0; i < this->starCount; ++i )
+  {
+    p.out << "*";
+  }
+  p.out << "(";
+  this->subDec->print( p );
+  p.out << ")";
 }
 
 void Identifier::print( Printer const p ) const
@@ -303,8 +319,11 @@ void Identifier::print( Printer const p ) const
 
 void FunctionDeclarator::print( Printer const p ) const
 {
-  // TODO
-  (void) p;
+  p.out << "(";
+  this->subDec->print( p );
+  p.out << "(";
+  this->paramList->print( p );
+  p.out << "))";
 }
 
 
