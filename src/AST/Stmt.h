@@ -61,6 +61,8 @@ namespace C4
 
       ~ExprStmt() {}
 
+      void print( Printer const p ) const;
+
       Expr const * const expr;
     }; // end struct ExprStmt
 

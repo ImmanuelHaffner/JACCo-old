@@ -208,7 +208,7 @@ void ExprList::print( Printer const p ) const
 
 void IllegalStmt::print( Printer const p ) const
 {
-  p.out << "illegal statement " << this->tok;
+  p.out << "illegal statement " << this->tok << "\n";
 }
 
 void CompoundStmt::print( Printer const p ) const
@@ -234,6 +234,13 @@ void CaseStmt::print( Printer const p ) const
 {
   //TODO
   (void) p;
+}
+
+void ExprStmt::print( Printer const p ) const
+{
+  if ( this->expr )
+    this->expr->print( p );
+  p.out << ";";
 }
 
 //===----------------------------------------------------------------------===//

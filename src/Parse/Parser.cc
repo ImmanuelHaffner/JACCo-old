@@ -981,10 +981,12 @@ for_end:
 
 Stmt const * Parser::parseExprStmt()
 {
+  Token const tok( *current );
+  Expr const * expr = NULL;
   if ( current->kind != TK::SCol )
-    parseExpr();
-  accept( TK::SCol );
-  return new IllegalStmt( *current );
+    expr = parseExpr();
+  accept( TK::SCol ); // eat ';'
+  return new ExprStmt( tok, expr );
 } // end parseExprStmt
 
 Stmt const * Parser::parseSelectionStmt()
