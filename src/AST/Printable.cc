@@ -32,7 +32,10 @@ void Printable::dump() const
 void TranslationUnit::print( Printer const p ) const
 {
   for ( auto it = begin(); it != end(); ++it )
+  {
     (*it)->print( p );
+    p.out << "\n";
+  }
 }
 
 
