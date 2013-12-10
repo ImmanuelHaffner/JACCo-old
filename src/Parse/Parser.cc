@@ -727,18 +727,18 @@ ParamDecl const * Parser::parseParameterDecl()
 
 Type const * Parser::parseTypeName()
 {
-  parseTypeSpecifier();
-
+  TypeSpecifier const * const typeSpec = parseTypeSpecifier();
+  Declarator const * declarator = NULL;
   switch ( current->kind )
   {
     case TK::Mul:
     case TK::LPar:
-      parseDeclarator( DeclaratorType::ABSTRACT);
+       declarator = parseDeclarator( DeclaratorType::ABSTRACT );
       break;
 
     default:;
   }
-  return new IllegalType( *current );
+  return new Type( *current, typeSpec, declarator );
 } // end parseTypeName
 
 Stmt const * Parser::parseStmt()

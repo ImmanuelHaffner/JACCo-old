@@ -26,8 +26,15 @@ namespace C4
     /// Type
     struct Type : Locatable
     {
-      Type( Lex::Token const &tok ) : Locatable(tok) {}
-      virtual ~Type() {}
+      Type( Lex::Token const &tok, TypeSpecifier const * const typeSpec = NULL,
+          Declarator const * const declarator = NULL )
+        : Locatable(tok), typeSpec(typeSpec), declarator(declarator) {}
+      ~Type() {}
+
+      void print( Printer const p ) const;
+
+      TypeSpecifier const * const typeSpec;
+      Declarator const * const declarator;
     }; // end struct Type
 
 

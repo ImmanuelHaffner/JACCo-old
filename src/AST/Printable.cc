@@ -58,7 +58,7 @@ void Variable::print( Printer const p ) const
 void BinaryExpr::print( Printer const p ) const
 {
   this->lhs->print( p );
-  p.out << " " << this->tok.sym << " "; 
+  p.out << " " << this->tok.sym << " ";
   this->rhs->print( p );
 }
 
@@ -126,7 +126,7 @@ void PreIncExpr::print( Printer const p ) const
 
 void FunctionCall::print( Printer const p ) const
 {
-  //TODO 
+  //TODO
   (void) p;
 }
 
@@ -180,7 +180,7 @@ void IllegalStmt::print( Printer const p ) const
 
 void CompoundStmt::print( Printer const p ) const
 {
-  p.out << p.indent << "{"; 
+  p.out << p.indent << "{";
   Printer p2 = Printer( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
     if ( (*it)->stmt )
@@ -229,7 +229,7 @@ void IllegalTypeSpecifier::print( Printer const p ) const
 
 void ExtDecl::print( Printer const p ) const
 {
-  //TODO 
+  //TODO
   (void) p;
 }
 
@@ -238,7 +238,7 @@ void Decl::print( Printer const p ) const
   this->typeSpec->print( p );
   if ( this->declarator )
     p.out << " ";
-    this->declarator->print( p );
+  this->declarator->print( p );
 }
 
 void IllegalDecl::print( Printer const p ) const
@@ -248,13 +248,13 @@ void IllegalDecl::print( Printer const p ) const
 
 void Declarator::print( Printer const p ) const
 {
-  //TODO 
+  //TODO
   (void) p;
 }
 
 void IllegalDeclarator::print( Printer const p ) const
 {
-  //TODO 
+  //TODO
   (void) p;
 }
 
@@ -262,14 +262,14 @@ void FunctionDef::print( Printer const p ) const
 {
   this->typeSpec->print( p );
   p.out << " ";
-  this->declarator->print( p ); 
+  this->declarator->print( p );
   p.out << "\n";
   this->compStmt->print( p );
 }
 
 void DeclList::print( Printer const p ) const
 {
-  //TODO 
+  //TODO
   (void) p;
 }
 
@@ -336,4 +336,14 @@ void FunctionDeclarator::print( Printer const p ) const
 void IllegalType::print( Printer const p ) const
 {
   p.out << this->tok.sym;
+}
+
+void Type::print( Printer const p ) const
+{
+  this->typeSpec->print( p );
+  if ( this->declarator )
+  {
+    p.out << " ";
+    this->declarator->print( p );
+  }
 }
