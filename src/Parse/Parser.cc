@@ -847,7 +847,7 @@ Expression & Parser::parsePostfixExpression()
   {
     switch ( current->kind )
     {
-      case TK::LBracket:
+      case TK::LBracket: // array subscript
         {
           getNextToken(); // eat '['
           parseExpression();
@@ -855,7 +855,7 @@ Expression & Parser::parsePostfixExpression()
           break;
         }
 
-      case TK::LPar:
+      case TK::LPar: // function call
         {
           getNextToken(); // eat '('
           if ( current->kind != TK::RPar )
