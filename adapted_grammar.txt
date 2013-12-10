@@ -222,3 +222,7 @@ translation_unit
 function_definition
   : type_specifier declarator [declaration_list] compound_statement
   ;
+
+declaration_list
+  : declaration +
+  ;
