@@ -17,9 +17,15 @@ std::ostream & AST::operator<<( std::ostream &out, Printable const &p )
   return out;
 }
 
+std::ostream & AST::operator<<( std::ostream &out, Printable const * const p )
+{
+  p->print( Printer(out) );
+  return out;
+}
+
 void Printable::dump() const
 {
-  std::cout << *this << std::endl;
+  std::cout << this << std::endl;
 }
 
 
@@ -47,59 +53,12 @@ void TranslationUnit::print( Printer const p ) const
 
 void IllegalExpr::print( Printer const p ) const
 {
-  p.out << "illegal expression " << this->tok.sym;
+  p.out << "illegal expression " << this->tok;
 }
 
 void Variable::print( Printer const p ) const
 {
   p.out << this->tok.sym;
-}
-
-void BinaryExpr::print( Printer const p ) const
-{
-  this->lhs->print( p );
-  p.out << " " << this->tok.sym << " ";
-  this->rhs->print( p );
-}
-
-void PostIncExpr::print( Printer const p ) const
-{
-  this->expr.print( p );
-  p.out << "++";
-}
-
-void PostDecExpr::print( Printer const p ) const
-{
-  this->expr.print( p );
-  p.out << "--";
-}
-
-void DotExpr::print( Printer const p ) const
-{
-  this->expr->print( p ); // lhs
-  p.out << "." << this->id.sym; // . IDENTIFIER
-}
-
-void ArrowExpr::print( Printer const p ) const
-{
-  this->expr->print( p ); // lhs
-  p.out << "->" << this->id.sym; // -> IDENTIFIER
-}
-
-void AssignmentExpr::print( Printer const p ) const
-{
-  this->lhs->print( p ); // lhs
-  p.out << " " << this->tok.sym << " "; // assignment operator
-  this->rhs->print( p ); // rhs
-}
-
-void ConditionalExpr::print( Printer const p ) const
-{
-  this->cond->print( p );
-  p.out << " ? ";
-  this->lhs->print( p );
-  p.out << " : ";
-  this->rhs->print ( p );
 }
 
 void Constant::print( Printer const p ) const
@@ -112,57 +71,131 @@ void StringLiteral::print( Printer const p ) const
   p.out << this->tok.sym;
 }
 
+void BinaryExpr::print( Printer const p ) const
+{
+  p.out << "(" << this->lhs << " " << this->tok.sym << " "
+    << this->rhs << ")";
+}
+
+void PostIncExpr::print( Printer const p ) const
+{
+  p.out << "(";
+  this->expr.print( p );
+  p.out << "++)";
+}
+
+void PostDecExpr::print( Printer const p ) const
+{
+  p.out << "(";
+  this->expr.print( p );
+  p.out << "--)";
+}
+
+void DotExpr::print( Printer const p ) const
+{
+  p.out << "(";
+  this->expr->print( p ); // lhs
+  p.out << "." << this->id.sym << ")";
+}
+
+void ArrowExpr::print( Printer const p ) const
+{
+  p.out << "(";
+  this->expr->print( p ); // lhs
+  p.out << "->" << this->id.sym << ")";
+}
+
+void AssignmentExpr::print( Printer const p ) const
+{
+  p.out << "(";
+  this->lhs->print( p ); // lhs
+  p.out << " " << this->tok.sym << " "; // assignment operator
+  this->rhs->print( p ); // rhs
+  p.out << ")";
+}
+
+void ConditionalExpr::print( Printer const p ) const
+{
+  p.out << "(";
+  this->cond->print( p );
+  p.out << " ? ";
+  this->lhs->print( p );
+  p.out << " : ";
+  this->rhs->print ( p );
+  p.out << ")";
+}
+
 void PreDecExpr::print( Printer const p ) const
 {
-  p.out << "--";
+  p.out << "(--";
   this->expr->print( p );
+  p.out << ")";
 }
 
 void PreIncExpr::print( Printer const p ) const
 {
-  p.out << "++";
+  p.out << "(++";
   this->expr->print( p );
+  p.out << ")";
 }
 
 void FunctionCall::print( Printer const p ) const
 {
-  //TODO
-  (void) p;
+  this->fun->print( p );
+  p.out << "(";
+  // print the arguments
+  if ( this->args )
+  {
+    ExprList const * const args =
+      static_cast< ExprList const * const >( this->args );
+    for ( auto it = args->begin(); it != args->end(); ++it )
+      (*it)->print( p );
+  }
+  p.out << ")";
 }
 
 void UnaryOperation::print( Printer const p ) const
 {
-  p.out << this->tok;
+  p.out << "(" << this->tok;
   this->expr->print( p );
+  p.out << ")";
 }
 
 void SizeofExpr::print( Printer const p ) const
 {
-  p.out << this->tok.sym << " ";
+  p.out << "(" << this->tok.sym << " ";
   this->expr->print( p );
+  p.out << ")";
 }
 
 void SizeofTypeExpr::print( Printer const p ) const
 {
-  p.out << this->tok.sym << "(";
+  p.out << "(" << this->tok.sym << "(";
   this->type->print( p );
-  p.out << ")";
+  p.out << "))";
 }
 
 void SubscriptExpr::print( Printer const p ) const
 {
-  p.out << this->expr << "[";
+  p.out << "(" << this->expr << "[";
   this->index->print( p );
-  p.out << "]";
+  p.out << "])";
 }
 
 void ExprList::print( Printer const p ) const
 {
-  for ( auto it = this->begin(); it != this->end(); ++it )
+  auto it = this->begin();
+
+  if ( it != this->end() )
   {
-    p.out << *it;
-    if ( it + 1 != this->end() )
+    (*it)->print( p );
+    ++it;
+
+    for ( ; it != this->end(); ++it )
+    {
       p.out << ", ";
+      (*it)->print( p );
+    }
   }
 }
 
@@ -175,19 +208,19 @@ void ExprList::print( Printer const p ) const
 
 void IllegalStmt::print( Printer const p ) const
 {
-  p.out << this->tok.sym;
+  p.out << "illegal statement " << this->tok;
 }
 
 void CompoundStmt::print( Printer const p ) const
 {
-  p.out << p.indent << "{";
-  Printer p2 = Printer( p.out, p.indent + 1 );
+  p.out << "{\n";
+  Printer const p_rec( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
     if ( (*it)->stmt )
-      (*it)->stmt->print( p2 );
+      (*it)->stmt->print( p_rec );
     else
-      (*it)->decl->print( p2 );
-  p.out << p.indent << "}";
+      (*it)->decl->print( p_rec );
+  p.out << "\n}";
 }
 
 void LabelStmt::print( Printer const p ) const
@@ -211,7 +244,7 @@ void CaseStmt::print( Printer const p ) const
 
 void IllegalExtDecl::print( Printer const p ) const
 {
-  p.out << p.indent << this->tok.sym;
+  p.out << "illegal external declaration " << this->tok;
 }
 
 void TypeSpecifier::print( Printer const p ) const
@@ -221,22 +254,26 @@ void TypeSpecifier::print( Printer const p ) const
 
 void StructSpecifier::print( Printer const p ) const
 {
-  p.out << this->tok.sym;
-  if ( this->name != NULL )
+  p.out << "struct";
+  if ( this->name )
     p.out << " " << this->name;
+
   if ( this->structDecls )
   {
-    p.out << "\\r\\n" << p.indent << "{\\r\\n";
-    Printer p2 = Printer( p.out, p.indent + 1 );
-    for ( const auto & decl : * this->structDecls )
-      p2.out << p2.indent << decl << "\\r\\n";
+    p.out << "\n{";
+    for ( auto it = this->structDecls->begin(); it != this->structDecls->end();
+        ++it )
+    {
+      (*it)->print( Printer( p.out, p.indent + 1 ) );
+      p.out << "\n";
+    }
     p.out << p.indent << "}";
   }
 }
 
 void IllegalTypeSpecifier::print( Printer const p ) const
 {
-  p.out << this->tok.sym;
+  p.out << "illegal type specifier " << this->tok;
 }
 
 void ExtDecl::print( Printer const p ) const
@@ -249,13 +286,15 @@ void Decl::print( Printer const p ) const
 {
   this->typeSpec->print( p );
   if ( this->declarator )
+  {
     p.out << " ";
-  this->declarator->print( p );
+    this->declarator->print( p );
+  }
 }
 
 void IllegalDecl::print( Printer const p ) const
 {
-  p.out << this->tok;
+  p.out << "illegal declaration " << this->tok;
 }
 
 void Declarator::print( Printer const p ) const
@@ -266,17 +305,13 @@ void Declarator::print( Printer const p ) const
 
 void IllegalDeclarator::print( Printer const p ) const
 {
-  //TODO
-  (void) p;
+  p.out << "illegal declaration " << this->tok;
 }
 
 void FunctionDef::print( Printer const p ) const
 {
-  this->typeSpec->print( p );
-  p.out << " ";
-  this->declarator->print( p );
-  p.out << "\n";
-  this->compStmt->print( p );
+  //TODO
+  (void) p;
 }
 
 void DeclList::print( Printer const p ) const
