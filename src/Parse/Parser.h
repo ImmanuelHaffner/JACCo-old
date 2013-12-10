@@ -151,7 +151,7 @@ namespace C4
       enum class DeclaratorType { NORMAL, ABSTRACT, UNKNOWN };
       AST::Declarator const * parseDeclarator(
           DeclaratorType const dt = DeclaratorType::NORMAL );
-      AST::Declarator const * parseDirectDeclarator(
+      AST::DirectDeclarator const * parseDirectDeclarator(
           DeclaratorType const dt = DeclaratorType::NORMAL );
       size_t parsePointer();
       AST::ParamList const * parseParameterList();

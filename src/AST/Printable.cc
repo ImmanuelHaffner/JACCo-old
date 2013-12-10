@@ -301,6 +301,7 @@ void Declarator::print( Printer const p ) const
 {
   //TODO
   (void) p;
+  // print the pointer by iterating over its count
 }
 
 void IllegalDeclarator::print( Printer const p ) const
@@ -308,16 +309,43 @@ void IllegalDeclarator::print( Printer const p ) const
   p.out << "illegal declaration " << this->tok;
 }
 
+void DirectDeclarator::print( Printer const p ) const
+{
+  if ( ! ( this->declarator || this->directDeclarator || this->params ) )
+    p.out << this->tok;
+  else
+  {
+    if ( this->declarator )
+    {
+      p.out << "(";
+      this->declarator->print ( p );
+      p.out << ")";
+    }
+    else if ( this->directDeclarator )
+      this->directDeclarator->print( p );
+
+    if ( this->params )
+    {
+      p.out << "(";
+      this->params->print( p );
+      p.out << ")";
+    }
+  }
+}
+
 void FunctionDef::print( Printer const p ) const
 {
-  //TODO
-  (void) p;
+  p.out << this->typeSpec << " " << this->declarator;
+  if ( this->decls )
+    p.out << " " << this->decls;
+  // static cast, to resolve multiple-inheritance ambiguity
+  p.out << " " << (Stmt const * const) this->compStmt;
 }
 
 void DeclList::print( Printer const p ) const
 {
-  //TODO
-  (void) p;
+  for ( auto it = this->begin(); it != this->end(); ++it )
+    (*it)->print( p );
 }
 
 void StructDeclList::print( Printer const p ) const
@@ -346,31 +374,6 @@ void ParamList::print( Printer const p ) const
 {
   for ( auto it = begin(); it != end(); ++it )
     (*it)->print( p );
-}
-
-void Pointer::print( Printer const p ) const
-{
-  for( size_t i = 0; i < this->starCount; ++i )
-  {
-    p.out << "*";
-  }
-  p.out << "(";
-  this->subDec->print( p );
-  p.out << ")";
-}
-
-void Identifier::print( Printer const p ) const
-{
-  p.out << this->tok.sym;
-}
-
-void FunctionDeclarator::print( Printer const p ) const
-{
-  p.out << "(";
-  this->subDec->print( p );
-  p.out << "(";
-  this->paramList->print( p );
-  p.out << "))";
 }
 
 

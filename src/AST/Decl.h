@@ -114,13 +114,68 @@ namespace C4
     }; // end struct ParamList
 
     /// Declarator
+    struct DirectDeclarator;
     struct Declarator : Locatable
     {
-      Declarator( Lex::Token const &tok ) : Locatable (tok) {}
+      Declarator( Lex::Token const &tok, size_t const pointerCount,
+          DirectDeclarator const * const directDeclarator )
+        : Locatable (tok), pointerCount(pointerCount),
+        directDeclarator(directDeclarator)
+      {}
+
       virtual ~Declarator() {}
 
       void print( Printer const p ) const;
+
+      size_t const pointerCount;
+      DirectDeclarator const * const directDeclarator;
     }; // end struct Declarator
+
+
+    /// Illegal Declarator
+    struct IllegalDeclarator : Declarator
+    {
+      IllegalDeclarator( Lex::Token const &tok ) : Declarator(tok,0,NULL) {}
+      ~IllegalDeclarator() {}
+
+      void print( Printer const p ) const;
+    }; // end struct IllegalDeclarator
+
+
+    /// Direct Declarator
+    struct DirectDeclarator : Locatable
+    {
+      DirectDeclarator( Lex::Token const &tok )
+        : Locatable(tok), declarator(NULL), directDeclarator(NULL), params(NULL)
+      {}
+
+      DirectDeclarator( Lex::Token const &tok,
+          Declarator const * const declarator,
+          ParamList const * const params = NULL )
+        : Locatable(tok), declarator(nonNull(declarator)),
+        directDeclarator(NULL), params(params)
+      {}
+
+      DirectDeclarator( Lex::Token const &tok,
+          DirectDeclarator const * const directDeclarator,
+          ParamList const * const params = NULL )
+        : Locatable(tok), declarator(NULL),
+        directDeclarator(nonNull(directDeclarator)), params(params)
+      {}
+
+      DirectDeclarator( Lex::Token const &tok, ParamList const * const params )
+        : Locatable(tok), declarator(NULL), directDeclarator(NULL),
+        params(nonNull(params))
+      {}
+
+      ~DirectDeclarator() {}
+
+      void print( Printer const p ) const;
+
+      Declarator const * const declarator;
+      DirectDeclarator const * const directDeclarator;
+      ParamList const * const params;
+    }; // end struct DirectDeclarator
 
 
     /// Struct Declarator List
@@ -129,16 +184,6 @@ namespace C4
       ~StructDeclaratorList() {}
       void print( Printer const p ) const;
     }; // end struct StructDeclaratorList
-
-
-    /// Illegal Declarator
-    struct IllegalDeclarator : Declarator
-    {
-      IllegalDeclarator( Lex::Token const &tok ) : Declarator(tok) {}
-      ~IllegalDeclarator() {}
-
-      void print( Printer const p ) const;
-    }; // end struct IllegalDeclarator
 
 
     struct DeclaratorList : List< Declarator >
@@ -175,43 +220,6 @@ namespace C4
       DeclList const * const decls;
       CompoundStmt const * const compStmt;
     }; // end struct FunctionDef
-
-
-    /// Pointer
-    struct Pointer : Declarator
-    {
-      Pointer( Lex::Token const &tok, size_t starCount,
-          Declarator const * const subDec )
-        : Declarator(tok), starCount(starCount), subDec(subDec) {}
-      ~Pointer() {}
-
-      void print( Printer const p ) const;
-
-      size_t starCount;
-      Declarator const * const subDec;
-    }; // end struct Pointer
-
-    /// FunctionDeclarator
-    struct FunctionDeclarator : Declarator
-    {
-      FunctionDeclarator( Lex::Token const &tok,
-          Declarator const * const subDec, ParamList const * const paramList )
-        : Declarator(tok), subDec(subDec), paramList(paramList) {}
-      ~FunctionDeclarator() {}
-
-      void print( Printer const p ) const;
-
-      Declarator const * const subDec;
-      ParamList const * const paramList;
-    }; // end struct FunctionDeclarator
-
-    struct Identifier : Declarator
-    {
-      Identifier( Lex::Token const &tok ) : Declarator(tok) {}
-      ~Identifier() {}
-
-      void print( Printer const p ) const;
-    }; // end struct Identifier
   } // end namespace AST
 } // end namespace C4
 
