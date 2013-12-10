@@ -128,7 +128,7 @@ namespace C4
 
       AST::Expr const * parsePrimaryExpr();
       AST::Expr const * parsePostfixExpr();
-      AST::Expr const * parseArgumentExprList();
+      AST::ExprList const * parseArgumentExprList();
       AST::Expr const * parseUnaryExpr();
       AST::Expr const * parseCastExpr();
       AST::Expr const * parseBinaryExpr();

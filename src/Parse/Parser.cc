@@ -302,7 +302,7 @@ for_end:
   return expr;
 } // end parsePostfixExpr
 
-Expr const * Parser::parseArgumentExprList()
+ExprList const * Parser::parseArgumentExprList()
 {
   ExprList * const args = new ExprList( *current );
   args->append( parseAssignmentExpr() );
@@ -311,7 +311,7 @@ Expr const * Parser::parseArgumentExprList()
     readNextToken(); // eat ','
     args->append( parseAssignmentExpr() );
   }
-  return new IllegalExpr( *current );
+  return args;
 } // end parseArgumentExprList
 
 Expr const * Parser::parseUnaryExpr()

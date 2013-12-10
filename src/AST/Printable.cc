@@ -8,10 +8,8 @@
 
 #include "AST.h"
 
-
 using namespace C4;
 using namespace AST;
-
 
 std::ostream & AST::operator<<( std::ostream &out, Printable const &p )
 {
@@ -34,7 +32,7 @@ void Printable::dump() const
 void TranslationUnit::print( Printer const p ) const
 {
   for ( auto it = begin(); it != end(); ++it )
-      (*it)->print( p );
+    (*it)->print( p );
 }
 
 
@@ -143,12 +141,9 @@ void SizeofExpr::print( Printer const p ) const
 
 void SizeofTypeExpr::print( Printer const p ) const
 {
-  //TODO: Missing << / print() for types
-  /*p.out << this->tok.sym << "(";
-    this->type.print( p );
-    p.out << ")";*/
-  (void) p;
-
+  p.out << this->tok.sym << "(";
+  this->type->print( p );
+  p.out << ")";
 }
 
 void SubscriptExpr::print( Printer const p ) const
@@ -160,7 +155,12 @@ void SubscriptExpr::print( Printer const p ) const
 
 void ExprList::print( Printer const p ) const
 {
-  p.out << this->tok.sym;
+  for ( auto it = this->begin(); it != this->end(); ++it )
+  {
+    p.out << *it;
+    if ( it + 1 != this->end() )
+      p.out << ", ";
+  }
 }
 
 
