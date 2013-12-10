@@ -33,8 +33,8 @@ void Printable::dump() const
 
 void TranslationUnit::print( Printer const p ) const
 {
-  // TODO
-  p.out << "translation unit";
+  for ( auto it = begin(); it != end(); ++it )
+      (*it)->print( p );
 }
 
 
