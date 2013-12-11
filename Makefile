@@ -56,7 +56,7 @@ CFLAGS			+= -Wall -W -pedantic# -Werror
 CXXFLAGS		+= $(CFLAGS) -std=c++11
 
 
-.PHONY: all check check-all clean cleanall doxy
+.PHONY: all check check-printer check-all clean cleanall doxy
 
 all: $(BIN)
 
@@ -69,10 +69,17 @@ check: $(TESTBIN)
 
 -include $(TEST_DEP)
 
+check-printer: all
+	@echo ""
+	@cd test/;\
+	./test-printer.sh;\
+	cd ..
+
 check-all: all check
 	@echo ""
 	@cd test/;\
 	./test-tokenize.sh;\
+	./test-printer.sh;\
 	cd ..
 
 clean:
