@@ -29,16 +29,15 @@ namespace C4
     struct Printable
     {
       virtual void print( Printer const p ) const = 0;
-      friend std::ostream & operator<<( std::ostream &out,
-          AST::Printable const &p );
-      friend std::ostream & operator<<( std::ostream &out,
-          AST::Printable const * const p );
       void dump() const;
     }; // end struct Printable
 
     std::ostream & operator<<( std::ostream &out, AST::Printable const &p );
     std::ostream & operator<<( std::ostream &out,
         AST::Printable const * const p );
+    std::ostream & operator<<( std::ostream &out, AST::Printer const &p );
+    std::ostream & operator<<( std::ostream &out,
+        AST::Printer const * const p );
   } // end namespace AST
 } // end namespace C4
 

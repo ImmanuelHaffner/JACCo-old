@@ -27,9 +27,16 @@ std::ostream & AST::operator<<( std::ostream &out, Printable const * const p )
  * Overload ostream operator for 'unsigned', to print the corresponding amount
  * of indents.
  */
-std::ostream & operator<<( std::ostream &out, unsigned const indent )
+std::ostream & AST::operator<<( std::ostream &out, Printer const &p )
 {
-  for ( unsigned i = 0; i < indent; ++i )
+  for ( unsigned i = 0; i < p.indent; ++i )
+    out << "\t";
+  return out;
+}
+
+std::ostream & AST::operator<<( std::ostream &out, Printer const * const p )
+{
+  for ( unsigned i = 0; i < p->indent; ++i )
     out << "\t";
   return out;
 }
@@ -228,7 +235,7 @@ void CompoundStmt::print( Printer const p ) const
   Printer const p_rec( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
   {
-    p.out << p.indent;
+    p.out << p_rec;
     if ( (*it)->stmt )
       (*it)->stmt->print( p_rec );
     else
@@ -304,7 +311,7 @@ void StructSpecifier::print( Printer const p ) const
       (*it)->print( Printer( p.out, p.indent + 1 ) );
       p.out << "\n";
     }
-    p.out << p.indent << "}";
+    p.out << p << "}";
   }
 }
 
