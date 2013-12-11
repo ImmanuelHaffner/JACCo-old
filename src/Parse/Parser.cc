@@ -399,7 +399,7 @@ Expr const * Parser::parseBinOpRHS( int exprPrec, Expr const * const lhs )
     return new BinaryExpr( binOp, lhs,
         parseBinOpRHS( tokPrec + 1, rhs ) );
 
-  return new BinaryExpr( binOp, lhs, rhs );
+  return parseBinOpRHS( 0, new BinaryExpr( binOp, lhs, rhs ) );
 } // end parseBinOpRHS
 
 Expr const * Parser::parseConditionalExpr()
