@@ -820,7 +820,7 @@ Stmt const * Parser::parseStmt()
 
 Stmt const * Parser::parseLabeledStmt()
 {
-  Lex::Token const * const t = current;
+  Token const tok( *current );
   switch ( current->kind )
   {
     case TK::IDENTIFIER:
@@ -833,7 +833,7 @@ Stmt const * Parser::parseLabeledStmt()
         readNextToken(); // eat 'case'
         Expr const * const expr = parseConditionalExpr();
         accept( TK::Col ); // eat ':'
-        return new CaseStmt( *t, expr, parseStmt() );
+        return new CaseStmt( tok, expr, parseStmt() );
       }
 
     case TK::Default:
@@ -847,7 +847,7 @@ Stmt const * Parser::parseLabeledStmt()
         return new IllegalStmt( *current );
       }
   } // end switch
-  return new LabelStmt( *t, parseStmt() );
+  return new LabelStmt( tok, parseStmt() );
 } // end parseLabeledStmt
 
 CompoundStmt const * Parser::parseCompoundStmt()

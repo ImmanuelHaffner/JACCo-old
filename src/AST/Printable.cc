@@ -413,8 +413,18 @@ void ParamDecl::print( Printer const p ) const
 
 void ParamList::print( Printer const p ) const
 {
-  for ( auto it = begin(); it != end(); ++it )
+  auto it = begin();
+  if ( it != end() )
+  {
     (*it)->print( p );
+    ++it;
+
+    for ( ; it != end(); ++it )
+    {
+      p.out << ", ";
+      (*it)->print( p );
+    } 
+  }
 }
 
 
