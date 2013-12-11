@@ -35,13 +35,6 @@ namespace C4
     }; // end struct Stmt
 
 
-    /// Statement List
-    struct StmtList : List< Stmt >
-    {
-      ~StmtList() {}
-    }; // end struct StmtList
-
-
     /// Illegal Statement
     struct IllegalStmt : Stmt
     {
@@ -222,6 +215,8 @@ namespace C4
       {}
 
       ~ReturnStmt() {}
+
+      void print( Printer const p ) const;
 
       Expr const * const expr;
     }; // end struct ReturnStmt

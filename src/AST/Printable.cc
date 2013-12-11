@@ -23,6 +23,17 @@ std::ostream & AST::operator<<( std::ostream &out, Printable const * const p )
   return out;
 }
 
+/*
+ * Overload ostream operator for 'unsigned', to print the corresponding amount
+ * of indents.
+ */
+std::ostream & operator<<( std::ostream &out, unsigned const indent )
+{
+  for ( unsigned i = 0; i < indent; ++i )
+    out << "\t";
+  return out;
+}
+
 void Printable::dump() const
 {
   std::cout << this << std::endl;
@@ -53,7 +64,7 @@ void TranslationUnit::print( Printer const p ) const
 
 void IllegalExpr::print( Printer const p ) const
 {
-  p.out << "illegal expression " << this->tok;
+  p.out << "illegal expression " << this->tok << " ";
 }
 
 void Variable::print( Printer const p ) const
@@ -208,7 +219,7 @@ void ExprList::print( Printer const p ) const
 
 void IllegalStmt::print( Printer const p ) const
 {
-  p.out << "illegal statement " << this->tok << "\n";
+  p.out << "illegal statement " << this->tok << " ";
 }
 
 void CompoundStmt::print( Printer const p ) const
@@ -216,11 +227,29 @@ void CompoundStmt::print( Printer const p ) const
   p.out << "{\n";
   Printer const p_rec( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
+  {
+    p.out << p.indent;
     if ( (*it)->stmt )
       (*it)->stmt->print( p_rec );
     else
+    {
       (*it)->decl->print( p_rec );
-  p.out << "\n}";
+      p.out << ";";
+    }
+    p.out << "\n";
+  } // end for
+  p.out << "}";
+}
+
+void ReturnStmt::print( Printer const p ) const
+{
+  p.out << "return";
+  if ( this->expr )
+  {
+    p.out << " ";
+    this->expr->print( p );
+  }
+  p.out << ";";
 }
 
 void LabelStmt::print( Printer const p ) const
@@ -243,6 +272,7 @@ void ExprStmt::print( Printer const p ) const
   p.out << ";";
 }
 
+
 //===----------------------------------------------------------------------===//
 //
 //  Declaration
@@ -251,7 +281,7 @@ void ExprStmt::print( Printer const p ) const
 
 void IllegalExtDecl::print( Printer const p ) const
 {
-  p.out << "illegal external declaration " << this->tok;
+  p.out << "illegal external declaration " << this->tok << " ";
 }
 
 void TypeSpecifier::print( Printer const p ) const
@@ -280,7 +310,7 @@ void StructSpecifier::print( Printer const p ) const
 
 void IllegalTypeSpecifier::print( Printer const p ) const
 {
-  p.out << "illegal type specifier " << this->tok;
+  p.out << "illegal type specifier " << this->tok << " ";
 }
 
 void ExtDecl::print( Printer const p ) const
@@ -301,25 +331,29 @@ void Decl::print( Printer const p ) const
 
 void IllegalDecl::print( Printer const p ) const
 {
-  p.out << "illegal declaration " << this->tok;
+  p.out << "illegal declaration " << this->tok << " ";
 }
 
 void Declarator::print( Printer const p ) const
 {
-  //TODO
-  (void) p;
   // print the pointer by iterating over its count
+  for ( size_t i = 0; i < this->pointerCount; ++i )
+    p.out << "(*";
+  if ( this->directDeclarator )
+    this->directDeclarator->print( p );
+  for ( size_t i = 0; i < this->pointerCount; ++i )
+    p.out << ")";
 }
 
 void IllegalDeclarator::print( Printer const p ) const
 {
-  p.out << "illegal declaration " << this->tok;
+  p.out << "illegal declaration " << this->tok << " ";
 }
 
 void DirectDeclarator::print( Printer const p ) const
 {
   if ( ! ( this->declarator || this->directDeclarator || this->params ) )
-    p.out << this->tok;
+    p.out << this->tok.sym;
   else
   {
     if ( this->declarator )
@@ -392,7 +426,7 @@ void ParamList::print( Printer const p ) const
 
 void IllegalType::print( Printer const p ) const
 {
-  p.out << this->tok.sym;
+  p.out << "illegal type " << this->tok.sym << " ";
 }
 
 void Type::print( Printer const p ) const

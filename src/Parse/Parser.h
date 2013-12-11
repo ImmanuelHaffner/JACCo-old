@@ -174,7 +174,6 @@ namespace C4
       AST::Stmt const * parseStmt();
       AST::Stmt const * parseLabeledStmt();
       AST::CompoundStmt const * parseCompoundStmt();
-      AST::Stmt const * parseStmtList();
       AST::Stmt const * parseExprStmt();
       AST::Stmt const * parseSelectionStmt();
       AST::Stmt const * parseIterationStmt();

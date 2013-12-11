@@ -467,7 +467,7 @@ Expr const * Parser::parseExpr()
     exprList->append( parseAssignmentExpr() );
   }
 
-  return new IllegalExpr( *current );
+  return exprList;
 } // end parseExpr
 
 
@@ -681,6 +681,7 @@ DirectDeclarator const * Parser::parseDirectDeclarator( DeclaratorType const dt 
     switch ( current->kind )
     {
       case TK::RPar:
+        paramList = new ParamList();
         break;
 
       case TK::Void:
@@ -691,7 +692,8 @@ DirectDeclarator const * Parser::parseDirectDeclarator( DeclaratorType const dt 
         break;
 
       default:
-        paramList = new ParamList();
+        ERROR( "parameter-list" );
+
     } // end switch
     accept( TK::RPar ); // eat ')'
   }
@@ -935,50 +937,6 @@ for_end:
   return declList;
 } // end parseDeclList
 
-Stmt const * Parser::parseStmtList()
-{
-  parseStmt();
-
-  for (;;)
-  {
-    switch ( current->kind )
-    {
-      case TK::IDENTIFIER:
-      case TK::CONSTANT:
-      case TK::STRING_LITERAL:
-      case TK::Goto:
-      case TK::If:
-      case TK::For:
-      case TK::While:
-      case TK::Do:
-      case TK::Break:
-      case TK::Continue:
-      case TK::Switch:
-      case TK::Case:
-      case TK::Default:
-      case TK::IncOp:
-      case TK::DecOp:
-      case TK::Return:
-      case TK::Sizeof:
-      case TK::Not:
-      case TK::Neg:
-      case TK::And:
-      case TK::Mul:
-      case TK::Plus:
-      case TK::Minus:
-      case TK::LPar:
-      case TK::LBrace:
-      case TK::SCol:
-        parseStmt();
-        break;
-
-      default: goto for_end;
-    }
-  } // end for
-for_end:
-  return new IllegalStmt( *current );
-} // end parseStmtList
-
 Stmt const * Parser::parseExprStmt()
 {
   Token const tok( *current );
@@ -1064,6 +1022,7 @@ Stmt const * Parser::parseIterationStmt()
 
 Stmt const * Parser::parseJumpStmt()
 {
+  Token const tok( *current );
   switch ( current->kind )
   {
     case TK::Goto:
@@ -1083,11 +1042,14 @@ Stmt const * Parser::parseJumpStmt()
       break;
 
     case TK::Return:
-      readNextToken(); // eat 'return'
-      if ( current->kind != TK::SCol )
-        parseExpr();
-      accept( TK::SCol ); // eat ';'
-      break;
+      {
+        Expr const * expr = NULL;
+        readNextToken(); // eat 'return'
+        if ( current->kind != TK::SCol )
+          expr = parseExpr();
+        accept( TK::SCol ); // eat ';'
+        return new ReturnStmt( tok, expr );
+      }
 
     default:
       {
