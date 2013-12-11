@@ -165,7 +165,7 @@ namespace C4
           ExprStmt const * const Cond, Expr const * const Step,
           Stmt const * const Body )
         : Stmt(tok), Init(nonNull(Init)), InitDecl(NULL), Cond(nonNull(Cond)),
-        Step(Step), Body(Body)
+        Step(Step), Body(nonNull(Body))
       {}
 
       ForStmt( Lex::Token const &tok, ExprStmt const * const Init,
@@ -177,7 +177,7 @@ namespace C4
           ExprStmt const * const Cond, Expr const * const Step,
           Stmt const * const Body )
         : Stmt(tok), Init(NULL), InitDecl(nonNull(InitDecl)),
-        Cond(nonNull(Cond)), Step(Step), Body(Body)
+        Cond(nonNull(Cond)), Step(Step), Body(nonNull(Body))
       {}
 
       ~ForStmt() {}
