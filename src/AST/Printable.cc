@@ -231,7 +231,7 @@ void IllegalStmt::print( Printer const p ) const
 
 void CompoundStmt::print( Printer const p ) const
 {
-  p.out << p << "{\n";
+  p.out << "{\n";
   Printer const p_rec( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
   {
@@ -245,12 +245,12 @@ void CompoundStmt::print( Printer const p ) const
     }
     p.out << "\n";
   } // end for
-  p.out << p << "}";
+  p.out << "}";
 }
 
 void ReturnStmt::print( Printer const p ) const
 {
-  p.out << p << "return";
+  p.out << "return";
   if ( this->expr )
   {
     p.out << " ";
@@ -333,12 +333,6 @@ void StructSpecifier::print( Printer const p ) const
 void IllegalTypeSpecifier::print( Printer const p ) const
 {
   p.out << "illegal type specifier " << this->tok << " ";
-}
-
-void ExtDecl::print( Printer const p ) const
-{
-  //TODO
-  (void) p;
 }
 
 void Decl::print( Printer const p ) const
