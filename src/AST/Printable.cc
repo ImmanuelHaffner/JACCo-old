@@ -231,7 +231,7 @@ void IllegalStmt::print( Printer const p ) const
 
 void CompoundStmt::print( Printer const p ) const
 {
-  p.out << "{\n";
+  p.out << p << "{\n";
   Printer const p_rec( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
   {
@@ -245,12 +245,12 @@ void CompoundStmt::print( Printer const p ) const
     }
     p.out << "\n";
   } // end for
-  p.out << "}";
+  p.out << p << "}";
 }
 
 void ReturnStmt::print( Printer const p ) const
 {
-  p.out << "return";
+  p.out << p << "return";
   if ( this->expr )
   {
     p.out << " ";
@@ -261,15 +261,13 @@ void ReturnStmt::print( Printer const p ) const
 
 void LabelStmt::print( Printer const p ) const
 {
-  //TODO
-  (void) p;
+  p.out << this->tok << ":\n" << this->stmt;
 
 }
 
 void CaseStmt::print( Printer const p ) const
 {
-  //TODO
-  (void) p;
+  p.out << this->tok << " " << this->expr << ":\n" << this->stmt; 
 }
 
 void ExprStmt::print( Printer const p ) const
@@ -387,7 +385,7 @@ void FunctionDef::print( Printer const p ) const
   if ( this->decls )
     p.out << " " << this->decls;
   // static cast, to resolve multiple-inheritance ambiguity
-  p.out << " " << (Stmt const * const) this->compStmt;
+  p.out << "\n" << (Stmt const * const) this->compStmt;
 }
 
 void DeclList::print( Printer const p ) const
