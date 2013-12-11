@@ -11,7 +11,12 @@ std::ostream & operator<<( std::ostream &out, Pos const &pos )
   return out;
 }
 
+std::ostream & operator<<( std::ostream &out, Pos const * const pos )
+{
+  return out << *pos;
+}
+
 void Pos::dump() const
 {
-  std::cout << *this << std::endl;
+  std::cout << this << std::endl;
 }
