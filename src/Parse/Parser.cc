@@ -460,8 +460,12 @@ Expr const * Parser::parseAssignmentExpr()
 
 Expr const * Parser::parseExpr()
 {
+  Expr const * const expr = parseAssignmentExpr();
+  if ( current->kind != TK::Comma )
+    return expr;
+
   ExprList * const exprList = new ExprList( *current );
-  exprList->append( parseAssignmentExpr() );
+  exprList->append( expr );
 
   while ( current->kind == TK::Comma )
   {

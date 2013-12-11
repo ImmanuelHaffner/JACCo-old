@@ -202,6 +202,7 @@ void SubscriptExpr::print( Printer const p ) const
 
 void ExprList::print( Printer const p ) const
 {
+  p.out << "(";
   auto it = this->begin();
 
   if ( it != this->end() )
@@ -215,6 +216,7 @@ void ExprList::print( Printer const p ) const
       (*it)->print( p );
     }
   }
+  p.out << ")";
 }
 
 
@@ -239,10 +241,7 @@ void CompoundStmt::print( Printer const p ) const
     if ( (*it)->stmt )
       (*it)->stmt->print( p_rec );
     else
-    {
       (*it)->decl->print( p_rec );
-      p.out << ";";
-    }
     p.out << "\n";
   } // end for
   p.out << "}";
@@ -343,6 +342,7 @@ void Decl::print( Printer const p ) const
     p.out << " ";
     this->declarator->print( p );
   }
+  p.out << ";";
 }
 
 void IllegalDecl::print( Printer const p ) const
