@@ -379,27 +379,29 @@ Expr const * Parser::parseBinaryExpr()
   return parseBinOpRHS( 0, lhs );
 } // end parseBinaryExpr
 
-Expr const * Parser::parseBinOpRHS( int exprPrec, Expr const * const lhs )
+Expr const * Parser::parseBinOpRHS( int exprPrec, Expr const * lhs )
 {
-  int tokPrec = getTokenPrecedence();
+  for (;;)
+  {
+    int tokPrec = getTokenPrecedence();
 
-  // If this binary expression binds less than lhs, we are done.
-  if ( tokPrec < exprPrec )
-    return lhs;
+    // If this binary expression binds less than lhs, we are done.
+    if ( tokPrec < exprPrec )
+      return lhs;
 
-  Token const binOp( *current );
-  readNextToken(); // eat BinOp
+    Token const binOp( *current );
+    readNextToken(); // eat BinOp
 
-  Expr const * const rhs = parseUnaryExpr();
+    Expr const * rhs = parseUnaryExpr();
 
-  // If binOp binds less with the RHS than the operator after RHS, let the
-  // pending operator take RHS as its LHS.
-  int nextPrec = getTokenPrecedence();
-  if ( tokPrec < nextPrec )
-    return new BinaryExpr( binOp, lhs,
-        parseBinOpRHS( tokPrec + 1, rhs ) );
+    // If binOp binds less with the RHS than the operator after RHS, let the
+    // pending operator take RHS as its LHS.
+    int nextPrec = getTokenPrecedence();
+    if ( tokPrec < nextPrec )
+      rhs = parseBinOpRHS( tokPrec + 1, rhs );
 
-  return parseBinOpRHS( 0, new BinaryExpr( binOp, lhs, rhs ) );
+    lhs = new BinaryExpr( binOp, lhs, rhs );
+  } // end for
 } // end parseBinOpRHS
 
 Expr const * Parser::parseConditionalExpr()
