@@ -939,7 +939,7 @@ for_end:
   return declList;
 } // end parseDeclList
 
-Stmt const * Parser::parseExprStmt()
+ExprStmt const * Parser::parseExprStmt()
 {
   Token const tok( *current );
   Expr const * expr = NULL;
@@ -951,28 +951,36 @@ Stmt const * Parser::parseExprStmt()
 
 Stmt const * Parser::parseSelectionStmt()
 {
+  Token const tok( *current );
+  Expr const * cond = NULL;
+  Stmt const * thenStmt = NULL;
+  
+
   switch ( current->kind )
   {
     case TK::If:
-      readNextToken(); // eat 'if'
-      accept( TK::LPar ); // eat '('
-      parseExpr();
-      accept( TK::RPar ); // eat ')'
-      parseStmt();
-      if ( current->kind == TK::Else )
       {
-        readNextToken(); // eat 'else'
-        parseStmt();
+        Stmt const * elseStmt = NULL;
+        readNextToken(); // eat 'if'
+        accept( TK::LPar ); // eat '('
+        cond = parseExpr();
+        accept( TK::RPar ); // eat ')'
+        thenStmt = parseStmt();
+        if ( current->kind == TK::Else )
+        {
+          readNextToken(); // eat 'else'
+          elseStmt = parseStmt();
+        }
+        return new IfStmt( tok, cond, thenStmt, elseStmt );
       }
-      break;
 
     case TK::Switch:
       readNextToken(); // eat 'switch'
       accept( TK::LPar ); // eat '('
-      parseExpr();
+      cond = parseExpr();
       accept( TK::RPar ); // eat ')'
-      parseStmt();
-      break;
+      thenStmt = parseStmt();
+      return new SwitchStmt( tok, cond, thenStmt );
 
     default:
       {
@@ -984,19 +992,22 @@ Stmt const * Parser::parseSelectionStmt()
 
 Stmt const * Parser::parseIterationStmt()
 {
+  Token const tok( *current ); 
   switch ( current->kind )
   {
     case TK::For:
-      readNextToken(); // eat 'for'
-      accept( TK::LPar ); // eat '('
-      parseExprStmt(); // initialization
-      parseExprStmt(); // condition
-      if ( current->kind != TK::RPar )
-        parseExpr(); // increment
-      accept( TK::RPar ); // eat ')'
-      parseStmt(); // body
-      break;
-
+      {
+        Expr const * step = NULL;
+        readNextToken(); // eat 'for'
+        accept( TK::LPar ); // eat '('
+        ExprStmt const * const init = parseExprStmt(); // initialization
+        ExprStmt const * const cond = parseExprStmt(); // condition
+        if ( current->kind != TK::RPar )
+          step = parseExpr(); // increment
+        accept( TK::RPar ); // eat ')'
+        Stmt const * const body = parseStmt(); // body
+        return new ForStmt( tok, init, cond, step, body );  
+      }
     case TK::While:
       readNextToken(); // eat 'while'
       accept( TK::LPar ); // eat '('

@@ -103,6 +103,8 @@ namespace C4
 
       ~IfStmt() {}
 
+      void print( Printer const p ) const;
+
       Expr const * const Cond;
       Stmt const * const Then;
       Stmt const * const Else;
@@ -118,6 +120,8 @@ namespace C4
       {}
 
       ~SwitchStmt() {}
+
+      void print( Printer const p ) const;
 
       Expr const * const Cond;
       Stmt const * const Body;
@@ -160,8 +164,8 @@ namespace C4
       ForStmt( Lex::Token const &tok, ExprStmt const * const Init,
           ExprStmt const * const Cond, Expr const * const Step,
           Stmt const * const Body )
-        : Stmt(tok), Init(nonNull(Init)), Cond(nonNull(Cond)), Step(Step),
-        Body(Body)
+        : Stmt(tok), Init(nonNull(Init)), InitDecl(NULL), Cond(nonNull(Cond)),
+        Step(Step), Body(Body)
       {}
 
       ForStmt( Lex::Token const &tok, ExprStmt const * const Init,
@@ -169,9 +173,19 @@ namespace C4
         : ForStmt(tok, Init, Cond, NULL, Body)
       {}
 
+      ForStmt( Lex::Token const &tok, Decl const * const InitDecl,
+          ExprStmt const * const Cond, Expr const * const Step,
+          Stmt const * const Body )
+        : Stmt(tok), Init(NULL), InitDecl(nonNull(InitDecl)),
+        Cond(nonNull(Cond)), Step(Step), Body(Body)
+      {}
+
       ~ForStmt() {}
 
+      void print( Printer const p ) const;
+
       ExprStmt const * const Init;
+      Decl const * const InitDecl;
       ExprStmt const * const Cond;
       Expr const * const Step;
       Stmt const * const Body;

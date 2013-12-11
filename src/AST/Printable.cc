@@ -277,6 +277,23 @@ void ExprStmt::print( Printer const p ) const
   p.out << ";";
 }
 
+void IfStmt::print( Printer const p ) const
+{
+  //TODO
+  (void) p;
+}
+
+void ForStmt::print( Printer const p ) const
+{
+  //TODO
+  (void) p;
+}
+
+void SwitchStmt::print( Printer const p ) const
+{
+  //TODO
+  (void) p;
+}
 
 //===----------------------------------------------------------------------===//
 //
