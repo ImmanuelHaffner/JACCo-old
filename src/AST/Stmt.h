@@ -108,6 +108,9 @@ namespace C4
       Expr const * const Cond;
       Stmt const * const Then;
       Stmt const * const Else;
+
+      private:
+      void _print( Printer const p, bool const elseIf = false ) const;
     }; // end struct IfStmt
 
 

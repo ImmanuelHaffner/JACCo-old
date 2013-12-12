@@ -254,7 +254,7 @@ void ReturnStmt::print( Printer const p ) const
     p.out << " ";
     this->expr->print( p );
   }
-  p.out << ";\n";
+  p.out << ";";
 }
 
 void LabelStmt::print( Printer const p ) const
@@ -278,46 +278,114 @@ void ExprStmt::print( Printer const p ) const
 
 void IfStmt::print( Printer const p ) const
 {
-  bool hasIfBraces = false;
-  p.out << "if (" << this->Cond << ")";
+  _print( p );
+}
+
+void IfStmt::_print( Printer const p, bool const elseIf /*= false*/ ) const
+{
+  if ( ! elseIf )
+    p.iout();
+
+  // if (a)
+  p.out << "if (";
+  Cond->print( p );
+  p.out << ")";
+
+  // Printer for the Then and the Else block
   Printer const p_rec( p.out, p.indent + 1 );
-  if ( CompoundStmt const * thenCompound =
-      dynamic_cast< CompoundStmt const * >( this->Then ) )
+
+  /*
+   *  if (a) {
+   *    a;
+   *    b;
+   *  }
+   */
+  if ( auto compStmt = dynamic_cast< CompoundStmt const * const >( Then ) )
   {
-    hasIfBraces = true;
     p.out << " {\n";
-    thenCompound->print( p_rec );
-    p.out << p << "}";
+
+    for ( auto it = compStmt->begin(); it != compStmt->end(); ++it )
+    {
+      if ( (*it)->stmt )
+        (*it)->stmt->print( p_rec );
+      else
+      {
+        p_rec.iout();
+        (*it)->decl->print( p_rec );
+      }
+      p.out << "\n";
+    }
+
+    p.iout() << "}";
+
+    if ( Else )
+      p.out << " ";
   }
+
+  /*
+   *  if (a)
+   *    a;
+   */
   else
   {
     p.out << "\n";
-    this->Then->print( p_rec );
+    Then->print( p_rec );
+    if ( Else )
+    {
+      p.out << "\n";
+      p.iout();
+    }
   }
-  if ( this->Else ) {
-    if ( hasIfBraces )
-      p.out << " else";
-    else
-      p.out << p << "else";
-    if ( IfStmt const * elseIf = dynamic_cast< IfStmt const * >( this->Else ) )
+
+  if ( Else )
+  {
+    p.out << "else";
+    /*
+     *  if (a)
+     *    a;
+     *  else if
+     */
+    if ( auto ifStmt = dynamic_cast< IfStmt const * const >( Else ) )
     {
       p.out << " ";
-      //same indent as before
-      elseIf->print( p );
+      ifStmt->_print( p, true );
     }
-    else if ( CompoundStmt const * elseCompound =
-        dynamic_cast< CompoundStmt const * >( this->Else ) )
+
+    /*
+     *  if (a)
+     *    a;
+     *  else {
+     *    b;
+     *  }
+     */
+    else if ( auto compStmt =
+        dynamic_cast< CompoundStmt const * const >( Else ) )
     {
       p.out << " {\n";
-      elseCompound->print( p_rec );
-      p.out << p << "}\n";
+
+      for ( auto it = compStmt->begin(); it != compStmt->end(); ++it )
+      {
+        if ( (*it)->stmt )
+          (*it)->stmt->print( p_rec );
+        else
+        {
+          p_rec.iout();
+          (*it)->decl->print( p_rec );
+        }
+        p.out << "\n";
+      }
+
+      p.iout() << "}";
     }
+
     else
     {
       p.out << "\n";
-      this->Else->print( p_rec );
+      Else->print( p_rec );
     }
   }
+  else
+    p.out << "\n";
 }
 
 void ForStmt::print( Printer const p ) const
