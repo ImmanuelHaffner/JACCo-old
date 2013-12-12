@@ -11,6 +11,14 @@
 using namespace C4;
 using namespace AST;
 
+
+std::ostream & Printer::iout() const
+{
+  for ( unsigned i = 0; i < indent; ++i )
+    out << "\t";
+  return out;
+}
+
 std::ostream & AST::operator<<( std::ostream &out, Printable const &p )
 {
   p.print( Printer(out) );
@@ -23,20 +31,9 @@ std::ostream & AST::operator<<( std::ostream &out, Printable const * const p )
   return out;
 }
 
-/*
- * Overload ostream operator for 'unsigned', to print the corresponding amount
- * of indents.
- */
 std::ostream & AST::operator<<( std::ostream &out, Printer const &p )
 {
   for ( unsigned i = 0; i < p.indent; ++i )
-    out << "\t";
-  return out;
-}
-
-std::ostream & AST::operator<<( std::ostream &out, Printer const * const p )
-{
-  for ( unsigned i = 0; i < p->indent; ++i )
     out << "\t";
   return out;
 }
@@ -233,23 +230,25 @@ void IllegalStmt::print( Printer const p ) const
 
 void CompoundStmt::print( Printer const p ) const
 {
-  p.out << "{\n";
+  p.iout() << "{\n";
   Printer const p_rec( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
   {
-    p.out << p_rec;
     if ( (*it)->stmt )
       (*it)->stmt->print( p_rec );
     else
+    {
+      p_rec.iout();
       (*it)->decl->print( p_rec );
+    }
     p.out << "\n";
   } // end for
-  p.out << "}";
+  p.iout() << "}";
 }
 
 void ReturnStmt::print( Printer const p ) const
 {
-  p.out << p << "return";
+  p.iout() << "return";
   if ( this->expr )
   {
     p.out << " ";
@@ -260,8 +259,8 @@ void ReturnStmt::print( Printer const p ) const
 
 void LabelStmt::print( Printer const p ) const
 {
-  p.out << this->tok << ":\n" << this->stmt;
-
+  p.out << this->tok << ":\n";
+  this->stmt->print( p );
 }
 
 void CaseStmt::print( Printer const p ) const
@@ -271,6 +270,7 @@ void CaseStmt::print( Printer const p ) const
 
 void ExprStmt::print( Printer const p ) const
 {
+  p.iout();
   if ( this->expr )
     this->expr->print( p );
   p.out << ";";
