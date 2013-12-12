@@ -23,6 +23,8 @@ namespace C4
         out(out), indent(indent) {}
       std::ostream &out;
       unsigned indent;
+
+      std::ostream & iout() const;
     };
 
     ///
