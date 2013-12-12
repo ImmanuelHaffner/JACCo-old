@@ -138,6 +138,8 @@ namespace C4
 
       ~WhileStmt() {}
 
+      void print( Printer const p ) const;
+
       Expr const * const Cond;
       Stmt const * const Body;
     }; // end struct WhileStmt

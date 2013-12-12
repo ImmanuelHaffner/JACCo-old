@@ -267,7 +267,7 @@ void LabelStmt::print( Printer const p ) const
 
 void CaseStmt::print( Printer const p ) const
 {
-  p.out << this->tok << " " << this->expr << ":\n" << this->stmt; 
+  p.out << this->tok << " " << this->expr << ":\n" << this->stmt;
 }
 
 void ExprStmt::print( Printer const p ) const
@@ -279,17 +279,38 @@ void ExprStmt::print( Printer const p ) const
 
 void IfStmt::print( Printer const p ) const
 {
-  //TODO
-  (void) p;
+  p.out << "if (" << this->Cond << ")";
+  bool hasIfBraces = false;
+  Printer const p_rec( p.out, p.indent + 1 );
+  if ( CompoundStmt const * cStmt = dynamic_cast< CompoundStmt const * >( this->Then ) )
+  {
+    hasIfBraces = true;
+    p.out << p << " {\n";
+    cStmt->print( p_rec );
+    p.out << p << "}";
+  }
+  else
+   this->Then->print( p_rec );
+  if ( this->Else ) {
+    p.out << " else {\n";
+    this->Else->print( p_rec );
+    p.out << p << "}\n";
+  }
 }
 
 void ForStmt::print( Printer const p ) const
 {
-  //TODO
+  //TODO but not important
   (void) p;
 }
 
 void SwitchStmt::print( Printer const p ) const
+{
+  //TODO but not important
+  (void) p;
+}
+
+void WhileStmt::print( Printer const p ) const
 {
   //TODO
   (void) p;
@@ -315,7 +336,7 @@ void StructSpecifier::print( Printer const p ) const
 {
   p.out << "struct";
   if ( this->name )
-    p.out << " " << this->name;
+    p.out << " " << this->name->sym;
 
   if ( this->structDecls )
   {
@@ -445,7 +466,7 @@ void ParamList::print( Printer const p ) const
     {
       p.out << ", ";
       (*it)->print( p );
-    } 
+    }
   }
 }
 

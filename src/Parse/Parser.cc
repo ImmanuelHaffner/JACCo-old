@@ -954,7 +954,7 @@ Stmt const * Parser::parseSelectionStmt()
   Token const tok( *current );
   Expr const * cond = NULL;
   Stmt const * thenStmt = NULL;
-  
+
 
   switch ( current->kind )
   {
@@ -992,7 +992,7 @@ Stmt const * Parser::parseSelectionStmt()
 
 Stmt const * Parser::parseIterationStmt()
 {
-  Token const tok( *current ); 
+  Token const tok( *current );
   switch ( current->kind )
   {
     case TK::For:
@@ -1006,16 +1006,17 @@ Stmt const * Parser::parseIterationStmt()
           step = parseExpr(); // increment
         accept( TK::RPar ); // eat ')'
         Stmt const * const body = parseStmt(); // body
-        return new ForStmt( tok, init, cond, step, body );  
+        return new ForStmt( tok, init, cond, step, body );
       }
     case TK::While:
-      readNextToken(); // eat 'while'
-      accept( TK::LPar ); // eat '('
-      parseExpr(); // condition
-      accept( TK::RPar ); // eat ')'
-      parseStmt(); // body
-      break;
-
+      {
+        readNextToken(); // eat 'while'
+        accept( TK::LPar ); // eat '('
+        Expr const * cond = parseExpr(); // condition
+        accept( TK::RPar ); // eat ')'
+        Stmt const * body = parseStmt(); // body
+        return new WhileStmt( tok, cond, body );
+      }
     case TK::Do:
       readNextToken(); // eat 'do'
       parseStmt(); // body
