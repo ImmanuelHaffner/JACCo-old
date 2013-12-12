@@ -517,35 +517,35 @@ TypeSpecifier const * Parser::parseTypeSpecifier()
 TypeSpecifier const * Parser::parseStructSpecifier()
 {
   Token const tok( *current );
-  if ( accept( TK::Struct ) ) // eat 'struct'
-    switch ( current->kind )
-    {
-      case TK::IDENTIFIER:
-        {
-          Token const id( *current );
-          readNextToken(); // eat identifier
-          if ( current->kind == TK::LBrace )
-          {
-            readNextToken(); // eat '{'
-            StructDeclList const * const structDecls = parseStructDeclList();
-            accept( TK::RBrace ); // eat '}'
-            return new StructSpecifier( tok, &id, structDecls );
-          }
-          return new StructSpecifier( tok, &id );
-        }
-
-      case TK::LBrace:
+  accept( TK::Struct ); // eat 'struct'
+  switch ( current->kind )
+  {
+    case TK::IDENTIFIER:
+      {
+        Token const id( *current );
+        readNextToken(); // eat identifier
+        if ( current->kind == TK::LBrace )
         {
           readNextToken(); // eat '{'
           StructDeclList const * const structDecls = parseStructDeclList();
           accept( TK::RBrace ); // eat '}'
-          return new StructSpecifier( tok, structDecls );
+          return new StructSpecifier( tok, &id, structDecls );
         }
+        return new StructSpecifier( tok, &id );
+      }
 
-      default:
-        ERROR( "identifier or '{' struct-declaration-list '}'" );
+    case TK::LBrace:
+      {
+        readNextToken(); // eat '{'
+        StructDeclList const * const structDecls = parseStructDeclList();
+        accept( TK::RBrace ); // eat '}'
+        return new StructSpecifier( tok, structDecls );
+      }
 
-    } // end switch
+    default:
+      ERROR( "identifier or '{' struct-declaration-list '}'" );
+
+  } // end switch
   return new IllegalTypeSpecifier( *current );
 } // end parseStructOrUnionSpecifier
 
@@ -553,9 +553,7 @@ StructDeclList const * Parser::parseStructDeclList()
 {
   StructDeclList const * const structDecls = new StructDeclList();
   do
-  {
     parseStructDecl();
-  }
   while ( current->kind != TK::RBrace ); // until '}'
   return structDecls;
 } // end parseStructDeclList
@@ -999,17 +997,42 @@ Stmt const * Parser::parseIterationStmt()
   {
     case TK::For:
       {
-        Expr const * step = NULL;
         readNextToken(); // eat 'for'
         accept( TK::LPar ); // eat '('
-        ExprStmt const * const init = parseExprStmt(); // initialization
-        ExprStmt const * const cond = parseExprStmt(); // condition
+
+        Expr const * init = NULL;
+        Decl const * initDecl = NULL;
+        switch ( current->kind )
+        {
+          case TK::SCol:
+            break;
+
+          case TK::Void:
+          case TK::Char:
+          case TK::Int:
+          case TK::Struct:
+            initDecl = parseDecl(); // init declaration
+            break;
+
+          default:
+            init = parseExpr(); // initialization
+        } // end switch
+
+        Expr const * cond = NULL;
+        if ( current->kind != TK::SCol )
+          cond = parseExpr(); // condition
+
+        Expr const * step = NULL;
         if ( current->kind != TK::RPar )
           step = parseExpr(); // increment
+
         accept( TK::RPar ); // eat ')'
         Stmt const * const body = parseStmt(); // body
-        return new ForStmt( tok, init, cond, step, body );
+        if ( init )
+          return new ForStmt( tok, init, cond, step, body );
+        return new ForStmt( tok, initDecl, cond, step, body );
       }
+
     case TK::While:
       {
         readNextToken(); // eat 'while'
@@ -1019,6 +1042,7 @@ Stmt const * Parser::parseIterationStmt()
         Stmt const * body = parseStmt(); // body
         return new WhileStmt( tok, cond, body );
       }
+
     case TK::Do:
       readNextToken(); // eat 'do'
       parseStmt(); // body
@@ -1029,9 +1053,8 @@ Stmt const * Parser::parseIterationStmt()
       break;
 
     default:
-      {
         ERROR( "'for', 'do' or 'while'" );
-      }
+
   } // end switch
   return new IllegalStmt( *current );
 } // end parseIterationStmt

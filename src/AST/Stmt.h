@@ -163,20 +163,15 @@ namespace C4
     /// For Statement
     struct ForStmt : Stmt
     {
-      ForStmt( Lex::Token const &tok, ExprStmt const * const Init,
-          ExprStmt const * const Cond, Expr const * const Step,
+      ForStmt( Lex::Token const &tok, Expr const * const Init,
+          Expr const * const Cond, Expr const * const Step,
           Stmt const * const Body )
         : Stmt(tok), Init(nonNull(Init)), InitDecl(NULL), Cond(nonNull(Cond)),
         Step(Step), Body(nonNull(Body))
       {}
 
-      ForStmt( Lex::Token const &tok, ExprStmt const * const Init,
-          ExprStmt const * const Cond, Stmt const * const Body )
-        : ForStmt(tok, Init, Cond, NULL, Body)
-      {}
-
       ForStmt( Lex::Token const &tok, Decl const * const InitDecl,
-          ExprStmt const * const Cond, Expr const * const Step,
+          Expr const * const Cond, Expr const * const Step,
           Stmt const * const Body )
         : Stmt(tok), Init(NULL), InitDecl(nonNull(InitDecl)),
         Cond(nonNull(Cond)), Step(Step), Body(nonNull(Body))
@@ -186,9 +181,9 @@ namespace C4
 
       void print( Printer const p ) const;
 
-      ExprStmt const * const Init;
+      Expr const * const Init;
       Decl const * const InitDecl;
-      ExprStmt const * const Cond;
+      Expr const * const Cond;
       Expr const * const Step;
       Stmt const * const Body;
     }; // end struct ForStmt
