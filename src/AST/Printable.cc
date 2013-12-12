@@ -249,13 +249,13 @@ void CompoundStmt::print( Printer const p ) const
 
 void ReturnStmt::print( Printer const p ) const
 {
-  p.out << "return";
+  p.out << p << "return";
   if ( this->expr )
   {
     p.out << " ";
     this->expr->print( p );
   }
-  p.out << ";";
+  p.out << ";\n";
 }
 
 void LabelStmt::print( Printer const p ) const
@@ -278,21 +278,27 @@ void ExprStmt::print( Printer const p ) const
 
 void IfStmt::print( Printer const p ) const
 {
-  p.out << "if (" << this->Cond << ")";
   bool hasIfBraces = false;
+  p.out << "if (" << this->Cond << ")";
   Printer const p_rec( p.out, p.indent + 1 );
   if ( CompoundStmt const * thenCompound =
       dynamic_cast< CompoundStmt const * >( this->Then ) )
   {
     hasIfBraces = true;
-    p.out << p << " {\n";
+    p.out << " {\n";
     thenCompound->print( p_rec );
     p.out << p << "}";
   }
   else
-   this->Then->print( p_rec );
+  {
+    p.out << "\n";
+    this->Then->print( p_rec );
+  }
   if ( this->Else ) {
-    p.out << " else";
+    if ( hasIfBraces )
+      p.out << " else";
+    else
+      p.out << p << "else";
     if ( IfStmt const * elseIf = dynamic_cast< IfStmt const * >( this->Else ) )
     {
       p.out << " ";
@@ -304,12 +310,6 @@ void IfStmt::print( Printer const p ) const
     {
       p.out << " {\n";
       elseCompound->print( p_rec );
-      p.out << p << "}\n";
-    }
-    else if (!hasIfBraces)
-    {
-      p.out << " {\n";
-      this->Else->print( p_rec );
       p.out << p << "}\n";
     }
     else
