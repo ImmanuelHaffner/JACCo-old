@@ -3,14 +3,17 @@
 export C4="$(pwd)/../build/default/c4";
 
 PASSES=0
+TOTAL=0
 
 for path in $(find "resource/" -type d);
 do
   oldcwd=$(pwd)
   cd "$path"
 
-  for test in $(ls *.print.c)
+  for test in $(find . -maxdepth 1 -iname "*.print.c" -type f); #$(ls *.print.c)
   do
+    test=$(basename $test)
+    TOTAL=$(echo $TOTAL +1 | bc )
     echo "testing $path/${test}";
 
     testname=$(basename "${test}" .print.c);
@@ -27,9 +30,9 @@ do
 			echo "expected                                                           \
               -      actual"
       colordiff -y --width=180 "${expected}" "${result}"
-      echo "-> output differs: ${path}/${test}";
-      echo Tests passed: $PASSES
-      exit 1;
+      echo -e "-> output differs: ${path}/${test}\n";
+      #echo Tests passed: $PASSES
+      #exit 1;
     else
       echo "-> passed";
       PASSES=$(echo $PASSES +1 | bc )
@@ -41,4 +44,4 @@ do
   cd "$oldcwd"
 done
 
-echo Passed tests: $PASSES
+echo Tests: $PASSES"/"$TOTAL
