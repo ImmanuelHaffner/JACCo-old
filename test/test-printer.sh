@@ -48,6 +48,6 @@ done
 
 echo "########################################"
 echo "#                                      #"
-echo "#   Lexer-Tests: ${PASSES}/${TOTAL}"
+echo "#   Printer-Tests: ${PASSES}/${TOTAL}"
 echo "#                                      #"
 echo "########################################"
