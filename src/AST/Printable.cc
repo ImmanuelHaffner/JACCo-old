@@ -281,19 +281,42 @@ void IfStmt::print( Printer const p ) const
   p.out << "if (" << this->Cond << ")";
   bool hasIfBraces = false;
   Printer const p_rec( p.out, p.indent + 1 );
-  if ( CompoundStmt const * cStmt = dynamic_cast< CompoundStmt const * >( this->Then ) )
+  if ( CompoundStmt const * thenCompound =
+      dynamic_cast< CompoundStmt const * >( this->Then ) )
   {
     hasIfBraces = true;
     p.out << p << " {\n";
-    cStmt->print( p_rec );
+    thenCompound->print( p_rec );
     p.out << p << "}";
   }
   else
    this->Then->print( p_rec );
   if ( this->Else ) {
-    p.out << " else {\n";
-    this->Else->print( p_rec );
-    p.out << p << "}\n";
+    p.out << " else";
+    if ( IfStmt const * elseIf = dynamic_cast< IfStmt const * >( this->Else ) )
+    {
+      p.out << " ";
+      //same indent as before
+      elseIf->print( p );
+    }
+    else if ( CompoundStmt const * elseCompound =
+        dynamic_cast< CompoundStmt const * >( this->Else ) )
+    {
+      p.out << " {\n";
+      elseCompound->print( p_rec );
+      p.out << p << "}\n";
+    }
+    else if (!hasIfBraces)
+    {
+      p.out << " {\n";
+      this->Else->print( p_rec );
+      p.out << p << "}\n";
+    }
+    else
+    {
+      p.out << "\n";
+      this->Else->print( p_rec );
+    }
   }
 }
 
@@ -339,13 +362,8 @@ void StructSpecifier::print( Printer const p ) const
 
   if ( this->structDecls )
   {
-    p.out << "\n{";
-    for ( auto it = this->structDecls->begin(); it != this->structDecls->end();
-        ++it )
-    {
-      (*it)->print( Printer( p.out, p.indent + 1 ) );
-      p.out << "\n";
-    }
+    p.out << p << "\n{";
+    this->structDecls->print( Printer ( p.out, p.indent + 1) );
     p.out << p << "}";
   }
 }
@@ -428,8 +446,12 @@ void DeclList::print( Printer const p ) const
 
 void StructDeclList::print( Printer const p ) const
 {
-  for ( auto it = begin(); it != end(); ++it )
-    (*it)->print( p );
+  for ( auto const &it : *this )
+  {
+    p.out << p;
+    it->print( p );
+    p.out << ";\n";
+  }
 }
 
 void StructDeclaratorList::print( Printer const p ) const
