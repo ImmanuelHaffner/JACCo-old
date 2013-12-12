@@ -378,14 +378,18 @@ void IfStmt::_print( Printer const p, bool const elseIf /*= false*/ ) const
       p.iout() << "}";
     }
 
+    /*
+     *  if (a)
+     *    a;
+     *  else
+     *    b;
+     */
     else
     {
       p.out << "\n";
       Else->print( p_rec );
     }
-  }
-  else
-    p.out << "\n";
+  } // end Else
 }
 
 void ForStmt::print( Printer const p ) const
