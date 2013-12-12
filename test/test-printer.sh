@@ -10,11 +10,11 @@ do
   oldcwd=$(pwd)
   cd "$path"
 
-  for test in $(find . -maxdepth 1 -iname "*.print.c" -type f); #$(ls *.print.c)
+  for test in $(find . -maxdepth 1 -iname "*.print.c" -type f);
   do
     test=$(basename $test)
     TOTAL=$(echo $TOTAL +1 | bc )
-    echo "testing $path/${test}";
+    #echo "testing $path/${test}";
 
     testname=$(basename "${test}" .print.c);
     result=$(mktemp /tmp/"${testname}".XXXX);
@@ -29,12 +29,14 @@ do
     then
 			echo "expected                                                           \
               -      actual"
+			echo "--------                                                           \
+                     ------"
       colordiff -y --width=180 "${expected}" "${result}"
       echo -e "-> output differs: ${path}/${test}\n";
       #echo Tests passed: $PASSES
       #exit 1;
     else
-      echo "-> passed";
+      #echo "-> passed";
       PASSES=$(echo $PASSES +1 | bc )
     fi;
 
@@ -44,4 +46,8 @@ do
   cd "$oldcwd"
 done
 
-echo Tests: $PASSES"/"$TOTAL
+echo "\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#"
+echo "\#                                  \#"
+echo "\#   Printer-Tests: ${PASSES}/${TOTAL}"
+echo "\#                                  \#"
+echo "\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#"
