@@ -202,6 +202,7 @@ void SubscriptExpr::print( Printer const p ) const
 
 void ExprList::print( Printer const p ) const
 {
+  p.out << "(";
   auto it = this->begin();
 
   if ( it != this->end() )
@@ -215,6 +216,7 @@ void ExprList::print( Printer const p ) const
       (*it)->print( p );
     }
   }
+  p.out << ")";
 }
 
 
@@ -231,7 +233,7 @@ void IllegalStmt::print( Printer const p ) const
 
 void CompoundStmt::print( Printer const p ) const
 {
-  p.out << p << "{\n";
+  p.out << "{\n";
   Printer const p_rec( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
   {
@@ -239,18 +241,15 @@ void CompoundStmt::print( Printer const p ) const
     if ( (*it)->stmt )
       (*it)->stmt->print( p_rec );
     else
-    {
       (*it)->decl->print( p_rec );
-      p.out << ";";
-    }
     p.out << "\n";
   } // end for
-  p.out << p << "}";
+  p.out << "}";
 }
 
 void ReturnStmt::print( Printer const p ) const
 {
-  p.out << p << "return";
+  p.out << "return";
   if ( this->expr )
   {
     p.out << " ";
@@ -356,12 +355,6 @@ void IllegalTypeSpecifier::print( Printer const p ) const
   p.out << "illegal type specifier " << this->tok << " ";
 }
 
-void ExtDecl::print( Printer const p ) const
-{
-  //TODO
-  (void) p;
-}
-
 void Decl::print( Printer const p ) const
 {
   this->typeSpec->print( p );
@@ -370,6 +363,7 @@ void Decl::print( Printer const p ) const
     p.out << " ";
     this->declarator->print( p );
   }
+  p.out << ";";
 }
 
 void IllegalDecl::print( Printer const p ) const

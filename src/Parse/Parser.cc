@@ -460,8 +460,12 @@ Expr const * Parser::parseAssignmentExpr()
 
 Expr const * Parser::parseExpr()
 {
+  Expr const * const expr = parseAssignmentExpr();
+  if ( current->kind != TK::Comma )
+    return expr;
+
   ExprList * const exprList = new ExprList( *current );
-  exprList->append( parseAssignmentExpr() );
+  exprList->append( expr );
 
   while ( current->kind == TK::Comma )
   {
@@ -952,20 +956,16 @@ ExprStmt const * Parser::parseExprStmt()
 Stmt const * Parser::parseSelectionStmt()
 {
   Token const tok( *current );
-  Expr const * cond = NULL;
-  Stmt const * thenStmt = NULL;
-
-
   switch ( current->kind )
   {
     case TK::If:
       {
-        Stmt const * elseStmt = NULL;
         readNextToken(); // eat 'if'
         accept( TK::LPar ); // eat '('
-        cond = parseExpr();
+        Expr const * const cond = parseExpr();
         accept( TK::RPar ); // eat ')'
-        thenStmt = parseStmt();
+        Stmt const * const thenStmt = parseStmt();
+        Stmt const * elseStmt = NULL;
         if ( current->kind == TK::Else )
         {
           readNextToken(); // eat 'else'
@@ -975,12 +975,14 @@ Stmt const * Parser::parseSelectionStmt()
       }
 
     case TK::Switch:
-      readNextToken(); // eat 'switch'
-      accept( TK::LPar ); // eat '('
-      cond = parseExpr();
-      accept( TK::RPar ); // eat ')'
-      thenStmt = parseStmt();
-      return new SwitchStmt( tok, cond, thenStmt );
+      {
+        readNextToken(); // eat 'switch'
+        accept( TK::LPar ); // eat '('
+        Expr const * const cond = parseExpr();
+        accept( TK::RPar ); // eat ')'
+        Stmt const * const body = parseStmt();
+        return new SwitchStmt( tok, cond, body );
+      }
 
     default:
       {

@@ -28,8 +28,6 @@ namespace C4
     struct ExtDecl : Printable
     {
       virtual ~ExtDecl() {}
-
-      virtual void print( Printer const p ) const;
     }; // end struct ExtDecl
 
 
