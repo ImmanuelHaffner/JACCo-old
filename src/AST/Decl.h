@@ -83,10 +83,12 @@ namespace C4
     {
       StructDecl( TypeSpecifier const * const typeSpec,
           StructDeclaratorList const * const structDeclarators )
-        : Decl(typeSpec), structDeclarators(nonNull(structDeclarators))
+        : Decl(typeSpec), structDeclarators(structDeclarators)
       {}
 
       StructDeclaratorList const * const structDeclarators;
+
+			void print( Printer const p ) const;
     }; // end struct StructDecl
 
 

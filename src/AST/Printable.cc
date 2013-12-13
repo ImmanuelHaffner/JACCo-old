@@ -743,18 +743,39 @@ void DeclList::print( Printer const p ) const
 
 void StructDeclList::print( Printer const p ) const
 {
-  Printer p_rec( p.out, p.indent + 1 );
   for ( auto it = begin(); it != end(); ++it )
   {
-    (*it)->print( p_rec );
+    (*it)->print( p );
     p.out << "\n";
   }
 }
 
+void StructDecl::print( Printer const p ) const
+{
+  p.iout();
+  this->typeSpec->print( p );
+  if ( this->structDeclarators )
+  {
+    p.out << " ";
+    this->structDeclarators->print( p );
+  }
+  p.out << ";";
+}
+
 void StructDeclaratorList::print( Printer const p ) const
 {
-  for ( auto it = begin(); it != end(); ++it )
+  auto it = begin();
+  if ( it !=end() )
+  {
     (*it)->print( p );
+    ++it;
+
+    for ( ; it != end(); ++it )
+    {
+      p.out << ", ";
+      (*it)->print( p );
+    }
+  }
 }
 
 void ParamDecl::print( Printer const p ) const

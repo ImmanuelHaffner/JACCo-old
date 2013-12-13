@@ -552,9 +552,9 @@ TypeSpecifier const * Parser::parseStructSpecifier()
 
 StructDeclList const * Parser::parseStructDeclList()
 {
-  StructDeclList const * const structDecls = new StructDeclList();
+  StructDeclList * const structDecls = new StructDeclList();
   do
-    parseStructDecl();
+    structDecls->append( parseStructDecl() );
   while ( current->kind != TK::RBrace ); // until '}'
   return structDecls;
 } // end parseStructDeclList
@@ -562,21 +562,23 @@ StructDeclList const * Parser::parseStructDeclList()
 StructDecl const * Parser::parseStructDecl()
 {
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
-  StructDeclaratorList const * const structDeclarators = parseStructDeclaratorList();
+  StructDeclaratorList const * structDeclarators = NULL;
+  if ( current->kind != TK::SCol )
+    structDeclarators = parseStructDeclaratorList();
   accept( TK::SCol ); // eat ';'
   return new StructDecl( typeSpec, structDeclarators );
 } // end parseStructDecl
 
 StructDeclaratorList const * Parser::parseStructDeclaratorList()
 {
-  StructDeclaratorList const * const structDeclarators =
+  StructDeclaratorList * const structDeclarators =
     new StructDeclaratorList();
 
-  parseDeclarator();
+  structDeclarators->append( parseDeclarator() );
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    parseDeclarator();
+    structDeclarators->append( parseDeclarator() );
   }
   return structDeclarators;
 } // end parseStructDeclaratorList
