@@ -30,8 +30,8 @@ int (main(void))
 	(b = (a * 2));
 	if ((a < b)) {
 		while (((a < (sizeof b)) || (!(b == (f(23, (sizeof(int))))))))
-			foo:
-				break;
+foo:
+			break;
 	} else if (0) {
 		char (*c);
 		while (1) {
