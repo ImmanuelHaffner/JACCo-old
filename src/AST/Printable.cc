@@ -166,15 +166,12 @@ void PreIncExpr::print( Printer const p ) const
 
 void FunctionCall::print( Printer const p ) const
 {
-  this->fun->print( p );
   p.out << "(";
+  this->fun->print( p );
   // print the arguments
   if ( this->args )
   {
-    ExprList const * const args =
-      static_cast< ExprList const * const >( this->args );
-    for ( auto it = args->begin(); it != args->end(); ++it )
-      (*it)->print( p );
+    this->args->print( p );
   }
   p.out << ")";
 }
