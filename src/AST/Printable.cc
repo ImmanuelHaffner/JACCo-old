@@ -9,6 +9,7 @@
 #include "AST.h"
 
 using namespace C4;
+using namespace Lex;
 using namespace AST;
 
 
@@ -259,13 +260,22 @@ void ReturnStmt::print( Printer const p ) const
 
 void LabelStmt::print( Printer const p ) const
 {
-  p.out << this->tok << ":\n";
-  this->stmt->print( p );
+  if ( tok.kind == TK::IDENTIFIER )
+    p.out << this->tok.sym << ":\n";
+  else
+    p.iout() << this->tok.sym << ":\n";
+  this->stmt->print( Printer( p.out, p.indent + 1 ) );
 }
 
 void CaseStmt::print( Printer const p ) const
 {
-  p.out << this->tok << " " << this->expr << ":\n" << this->stmt;
+  p.iout() << this->tok.sym << " " << this->expr << ":\n";
+  if ( auto caseStmt = dynamic_cast< CaseStmt const * const >( stmt ) )
+  {
+    caseStmt->print( p );
+  }
+  else
+    this->stmt->print( Printer( p.out, p.indent + 1 ) );
 }
 
 void ExprStmt::print( Printer const p ) const
