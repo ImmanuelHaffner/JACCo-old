@@ -1018,10 +1018,12 @@ Stmt const * Parser::parseIterationStmt()
           default:
             init = parseExpr(); // initialization
         } // end switch
+        accept( TK::SCol ); // eat ';'
 
         Expr const * cond = NULL;
         if ( current->kind != TK::SCol )
           cond = parseExpr(); // condition
+        accept( TK::SCol ); // eat ';'
 
         Expr const * step = NULL;
         if ( current->kind != TK::RPar )

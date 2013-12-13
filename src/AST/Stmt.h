@@ -171,15 +171,15 @@ namespace C4
       ForStmt( Lex::Token const &tok, Expr const * const Init,
           Expr const * const Cond, Expr const * const Step,
           Stmt const * const Body )
-        : Stmt(tok), Init(nonNull(Init)), InitDecl(NULL), Cond(nonNull(Cond)),
+        : Stmt(tok), Init(Init), InitDecl(NULL), Cond(Cond),
         Step(Step), Body(nonNull(Body))
       {}
 
       ForStmt( Lex::Token const &tok, Decl const * const InitDecl,
           Expr const * const Cond, Expr const * const Step,
           Stmt const * const Body )
-        : Stmt(tok), Init(NULL), InitDecl(nonNull(InitDecl)),
-        Cond(nonNull(Cond)), Step(Step), Body(nonNull(Body))
+        : Stmt(tok), Init(NULL), InitDecl(InitDecl),
+        Cond(Cond), Step(Step), Body(nonNull(Body))
       {}
 
       ~ForStmt() {}

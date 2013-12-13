@@ -394,8 +394,58 @@ void IfStmt::_print( Printer const p, bool const elseIf /*= false*/ ) const
 
 void ForStmt::print( Printer const p ) const
 {
-  //TODO but not important
-  (void) p;
+  /*
+   *  for (;;)
+   */
+  p.iout() << "for (";
+  if ( this->Init )
+    this->Init->print( p );
+  else if ( this->InitDecl )
+    this->InitDecl->print( p );
+  p.out << ";";
+  if ( this->Cond )
+    this->Cond->print( p );
+  p.out << ";";
+  if ( this->Step )
+    this->Step->print( p );
+  p.out << ")";
+
+  Printer const p_rec( p.out, p.indent + 1 );
+
+  /*
+   *  for (;;) {
+   *  }
+   */
+  if ( auto compStmt =
+      dynamic_cast< CompoundStmt const * const >( this->Body ) )
+  {
+    p.out << " {\n";
+
+    for ( auto it = compStmt->begin(); it != compStmt->end(); ++it )
+    {
+      if ( (*it)->stmt )
+        (*it)->stmt->print( p_rec );
+      else
+      {
+        p_rec.iout();
+        (*it)->decl->print( p_rec );
+      }
+      p.out << "\n";
+    }
+
+    p.iout() << "}";
+  }
+
+  /*
+   *  for (;;)
+   *    ;
+   */
+  else
+  {
+    p.out << "\n";
+    this->Body->print( p_rec );
+  }
+
 }
 
 void SwitchStmt::print( Printer const p ) const
@@ -435,6 +485,7 @@ void DoStmt::print( Printer const p ) const
         p_rec.iout();
         (*it)->decl->print( p_rec );
       }
+
       p.out << "\n";
     }
 
