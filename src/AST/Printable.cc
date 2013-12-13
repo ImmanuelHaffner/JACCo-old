@@ -53,10 +53,19 @@ void Printable::dump() const
 
 void TranslationUnit::print( Printer const p ) const
 {
-  for ( auto it = begin(); it != end(); ++it )
+  auto it = begin();
+  if ( it != end() )
   {
     (*it)->print( p );
+    ++it;
     p.out << "\n";
+
+    for ( ; it != end(); ++it )
+    {
+      p.out << "\n";
+      (*it)->print( p );
+      p.out << "\n";
+    }
   }
 }
 
