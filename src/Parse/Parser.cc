@@ -370,6 +370,7 @@ Expr const * Parser::parseUnaryExpr()
 
     default:;
   } // end switch
+
   return parsePostfixExpr();
 } // end parseUnaryExpr
 

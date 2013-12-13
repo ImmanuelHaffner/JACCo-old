@@ -171,7 +171,7 @@ void FunctionCall::print( Printer const p ) const
 
 void UnaryOperation::print( Printer const p ) const
 {
-  p.out << "(" << this->tok;
+  p.out << "(" << this->tok.sym;
   this->expr->print( p );
   p.out << ")";
 }

@@ -168,7 +168,7 @@ namespace C4
     struct SubscriptExpr : PostfixExpr
     {
       SubscriptExpr( Lex::Token const &tok, Expr const * const expr,
-          Expr const *index ) :
+          Expr const * const index ) :
         PostfixExpr(tok), expr(expr), index(index) {}
       ~SubscriptExpr() {}
 
@@ -187,14 +187,14 @@ namespace C4
         PostfixExpr(tok), expr(expr), id(id)
       {
         assert( id.kind == Lex::TK::IDENTIFIER &&
-            "rhs of subscript must be an identifier" );
+            "rhs of dot- or arrow-expr must be an identifier" );
       }
       ~DotExpr() {}
 
       virtual void print( Printer const p ) const;
 
       Expr const * const expr;
-      Lex::Token const &id;
+      Lex::Token const id;
     }; // end struct DotExpr
 
 

@@ -255,6 +255,10 @@ namespace C4
       ~CompoundStmt() {}
 
       void print( Printer const p ) const;
+      inline void dump() const
+      {
+        Stmt::dump();
+      }
     }; // end struct CompoundStmt
   } // end namespace AST
 } // end namespace C4
