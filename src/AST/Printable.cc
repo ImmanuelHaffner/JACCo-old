@@ -706,12 +706,16 @@ void DirectDeclarator::print( Printer const p ) const
   {
     if ( this->declarator )
     {
-      p.out << "(";
+      if ( ! this->declarator->pointerCount )
+        p.out << "(";
       this->declarator->print ( p );
-      p.out << ")";
+      if ( ! this->declarator->pointerCount )
+        p.out << ")";
     }
     else if ( this->directDeclarator )
       this->directDeclarator->print( p );
+    else
+      p.out << this->tok; // IDENTIFIER
 
     if ( this->params )
     {

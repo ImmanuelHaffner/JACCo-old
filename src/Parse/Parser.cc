@@ -701,16 +701,22 @@ DirectDeclarator const * Parser::parseDirectDeclarator( DeclaratorType const dt 
 
     } // end switch
     accept( TK::RPar ); // eat ')'
+
+    if ( declarator )
+      return new DirectDeclarator( tok, declarator, paramList );
+
+    if ( directDeclarator )
+      return new DirectDeclarator( tok, directDeclarator, paramList );
   }
-
-  if ( declarator )
-    return new DirectDeclarator( tok, declarator, paramList );
-
-  if ( directDeclarator && paramList )
-    return new DirectDeclarator( tok, directDeclarator, paramList );
 
   if ( paramList )
     return new DirectDeclarator( tok, paramList );
+
+  if ( declarator )
+    return new DirectDeclarator( tok, declarator );
+
+  if ( directDeclarator )
+    return new DirectDeclarator( tok, directDeclarator );
 
   return directDeclarator;
 } // end parseDirectDeclarator
