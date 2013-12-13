@@ -261,10 +261,15 @@ void ReturnStmt::print( Printer const p ) const
 void LabelStmt::print( Printer const p ) const
 {
   if ( tok.kind == TK::IDENTIFIER )
+  {
     p.out << this->tok.sym << ":\n";
+    this->stmt->print( Printer( p.out, p.indent ) );
+  }
   else
+  {
     p.iout() << this->tok.sym << ":\n";
-  this->stmt->print( Printer( p.out, p.indent + 1 ) );
+    this->stmt->print( Printer( p.out, p.indent + 1 ) );
+  }
 }
 
 void CaseStmt::print( Printer const p ) const
