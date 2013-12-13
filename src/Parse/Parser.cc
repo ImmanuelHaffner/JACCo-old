@@ -523,16 +523,16 @@ TypeSpecifier const * Parser::parseStructSpecifier()
   {
     case TK::IDENTIFIER:
       {
-        Token const id( *current );
+        Token const * const id = new Token( *current );
         readNextToken(); // eat identifier
         if ( current->kind == TK::LBrace )
         {
           readNextToken(); // eat '{'
           StructDeclList const * const structDecls = parseStructDeclList();
           accept( TK::RBrace ); // eat '}'
-          return new StructSpecifier( tok, &id, structDecls );
+          return new StructSpecifier( tok, id, structDecls );
         }
-        return new StructSpecifier( tok, &id );
+        return new StructSpecifier( tok, id );
       }
 
     case TK::LBrace:

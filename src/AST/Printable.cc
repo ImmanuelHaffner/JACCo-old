@@ -640,14 +640,24 @@ void TypeSpecifier::print( Printer const p ) const
 void StructSpecifier::print( Printer const p ) const
 {
   p.out << "struct";
+
+  /*
+   * struct S
+   */
   if ( this->name )
     p.out << " " << this->name->sym;
 
+  /*
+   * struct
+   * {
+   * }
+   */
   if ( this->structDecls )
   {
-    p.out << p << "\n{";
+    p.out << "\n";
+    p.iout() << "{\n";
     this->structDecls->print( Printer ( p.out, p.indent + 1) );
-    p.out << p << "}";
+    p.iout() << "}";
   }
 }
 
@@ -729,11 +739,11 @@ void DeclList::print( Printer const p ) const
 
 void StructDeclList::print( Printer const p ) const
 {
-  for ( auto const &it : *this )
+  Printer p_rec( p.out, p.indent + 1 );
+  for ( auto it = begin(); it != end(); ++it )
   {
-    p.out << p;
-    it->print( p );
-    p.out << ";\n";
+    (*it)->print( p_rec );
+    p.out << "\n";
   }
 }
 
