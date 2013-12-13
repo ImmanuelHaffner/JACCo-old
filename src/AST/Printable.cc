@@ -445,7 +445,6 @@ void ForStmt::print( Printer const p ) const
     p.out << "\n";
     this->Body->print( p_rec );
   }
-
 }
 
 void SwitchStmt::print( Printer const p ) const
@@ -456,8 +455,48 @@ void SwitchStmt::print( Printer const p ) const
 
 void WhileStmt::print( Printer const p ) const
 {
-  //TODO
-  (void) p;
+  /*
+   *  while (a)
+   */
+  p.iout() << "while (";
+  this->Cond->print( p );
+  p.out << ")";
+
+  Printer const p_rec( p.out, p.indent + 1 );
+
+  /*
+   *  while (a) {
+   *  }
+   */
+  if ( auto compStmt =
+      dynamic_cast< CompoundStmt const * const >( this->Body ) )
+  {
+    p.out << " {\n";
+
+    for ( auto it = compStmt->begin(); it != compStmt->end(); ++it )
+    {
+      if ( (*it)->stmt )
+        (*it)->stmt->print( p_rec );
+      else
+      {
+        p_rec.iout();
+        (*it)->decl->print( p_rec );
+      }
+      p.out << "\n";
+    }
+
+    p.iout() << "}";
+  }
+
+  /*
+   *  while (a)
+   *    ;
+   */
+  else
+  {
+    p.out << "\n";
+    this->Body->print( p_rec );
+  }
 }
 
 void DoStmt::print( Printer const p ) const

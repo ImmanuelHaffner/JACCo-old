@@ -1059,7 +1059,7 @@ Stmt const * Parser::parseIterationStmt()
       }
 
     default:
-        ERROR( "'for', 'do' or 'while'" );
+      ERROR( "'for', 'do' or 'while'" );
 
   } // end switch
   return new IllegalStmt( *current );
