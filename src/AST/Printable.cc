@@ -410,6 +410,58 @@ void WhileStmt::print( Printer const p ) const
   (void) p;
 }
 
+void DoStmt::print( Printer const p ) const
+{
+  p.iout() << "do";
+
+  Printer const p_rec( p.out, p.indent + 1 );
+
+  /*
+   *  do {
+   *    a;
+   *  } while(a);
+   */
+  if ( auto compStmt =
+      dynamic_cast< CompoundStmt const * const >( this->Body ) )
+  {
+    p.out << " {\n";
+
+    for ( auto it = compStmt->begin(); it != compStmt->end(); ++it )
+    {
+      if ( (*it)->stmt )
+        (*it)->stmt->print( p_rec );
+      else
+      {
+        p_rec.iout();
+        (*it)->decl->print( p_rec );
+      }
+      p.out << "\n";
+    }
+
+    // prepare cursor for 'while'
+    p.iout() << "} ";
+  }
+
+  /*
+   *  do
+   *    a;
+   *  while(a);
+   */
+  else
+  {
+    p.out << "\n";
+    this->Body->print( p_rec );
+
+    // prepare cursor for 'while'
+    p.out << "\n";
+    p.iout();
+  }
+
+  p.out << "while (";
+  this->Cond->print( p );
+  p.out << ");";
+}
+
 //===----------------------------------------------------------------------===//
 //
 //  Declaration

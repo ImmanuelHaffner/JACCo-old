@@ -158,6 +158,8 @@ namespace C4
 
       ~DoStmt() {}
 
+      void print( Printer const p ) const;
+
       Stmt const * const Body;
       Expr const * const Cond;
     }; // end struct DoStmt

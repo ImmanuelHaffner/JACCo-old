@@ -1045,13 +1045,16 @@ Stmt const * Parser::parseIterationStmt()
       }
 
     case TK::Do:
-      readNextToken(); // eat 'do'
-      parseStmt(); // body
-      accept( TK::While ); // eat 'while'
-      accept( TK::LPar ); // eat '('
-      parseExpr(); // condition
-      accept( TK::LPar ); // eat ')'
-      break;
+      {
+        readNextToken(); // eat 'do'
+        Stmt const * const body = parseStmt(); // body
+        accept( TK::While ); // eat 'while'
+        accept( TK::LPar ); // eat '('
+        Expr const * const cond = parseExpr(); // condition
+        accept( TK::RPar ); // eat ')'
+        accept( TK::SCol ); // eat ';'
+        return new DoStmt( tok, body, cond );
+      }
 
     default:
         ERROR( "'for', 'do' or 'while'" );
