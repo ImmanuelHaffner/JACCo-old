@@ -449,8 +449,46 @@ void ForStmt::print( Printer const p ) const
 
 void SwitchStmt::print( Printer const p ) const
 {
-  //TODO but not important
-  (void) p;
+  // switch (a)
+  p.iout() << "switch (";
+  Cond->print( p );
+  p.out << ")";
+
+  // Printer for the Body
+  Printer const p_rec( p.out, p.indent + 1 );
+
+  /*
+   *  switch (a) {
+   *  }
+   */
+  if ( auto compStmt = dynamic_cast< CompoundStmt const * const >( Body ) )
+  {
+    p.out << " {\n";
+
+    for ( auto it = compStmt->begin(); it != compStmt->end(); ++it )
+    {
+      if ( (*it)->stmt )
+        (*it)->stmt->print( p_rec );
+      else
+      {
+        p_rec.iout();
+        (*it)->decl->print( p_rec );
+      }
+      p.out << "\n";
+    }
+
+    p.iout() << "}";
+  }
+
+  /*
+   *  switch (a)
+   *    ;
+   */
+  else
+  {
+    p.out << "\n";
+    this->Body->print( p_rec );
+  }
 }
 
 void WhileStmt::print( Printer const p ) const
