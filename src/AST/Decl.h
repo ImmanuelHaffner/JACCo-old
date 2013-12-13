@@ -184,13 +184,6 @@ namespace C4
     }; // end struct StructDeclaratorList
 
 
-    struct DeclaratorList : List< Declarator >
-    {
-      ~DeclaratorList() {}
-      void print( Printer const p ) const;
-    }; // end struct DeclaratorList
-
-
     /// Declaration List
     struct DeclList : List< Decl >
     {
