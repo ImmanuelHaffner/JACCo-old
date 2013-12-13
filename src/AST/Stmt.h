@@ -197,16 +197,28 @@ namespace C4
     /// Break Statement
     struct BreakStmt : Stmt
     {
-      BreakStmt( Lex::Token const &tok ) : Stmt(tok) {}
+      BreakStmt( Lex::Token const &tok ) : Stmt(tok)
+      {
+        assert( tok.kind == Lex::TK::Break && "must be 'continue'" );
+      }
+
       ~BreakStmt() {}
+
+      void print( Printer const p ) const;
     }; // end struct BreakStmt
 
 
     /// Continue Statement
     struct ContinueStmt : Stmt
     {
-      ContinueStmt( Lex::Token const &tok ) : Stmt(tok) {}
+      ContinueStmt( Lex::Token const &tok ) : Stmt(tok)
+      {
+        assert( tok.kind == Lex::TK::Continue && "must be 'continue'" );
+      }
+
       ~ContinueStmt() {}
+
+      void print( Printer const p ) const;
     }; // end struct ContinueStmt
 
 
@@ -220,6 +232,8 @@ namespace C4
       }
 
       ~GotoStmt() {}
+
+      void print( Printer const p ) const;
     }; // end struct GotoStmt
 
 
@@ -228,7 +242,9 @@ namespace C4
     {
       ReturnStmt( Lex::Token const &tok, Expr const * const expr = NULL )
         : Stmt(tok), expr(expr)
-      {}
+      {
+        assert( tok.kind == Lex::TK::Return && "must be 'return'" );
+      }
 
       ~ReturnStmt() {}
 

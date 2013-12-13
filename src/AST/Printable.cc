@@ -247,17 +247,6 @@ void CompoundStmt::print( Printer const p ) const
   p.iout() << "}";
 }
 
-void ReturnStmt::print( Printer const p ) const
-{
-  p.iout() << "return";
-  if ( this->expr )
-  {
-    p.out << " ";
-    this->expr->print( p );
-  }
-  p.out << ";";
-}
-
 void LabelStmt::print( Printer const p ) const
 {
   if ( tok.kind == TK::IDENTIFIER )
@@ -604,6 +593,33 @@ void DoStmt::print( Printer const p ) const
   this->Cond->print( p );
   p.out << ");";
 }
+
+void GotoStmt::print( Printer const p ) const
+{
+  p.iout() << "goto " << tok.sym << ";";
+}
+
+void ContinueStmt::print( Printer const p ) const
+{
+  p.iout() << "continue;";
+}
+
+void BreakStmt::print( Printer const p ) const
+{
+  p.iout() << "break;";
+}
+
+void ReturnStmt::print( Printer const p ) const
+{
+  p.iout() << "return";
+  if ( this->expr )
+  {
+    p.out << " ";
+    this->expr->print( p );
+  }
+  p.out << ";";
+}
+
 
 //===----------------------------------------------------------------------===//
 //

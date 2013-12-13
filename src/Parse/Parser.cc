@@ -1071,20 +1071,25 @@ Stmt const * Parser::parseJumpStmt()
   switch ( current->kind )
   {
     case TK::Goto:
-      readNextToken(); // eat 'goto'
-      accept( TK::IDENTIFIER ); // eat identifier
-      accept( TK::SCol ); // eat ';'
+      {
+        readNextToken(); // eat 'goto'
+        Token const id( *current );
+        bool b = accept( TK::IDENTIFIER ); // eat identifier
+        accept( TK::SCol ); // eat ';'
+        if ( b )
+          return new GotoStmt( id );
+      }
       break;
 
     case TK::Continue:
       readNextToken(); // eat 'continue'
       accept( TK::SCol ); // eat ';'
-      break;
+      return new ContinueStmt( tok );
 
     case TK::Break:
       readNextToken(); // eat 'break'
       accept( TK::SCol ); // eat ';'
-      break;
+      return new BreakStmt( tok );
 
     case TK::Return:
       {
@@ -1097,9 +1102,8 @@ Stmt const * Parser::parseJumpStmt()
       }
 
     default:
-      {
         ERROR( "'return', 'continue', 'break' or 'goto'" );
-      }
+
   } // end switch
   return new IllegalStmt( *current );
 } // end parseJumpStmt
