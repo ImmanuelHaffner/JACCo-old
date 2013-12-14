@@ -17,7 +17,7 @@ using namespace C4;
 using namespace Lex;
 
 
-Lexer::Lexer() : fileName( "<stdin>" ), pos( "<stdin>", 1, 0 ),
+Lexer::Lexer() : fileName( "<stdin>" ), pos( "<stdin>", 1, 1 ),
   file( *( new RegularFile() ) )
 {}
 
@@ -25,7 +25,7 @@ Lexer::Lexer( std::string const &fileName ) : Lexer( fileName.c_str() )
 {}
 
 Lexer::Lexer( char const * const fileName ) : fileName( fileName ),
-  pos( fileName, 1, 0 ), file( *( new MemMapFile( fileName ) ) )
+  pos( fileName, 1, 1 ), file( *( new MemMapFile( fileName ) ) )
 {}
 
 Lexer::~Lexer()
@@ -48,7 +48,7 @@ Token Lexer::getToken()
     {
       case EOF:
         nextChar();
-        // check whether we continue after an eof, for testing only
+        // check whether we continue after an EOF
         if ( c == EOF )
           return Token::EndOfFile( pos );
         else
@@ -404,7 +404,7 @@ Token Lexer::getToken()
           //  Comments
           //
 
-            // Comment-line
+          // Comment-line
           case '/':
             do
               nextChar();
@@ -426,7 +426,7 @@ Token Lexer::getToken()
             }
             continue;
 
-          // /=
+            // /=
           case '=':
             nextChar();
             return Token::Punctuator( start, TK::DivAssign, "/=" );

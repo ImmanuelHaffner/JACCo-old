@@ -78,7 +78,7 @@ void LexerRejectionTest::testIllegalComments()
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
     CPPUNIT_ASSERT( hasNewErrors() );
   }
 
@@ -91,7 +91,7 @@ void LexerRejectionTest::testIllegalComments()
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 2u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
     CPPUNIT_ASSERT( hasNewErrors() );
   }
 

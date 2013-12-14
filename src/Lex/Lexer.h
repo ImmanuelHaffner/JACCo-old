@@ -43,7 +43,7 @@ namespace C4
         std::string const fileName;
 
       private:
-        int c = ' ';
+        int c = EOF;
         StrBuf buf;
         Pos pos;
         File &file;
@@ -54,11 +54,14 @@ namespace C4
 
         inline void nextChar()
         {
-          c = updatePos( file.get() );
+          updatePos( c );
+          c = file.get();
           while ( c == '\\' && file.peek() == '\n' )
           {
-            updatePos( file.get() );
-            c = updatePos( file.get() );
+            updatePos( c );
+            c = file.get();
+            updatePos( c );
+            c = file.get();
           }
         }
 
@@ -70,7 +73,7 @@ namespace C4
           if ( c == '\n' )
           {
             ++pos.line;
-            pos.column = 0;
+            pos.column = 1;
           }
           else
             ++pos.column;
