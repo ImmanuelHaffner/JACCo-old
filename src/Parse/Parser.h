@@ -164,7 +164,7 @@ namespace C4
       //  Type
       //
 
-      AST::Type const * parseTypeName();
+      AST::TypeName const * parseTypeName();
 
 
       //

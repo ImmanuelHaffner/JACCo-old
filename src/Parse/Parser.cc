@@ -348,7 +348,7 @@ Expr const * Parser::parseUnaryExpr()
               {
                 // SIZEOF '(' type_name ')'
                 readNextToken(); // eat '('
-                Type const * const type = parseTypeName();
+                TypeName const * const type = parseTypeName();
                 accept( TK::RPar ); // eat ')'
                 return new SizeofTypeExpr( tok, type );
               }
@@ -598,7 +598,7 @@ Declarator const * Parser::parseDeclarator( DeclaratorType const dt )
     {
       case TK::IDENTIFIER:
       case TK::LPar:
-        directDeclarator = parseDirectDeclarator();
+        directDeclarator = parseDirectDeclarator( dt );
         break;
 
       default:;
@@ -755,8 +755,9 @@ ParamDecl const * Parser::parseParameterDecl()
   return new ParamDecl( typeSpec );
 } // end parseParameterDecl
 
-Type const * Parser::parseTypeName()
+TypeName const * Parser::parseTypeName()
 {
+  Token const tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   Declarator const * declarator = NULL;
   switch ( current->kind )
@@ -768,7 +769,7 @@ Type const * Parser::parseTypeName()
 
     default:;
   }
-  return new Type( *current, typeSpec, declarator );
+  return new TypeName( tok, typeSpec, declarator );
 } // end parseTypeName
 
 Stmt const * Parser::parseStmt()
