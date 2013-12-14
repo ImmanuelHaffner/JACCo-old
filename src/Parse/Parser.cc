@@ -174,6 +174,8 @@ TranslationUnit const * Parser::parse()
 {
   readNextToken();
   readNextToken();
+  assert( current && "must not be NULL" );
+  assert( next && "must not be NULL" );
   return parseTranslationUnit();
 }
 
@@ -1121,13 +1123,13 @@ TranslationUnit const * Parser::parseTranslationUnit()
   TranslationUnit * unit = new TranslationUnit();
   do
   {
-    // TODO stop or recover, if a corrupted external declaration was found
-    // Token const *prev = current;
-    unit->append( parseExtDecl() );
-		// Commenting out this part makes us pass the modex test.
-		// What was its intention?
-    // if ( prev == current )
-     // readNextToken();
+    Token const prev( *current );
+    unit->append( parseExtDecl() ); // in bad cases, does not consume any token
+
+    // If the parseExtDecl function did not consume anything, consume one token,
+    // to avoid divergance of the parser.
+    if ( prev.pos == current->pos )
+      readNextToken();
   }
   while ( current->kind != TK::END_OF_FILE );
   return unit;
