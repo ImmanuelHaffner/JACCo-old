@@ -226,7 +226,7 @@ namespace C4
 
       Pos const pos;
       TK const kind;
-      Symbol sym;
+      Symbol const sym;
 
       static std::unordered_map< Symbol, TK > KeywordsTable;
       static void INIT_KEYWORDS_TABLE();
