@@ -22,7 +22,7 @@ namespace C4
 {
   namespace Lex
   {
-		/// The kind of a token.
+    /// The kind of a token.
     enum class TK
     {
       IDENTIFIER,
