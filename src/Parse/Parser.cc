@@ -1112,7 +1112,7 @@ Stmt const * Parser::parseJumpStmt()
       }
 
     default:
-        ERROR( "'return', 'continue', 'break' or 'goto'" );
+      ERROR( "'return', 'continue', 'break' or 'goto'" );
 
   } // end switch
   return new IllegalStmt( *current );
