@@ -475,7 +475,7 @@ Token Lexer::lexNumericalConstant()
 {
   Pos start( pos );
 
-  if ( c == '0' )
+  if ( c == '0' && isdigit( file.peek() ) )
     errorf( start, "%s %s", buf.c_str(), "illegal integer constant" );
 
   while ( isdigit( c ) )
