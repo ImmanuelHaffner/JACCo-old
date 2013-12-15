@@ -1,5 +1,5 @@
-int foo();
+int (foo());
 
 struct S (foo());
 
-void ((foo()));
+void (foo());

@@ -1,4 +1,4 @@
-int foo()
+int (foo())
 {
 	struct S;
 	struct S s;

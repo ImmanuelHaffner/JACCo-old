@@ -1,4 +1,4 @@
-int foo()
+int (foo())
 {
 	int n;
 	(n = ((count + 7) / 8));

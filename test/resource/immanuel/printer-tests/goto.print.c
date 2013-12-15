@@ -1,4 +1,4 @@
-int foo()
+int (foo())
 {
 	goto t0;
 	goto t1;

@@ -1,4 +1,4 @@
-int f(int x, int y)
+int (f(int x, int y))
 {
 	if (1)
 		return 2;

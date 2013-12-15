@@ -1,4 +1,4 @@
-int foo(int a, int b, char);
+int (foo(int a, int b, char));
 
 char (foo(int a, int b, char));
 

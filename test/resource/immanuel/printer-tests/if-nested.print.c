@@ -1,4 +1,4 @@
-int foo()
+int (foo())
 {
 	if (a) {
 		if (b)

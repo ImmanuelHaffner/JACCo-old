@@ -1,4 +1,4 @@
-void main()
+void (main())
 {
 	(f((f(23)), a, (g((y - x)))));
 }

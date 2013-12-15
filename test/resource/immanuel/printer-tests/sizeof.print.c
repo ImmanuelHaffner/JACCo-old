@@ -1,4 +1,4 @@
-int foo()
+int (foo())
 {
 	(sizeof a);
 	(sizeof (a + b));

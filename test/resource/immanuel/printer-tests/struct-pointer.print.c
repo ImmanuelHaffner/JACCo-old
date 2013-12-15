@@ -1,4 +1,4 @@
-int foo(struct S (*s))
+int (foo(struct S (*s)))
 {
 	struct
 	{

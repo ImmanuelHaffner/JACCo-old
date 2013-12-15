@@ -1,4 +1,4 @@
-int foo()
+int (foo())
 {
 	do
 		;
