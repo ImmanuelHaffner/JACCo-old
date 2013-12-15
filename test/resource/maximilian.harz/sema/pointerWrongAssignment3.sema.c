@@ -1,6 +1,6 @@
-void main()
+int main()
 {
 	int (*p);
-	void (*q);
+	char (*q);
 	p = q;
 }

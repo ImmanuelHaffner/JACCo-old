@@ -3,7 +3,7 @@ int foo(char c)
 	return 1;
 }
 
-void main()
+int main()
 {
 	int (*p)(char x);
 	(p = &foo);

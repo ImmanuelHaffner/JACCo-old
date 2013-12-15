@@ -1,8 +1,8 @@
-void main()
+int main()
 {
-	int (*p);
+	int (**p);
 	char (*x);
 	int a;
 	int i;
-	(p[i][i] = a);
+	(p[i][i] = x);
 }

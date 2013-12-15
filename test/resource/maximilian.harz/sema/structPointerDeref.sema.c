@@ -2,7 +2,6 @@ int main()
 {
 	struct S {
 		int x;
-	} s;
-	struct S s2;
-	s = s2;
+	} (*s);
+	(*s).x = 5;
 }

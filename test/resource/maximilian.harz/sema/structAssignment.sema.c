@@ -1,4 +1,4 @@
-void main()
+int main()
 {
 	struct S {
 		int x;

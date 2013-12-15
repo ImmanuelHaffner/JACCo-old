@@ -1,7 +1,6 @@
-void main()
+int main()
 {
 	int (*p);
-	char x;
 	int a;
-	x = p[a];
+	p = p[a];
 }

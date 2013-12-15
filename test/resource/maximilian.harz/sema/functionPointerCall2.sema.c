@@ -1,9 +1,9 @@
-int foo(char)
+int foo(char c)
 {
 	return 1;
 }
 
-void main()
+int main()
 {
 	char c;
 	int x;

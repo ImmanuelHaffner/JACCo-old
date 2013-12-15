@@ -1,4 +1,4 @@
-char foo(int)
+char foo(int i)
 {
 	return 23;
 }

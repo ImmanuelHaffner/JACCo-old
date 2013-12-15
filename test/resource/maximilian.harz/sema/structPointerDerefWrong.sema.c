@@ -1,7 +1,7 @@
 int main()
 {
 	struct S {
-		char x;
+		char (*x);
 	} (*s);
-	s->x = 5;
+	(*s).x = 5;
 }

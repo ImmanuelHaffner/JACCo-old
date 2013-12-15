@@ -1,9 +1,9 @@
-int foo(int, int)
+int foo(int x, int y)
 {
 	return 1;
 }
 
-void main()
+int main()
 {
 	foo(23);
 }

@@ -1,4 +1,4 @@
-void main()
+int main()
 {
 	int (*p)(char x);
 	void (*q)(char x);

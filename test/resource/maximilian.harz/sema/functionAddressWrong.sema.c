@@ -5,6 +5,6 @@ int foo(char c)
 
 int main()
 {
-	int x;
-	x = foo(23);
+	char (*p)(char x);
+	(p = &foo);
 }
