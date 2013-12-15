@@ -793,7 +793,7 @@ void StructSpecifier::print( Printer const p ) const
 		p.out << " " << this->name->sym;
 
 	/*
-	 * struct
+	 * struct [S]
 	 * {
 	 * }
 	 */
