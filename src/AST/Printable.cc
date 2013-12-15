@@ -667,11 +667,11 @@ void DirectDeclarator::print( Printer const p ) const
 	{
 		if ( this->declarator )
 		{
-			if ( ! this->declarator->pointerCount )
-				p.out << "(";
+			/*if ( ! this->declarator->pointerCount )
+				p.out << "(";*/
 			this->declarator->print ( p );
-			if ( ! this->declarator->pointerCount )
-				p.out << ")";
+/*			if ( ! this->declarator->pointerCount )
+				p.out << ")";*/
 		}
 		else if ( this->directDeclarator )
 			this->directDeclarator->print( p );
