@@ -689,7 +689,7 @@ void DirectDeclarator::print( Printer const p ) const
 
 void FunctionDef::print( Printer const p ) const
 {
-	p.out << this->typeSpec << " " << this->declarator;
+	p.out << this->typeSpec << " (" << this->declarator << ")";
 	if ( this->decls )
 		p.out << " " << this->decls;
 	// static cast, to resolve multiple-inheritance ambiguity
