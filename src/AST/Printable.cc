@@ -665,6 +665,8 @@ void DirectDeclarator::print( Printer const p ) const
 		p.out << this->tok.sym;
 	else
 	{
+    if ( this->params )
+      p.out << "(";
 		if ( this->declarator )
 		{
 			/*if ( ! this->declarator->pointerCount )
@@ -684,12 +686,14 @@ void DirectDeclarator::print( Printer const p ) const
 			this->params->print( p );
 			p.out << ")";
 		}
+    if ( this->params )
+      p.out << ")";
 	}
 }
 
 void FunctionDef::print( Printer const p ) const
 {
-	p.out << this->typeSpec << " (" << this->declarator << ")";
+	p.out << this->typeSpec << " " << this->declarator;
 	if ( this->decls )
 		p.out << " " << this->decls;
 	// static cast, to resolve multiple-inheritance ambiguity
