@@ -474,6 +474,10 @@ Token Lexer::lexKeywordOrIdentifier()
 Token Lexer::lexNumericalConstant()
 {
   Pos start( pos );
+
+  if ( c == '0' )
+    errorf( start, "%s %s", buf.c_str(), "illegal integer constant" );
+
   while ( isdigit( c ) )
   {
     buf += c;
