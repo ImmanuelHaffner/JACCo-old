@@ -451,7 +451,7 @@ Token Lexer::lexKeywordOrIdentifier()
   {
     buf += c;
     nextChar();
-    errorf( start, "%s %s", buf.c_str(), "illegal identifier" );
+    errorf( start, "%s - %s", buf.c_str(), "illegal identifier" );
   }
   else
     while ( isalnum( c ) || c == '_' )
@@ -475,14 +475,18 @@ Token Lexer::lexNumericalConstant()
 {
   Pos start( pos );
 
-  if ( c == '0' && isdigit( file.peek() ) )
-    errorf( start, "%s %s", buf.c_str(), "illegal integer constant" );
+  bool illegal = false;
+  illegal = ( c == '0' ) && isdigit( file.peek() );
 
   while ( isdigit( c ) )
   {
     buf += c;
     nextChar();
   }
+
+  if ( illegal )
+    errorf( start, "%s - %s", buf.c_str(), "illegal integer constant" );
+
   return Token::Constant( start, buf.c_str() );
 }
 
