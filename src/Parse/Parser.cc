@@ -1125,13 +1125,38 @@ TranslationUnit const * Parser::parseTranslationUnit()
   TranslationUnit * unit = new TranslationUnit();
   do
   {
-    Token const prev( *current );
+    Pos const old( current->pos );
     unit->append( parseExtDecl() ); // in bad cases, does not consume any token
 
     // If the parseExtDecl function did not consume anything, consume one token,
     // to avoid divergance of the parser.
-    if ( prev.pos == current->pos )
-      readNextToken();
+    //if ( old == current->pos )
+    //readNextToken();
+
+    // Recover until the end of a block (e.g compound statement) or semicolon
+    // ';'
+    if ( old == current->pos )
+    {
+      for (;;)
+      {
+        switch ( current->kind )
+        {
+          case TK::END_OF_FILE:
+            goto for_end;
+
+          case TK::SCol:
+          case TK::RBrace:
+            readNextToken();
+            goto for_end;
+
+          default:
+            readNextToken();
+        } // end switch
+      } // end for
+
+for_end:
+      continue;
+    }
   }
   while ( current->kind != TK::END_OF_FILE );
   return unit;
@@ -1192,15 +1217,6 @@ ExtDecl const * Parser::parseExtDecl()
             ERROR( "';' or function-definition" );
         } // end switch
         return new IllegalDecl( *current, typeSpec );
-      }
-
-      // declarator
-    case TK::IDENTIFIER:
-    case TK::Mul:
-    case TK::LPar:
-      {
-        Declarator const * const declarator = parseDeclarator();
-        return parseFunctionDef( NULL, declarator );
       }
 
     default:
