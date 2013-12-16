@@ -9,7 +9,7 @@ int (f(int x, int y))
 	}
 }
 
-(((void ((p)))));
+void ((p));
 
 int (main(void))
 {
