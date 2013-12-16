@@ -20,9 +20,15 @@ do
     result=$(mktemp /tmp/"${testname}".XXXX);
     #expectedfile="$path/${test}"
     expected=$(mktemp /tmp/"${testname}".expected.XXXX);
-    cp "${test}" "${expected}";
 
-    $("${C4}" --print-ast "$(basename ${test})" > "${result}" 2>&1)
+    if [ $(expr match "$test" '.*\.in\.print\.c') -ne 0 ];
+    then
+      cp "$(basename "${test}" .in.print.c).print.c" "${expected}";
+    else
+      cp "${test}" "${expected}";
+    fi
+
+    $("${C4}" --print-ast "${test}" > "${result}" 2>&1)
 
     diff -q "${expected}" "${result}" > /dev/null 2>&1
     if [ 0 -ne $? ];
