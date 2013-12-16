@@ -665,27 +665,32 @@ void DirectDeclarator::print( Printer const p ) const
 		p.out << this->tok.sym;
 	else
 	{
+    /*
+     * If this direct declarator has a LHS and a RHS, print a parenthesis around
+     * them, e.g.:
+     *
+     *    (foo(int))
+     */
     if ( this->params )
       p.out << "(";
+
 		if ( this->declarator )
-		{
-			/*if ( ! this->declarator->pointerCount )
-				p.out << "(";*/
 			this->declarator->print ( p );
-/*			if ( ! this->declarator->pointerCount )
-				p.out << ")";*/
-		}
 		else if ( this->directDeclarator )
 			this->directDeclarator->print( p );
-		else
+		else if ( ! this->params )
 			p.out << this->tok; // IDENTIFIER
 
 		if ( this->params )
 		{
-			p.out << "(";
+      if ( this->declarator || this->directDeclarator )
+        p.out << "(";
 			this->params->print( p );
-			p.out << ")";
+      if ( this->declarator || this->directDeclarator )
+        p.out << ")";
 		}
+
+    // close parenthesis
     if ( this->params )
       p.out << ")";
 	}
