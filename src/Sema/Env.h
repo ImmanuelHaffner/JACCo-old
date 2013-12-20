@@ -38,7 +38,7 @@ namespace C4
     typedef std::set< AST::TypeSpecifier const * > TypeTable;
 
     /// Maps symbols to SemaTypes
-    typedef std::unordered_map< Symbol const, SemaType const * > IdMap;
+    typedef std::unordered_map< Symbol, SemaType const * > IdMap;
 
     /// A scope contains a type table and a mapping from symbols to SemaTypes
     typedef std::pair< TypeTable, IdMap > Scope;

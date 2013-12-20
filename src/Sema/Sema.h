@@ -64,7 +64,7 @@ namespace C4
     struct SemaObject
     {
       virtual ~SemaObject() {}
-      virtual SemaResult analyze( Env &env ) = 0;
+      virtual SemaResult analyze( Env &env ) const;
     };
   } // end namespace Sema
 } // end namespace C4

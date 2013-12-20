@@ -28,6 +28,7 @@ namespace C4
       ~TranslationUnit() {}
 
       void print( Printer const p ) const;
+      Sema::SemaResult analyze( Sema::Env &env ) const;
     }; // end struct TranslationUnit
   } // end namespace AST
 } // end namespace C4
