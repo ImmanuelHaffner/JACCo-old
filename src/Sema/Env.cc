@@ -12,8 +12,6 @@ using namespace C4;
 using namespace AST;
 using namespace Sema;
 
-#if 0
-
 void Env::pushScope()
 {
   scopeStack.push_back( Scope() );
@@ -24,7 +22,7 @@ void Env::popScope()
   scopeStack.pop_back();
 }
 
-TypeSpecifier const * const Env::lookup( std::string id )
+TypeSpecifier const * const Env::lookup( Symbol const id )
 {
   for ( auto it = scopeStack.begin(); it != scopeStack.end(); ++it )
   {
@@ -35,8 +33,7 @@ TypeSpecifier const * const Env::lookup( std::string id )
   return NULL;
 }
 
-bool Env::insert( std::string id, TypeSpecifier const * const typeSpec,
-    ParamList const * const params)
+bool Env::insert( Symbol const id, SemaType const * type )
 {
   IdMap & topIdMap = scopeStack.back().second;
   auto it = topIdMap.find( id );
