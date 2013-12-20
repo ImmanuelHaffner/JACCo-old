@@ -11,7 +11,6 @@
 
 #include <iostream>
 
-
 namespace C4
 {
   namespace AST

@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include "Locatable.h"
+#include "../Sema/Sema.h"
 #include "List.h"
 #include "../util.h"
 #include <vector>
@@ -25,7 +26,7 @@ namespace C4
 
 
 		/// External Declaration
-		struct ExtDecl : Printable
+		struct ExtDecl : Printable, Sema::SemaObject
 		{
 			virtual ~ExtDecl() {}
 		}; // end struct ExtDecl
@@ -43,7 +44,7 @@ namespace C4
 
 		/// Declaration
 		struct Declarator;
-		struct Decl : ExtDecl
+		struct Decl : ExtDecl, Sema::SemaObject
 		{
 			Decl( TypeSpecifier const * const typeSpec,
 					Declarator const * const declarator = NULL )
@@ -71,7 +72,7 @@ namespace C4
 
 		/// Struct Declaration List
 		struct StructDecl;
-		struct StructDeclList : List< StructDecl >
+		struct StructDeclList : List< StructDecl >, Sema::SemaObject
 		{
 			~StructDeclList() {}
 			void print( Printer const p ) const;
@@ -107,7 +108,7 @@ namespace C4
 
 
 		/// Parameter List
-		struct ParamList : List< ParamDecl >
+		struct ParamList : List< ParamDecl >, Sema::SemaObject
 		{
 			~ParamList() {}
 			void print( Printer const p ) const;
@@ -115,7 +116,7 @@ namespace C4
 
 		/// Declarator
 		struct DirectDeclarator;
-		struct Declarator : Locatable
+		struct Declarator : Locatable, Sema::SemaObject
 		{
 			Declarator( Lex::Token const &tok, size_t const pointerCount,
 					DirectDeclarator const * const directDeclarator )
@@ -143,7 +144,7 @@ namespace C4
 
 
 		/// Direct Declarator
-		struct DirectDeclarator : Locatable
+		struct DirectDeclarator : Locatable, Sema::SemaObject
 		{
 			DirectDeclarator( Lex::Token const &tok )
 				: Locatable(tok), declarator(NULL), directDeclarator(NULL), params(NULL)
@@ -179,7 +180,7 @@ namespace C4
 
 
 		/// Struct Declarator List
-		struct StructDeclaratorList : List< Declarator >
+		struct StructDeclaratorList : List< Declarator >, Sema::SemaObject
 		{
 			~StructDeclaratorList() {}
 			void print( Printer const p ) const;
@@ -187,7 +188,7 @@ namespace C4
 
 
 		/// Declaration List
-		struct DeclList : List< Decl >
+		struct DeclList : List< Decl >, Sema::SemaObject
 		{
 			~DeclList() {}
 			void print( Printer const p ) const;

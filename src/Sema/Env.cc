@@ -9,9 +9,10 @@
 #include "Env.h"
 
 using namespace C4;
-using namespace Lex;
 using namespace AST;
 using namespace Sema;
+
+#if 0
 
 void Env::pushScope()
 {
@@ -62,3 +63,5 @@ bool Env::addType( TypeSpecifier const * const typeSpec )
   topTypeTable.push_back( typeSpec );
   return true;
 }
+
+#endif

@@ -11,22 +11,39 @@
 
 #include <iostream>
 #include <sstream>
+#include <set>
+#include <vector>
 #include <unordered_map>
-#include <utility>
 #include <cstring>
+#include "../Support/Symbol.h"
 #include "../util.h"
 #include "../diagnostic.h"
-#include "../AST/AST.h"
 
 
 namespace C4
 {
+  // Forward Declarations
+  namespace AST
+  {
+    struct TypeSpecifier;
+    struct ParamList;
+  }
+
   namespace Sema
   {
-    typedef std::vector< AST::TypeSpecifier const * > TypeTable;
-    typedef std::map< std::string, std::pair< AST::TypeSpecifier const * const,
-            AST::ParamList const * const > > IdMap;
+    // Forward Declarations
+    struct SemaType;
+
+    /// Holds a set of all types for a specific scope
+    typedef std::set< AST::TypeSpecifier const * > TypeTable;
+
+    /// Maps symbols to SemaTypes
+    typedef std::unordered_map< Symbol const, SemaType const * > IdMap;
+
+    /// A scope contains a type table and a mapping from symbols to SemaTypes
     typedef std::pair< TypeTable, IdMap > Scope;
+
+    /// Defines an environment class, that keeps track of the scopes.
     struct Env
     {
       Env();
@@ -34,14 +51,13 @@ namespace C4
 
       void pushScope();
       void popScope();
-      AST::TypeSpecifier const * const lookup( std::string id );
-      bool insert( std::string id, AST::TypeSpecifier const * const typeSpec,
-          AST::ParamList const * const paramList );
+
+      AST::TypeSpecifier const * lookup( Symbol const id );
+      bool insert( Symbol const id, SemaType const * type );
       bool addType( AST::TypeSpecifier const * const typeSpec );
 
       private:
-
-      std::vector< Scope > scopeStack; 
+      std::vector< Scope > scopeStack;
     };
   }
 }

@@ -14,6 +14,7 @@
 #include "../util.h"
 #include "List.h"
 #include "Locatable.h"
+#include "../Sema/Sema.h"
 
 
 namespace C4
@@ -26,9 +27,8 @@ namespace C4
     struct DeclList;
 
 
-
     /// Statement
-    struct Stmt : Locatable
+    struct Stmt : Locatable, Sema::SemaObject
     {
       Stmt( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Stmt() {}
@@ -255,7 +255,7 @@ namespace C4
 
 
     /// Block Item
-    struct BlockItem
+    struct BlockItem : Sema::SemaObject
     {
       BlockItem( Stmt const * const stmt ) : stmt(nonNull(stmt)), decl(NULL) {}
       BlockItem( Decl const * const decl ) : stmt(NULL), decl(nonNull(decl)) {}

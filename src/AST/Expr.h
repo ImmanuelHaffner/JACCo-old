@@ -12,6 +12,7 @@
 #include <iostream>
 #include "List.h"
 #include "Locatable.h"
+#include "../Sema/Sema.h"
 
 
 namespace C4
@@ -24,7 +25,7 @@ namespace C4
 
 
 		/// Expression
-		struct Expr : Locatable
+		struct Expr : Locatable, Sema::SemaObject
 		{
 			explicit Expr( Lex::Token const &tok ) : Locatable(tok) {}
 			virtual ~Expr() {}
@@ -42,7 +43,7 @@ namespace C4
 
 
 		/// Expression List
-		struct ExprList : Expr, List< Expr >
+		struct ExprList : Expr, List< Expr >, Sema::SemaObject
 		{
 			explicit ExprList( Lex::Token const &tok ) : Expr(tok) {}
 			~ExprList() {}
