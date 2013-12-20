@@ -185,177 +185,50 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
 ////
 ////===----------------------------------------------------------------------===//
 
-//SemaResult IllegalStmt::anaylze( Env &env ) const
-//{
-  //p.out << "illegal statement " << this->tok << " ";
-//}
+SemaResult IllegalStmt::anaylze( Env &env ) const
+{
+  RET;
+}
 
-//SemaResult CompoundStmt::anaylze( Env &env ) const
-//{
-  //p.iout() << "{\n";
-  //Env &env_rec( p.out, p.indent + 1 );
-  //for ( auto it = begin(); it != end(); ++it )
-  //{
-    //if ( (*it)->stmt )
-      //(*it)->stmt->anaylze( p_rec );
-    //else
-    //{
-      //p_rec.iout();
-      //(*it)->decl->anaylze( p_rec );
-    //}
-    //p.out << "\n";
-  //} // end for
-  //p.iout() << "}";
-//}
+SemaResult CompoundStmt::anaylze( Env &env ) const
+{
+  env->pushScope();
+  for ( auto it : *this )
+  {
+    it->analyze( env );
+  }
+  env->popScope();
+  RET;
+}
 
-//SemaResult LabelStmt::anaylze( Env &env ) const
-//{
-  //if ( tok.kind == TK::IDENTIFIER )
-  //{
-    //p.out << this->tok.sym << ":\n";
-    //this->stmt->anaylze( Printer( p.out, p.indent ) );
-  //}
-  //else
-  //{
-    //p.iout() << this->tok.sym << ":\n";
-    //this->stmt->anaylze( Printer( p.out, p.indent + 1 ) );
-  //}
-//}
+SemaResult LabelStmt::anaylze( Env &env ) const
+{
+  this->stmt->anaylze( env );
+  RET;
+}
 
-//SemaResult CaseStmt::anaylze( Env &env ) const
-//{
-  //p.iout() << this->tok.sym << " " << this->expr << ":\n";
-  //if ( auto caseStmt = dynamic_cast< CaseStmt const * const >( stmt ) )
-  //{
-    //caseStmt->anaylze( p );
-  //}
-  //else
-    //this->stmt->anaylze( Printer( p.out, p.indent + 1 ) );
-//}
+SemaResult CaseStmt::anaylze( Env &env ) const
+{
+  this->expr->analyze( env );
+  this->stmt->anaylze( env );
+  RET;
+}
 
-//SemaResult ExprStmt::anaylze( Env &env ) const
-//{
-  //p.iout();
-  //if ( this->expr )
-    //this->expr->anaylze( p );
-  //p.out << ";";
-//}
+SemaResult ExprStmt::anaylze( Env &env ) const
+{
+  if ( this->expr )
+    return this->expr->anaylze( env );
+  RET;
+}
 
-//SemaResult IfStmt::anaylze( Env &env ) const
-//{
-  //_anaylze( p );
-//}
-
-//SemaResult IfStmt::_anaylze( Env &env, bool const elseIf /*= false*/ ) const
-//{
-  //if ( ! elseIf )
-    //p.iout();
-
-  //// if (a)
-  //p.out << "if (";
-  //Cond->anaylze( p );
-  //p.out << ")";
-
-  //// Printer for the Then and the Else block
-  //Env &env_rec( p.out, p.indent + 1 );
-
-  ///*
-   //*  if (a) {
-   //*    a;
-   //*    b;
-   //*  }
-   //*/
-  //if ( auto compStmt = dynamic_cast< CompoundStmt const * const >( Then ) )
-  //{
-    //p.out << " {\n";
-
-    //for ( auto it = compStmt->begin(); it != compStmt->end(); ++it )
-    //{
-      //if ( (*it)->stmt )
-        //(*it)->stmt->anaylze( p_rec );
-      //else
-      //{
-        //p_rec.iout();
-        //(*it)->decl->anaylze( p_rec );
-      //}
-      //p.out << "\n";
-    //}
-
-    //p.iout() << "}";
-
-    //if ( Else )
-      //p.out << " ";
-  //}
-
-  ///*
-   //*  if (a)
-   //*    a;
-   //*/
-  //else
-  //{
-    //p.out << "\n";
-    //Then->anaylze( p_rec );
-    //if ( Else )
-    //{
-      //p.out << "\n";
-      //p.iout();
-    //}
-  //}
-
-  //if ( Else )
-  //{
-    //p.out << "else";
-    ///*
-     //*  if (a)
-     //*    a;
-     //*  else if
-     //*/
-    //if ( auto ifStmt = dynamic_cast< IfStmt const * const >( Else ) )
-    //{
-      //p.out << " ";
-      //ifStmt->_anaylze( p, true );
-    //}
-
-    ///*
-     //*  if (a)
-     //*    a;
-     //*  else {
-     //*    b;
-     //*  }
-     //*/
-    //else if ( auto compStmt =
-        //dynamic_cast< CompoundStmt const * const >( Else ) )
-    //{
-      //p.out << " {\n";
-
-      //for ( auto it = compStmt->begin(); it != compStmt->end(); ++it )
-      //{
-        //if ( (*it)->stmt )
-          //(*it)->stmt->anaylze( p_rec );
-        //else
-        //{
-          //p_rec.iout();
-          //(*it)->decl->anaylze( p_rec );
-        //}
-        //p.out << "\n";
-      //}
-
-      //p.iout() << "}";
-    //}
-
-    ///*
-     //*  if (a)
-     //*    a;
-     //*  else
-     //*    b;
-     //*/
-    //else
-    //{
-      //p.out << "\n";
-      //Else->anaylze( p_rec );
-    //}
-  //} // end Else
-//}
+SemaResult IfStmt::anaylze( Env &env, bool const elseIf /*= false*/ ) const
+{
+  Cond->anaylze( env );
+  Then->analyze( env );
+  if ( Else )
+    Else->analyze( env );
+  RET;
+}
 
 //SemaResult ForStmt::anaylze( Env &env ) const
 //{
