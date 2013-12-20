@@ -63,6 +63,7 @@ namespace C4
 			~Variable() {}
 
 			void print( Printer const p ) const;
+      Sema::SemaResult analyze( Sema::Env &env ) const;
 		}; // end struct Variable
 
 

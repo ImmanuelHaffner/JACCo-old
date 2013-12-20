@@ -7,10 +7,13 @@
 //===----------------------------------------------------------------------===//
 
 #include "Sema.h"
+#include "../AST/AST.h"
 
 using namespace C4;
 using namespace AST;
 using namespace Sema;
+
+#define RET return SemaResult( Valueness::RLValue, 0 )
 
 
 //===----------------------------------------------------------------------===//
@@ -19,12 +22,11 @@ using namespace Sema;
 //
 //===----------------------------------------------------------------------===//
 
-SemaResult TranslationUnit::analyze( Env * const env ) const
+SemaResult TranslationUnit::analyze( Env &env ) const
 {
-  for ( auto it : *this )
-  {
-    it->analyze( env );
-  }
+  for ( auto it : *this );
+  // TODO analyze
+    //it->analyze( env );
 }
 
 //===----------------------------------------------------------------------===//
@@ -38,10 +40,10 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.out << "illegal expression " << this->tok << " ";
 //}
 
-//SemaResult Variable::anaylze( Env &env ) const
-//{
-  //p.out << this->tok.sym;
-//}
+SemaResult Variable::analyze( Env &env ) const
+{
+  return SemaResult( Valueness::RLValue, 0 );
+}
 
 //SemaResult Constant::anaylze( Env &env ) const
 //{

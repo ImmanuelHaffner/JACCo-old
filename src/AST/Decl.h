@@ -26,7 +26,7 @@ namespace C4
 
 
 		/// External Declaration
-		struct ExtDecl : Printable, Sema::SemaObject
+		struct ExtDecl : Printable
 		{
 			virtual ~ExtDecl() {}
 		}; // end struct ExtDecl
