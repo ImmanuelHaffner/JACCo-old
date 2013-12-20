@@ -33,61 +33,61 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
 //
 //===----------------------------------------------------------------------===//
 
-//SemaResult IllegalExpr::anaylze( Printer const p ) const
+//SemaResult IllegalExpr::anaylze( Env &env ) const
 //{
   //p.out << "illegal expression " << this->tok << " ";
 //}
 
-//SemaResult Variable::anaylze( Printer const p ) const
+//SemaResult Variable::anaylze( Env &env ) const
 //{
   //p.out << this->tok.sym;
 //}
 
-//SemaResult Constant::anaylze( Printer const p ) const
+//SemaResult Constant::anaylze( Env &env ) const
 //{
   //p.out << this->tok.sym;
 //}
 
-//SemaResult StringLiteral::anaylze( Printer const p ) const
+//SemaResult StringLiteral::anaylze( Env &env ) const
 //{
   //p.out << this->tok.sym;
 //}
 
-//SemaResult BinaryExpr::anaylze( Printer const p ) const
+//SemaResult BinaryExpr::anaylze( Env &env ) const
 //{
   //p.out << "(" << this->lhs << " " << this->tok.sym << " "
     //<< this->rhs << ")";
 //}
 
-//SemaResult PostIncExpr::anaylze( Printer const p ) const
+//SemaResult PostIncExpr::anaylze( Env &env ) const
 //{
   //p.out << "(";
   //this->expr.anaylze( p );
   //p.out << "++)";
 //}
 
-//SemaResult PostDecExpr::anaylze( Printer const p ) const
+//SemaResult PostDecExpr::anaylze( Env &env ) const
 //{
   //p.out << "(";
   //this->expr.anaylze( p );
   //p.out << "--)";
 //}
 
-//SemaResult DotExpr::anaylze( Printer const p ) const
+//SemaResult DotExpr::anaylze( Env &env ) const
 //{
   //p.out << "(";
   //this->expr->anaylze( p ); // lhs
   //p.out << "." << this->id.sym << ")";
 //}
 
-//SemaResult ArrowExpr::anaylze( Printer const p ) const
+//SemaResult ArrowExpr::anaylze( Env &env ) const
 //{
   //p.out << "(";
   //this->expr->anaylze( p ); // lhs
   //p.out << "->" << this->id.sym << ")";
 //}
 
-//SemaResult AssignmentExpr::anaylze( Printer const p ) const
+//SemaResult AssignmentExpr::anaylze( Env &env ) const
 //{
   //p.out << "(";
   //this->lhs->anaylze( p ); // lhs
@@ -96,7 +96,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.out << ")";
 //}
 
-//SemaResult ConditionalExpr::anaylze( Printer const p ) const
+//SemaResult ConditionalExpr::anaylze( Env &env ) const
 //{
   //p.out << "(";
   //this->cond->anaylze( p );
@@ -107,21 +107,21 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.out << ")";
 //}
 
-//SemaResult PreDecExpr::anaylze( Printer const p ) const
+//SemaResult PreDecExpr::anaylze( Env &env ) const
 //{
   //p.out << "(--";
   //this->expr->anaylze( p );
   //p.out << ")";
 //}
 
-//SemaResult PreIncExpr::anaylze( Printer const p ) const
+//SemaResult PreIncExpr::anaylze( Env &env ) const
 //{
   //p.out << "(++";
   //this->expr->anaylze( p );
   //p.out << ")";
 //}
 
-//SemaResult FunctionCall::anaylze( Printer const p ) const
+//SemaResult FunctionCall::anaylze( Env &env ) const
 //{
   //p.out << "(";
   //this->fun->anaylze( p );
@@ -131,35 +131,35 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.out << ")";
 //}
 
-//SemaResult UnaryOperation::anaylze( Printer const p ) const
+//SemaResult UnaryOperation::anaylze( Env &env ) const
 //{
   //p.out << "(" << this->tok.sym;
   //this->expr->anaylze( p );
   //p.out << ")";
 //}
 
-//SemaResult SizeofExpr::anaylze( Printer const p ) const
+//SemaResult SizeofExpr::anaylze( Env &env ) const
 //{
   //p.out << "(" << this->tok.sym << " ";
   //this->expr->anaylze( p );
   //p.out << ")";
 //}
 
-//SemaResult SizeofTypeExpr::anaylze( Printer const p ) const
+//SemaResult SizeofTypeExpr::anaylze( Env &env ) const
 //{
   //p.out << "(" << this->tok.sym << "(";
   //this->typeName->anaylze( p );
   //p.out << "))";
 //}
 
-//SemaResult SubscriptExpr::anaylze( Printer const p ) const
+//SemaResult SubscriptExpr::anaylze( Env &env ) const
 //{
   //p.out << "(" << this->expr << "[";
   //this->index->anaylze( p );
   //p.out << "])";
 //}
 
-//SemaResult ExprList::anaylze( Printer const p ) const
+//SemaResult ExprList::anaylze( Env &env ) const
 //{
   //p.out << "(";
   //auto it = this->begin();
@@ -185,15 +185,15 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
 ////
 ////===----------------------------------------------------------------------===//
 
-//SemaResult IllegalStmt::anaylze( Printer const p ) const
+//SemaResult IllegalStmt::anaylze( Env &env ) const
 //{
   //p.out << "illegal statement " << this->tok << " ";
 //}
 
-//SemaResult CompoundStmt::anaylze( Printer const p ) const
+//SemaResult CompoundStmt::anaylze( Env &env ) const
 //{
   //p.iout() << "{\n";
-  //Printer const p_rec( p.out, p.indent + 1 );
+  //Env &env_rec( p.out, p.indent + 1 );
   //for ( auto it = begin(); it != end(); ++it )
   //{
     //if ( (*it)->stmt )
@@ -208,7 +208,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.iout() << "}";
 //}
 
-//SemaResult LabelStmt::anaylze( Printer const p ) const
+//SemaResult LabelStmt::anaylze( Env &env ) const
 //{
   //if ( tok.kind == TK::IDENTIFIER )
   //{
@@ -222,7 +222,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult CaseStmt::anaylze( Printer const p ) const
+//SemaResult CaseStmt::anaylze( Env &env ) const
 //{
   //p.iout() << this->tok.sym << " " << this->expr << ":\n";
   //if ( auto caseStmt = dynamic_cast< CaseStmt const * const >( stmt ) )
@@ -233,7 +233,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
     //this->stmt->anaylze( Printer( p.out, p.indent + 1 ) );
 //}
 
-//SemaResult ExprStmt::anaylze( Printer const p ) const
+//SemaResult ExprStmt::anaylze( Env &env ) const
 //{
   //p.iout();
   //if ( this->expr )
@@ -241,12 +241,12 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.out << ";";
 //}
 
-//SemaResult IfStmt::anaylze( Printer const p ) const
+//SemaResult IfStmt::anaylze( Env &env ) const
 //{
   //_anaylze( p );
 //}
 
-//SemaResult IfStmt::_anaylze( Printer const p, bool const elseIf /*= false*/ ) const
+//SemaResult IfStmt::_anaylze( Env &env, bool const elseIf /*= false*/ ) const
 //{
   //if ( ! elseIf )
     //p.iout();
@@ -257,7 +257,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.out << ")";
 
   //// Printer for the Then and the Else block
-  //Printer const p_rec( p.out, p.indent + 1 );
+  //Env &env_rec( p.out, p.indent + 1 );
 
   ///*
    //*  if (a) {
@@ -357,7 +357,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //} // end Else
 //}
 
-//SemaResult ForStmt::anaylze( Printer const p ) const
+//SemaResult ForStmt::anaylze( Env &env ) const
 //{
   ///*
    //*  for (;;)
@@ -375,7 +375,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
     //this->Step->anaylze( p );
   //p.out << ")";
 
-  //Printer const p_rec( p.out, p.indent + 1 );
+  //Env &env_rec( p.out, p.indent + 1 );
 
   ///*
    //*  for (;;) {
@@ -412,7 +412,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult SwitchStmt::anaylze( Printer const p ) const
+//SemaResult SwitchStmt::anaylze( Env &env ) const
 //{
   //// switch (a)
   //p.iout() << "switch (";
@@ -420,7 +420,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.out << ")";
 
   //// Printer for the Body
-  //Printer const p_rec( p.out, p.indent + 1 );
+  //Env &env_rec( p.out, p.indent + 1 );
 
   ///*
    //*  switch (a) {
@@ -456,7 +456,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult WhileStmt::anaylze( Printer const p ) const
+//SemaResult WhileStmt::anaylze( Env &env ) const
 //{
   ///*
    //*  while (a)
@@ -465,7 +465,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //this->Cond->anaylze( p );
   //p.out << ")";
 
-  //Printer const p_rec( p.out, p.indent + 1 );
+  //Env &env_rec( p.out, p.indent + 1 );
 
   ///*
    //*  while (a) {
@@ -502,11 +502,11 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult DoStmt::anaylze( Printer const p ) const
+//SemaResult DoStmt::anaylze( Env &env ) const
 //{
   //p.iout() << "do";
 
-  //Printer const p_rec( p.out, p.indent + 1 );
+  //Env &env_rec( p.out, p.indent + 1 );
 
   ///*
    //*  do {
@@ -555,22 +555,22 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.out << ");";
 //}
 
-//SemaResult GotoStmt::anaylze( Printer const p ) const
+//SemaResult GotoStmt::anaylze( Env &env ) const
 //{
   //p.iout() << "goto " << tok.sym << ";";
 //}
 
-//SemaResult ContinueStmt::anaylze( Printer const p ) const
+//SemaResult ContinueStmt::anaylze( Env &env ) const
 //{
   //p.iout() << "continue;";
 //}
 
-//SemaResult BreakStmt::anaylze( Printer const p ) const
+//SemaResult BreakStmt::anaylze( Env &env ) const
 //{
   //p.iout() << "break;";
 //}
 
-//SemaResult ReturnStmt::anaylze( Printer const p ) const
+//SemaResult ReturnStmt::anaylze( Env &env ) const
 //{
   //p.iout() << "return";
   //if ( this->expr )
@@ -588,17 +588,17 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
 ////
 ////===----------------------------------------------------------------------===//
 
-//SemaResult IllegalExtDecl::anaylze( Printer const p ) const
+//SemaResult IllegalExtDecl::anaylze( Env &env ) const
 //{
   //p.out << "illegal external declaration " << this->tok << " ";
 //}
 
-//SemaResult IllegalDecl::anaylze( Printer const p ) const
+//SemaResult IllegalDecl::anaylze( Env &env ) const
 //{
   //p.out << "illegal declaration " << this->tok << " ";
 //}
 
-//SemaResult Declarator::anaylze( Printer const p ) const
+//SemaResult Declarator::anaylze( Env &env ) const
 //{
   //// print the pointer by iterating over its count
   //for ( size_t i = 0; i < this->pointerCount; ++i )
@@ -609,12 +609,12 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
     //p.out << ")";
 //}
 
-//SemaResult IllegalDeclarator::anaylze( Printer const p ) const
+//SemaResult IllegalDeclarator::anaylze( Env &env ) const
 //{
   //p.out << "illegal declaration " << this->tok << " ";
 //}
 
-//SemaResult DirectDeclarator::anaylze( Printer const p ) const
+//SemaResult DirectDeclarator::anaylze( Env &env ) const
 //{
   //if ( ! ( this->declarator || this->directDeclarator || this->params ) )
     //p.out << this->tok.sym;
@@ -651,7 +651,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult FunctionDef::anaylze( Printer const p ) const
+//SemaResult FunctionDef::anaylze( Env &env ) const
 //{
   //this->typeSpec->anaylze( p );
   //p.out << " ";
@@ -663,13 +663,13 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //this->compStmt->anaylze( p );
 //}
 
-//SemaResult DeclList::anaylze( Printer const p ) const
+//SemaResult DeclList::anaylze( Env &env ) const
 //{
   //for ( auto it = this->begin(); it != this->end(); ++it )
     //(*it)->anaylze( p );
 //}
 
-//SemaResult StructDeclList::anaylze( Printer const p ) const
+//SemaResult StructDeclList::anaylze( Env &env ) const
 //{
   //for ( auto it = begin(); it != end(); ++it )
   //{
@@ -678,7 +678,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult StructDecl::anaylze( Printer const p ) const
+//SemaResult StructDecl::anaylze( Env &env ) const
 //{
   //p.iout();
   //this->typeSpec->anaylze( p );
@@ -690,7 +690,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //p.out << ";";
 //}
 
-//SemaResult StructDeclaratorList::anaylze( Printer const p ) const
+//SemaResult StructDeclaratorList::anaylze( Env &env ) const
 //{
   //auto it = begin();
   //if ( it !=end() )
@@ -706,7 +706,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult ParamDecl::anaylze( Printer const p ) const
+//SemaResult ParamDecl::anaylze( Env &env ) const
 //{
   //this->typeSpec->anaylze( p );
   //if ( this->declarator )
@@ -716,7 +716,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult ParamList::anaylze( Printer const p ) const
+//SemaResult ParamList::anaylze( Env &env ) const
 //{
   //auto it = begin();
   //if ( it != end() )
@@ -739,7 +739,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
 ////
 ////===----------------------------------------------------------------------===//
 
-//SemaResult TypeName::anaylze( Printer const p ) const
+//SemaResult TypeName::anaylze( Env &env ) const
 //{
   //this->typeSpec->anaylze( p );
   //if ( this->declarator )
@@ -749,7 +749,7 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult StructSpecifier::anaylze( Printer const p ) const
+//SemaResult StructSpecifier::anaylze( Env &env ) const
 //{
   //p.out << "struct";
 
@@ -773,17 +773,17 @@ SemaResult TranslationUnit::analyze( Env * const env ) const
   //}
 //}
 
-//SemaResult TypeSpecifier::anaylze( Printer const p ) const
+//SemaResult TypeSpecifier::anaylze( Env &env ) const
 //{
   //p.out << this->tok.sym;
 //}
 
-//SemaResult IllegalTypeSpecifier::anaylze( Printer const p ) const
+//SemaResult IllegalTypeSpecifier::anaylze( Env &env ) const
 //{
   //p.out << "illegal type specifier " << this->tok << " ";
 //}
 
-//SemaResult Decl::anaylze( Printer const p ) const
+//SemaResult Decl::anaylze( Env &env ) const
 //{
   //this->typeSpec->anaylze( p );
   //if ( this->declarator )
