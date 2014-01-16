@@ -585,45 +585,32 @@ StructDeclaratorList const * Parser::parseStructDeclaratorList()
   return structDeclarators;
 } // end parseStructDeclaratorList
 
-Declarator const * Parser::parseDeclarator(
+PointerDeclarator const * Parser::parsePointerDeclarator(
     DeclaratorType const dt /*= NORMAL*/ )
 {
   Token const tok( *current );
-  size_t pointerCount = parsePointer();
-  DirectDeclarator const * directDeclarator = NULL;
+  Declarator const * subDeclarator = NULL;
 
+  readNextToken(); // eat *
   if ( dt == DeclaratorType::NORMAL )
-    directDeclarator = parseDirectDeclarator();
+    subDeclarator = parseDeclarator();
   else
     switch ( current->kind )
     {
       case TK::IDENTIFIER:
       case TK::LPar:
-        directDeclarator = parseDirectDeclarator( dt );
+        subDeclarator = parseDeclarator( dt );
         break;
 
       default:;
     } // end switch
+  return new PointerDeclarator( tok, subDeclarator );
+} // end parsePointerDeclarator
 
-  return new Declarator( tok, pointerCount, directDeclarator );
-} // end parseDeclarator
-
-size_t Parser::parsePointer()
-{
-  size_t pointerCount = 0;
-  while ( current->kind == TK::Mul )
-  {
-    readNextToken(); // eat '*'
-    pointerCount++;
-  }
-  return pointerCount;
-} // end parsePointer
-
-DirectDeclarator const * Parser::parseDirectDeclarator(
-    DeclaratorType const dt /*= NULL*/ )
+Declarator const * Parser::parseDeclarator(
+    DeclaratorType const dt /*= NORMAL*/ )
 {
   Token const tok( *current );
-  DirectDeclarator const * directDeclarator = NULL;
   Declarator const * declarator = NULL;
   ParamList const * paramList = NULL;
 
@@ -638,6 +625,7 @@ DirectDeclarator const * Parser::parseDirectDeclarator(
         switch ( current->kind )
         {
           case TK::RPar:
+            paramList = new ParamList();
             break;
 
           case TK::Void:
@@ -648,6 +636,8 @@ DirectDeclarator const * Parser::parseDirectDeclarator(
             break;
 
           case TK::Mul:
+            declarator = parsePointerDeclarator( dt );
+            break;
           case TK::LPar:
             declarator = parseDeclarator( dt );
             break;
@@ -659,11 +649,14 @@ DirectDeclarator const * Parser::parseDirectDeclarator(
       accept( TK::RPar ); // eat ')'
       break;
 
+    case TK::Mul:
+      declarator = parsePointerDeclarator( dt );
+      break;
     case TK::IDENTIFIER:
       if ( dt != DeclaratorType::ABSTRACT )
       {
         readNextToken(); // eat identifier
-        directDeclarator = new DirectDeclarator( tok );
+        declarator = new Identifier( tok );
         break;
       }
       // no break here; run into default
@@ -707,24 +700,12 @@ DirectDeclarator const * Parser::parseDirectDeclarator(
     } // end switch
     accept( TK::RPar ); // eat ')'
 
-    if ( declarator )
-      return new DirectDeclarator( tok, declarator, paramList );
-
-    if ( directDeclarator )
-      return new DirectDeclarator( tok, directDeclarator, paramList );
   }
 
   if ( paramList )
-    return new DirectDeclarator( tok, paramList );
-
-  if ( declarator )
-    return new DirectDeclarator( tok, declarator );
-
-  if ( directDeclarator )
-    return new DirectDeclarator( tok, directDeclarator );
-
-  return directDeclarator;
-} // end parseDirectDeclarator
+    return new FunctionDeclarator( tok, declarator, paramList );
+  return declarator;
+} // end parseDeclarator
 
 ParamList const * Parser::parseParameterList()
 {
