@@ -240,6 +240,7 @@ namespace C4
 
 			void print( Printer const p ) const;
 
+      // TODO make use of the FunctionDeclarator
 			TypeSpecifier const * const typeSpec;
 			Declarator const * const declarator;
 			DeclList const * const decls;
