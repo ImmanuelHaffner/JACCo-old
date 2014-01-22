@@ -9,6 +9,7 @@
 #ifndef C4_SEMA_TYPE_H
 #define C4_SEMA_TYPE_H
 
+#include <vector>
 #include <functional>
 #include <cstring>
 #include <string>
@@ -70,6 +71,22 @@ namespace C4
     /// type.
     struct StructType : ObjType
     {
+      StructType( std::vector< Type const * > const content )
+      {
+        this->content.insert( this->content.end() /* where to insert */,
+            content.begin() /* begin of elements to insert */,
+            content.end() /* end of elements to insert */ );
+      }
+
+      ~StructType() {}
+
+      inline void complete() { completed = true; }
+      inline bool isComplete() { return completed; }
+      size_t size() const { return content.size(); }
+
+      private:
+      bool completed;
+      std::vector< Type const * > content;
     }; // end struct StructType
 
 
