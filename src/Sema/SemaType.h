@@ -47,7 +47,7 @@ namespace C4
       virtual bool isComplete() = 0;
 
       /// \return the size of the object in bytes
-      virtual size_t size() = 0;
+      virtual size_t size() const = 0;
     }; // end struct ObjType
 
 
@@ -59,8 +59,8 @@ namespace C4
       ~VoidType() {}
 
       inline bool isComplete() { return false; }
-      inline size_t size() { return -1; } // since Void is incomplete, the size
-                                          // is irrelevant
+      inline size_t size() const { return -1; } // since Void is incomplete, the
+                                                // size is irrelevant
     }; // end struct VoidType
 
 
@@ -113,7 +113,7 @@ namespace C4
       ~BasicType() {}
 
       inline bool isComplete() { return true; }
-      inline size_t size() { return _size; }
+      inline size_t size() const { return _size; }
 
       private:
       size_t const _size; // the size in bytes
