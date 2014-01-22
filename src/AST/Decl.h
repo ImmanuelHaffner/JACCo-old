@@ -116,27 +116,60 @@ namespace C4
 
 		/// Declarator
 		struct DirectDeclarator;
-		struct Declarator : Locatable, Sema::SemaObject
+    struct Declarator : Locatable
+    {
+      Declarator( Lex::Token const &tok ) : Locatable(tok) {}
+      virtual ~Declarator() {}
+    }; // end struct Declarator
+
+    /// Identifier
+    struct Identifier : Declarator
+    {
+      Identifier( Lex::Token const &tok ) : Declarator(tok) {}
+      ~Identifier() {}
+      void print( Printer const p ) const;
+    }; // end struct Identifier
+
+
+		/// PointerDeclarator
+		struct PointerDeclarator : Declarator
 		{
-			Declarator( Lex::Token const &tok, size_t const pointerCount,
-					DirectDeclarator const * const directDeclarator )
-				: Locatable (tok), pointerCount(pointerCount),
-				directDeclarator(directDeclarator)
+			PointerDeclarator( Lex::Token const &tok,
+					Declarator const * const declarator )
+				: Declarator(tok),
+				declarator(declarator)
 			{}
 
-			virtual ~Declarator() {}
+			~PointerDeclarator() {}
 
 			void print( Printer const p ) const;
 
-			size_t const pointerCount;
-			DirectDeclarator const * const directDeclarator;
-		}; // end struct Declarator
+			Declarator const * const declarator;
+		}; // end struct PointerDeclarator
+
+    /// FunctionDeclarator
+    struct FunctionDeclarator : Declarator
+    {
+      FunctionDeclarator( Lex::Token const &tok,
+          Declarator const * const declarator,
+					ParamList const * const params )
+				: Declarator(tok), declarator(declarator),
+        params(nonNull(params))
+			{}
+
+      ~FunctionDeclarator() {}
+
+      void print( Printer const p ) const;
+
+      Declarator const * const declarator;
+      ParamList const * const params;
+    }; // end struct FunctionDeclarator
 
 
 		/// Illegal Declarator
 		struct IllegalDeclarator : Declarator
 		{
-			IllegalDeclarator( Lex::Token const &tok ) : Declarator(tok,0,NULL) {}
+			IllegalDeclarator( Lex::Token const &tok ) : Declarator(tok) {}
 			~IllegalDeclarator() {}
 
 			void print( Printer const p ) const;

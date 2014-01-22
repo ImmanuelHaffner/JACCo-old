@@ -641,15 +641,25 @@ void IllegalDecl::print( Printer const p ) const
   p.out << "illegal declaration " << this->tok << " ";
 }
 
-void Declarator::print( Printer const p ) const
+void PointerDeclarator::print( Printer const p ) const
 {
-  // print the pointer by iterating over its count
-  for ( size_t i = 0; i < this->pointerCount; ++i )
-    p.out << "(*";
-  if ( this->directDeclarator )
-    this->directDeclarator->print( p );
-  for ( size_t i = 0; i < this->pointerCount; ++i )
-    p.out << ")";
+  p.out << "(*";
+  if ( this->declarator )
+    this->declarator->print( p );
+  p.out << ")";
+}
+
+void FunctionDeclarator::print( Printer const p ) const
+{
+  if ( this->declarator )
+    p.out << "(" << this->declarator << "(" << this->params << "))";
+  else
+    p.out << "(" << this->params << ")";
+}
+
+void Identifier::print( Printer const p ) const
+{
+  p.out << this->tok.sym;
 }
 
 void IllegalDeclarator::print( Printer const p ) const
