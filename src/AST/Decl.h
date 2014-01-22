@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include "Locatable.h"
-#include "../Sema/Sema.h"
 #include "List.h"
 #include "../util.h"
 #include <vector>
@@ -44,7 +43,7 @@ namespace C4
 
 		/// Declaration
 		struct Declarator;
-		struct Decl : ExtDecl, Sema::SemaObject
+		struct Decl : ExtDecl
 		{
 			Decl( TypeSpecifier const * const typeSpec,
 					Declarator const * const declarator = NULL )
@@ -72,7 +71,7 @@ namespace C4
 
 		/// Struct Declaration List
 		struct StructDecl;
-		struct StructDeclList : List< StructDecl >, Sema::SemaObject
+		struct StructDeclList : List< StructDecl >
 		{
 			~StructDeclList() {}
 			void print( Printer const p ) const;
@@ -108,7 +107,7 @@ namespace C4
 
 
 		/// Parameter List
-		struct ParamList : List< ParamDecl >, Sema::SemaObject
+		struct ParamList : List< ParamDecl >
 		{
 			~ParamList() {}
 			void print( Printer const p ) const;
@@ -177,7 +176,7 @@ namespace C4
 
 
 		/// Direct Declarator
-		struct DirectDeclarator : Locatable, Sema::SemaObject
+		struct DirectDeclarator : Locatable
 		{
 			DirectDeclarator( Lex::Token const &tok )
 				: Locatable(tok), declarator(NULL), directDeclarator(NULL), params(NULL)
@@ -213,7 +212,7 @@ namespace C4
 
 
 		/// Struct Declarator List
-		struct StructDeclaratorList : List< Declarator >, Sema::SemaObject
+		struct StructDeclaratorList : List< Declarator >
 		{
 			~StructDeclaratorList() {}
 			void print( Printer const p ) const;
@@ -221,7 +220,7 @@ namespace C4
 
 
 		/// Declaration List
-		struct DeclList : List< Decl >, Sema::SemaObject
+		struct DeclList : List< Decl >
 		{
 			~DeclList() {}
 			void print( Printer const p ) const;

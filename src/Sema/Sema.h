@@ -14,12 +14,6 @@
 
 namespace C4
 {
-  // Forward Declarations
-  namespace AST
-  {
-    struct TypeSpecifier;
-  }
-
   /// The Sema
   namespace Sema
   {
@@ -29,42 +23,6 @@ namespace C4
       LValue,
       RValue,
       RLValue
-    };
-
-    struct SemaType
-    {
-      SemaType( AST::TypeSpecifier const * const returnType,
-          size_t const pointerCount = 0,
-          AST::ParamList const * const paramTypes = NULL )
-        : returnType(returnType), pointerCount(pointerCount),
-        paramTypes(paramTypes)
-      {}
-
-      ~SemaType() {}
-
-      AST::TypeSpecifier const * const returnType;
-      size_t const pointerCount;
-      AST::ParamList const * const paramTypes;
-    };
-
-    struct SemaResult
-    {
-      SemaResult( Valueness const valueness, SemaType const * const type )
-        : valueness(valueness), type(type)
-      {}
-
-      ~SemaResult() {}
-
-      Valueness const valueness;
-      SemaType const * const type;
-    };
-
-    /// SemaObject defines an interface for all AST nodes, that are semantically
-    /// analyzable.
-    struct SemaObject
-    {
-      virtual ~SemaObject() {}
-      virtual SemaResult analyze( Env &env ) const;
     };
   } // end namespace Sema
 } // end namespace C4

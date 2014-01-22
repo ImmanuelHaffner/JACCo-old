@@ -12,7 +12,6 @@
 #include <iostream>
 #include <vector>
 #include "List.h"
-#include "../Sema/Sema.h"
 
 
 namespace C4
@@ -23,12 +22,11 @@ namespace C4
     struct ExtDecl;
 
     /// Translation Unit
-    struct TranslationUnit : List< ExtDecl >, Sema::SemaObject
+    struct TranslationUnit : List< ExtDecl >
     {
       ~TranslationUnit() {}
 
       void print( Printer const p ) const;
-      Sema::SemaResult analyze( Sema::Env &env ) const;
     }; // end struct TranslationUnit
   } // end namespace AST
 } // end namespace C4
