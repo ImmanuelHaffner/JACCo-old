@@ -25,7 +25,6 @@ namespace C4
     struct Type
     {
       virtual ~Type() {}
-      virtual size_t hash() = 0;
     }; // end struct Type
 
 
@@ -41,16 +40,29 @@ namespace C4
     /// objects of that type) or complete (having sufficient information).
     struct ObjType : Type
     {
+      /// States whether an object is complete. Incomplete objects are not yet
+      /// completely constructed. Hence, it is impossible to compute their size.
+      ///
+      /// \return true iff the object is complete, false otherwise
       virtual bool isComplete() = 0;
+
+      /// \return the size of the object in bytes
+      virtual size_t size() = 0;
     }; // end struct ObjType
 
 
     /// \brief The void type comprises an empty set of values; it is an
-    //incomplete object type that cannot be completed.
+    /// incomplete object type that cannot be completed.
     struct VoidType : ObjType
     {
+      VoidType() {}
+      ~VoidType() {}
+
       inline bool isComplete() { return false; }
+      inline size_t size() { return -1; } // since Void is incomplete, the size
+                                          // is irrelevant
     }; // end struct VoidType
+
 
     /// \brief A structure type describes a sequentially allocated nonempty set
     /// of member objects (and, in certain circumstances, an incomplete array),
@@ -70,6 +82,15 @@ namespace C4
 
     struct PtrType : ScalarType
     {
+      PtrType( Type const * const innerType ) :
+        innerType(innerType)
+      {}
+
+      ~PtrType() {}
+
+      inline bool isComplete() { return true; }
+
+      Type const * const innerType;
     }; // end struct PtrType
 
 
@@ -88,8 +109,16 @@ namespace C4
     /// same representation, they are nevertheless different types.
     struct BasicType : ArithmeticType
     {
+      BasicType( size_t const size ) : _size(size) {}
+      ~BasicType() {}
+
+      inline bool isComplete() { return true; }
+      inline size_t size() { return _size; }
+
+      private:
+      size_t const _size; // the size in bytes
     }; // end struct BasicType
   } // end namespace Sema
-} // end namespace std
+} // end namespace C4
 
 #endif

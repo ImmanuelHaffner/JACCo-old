@@ -6,6 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_SYMBOL
 #define C4_SYMBOL
 
@@ -13,6 +14,7 @@
 #include <cstring>
 #include <string>
 #include <unordered_set>
+
 
 namespace C4
 {
