@@ -20,6 +20,15 @@ namespace C4
 {
   namespace Sema
   {
+    /// Defines the hash values for unique types.
+    enum HashCode
+    {
+      HASH_Void = 3,
+      HASH_Char = 5,
+      HASH_Int = 7
+    };
+
+
     /* Define hash and equals for function type.
      * (necessary for internalizing)
      */
@@ -39,7 +48,10 @@ namespace C4
      */
     struct PtrHash
     {
-      size_t operator()( PtrType const * const t ) const;
+      inline size_t operator()( PtrType const * const t ) const
+      {
+        return t->hashCode();
+      }
     };
 
     struct PtrEqual

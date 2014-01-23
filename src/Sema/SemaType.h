@@ -26,6 +26,8 @@ namespace C4
     struct Type
     {
       virtual ~Type() {}
+
+      virtual size_t hashCode() const = 0;
     }; // end struct Type
 
 
@@ -42,6 +44,14 @@ namespace C4
       }
 
       ~FuncType() {}
+
+      inline size_t hashCode() const
+      {
+        size_t h = retType->hashCode();
+        for ( Type const * t : argTypes )
+          h = h * 23 + t->hashCode();
+        return h;
+      }
 
       Type const * const retType;
 
@@ -71,12 +81,17 @@ namespace C4
     /// incomplete object type that cannot be completed.
     struct VoidType : ObjType
     {
-      VoidType() {}
+      VoidType( size_t const hashCode ) : hashCode_(hashCode) {}
       ~VoidType() {}
 
       inline bool isComplete() { return false; }
       inline size_t size() const { return -1; } // since Void is incomplete, the
                                                 // size is irrelevant
+
+      inline size_t hashCode() const { return hashCode_; }
+
+      private:
+      size_t const hashCode_;
     }; // end struct VoidType
 
 
@@ -124,6 +139,11 @@ namespace C4
       ~PtrType() {}
 
       inline bool isComplete() { return true; }
+      inline size_t hashCode() const
+      {
+        size_t const h = innerType->hashCode();
+        return ( h * 31 ) ^ h;
+      }
 
       Type const * const innerType;
     }; // end struct PtrType
@@ -144,14 +164,19 @@ namespace C4
     /// same representation, they are nevertheless different types.
     struct BasicType : ArithmeticType
     {
-      BasicType( size_t const size ) : _size(size) {}
+      BasicType( size_t const size, size_t const hashCode ) :
+        size_(size), hashCode_(hashCode)
+      {}
+
       ~BasicType() {}
 
       inline bool isComplete() { return true; }
-      inline size_t size() const { return _size; }
+      inline size_t size() const { return size_; }
+      inline size_t hashCode() const { return hashCode_; }
 
       private:
-      size_t const _size; // the size in bytes
+      size_t const size_; // the size in bytes
+      size_t const hashCode_; // the default hash for that type (MUST BE UNIQUE!)
     }; // end struct BasicType
   } // end namespace Sema
 } // end namespace C4

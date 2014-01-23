@@ -48,9 +48,9 @@ TypeFactory::PtrTable TypeFactory::ptrTable_(255);
 
 
 // Initialize simple types.
-VoidType const TypeFactory::VOID;
-BasicType const TypeFactory::CHAR(1);
-BasicType const TypeFactory::INT(4);
+VoidType const TypeFactory::VOID(HASH_Void);
+BasicType const TypeFactory::CHAR(1, HASH_Char);
+BasicType const TypeFactory::INT(4, HASH_Int);
 
 
 TypeFactory::TypeFactory()
