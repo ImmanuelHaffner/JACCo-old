@@ -30,14 +30,21 @@ bool FuncEqual::operator()( FuncType const * const t0,
 
 void TypeFactory::destroy()
 {
+  // clear the function type table
   for ( auto t : funcTable_ )
     delete t;
   funcTable_.clear();
+
+  // clear the pointer type table
+  for ( auto t : ptrTable_ )
+    delete t;
+  ptrTable_.clear();
 }
 
 
 // Initialize the function type table.
 TypeFactory::FuncTable TypeFactory::funcTable_(255);
+TypeFactory::PtrTable TypeFactory::ptrTable_(255);
 
 
 // Initialize simple types.

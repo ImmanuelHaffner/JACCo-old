@@ -34,6 +34,20 @@ namespace C4
           FuncType const * const t1 ) const;
     };
 
+    /* Define hash and equals for pointer type.
+     * (necessary for internalizing)
+     */
+    struct PtrHash
+    {
+      size_t operator()( PtrType const * const t ) const;
+    };
+
+    struct PtrEqual
+    {
+      bool operator()( PtrType const * const t0,
+          PtrType const * const t1 ) const;
+    };
+
 
     /// \brief Constructs internalized types from AST nodes.
     struct TypeFactory
@@ -41,11 +55,16 @@ namespace C4
       /// Destroys all tables of internalized types, as well as their elements.
       static void destroy();
 
-
       /// \return the size of the table of internalized function types
       static inline size_t sizeF()
       {
         return funcTable_.size();
+      }
+
+      /// \return the size of the table of internalized function types
+      static inline size_t sizeP()
+      {
+        return ptrTable_.size();
       }
 
 
@@ -63,10 +82,13 @@ namespace C4
       static BasicType const CHAR;
       static BasicType const INT;
 
-      // The hash sets to internalize structure types and function types.
+      // The hash sets to internalize and function types and pointer types.
       typedef std::unordered_set< FuncType const *, FuncHash, FuncEqual >
         FuncTable;
+      typedef std::unordered_set< PtrType const *, PtrHash, PtrEqual >
+        PtrTable;
       static FuncTable funcTable_;
+      static PtrTable ptrTable_;
     }; // end struct TypeFactory
   } // end namespace Sema
 } // end namespace C4
