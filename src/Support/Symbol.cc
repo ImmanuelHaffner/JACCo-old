@@ -48,4 +48,5 @@ void Symbol::destroy()
 {
     for ( auto s : table_ )
         free( (void*) const_cast< char * >( s ) );
+    table_.clear();
 }

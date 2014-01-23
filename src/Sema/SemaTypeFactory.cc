@@ -32,6 +32,7 @@ void TypeFactory::destroy()
 {
   for ( auto t : funcTable_ )
     delete t;
+  funcTable_.clear();
 }
 
 
