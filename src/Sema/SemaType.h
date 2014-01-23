@@ -82,7 +82,10 @@ namespace C4
 
       inline void complete() { completed = true; }
       inline bool isComplete() { return completed; }
-      size_t size() const { return content.size(); }
+      inline size_t size() const
+      {
+        return completed ? content.size() : -1;
+      }
 
       private:
       bool completed;
