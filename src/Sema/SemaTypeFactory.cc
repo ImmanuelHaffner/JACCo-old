@@ -14,9 +14,36 @@ using namespace C4;
 using namespace Sema;
 
 
+size_t FuncHash::operator()( FuncType const * const t ) const
+{
+  // TODO implement
+  return -1;
+}
+
+bool FuncEqual::operator()( FuncType const * const t0,
+    FuncType const * const t1 ) const
+{
+  // TODO implement
+  return -1;
+}
+
+
+void TypeFactory::destroy()
+{
+  for ( auto t : funcTable_ )
+    delete t;
+}
+
+
+// Initialize the function type table.
+TypeFactory::FuncTable TypeFactory::funcTable_(255);
+
+
+// Initialize simple types.
 VoidType const TypeFactory::VOID;
 BasicType const TypeFactory::CHAR(1);
 BasicType const TypeFactory::INT(4);
+
 
 TypeFactory::TypeFactory()
 {

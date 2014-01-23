@@ -20,35 +20,35 @@ namespace C4
 {
   namespace Sema
   {
-    /* Define hash and equals for struct type.
-     */
-    struct StructHash
-    {
-      size_t operator()( StructType const * const t ) const;
-    };
-
-    struct StructEqual
-    {
-      bool operator()( StructType const * const t0,
-          StructType const * const t1 ) const;
-    };
-
-    /* Define hash and equals for struct type.
+    /* Define hash and equals for function type.
+     * (necessary for internalizing)
      */
     struct FuncHash
     {
-      size_t operator()( FuncHash const * const t ) const;
+      size_t operator()( FuncType const * const t ) const;
     };
 
     struct FuncEqual
     {
-      bool operator()( FuncHash const * const t0,
-          FuncHash const * const t1 ) const;
+      bool operator()( FuncType const * const t0,
+          FuncType const * const t1 ) const;
     };
 
 
+    /// \brief Constructs internalized types from AST nodes.
     struct TypeFactory
     {
+      /// Destroys all tables of internalized types, as well as their elements.
+      static void destroy();
+
+
+      /// \return the size of the table of internalized function types
+      static inline size_t sizeF()
+      {
+        return funcTable_.size();
+      }
+
+
       TypeFactory();
       ~TypeFactory() {}
 
@@ -64,16 +64,12 @@ namespace C4
       static BasicType const INT;
 
       // The hash sets to internalize structure types and function types.
-      typedef std::unordered_set< StructType const *, StructHash, StructEqual >
-        StructTable;
       typedef std::unordered_set< FuncType const *, FuncHash, FuncEqual >
         FuncTable;
+      static FuncTable funcTable_;
     }; // end struct TypeFactory
   } // end namespace Sema
 } // end namespace C4
 
-namespace std
-{
-}; // end namespace std
 
 #endif
