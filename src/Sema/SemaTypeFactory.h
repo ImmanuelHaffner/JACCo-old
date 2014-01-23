@@ -34,7 +34,10 @@ namespace C4
      */
     struct FuncHash
     {
-      size_t operator()( FuncType const * const t ) const;
+      inline size_t operator()( FuncType const * const t ) const
+      {
+        return t->hashCode();
+      }
     };
 
     struct FuncEqual
@@ -57,7 +60,10 @@ namespace C4
     struct PtrEqual
     {
       bool operator()( PtrType const * const t0,
-          PtrType const * const t1 ) const;
+          PtrType const * const t1 ) const
+      {
+        return t0 == t1;
+      }
     };
 
 
