@@ -709,9 +709,6 @@ void FunctionDef::print( Printer const p ) const
   this->typeSpec->print( p );
   p.out << " ";
   this->declarator->print( p );
-  if ( this->decls )
-    p.out << " " << this->decls;
-  // static cast, to resolve multiple-inheritance ambiguity
   p.out << "\n";
   this->compStmt->print( p );
 }

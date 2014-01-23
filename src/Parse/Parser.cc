@@ -1153,29 +1153,6 @@ for_end:
   return unit;
 } // end parseTranslationUnit
 
-FunctionDef const * Parser::parseFunctionDef(
-    TypeSpecifier const * const typeSpecifier,
-    Declarator const * const declarator )
-{
-  DeclList const * decls = NULL;
-  switch ( current->kind )
-  {
-    case TK::Void:
-    case TK::Char:
-    case TK::Int:
-    case TK::Struct:
-      decls = parseDeclList();
-      break;
-
-    default:;
-  } // end switch
-
-  // TODO make use of the FunctionDeclarator object
-
-  return new FunctionDef( typeSpecifier, declarator, decls,
-      parseCompoundStmt() );
-} // end parseFunctionDefinition
-
 ExtDecl const * Parser::parseExtDecl()
 {
   switch ( current->kind )
@@ -1199,12 +1176,11 @@ ExtDecl const * Parser::parseExtDecl()
             readNextToken(); // eat ';'
             return new Decl( typeSpec, declarator );
 
-          case TK::Void:
-          case TK::Char:
-          case TK::Int:
-          case TK::Struct:
           case TK::LBrace:
-            return parseFunctionDef( typeSpec, declarator );
+            // check whether the declarator is actually a function declarator
+            if ( ! dynamic_cast< FunctionDeclarator const * >( declarator ) )
+              ERROR( "'(' [parameter-list] ')'" );
+            return new FunctionDef( typeSpec, declarator, parseCompoundStmt() );
 
           default:
             ERROR( "';' or function-definition" );
