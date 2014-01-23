@@ -76,7 +76,7 @@ namespace std {
   template<>
     struct equal_to< C4::Symbol >
     {
-      size_t operator()( C4::Symbol sym0, C4::Symbol sym1 ) const
+      bool operator()( C4::Symbol sym0, C4::Symbol sym1 ) const
       {
         return sym0.str() == sym1.str();
       }

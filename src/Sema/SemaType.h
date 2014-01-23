@@ -32,6 +32,21 @@ namespace C4
     /// \brief Represents function types.
     struct FuncType : Type
     {
+      FuncType( Type const * const retType,
+          std::vector< Type const * > argTypes ) :
+        retType(retType)
+      {
+        this->argTypes.insert( this->argTypes.end() /* where to insert */,
+            argTypes.begin() /* begin of elements to insert */,
+            argTypes.end() /* end of elements to insert */ );
+      }
+
+      ~FuncType() {}
+
+      Type const * const retType;
+
+      private:
+      std::vector< Type const * > argTypes;
     }; // end struct FuncType
 
     /// \brief Represents pointer and scalar types.
