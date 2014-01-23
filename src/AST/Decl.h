@@ -231,9 +231,9 @@ namespace C4
 		struct FunctionDef : ExtDecl
 		{
 			FunctionDef( TypeSpecifier const * const typeSpec,
-					Declarator const * const declarator, DeclList const * const decls,
+					Declarator const * const declarator,
 					CompoundStmt const * const compStmt )
-				: typeSpec(typeSpec), declarator(nonNull(declarator)), decls(decls),
+				: typeSpec(typeSpec), declarator(nonNull(declarator)),
 				compStmt(nonNull(compStmt))
 			{}
 
@@ -241,9 +241,9 @@ namespace C4
 
 			void print( Printer const p ) const;
 
+      // TODO make use of the FunctionDeclarator
 			TypeSpecifier const * const typeSpec;
 			Declarator const * const declarator;
-			DeclList const * const decls;
 			CompoundStmt const * const compStmt;
 		}; // end struct FunctionDef
 	} // end namespace AST

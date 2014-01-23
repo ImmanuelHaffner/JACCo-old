@@ -220,9 +220,5 @@ translation_unit
   ;
 
 function_definition
-  : type_specifier declarator [declaration_list] compound_statement // declarator is NORMAL
-  ;
-
-declaration_list
-  : declaration +
+  : type_specifier declarator compound_statement // declarator is NORMAL
   ;
