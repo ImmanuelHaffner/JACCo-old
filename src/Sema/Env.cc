@@ -23,24 +23,35 @@ void Env::popScope()
   scopeStack.pop_back();
 }
 
-TypeSpecifier const * Env::lookup( Symbol const id )
+Entity const * Env::lookup( Symbol const id )
 {
   // iterate over all scopes, starting with the last
   for ( auto scopeIt = scopeStack.rbegin(); scopeIt != scopeStack.rend();
       ++scopeIt )
   {
-    // TODO get the sema type for the id
+    auto find_it = scopeIt->second.find( id );
+    if ( find_it != scopeIt->second.end() )
+      return find_it->second;
   }
   return NULL;
 }
 
-bool Env::insert( Symbol const id, SemaType const * type )
+bool Env::insert( Symbol const id, Entity const * const entity )
 {
-  // TODO
-  return false;
+  IdMap & topIdMap = scopeStack.back().second;
+  auto find_it = topIdMap.find( id );
+  if ( find_it != topIdMap.end() )
+    return false;
+  topIdMap.insert( std::make_pair( id, entity ) );
+  return true;
 }
 
-bool Env::addType( TypeSpecifier const * const typeSpec )
+bool Env::addType( Symbol const type_id, Type const * const type )
 {
+  TypeTable & topTypeTable = scopeStack.back().first;
+  auto find_it = topTypeTable.find( type_id );
+  if ( find_it != topTypeTable.end() )
+    return false;
+  topTypeTable.insert( std::make_pair( type_id, type ) );
   return true;
 }

@@ -18,6 +18,7 @@
 #include "../Support/Symbol.h"
 #include "../util.h"
 #include "../diagnostic.h"
+#include "SemaType.h"
 
 
 namespace C4
@@ -31,14 +32,14 @@ namespace C4
 
   namespace Sema
   {
-    // Forward Declarations
-    struct SemaType;
+    /// Temporary Typedef TODO: Remove
+    typedef struct {} Entity;
 
-    /// Holds a set of all types for a specific scope
-    typedef std::set< AST::TypeSpecifier const * > TypeTable;
+    /// Maps symbols to types 
+    typedef std::unordered_map< Symbol, Type const * const > TypeTable;
 
-    /// Maps symbols to SemaTypes
-    typedef std::unordered_map< Symbol, SemaType const * > IdMap;
+    /// Maps symbols to entities
+    typedef std::unordered_map< Symbol, Entity const * const > IdMap;
 
     /// A scope contains a type table and a mapping from symbols to SemaTypes
     typedef std::pair< TypeTable, IdMap > Scope;
@@ -52,9 +53,9 @@ namespace C4
       void pushScope();
       void popScope();
 
-      AST::TypeSpecifier const * lookup( Symbol const id );
-      bool insert( Symbol const id, SemaType const * type );
-      bool addType( AST::TypeSpecifier const * const typeSpec );
+      Entity const * lookup( Symbol const id );
+      bool insert( Symbol const id, Entity const * const entity );
+      bool addType( Symbol const type_id, Type const * const type );
 
       private:
       std::vector< Scope > scopeStack;
