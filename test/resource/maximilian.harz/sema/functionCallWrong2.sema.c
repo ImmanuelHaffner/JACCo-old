@@ -1,3 +1,5 @@
+1
+
 int foo(char c)
 {
 	return 1;
@@ -5,6 +7,6 @@ int foo(char c)
 
 int main()
 {
-	int x;
-	x = foo(23);
+  struct { int a; } x;
+	foo(x);
 }

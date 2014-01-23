@@ -1,3 +1,5 @@
+1
+
 int main()
 {
 	int (*p);

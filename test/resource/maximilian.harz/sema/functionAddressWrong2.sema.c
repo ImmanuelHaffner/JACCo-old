@@ -1,3 +1,5 @@
+1
+
 int foo(char c)
 {
 	return 1;

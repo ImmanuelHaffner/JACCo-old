@@ -1,7 +1,9 @@
+1
+
 int main()
 {
 	struct S {
-		char x;
+		struct { int a; } x;
 	} (*s);
 	s->x = 5;
 }

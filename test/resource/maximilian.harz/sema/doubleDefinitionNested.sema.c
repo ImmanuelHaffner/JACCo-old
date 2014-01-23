@@ -1,3 +1,5 @@
+0
+
 int main()
 {
 	int x;

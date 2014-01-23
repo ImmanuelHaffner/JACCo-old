@@ -1,6 +1,6 @@
 0
 
-int foo(int i)
+char foo(int i)
 {
 	return 1;
 }

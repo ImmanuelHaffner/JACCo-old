@@ -1,3 +1,5 @@
+1
+
 int foo(char c)
 {
 	return 1;
@@ -5,7 +7,7 @@ int foo(char c)
 
 int main()
 {
-	int c;
+  struct { int a; } c;	
 	int (*p)(char);
 	p = &foo;
 	(*p)(c);
