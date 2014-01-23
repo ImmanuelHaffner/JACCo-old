@@ -19,6 +19,7 @@
 #include "../util.h"
 #include "../diagnostic.h"
 #include "SemaType.h"
+#include "Entity.h"
 
 
 namespace C4
@@ -32,9 +33,6 @@ namespace C4
 
   namespace Sema
   {
-    /// Temporary Typedef TODO: Remove
-    typedef struct {} Entity;
-
     /// Maps symbols to types 
     typedef std::unordered_map< Symbol, Type const * const > TypeTable;
 
