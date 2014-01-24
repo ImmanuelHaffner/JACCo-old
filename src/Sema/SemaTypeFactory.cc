@@ -14,12 +14,6 @@ using namespace C4;
 using namespace Sema;
 
 
-size_t FuncHash::operator()( FuncType const * const t ) const
-{
-  // TODO implement
-  return -1;
-}
-
 bool FuncEqual::operator()( FuncType const * const t0,
     FuncType const * const t1 ) const
 {
@@ -49,8 +43,8 @@ TypeFactory::PtrTable TypeFactory::ptrTable_(255);
 
 // Initialize simple types.
 VoidType const TypeFactory::VOID(HASH_Void);
-BasicType const TypeFactory::CHAR(1, HASH_Char);
-BasicType const TypeFactory::INT(4, HASH_Int);
+BasicType const TypeFactory::CHAR(1 /* size */, HASH_Char);
+BasicType const TypeFactory::INT(4 /* size */, HASH_Int);
 
 
 TypeFactory::TypeFactory()
