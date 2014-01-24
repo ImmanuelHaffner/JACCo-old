@@ -228,22 +228,18 @@ namespace C4
 
 
 		/// Function Definition
-		struct FunctionDef : ExtDecl
+		struct FunctionDef : Decl
 		{
 			FunctionDef( TypeSpecifier const * const typeSpec,
 					Declarator const * const declarator,
-					CompoundStmt const * const compStmt )
-				: typeSpec(typeSpec), declarator(nonNull(declarator)),
-				compStmt(nonNull(compStmt))
+					CompoundStmt const * const compStmt ) :
+        Decl(typeSpec, nonNull(declarator)), compStmt(nonNull(compStmt))
 			{}
 
 			~FunctionDef() {}
 
 			void print( Printer const p ) const;
 
-      // TODO make use of the FunctionDeclarator
-			TypeSpecifier const * const typeSpec;
-			Declarator const * const declarator;
 			CompoundStmt const * const compStmt;
 		}; // end struct FunctionDef
 	} // end namespace AST
