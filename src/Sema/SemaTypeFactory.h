@@ -86,33 +86,30 @@ namespace C4
       }
 
 
-      TypeFactory();
-      ~TypeFactory() {}
-
       /// \return the void type
-      Type const * getVoid() const;
+      static Type const * getVoid();
 
       /// \return the char type
-      Type const * getChar() const;
+      static Type const * getChar();
 
       /// \return the int type
-      Type const * getInt() const;
+      static Type const * getInt();
 
       /// \brief Creates a new internalized pointer type, with the given inner
       /// type.
       ///
       /// \return the new pointer type
-      Type const * getPtr( Type const * const innerType );
+      static Type const * getPtr( Type const * const innerType );
 
       /// \brief Creates a new internalized structure type.
       ///
       /// \return the new structure type
-      Type const * getStruct( void );
+      static Type const * getStruct( void );
 
       /// \brief Creates a new internalized function type.
       ///
       /// \return the new function type
-      Type const * getFunc( void );
+      static Type const * getFunc( void );
 
       private:
       // Constant object types.

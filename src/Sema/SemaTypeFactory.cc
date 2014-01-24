@@ -61,15 +61,11 @@ BasicType const TypeFactory::CHAR(1 /* size */, HASH_Char);
 BasicType const TypeFactory::INT(4 /* size */, HASH_Int);
 
 
-TypeFactory::TypeFactory()
-{
-}
+Type const * TypeFactory::getVoid() { return &VOID; }
 
-Type const * TypeFactory::getVoid() const { return &VOID; }
+Type const * TypeFactory::getChar() { return &CHAR; }
 
-Type const * TypeFactory::getChar() const { return &CHAR; }
-
-Type const * TypeFactory::getInt() const { return &INT; }
+Type const * TypeFactory::getInt() { return &INT; }
 
 Type const * TypeFactory::getPtr( Type const * const innerType )
 {
