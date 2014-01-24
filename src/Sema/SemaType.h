@@ -36,12 +36,8 @@ namespace C4
     {
       FuncType( Type const * const retType,
           std::vector< Type const * > argTypes ) :
-        retType(retType)
-      {
-        this->argTypes.insert( this->argTypes.end() /* where to insert */,
-            argTypes.begin() /* begin of elements to insert */,
-            argTypes.end() /* end of elements to insert */ );
-      }
+        retType(retType), argTypes(argTypes)
+      {}
 
       ~FuncType() {}
 
@@ -101,12 +97,9 @@ namespace C4
     /// type.
     struct StructType : ObjType
     {
-      StructType( std::vector< Type const * > const content )
-      {
-        this->content.insert( this->content.end() /* where to insert */,
-            content.begin() /* begin of elements to insert */,
-            content.end() /* end of elements to insert */ );
-      }
+      StructType( std::vector< Type const * > const content ) :
+        content(content)
+      {}
 
       ~StructType() {}
 
