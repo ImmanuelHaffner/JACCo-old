@@ -83,3 +83,15 @@ Type const * TypeFactory::getPtr( Type const * const innerType )
   ptrTable.insert( ptr );
   return ptr;
 }
+
+Type const * TypeFactory::getStruct( void )
+{
+  // TODO implement
+  return NULL;
+}
+
+Type const * TypeFactory::getFunc( void )
+{
+  // TODO implement
+  return NULL;
+}

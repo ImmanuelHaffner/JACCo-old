@@ -59,7 +59,7 @@ namespace C4
 
     struct PtrEqual
     {
-      bool operator()( PtrType const * const t0,
+      inline bool operator()( PtrType const * const t0,
           PtrType const * const t1 ) const
       {
         return t0->innerType == t1->innerType;
@@ -89,10 +89,30 @@ namespace C4
       TypeFactory();
       ~TypeFactory() {}
 
+      /// \return the void type
       Type const * getVoid() const;
+
+      /// \return the char type
       Type const * getChar() const;
+
+      /// \return the int type
       Type const * getInt() const;
+
+      /// \brief Creates a new internalized pointer type, with the given inner
+      /// type.
+      ///
+      /// \return the new pointer type
       Type const * getPtr( Type const * const innerType );
+
+      /// \brief Creates a new internalized structure type.
+      ///
+      /// \return the new structure type
+      Type const * getStruct( void );
+
+      /// \brief Creates a new internalized function type.
+      ///
+      /// \return the new function type
+      Type const * getFunc( void );
 
       private:
       // Constant object types.
