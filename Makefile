@@ -75,6 +75,12 @@ check-lexer: all
 	./test-tokenize.sh;\
 	cd ..
 
+check-sema: all
+	@echo ""
+	@cd test/;\
+		./test-sema.sh;\
+		cd ..
+
 check-parser: all
 	@echo ""
 	@cd test/;\

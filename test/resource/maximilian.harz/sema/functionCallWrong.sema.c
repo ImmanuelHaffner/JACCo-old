@@ -1,10 +1,12 @@
-char foo(int i)
+1
+
+int foo(char c)
 {
 	return 1;
 }
 
 int main()
 {
-	int x;
+  Struct { int a; } x;
 	x = foo(23);
 }

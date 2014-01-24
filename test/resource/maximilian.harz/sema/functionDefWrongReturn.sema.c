@@ -1,4 +1,6 @@
-char foo(int i)
+1
+
+void foo(int i)
 {
 	return 23;
 }

@@ -871,9 +871,9 @@ CompoundStmt const * Parser::parseCompoundStmt()
       case TK::RBrace:
         goto for_end;
 
-      case TK::Comma:
+      /*case TK::Comma:
         readNextToken(); // eat ','
-        break;
+        break;*/
 
       case TK::Void:
       case TK::Char:
