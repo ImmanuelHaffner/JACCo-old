@@ -1,6 +1,7 @@
 # Generated files
 doc/
 build/
+default.cfg
 
 # Vim Swap Files
 .*.sw*
