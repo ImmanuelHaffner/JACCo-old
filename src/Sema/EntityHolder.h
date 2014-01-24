@@ -16,6 +16,8 @@ namespace C4
       /// \brief Can only be called once, otherwise asserts.
       void attachEntity(Entity* entity);
 
+      Entity const* getEntity();
+
     private:
       Entity const * entity;
       bool isCalled;

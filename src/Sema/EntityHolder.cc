@@ -16,3 +16,8 @@ void EntityHolder::attachEntity(Entity* entity)
     assert(false);
   }
 }
+
+Entity const* EntityHolder::getEntity()
+{
+  return entity;
+}
