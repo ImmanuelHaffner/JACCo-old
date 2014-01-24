@@ -25,20 +25,20 @@ bool FuncEqual::operator()( FuncType const * const t0,
 void TypeFactory::destroy()
 {
   // clear the function type table
-  for ( auto t : funcTable_ )
+  for ( auto t : funcTable )
     delete t;
-  funcTable_.clear();
+  funcTable.clear();
 
   // clear the pointer type table
-  for ( auto t : ptrTable_ )
+  for ( auto t : ptrTable )
     delete t;
-  ptrTable_.clear();
+  ptrTable.clear();
 }
 
 
 // Initialize the function type table.
-TypeFactory::FuncTable TypeFactory::funcTable_(255);
-TypeFactory::PtrTable TypeFactory::ptrTable_(255);
+TypeFactory::FuncTable TypeFactory::funcTable(255);
+TypeFactory::PtrTable TypeFactory::ptrTable(255);
 
 
 // Initialize simple types.
@@ -57,8 +57,15 @@ Type const * TypeFactory::getChar() const { return &CHAR; }
 
 Type const * TypeFactory::getInt() const { return &INT; }
 
-Type const * TypeFactory::getPtr( Type const * const )
+Type const * TypeFactory::getPtr( Type const * const innerType )
 {
-  // TODO implement
-  return NULL;
+  PtrType const * const ptr = new PtrType( innerType );
+  auto it = ptrTable.find( ptr );
+  if ( it != ptrTable.end() )
+  {
+    delete ptr;
+    return *it;
+  }
+  ptrTable.insert( ptr );
+  return ptr;
 }

@@ -62,7 +62,7 @@ namespace C4
       bool operator()( PtrType const * const t0,
           PtrType const * const t1 ) const
       {
-        return t0 == t1;
+        return t0->innerType == t1->innerType;
       }
     };
 
@@ -76,13 +76,13 @@ namespace C4
       /// \return the size of the table of internalized function types
       static inline size_t sizeF()
       {
-        return funcTable_.size();
+        return funcTable.size();
       }
 
       /// \return the size of the table of internalized function types
       static inline size_t sizeP()
       {
-        return ptrTable_.size();
+        return ptrTable.size();
       }
 
 
@@ -105,8 +105,8 @@ namespace C4
         FuncTable;
       typedef std::unordered_set< PtrType const *, PtrHash, PtrEqual >
         PtrTable;
-      static FuncTable funcTable_;
-      static PtrTable ptrTable_;
+      static FuncTable funcTable;
+      static PtrTable ptrTable;
     }; // end struct TypeFactory
   } // end namespace Sema
 } // end namespace C4
