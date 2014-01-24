@@ -132,6 +132,7 @@ namespace C4
       ~PtrType() {}
 
       inline bool isComplete() { return true; }
+      inline size_t size() const { return 4; }
       inline size_t hashCode() const
       {
         size_t const h = innerType->hashCode();
