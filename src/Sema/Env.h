@@ -50,7 +50,8 @@ namespace C4
       ~Scope() {}
 
       Entity const * lookup( Symbol const id ) const;
-      bool insert( Symbol const id, Entity const * const entity );
+      Type const * lookup_type( Symbol const id ) const;
+      Entity const * insert( Symbol const id );
       bool insert( Symbol const id, Type const * const type );
 
       private:
@@ -78,11 +79,19 @@ namespace C4
       /// otherwise
       Entity const * lookup( Symbol const id );
 
-      /// Inserts a new mapping from id to entity to the identifier map.
+      /// Traveres the scope stack, starting at the current scope, and searches
+      /// for the first mapping for a type identifier.
       ///
-      /// \return false iff the id was already mapped in the current scope, true
+      /// \return the first mapped type pointer, if the id was mapped, NULL
       /// otherwise
-      bool insert( Symbol const id, Entity const * const entity );
+      Type const * lookup_type( Symbol const id );
+
+      /// Inserts a new mapping from id to a new created entity to the
+      /// identifier map.
+      ///
+      /// \return NULL iff the id was already mapped in the current scope, the 
+      /// pointer to the created entity otherwise
+      Entity const * insert( Symbol const id );
 
       /// Inserts a new mapping from the identifier to the type in the type
       /// table.
