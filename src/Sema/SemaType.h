@@ -50,9 +50,7 @@ namespace C4
       }
 
       Type const * const retType;
-
-      private:
-      std::vector< Type const * > argTypes;
+      std::vector< Type const * > const argTypes;
     }; // end struct FuncType
 
     /// \brief Represents pointer and scalar types.
@@ -110,9 +108,10 @@ namespace C4
         return completed ? content.size() : -1;
       }
 
+      std::vector< Type const * > const content;
+
       private:
       bool completed;
-      std::vector< Type const * > content;
     }; // end struct StructType
 
 
