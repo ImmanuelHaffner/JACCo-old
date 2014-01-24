@@ -10,11 +10,13 @@ namespace C4
     /// \brief Used to map identifiers to types, values, and anything else.
     struct Entity
     {
+      Entity() {}
+
       Entity( Type const * const type ) :
         type(type)
       {}
 
-      Type const * const type;
+      Type const * type;
     };
   }
 }
