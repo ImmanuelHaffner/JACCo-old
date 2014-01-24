@@ -17,8 +17,22 @@ using namespace Sema;
 bool FuncEqual::operator()( FuncType const * const t0,
     FuncType const * const t1 ) const
 {
-  // TODO implement
-  return -1;
+  // Compare return types.
+  if ( t0->retType != t1->retType ) return false;
+
+  // Compare the argument types.
+  std::vector< Type const * > const &args0 = t0->argTypes;
+  std::vector< Type const * > const &args1 = t1->argTypes;
+
+  if ( args0.size() != args1.size() ) return false;
+
+  // Compare argument types.
+  for ( auto it0 = args0.begin(), it1 = args1.begin();
+      it0 != args0.end() && it1 != args1.end();
+      ++it0, ++it1 )
+    if ( *it0 != *it1 ) return false;
+
+  return true;
 }
 
 
