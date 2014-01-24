@@ -7,6 +7,14 @@ namespace C4
 {
   namespace Sema
   {
+    struct EntityHolderException : std::exception
+    {
+      const char* what() const noexcept
+      {
+        return "EntityHolder::attachEntity called more than once.";
+      }
+    };
+
     struct EntityHolder
     {
       EntityHolder() :

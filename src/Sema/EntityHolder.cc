@@ -13,7 +13,7 @@ void EntityHolder::attachEntity(Entity* entity)
   }
   else
   {
-    assert(false);
+    throw EntityHolderException();
   }
 }
 
