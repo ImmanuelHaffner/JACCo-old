@@ -28,6 +28,7 @@ namespace C4
         typedef typename std::vector< T const * >::iterator iterator;
         typedef typename std::vector< T const * >::const_iterator const_iterator;
 
+        inline size_t size() const { return list.size(); }
         void append( T const * const t );
         List & operator+=( T const * const t );
         iterator begin();

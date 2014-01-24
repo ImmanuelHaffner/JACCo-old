@@ -13,7 +13,8 @@
 #include <functional>
 #include <cstring>
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
+#include "../Support/Symbol.h"
 
 namespace C4
 {
@@ -95,7 +96,7 @@ namespace C4
     /// type.
     struct StructType : ObjType
     {
-      StructType( std::vector< Type const * > const content ) :
+      StructType( std::unordered_map< Symbol, Type const * > const content ) :
         content(content)
       {}
 
@@ -108,7 +109,13 @@ namespace C4
         return completed ? content.size() : -1;
       }
 
-      std::vector< Type const * > const content;
+      /// Since structure types are not internalized, we can simply return 0.
+      inline size_t hashCode() const
+      {
+        return 0;
+      }
+
+      std::unordered_map< Symbol, Type const * > const content;
 
       private:
       bool completed;

@@ -21,6 +21,7 @@ namespace C4
 	{
 		// Forward declarations
 		struct TypeSpecifier;
+    struct CompoundStmt;
 
 
 
@@ -96,8 +97,8 @@ namespace C4
 		struct ParamDecl : Decl
 		{
 			ParamDecl( TypeSpecifier const * const typeSpec,
-					Declarator const * const declarator = NULL )
-				: Decl(typeSpec, declarator)
+					Declarator const * const declarator = NULL ) :
+        Decl(typeSpec, declarator)
 			{}
 
 			~ParamDecl() {}
