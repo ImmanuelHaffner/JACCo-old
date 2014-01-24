@@ -6,11 +6,40 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #include "Env.h"
+
 
 using namespace C4;
 using namespace AST;
 using namespace Sema;
+
+
+Entity const * Scope::lookup( Symbol const id ) const
+{
+  auto elem = idMap.find( id );
+  if ( elem == idMap.end() )
+    return NULL;
+  return elem->second;
+}
+
+bool Scope::insert( Symbol const id, Entity const * const entity )
+{
+  auto elem = idMap.find( id );
+  if ( elem == idMap.end() )
+    return false;
+  idMap.insert( std::pair< Symbol, Entity const * >( id, entity ) );
+  return true;
+}
+
+bool Scope::insert( Symbol const id, Type const * const type )
+{
+  auto elem = typeTable.find( id );
+  if ( elem == typeTable.end() )
+    return false;
+  typeTable.insert( std::pair< Symbol, Type const * >( id, type ) );
+  return true;
+}
 
 
 void Env::pushScope()
@@ -26,32 +55,24 @@ void Env::popScope()
 Entity const * Env::lookup( Symbol const id )
 {
   // iterate over all scopes, starting with the last
-  for ( auto scopeIt = scopeStack.rbegin(); scopeIt != scopeStack.rend();
-      ++scopeIt )
+  for ( auto scope = scopeStack.rbegin(); scope != scopeStack.rend(); ++scope )
   {
-    auto find_it = scopeIt->second.find( id );
-    if ( find_it != scopeIt->second.end() )
-      return find_it->second;
+    Entity const * const entity = scope->lookup( id );
+    if ( entity ) return entity;
   }
   return NULL;
 }
 
 bool Env::insert( Symbol const id, Entity const * const entity )
 {
-  IdMap & topIdMap = scopeStack.back().second;
-  auto find_it = topIdMap.find( id );
-  if ( find_it != topIdMap.end() )
-    return false;
-  topIdMap.insert( std::make_pair( id, entity ) );
-  return true;
+  // Obtain the topmost scope.
+  Scope &scope = scopeStack.back();
+  return scope.insert( id, entity );
 }
 
-bool Env::addType( Symbol const type_id, Type const * const type )
+bool Env::insert( Symbol const id, Type const * const type )
 {
-  TypeTable & topTypeTable = scopeStack.back().first;
-  auto find_it = topTypeTable.find( type_id );
-  if ( find_it != topTypeTable.end() )
-    return false;
-  topTypeTable.insert( std::make_pair( type_id, type ) );
-  return true;
+  // Obtain the topmost scope.
+  Scope &scope = scopeStack.back();
+  return scope.insert( id, type );
 }

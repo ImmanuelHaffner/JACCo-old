@@ -7,19 +7,14 @@ namespace C4
 {
   namespace Sema
   {
+    /// \brief Used to map identifiers to types, values, and anything else.
     struct Entity
     {
-      inline Entity(Type* type)
-      {
-        this->type = type;
-      }
-      Type* getType()
-      {
-        return type;
-      }
+      Entity( Type const * const type ) :
+        type(type)
+      {}
 
-    private:
-      Type *type;
+      Type const * const type;
     };
   }
 }
