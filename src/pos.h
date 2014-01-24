@@ -12,8 +12,6 @@ struct Pos
 		name(nonNull(name)), line(line), column(column)
 	{}
 
-  friend std::ostream & operator<<( std::ostream &out, Pos const &pos );
-
   void dump() const;
 
 	char const* name;
@@ -22,5 +20,7 @@ struct Pos
 };
 
 std::ostream & operator<<( std::ostream &out, Pos const &pos );
+std::ostream & operator<<( std::ostream &out, Pos const * const pos );
+bool operator==( Pos const &p0, Pos const &p1 );
 
 #endif

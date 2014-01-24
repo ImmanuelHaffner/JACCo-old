@@ -6,11 +6,12 @@
 #include "util.h"
 #include "Lex/Lexer.h"
 #include "Parse/Parser.h"
-
+#include "AST/Printable.h"
 
 using namespace C4;
 using namespace Lex;
 using namespace Parse;
+using namespace AST;
 
 enum class Mode {
   TOKENIZE,
@@ -64,25 +65,27 @@ int main(int, char** const argv)
         } else {
           f = fopen(name, "rb");
           if (!f)
-					{
+          {
             errorErrno(Pos(name));
-						continue;
-					}
+            continue;
+          }
           fclose( f );
         }
 
         if (hasNewErrors())
           continue;
 
+        Lexer * lexer;
+        if ( f == stdin )
+          lexer = new Lexer;
+        else
+          lexer = new Lexer( name );
+
+        Parser parser( *lexer );
+
         switch (mode) {
           case Mode::TOKENIZE:
             {
-              C4::Lex::Lexer * lexer;
-              if ( f == stdin )
-                lexer = new Lexer;
-              else
-                lexer = new Lexer( name );
-
               while ( true )
               {
                 Token const tok = lexer->getToken();
@@ -90,50 +93,27 @@ int main(int, char** const argv)
                   break;
                 std::cout << tok.pos << " " << tok << "\n";
               }
-              delete lexer;
-              break;
             }
+            break;
 
           case Mode::PARSE:
-            {
-              Lexer * lexer;
-              if ( f == stdin )
-                lexer = new Lexer;
-              else
-                lexer = new Lexer( name );
+            parser.parse();
+            break;
 
-              Parser parser( *lexer );
-
-              parser.parse();
-
-              if ( parser.getCurTok().kind != TK::END_OF_FILE )
-              {
-                errorf( "%s", "unparsed tokens" );
-                std::cout << "\t" << parser.getCurTok() << "\n";
-
-                if ( parser.getNextTok().kind != TK::END_OF_FILE )
-                {
-                  std::cout << "\t" << parser.getNextTok() << "\n";
-                  for (;;)
-                  {
-                    Token tok = lexer->getToken();
-                    if ( tok.kind == TK::END_OF_FILE ) break;
-                    std::cout << "\t" << tok << "\n";
-                  }
-                }
-              }
-
-              delete lexer;
-              break;
-            }
           case Mode::PRINT_AST:
-            {}
+            {
+              TranslationUnit const * const unit = parser.parse();
+              unit->print( Printer ( std::cout ) );
+            }
+            break;
+
           case Mode::COMPILE:
             {
               PANIC("TODO implement");
             }
         }
         //fclose ( f );
+        delete lexer;
       }
 
       if ( symbols )

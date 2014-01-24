@@ -9,32 +9,10 @@
 #ifndef C4_AST_H
 #define C4_AST_H
 
-//
-//  Expression
-//
-#include "Expression.h"
-#include "IllegalExpression.h"
-#include "Variable.h"
-#include "Constant.h"
-#include "StringLiteral.h"
-#include "PostfixExpression.h"
-#include "UnaryExpression.h"
-#include "BinaryExpression.h"
-
-//
-//  Statement
-//
-#include "Statement.h"
-
-//
-//  Declaration
-//
-#include "Declaration.h"
-#include "IllegalDeclaration.h"
-
-//
-//  Type
-//
+#include "TranslationUnit.h"
+#include "Expr.h"
+#include "Stmt.h"
+#include "Decl.h"
 #include "Type.h"
 
 #endif

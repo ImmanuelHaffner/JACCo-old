@@ -12,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
+#include <cstring>
 #include "../util.h"
 #include "../diagnostic.h"
 #include "../Lex/Token.h"
@@ -21,69 +22,6 @@
 
 namespace C4
 {
-
-  //===----------------------------------------------------------------------===//
-  //
-  //  Operator Precedences
-  //
-  //===----------------------------------------------------------------------===//
-
-
-  /// Binary Operator Precedences
-  ///
-  /// \return the precedence of the binary operator 'tok', or -1 iff tok is not a
-  /// binary operator
-  static int getBinOpPrecedence( Lex::TK tk )
-  {
-    switch ( tk )
-    {
-      case Lex::TK::Mul:
-      case Lex::TK::Div:
-      case Lex::TK::Mod:
-        return 100;
-
-      case Lex::TK::Plus:
-      case Lex::TK::Minus:
-        return 90;
-
-      case Lex::TK::RShift:
-      case Lex::TK::LShift:
-        return 80;
-
-      case Lex::TK::Le:
-      case Lex::TK::Gr:
-      case Lex::TK::LEq:
-      case Lex::TK::GEq:
-        return 70;
-
-      case Lex::TK::Eq:
-      case Lex::TK::NE:
-        return 60;
-
-      case Lex::TK::And:
-        return 50;
-
-      case Lex::TK::Xor:
-        return 40;
-
-      case Lex::TK::Or:
-        return 30;
-
-      case Lex::TK::LAnd:
-        return 20;
-
-      case Lex::TK::LOr:
-        return 10;
-
-        //
-        //  IMPORTANT:
-        //  Must never return 0.
-        //
-
-      default: return -1;
-    }
-  } // end getBinOpPrecedence
-
   namespace Parse
   {
     /// \brief The parser.
@@ -94,10 +32,9 @@ namespace C4
 
       /// Parses the tokens returned by the lexer, and construct the
       /// corresponding AST.
-      void parse();
-      Lex::Token const & getCurTok() { return *current; }
-      Lex::Token const & getNextTok() { return *next; }
-
+      AST::TranslationUnit const *  parse();
+      Lex::Token const * getCurTok() { return current; }
+      Lex::Token const * getNextTok() { return next; }
 
       private:
       Lex::Lexer &lexer;
@@ -111,10 +48,17 @@ namespace C4
       //
       //===----------------------------------------------------------------===//
 
+      /// If the current token is a binary operator, returns its precedence,
+      /// otherwise -1 is returned.
+      /// Will never return 0.
+      ///
+      /// \return the precedence of the current token
+      int getTokenPrecedence();
+
       /// This functions moves sets 'current' to 'next', and sets 'next' to the
       /// token returned from the lexer.
       /// This function offers a small, fixed-size token buffer.
-      void getNextToken();
+      void readNextToken();
 
       /// Necessary for compatibility, use neutral element of LOr
       ///
@@ -156,26 +100,14 @@ namespace C4
       /// token peeked by the lexer, i.e. if a call to is( ... ) for at least
       /// one argument yields true
       template < typename T, typename... Args >
-        bool is( T t, Args... args );
+        bool is( T t, Args... args )
+        {
+          return is( t ) || is( args... );
+        }
 
-      /// If the current token is "like" t, i.e. a call to is( t ) would return
-      /// true, gets the next token, otherwise prints an error message.
-      template < typename T >
-        void accept( T t );
-
-      /// If the current token is "like" args, i.e. a call to is( t ) would
+      /// If the current token is of kind tk, i.e. a call to is( tk ) would
       /// return true, gets the next token, otherwise prints an error message.
-      template < typename... Args >
-        void accept( Args... args );
-
-      int getTokenPrecedence()
-      {
-        if ( ! this->current )
-          return -1;
-
-        int prec = getBinOpPrecedence( this->current->kind );
-        return  prec > 0 ? prec : -1;
-      }
+      bool accept( Lex::TK tk );
 
 
       //===----------------------------------------------------------------===//
@@ -191,92 +123,65 @@ namespace C4
       //  Expressions
       //
 
-      AST::Expression & parsePrimaryExpression();
-      AST::Expression & parseArgumentExpressionList();
-      AST::Expression & parsePostfixExpression();
-      AST::Expression & parseUnaryExpression();
-      AST::Expression & parseCastExpression();
-      AST::Expression & parseBinaryExpression();
-      AST::Expression & parseBinOpRHS( int exprPrec, AST::Expression &lhs );
-      AST::Expression & parseConditionalExpression();
-      AST::Expression & parseAssignmentExpression();
+      AST::Expr const * parsePrimaryExpr();
+      AST::Expr const * parsePostfixExpr();
+      AST::ExprList const * parseArgumentExprList();
+      AST::Expr const * parseUnaryExpr();
+      AST::Expr const * parseCastExpr();
+      AST::Expr const * parseBinaryExpr();
+      AST::Expr const * parseBinOpRHS( int exprPrec,
+          AST::Expr const * const lhs );
+      AST::Expr const * parseConditionalExpr();
+      AST::Expr const * parseAssignmentExpr();
+      AST::Expr const * parseExpr();
+      AST::Expr const * parseConstantExpr();
 
-      /// Parses an expression.
-      ///
-      /// \return the parsed expression
-      AST::Expression & parseExpression();
-      inline AST::Expression & parseConstantExpression()
-      {
-        return parseConditionalExpression();
-      }
 
       //
-      // Declarations
+      // Decls
       //
 
-      AST::Declaration & parseDeclaration();
+      enum class DeclaratorType { NORMAL, ABSTRACT, UNKNOWN };
+
+      AST::Decl const * parseDecl();
+      AST::TypeSpecifier const * parseTypeSpecifier();
+      AST::TypeSpecifier const * parseStructSpecifier();
+      AST::Decl const * parseStruct();
+      AST::StructDeclList const * parseStructDeclList();
+      AST::StructDecl const * parseStructDecl();
+      AST::StructDeclaratorList const * parseStructDeclaratorList();
+      AST::Declarator const * parseDeclarator(
+          DeclaratorType const dt = DeclaratorType::NORMAL );
+      AST::PointerDeclarator const * parsePointerDeclarator(
+          DeclaratorType const dt = DeclaratorType::NORMAL );
+      AST::ParamList const * parseParameterList();
+      AST::ParamDecl const * parseParameterDecl();
+      AST::DeclList const * parseDeclList();
+      AST::FunctionDef const * parseFunctionDef( AST::TypeSpecifier const *, AST::Declarator const * );
 
 
+      //
+      //  Type
+      //
+
+      AST::TypeName const * parseTypeName();
+
+
+      //
+      //  Statements
+      //
+
+      AST::Stmt const * parseStmt();
+      AST::Stmt const * parseLabeledStmt();
+      AST::CompoundStmt const * parseCompoundStmt();
+      AST::ExprStmt const * parseExprStmt();
+      AST::Stmt const * parseSelectionStmt();
+      AST::Stmt const * parseIterationStmt();
+      AST::Stmt const * parseJumpStmt();
+
+      AST::ExtDecl const * parseExtDecl();
+      AST::TranslationUnit const * parseTranslationUnit();
     }; // end struct Parser
-
-    //===------------------------------------------------------------------===//
-    //
-    //  Parser Helper Functions
-    //
-    //===------------------------------------------------------------------===//
-
-    template < typename T, typename... Args >
-      bool Parser::is( T t, Args... args )
-      {
-        return is( t ) || is( args... );
-      }
-
-    template < typename T >
-      void Parser::accept( T t )
-      {
-        if ( ! is( t ) )
-        {
-          std::ostringstream oss;
-          oss << "unexpected " << *current << ", expected '" << t << "'";
-          errorf( current->pos, "%s", oss.str().c_str() );
-        }
-        else
-          getNextToken();
-      }
-
-    template < typename T >
-      static void _print( std::ostream &out, T t )
-      {
-        out << t;
-      }
-
-    template < typename T, typename... Args >
-      static void _print( std::ostream &out, T t, Args... args )
-      {
-        out << t << "', '";
-        _print( out, args... );
-      }
-
-    template < typename... Args >
-      static void print( std::ostream &out, Args... args )
-      {
-        out << "'"; _print( out, args... ); out << "'";
-      }
-
-    template < typename... Args >
-      void Parser::accept( Args... args )
-      {
-        if ( ! is( args... ) )
-        {
-          std::ostringstream oss;
-          oss << "unexpected " << *current << ", expected one of '";
-          print( oss, args... );
-          oss << "'";
-          errorf( current->pos, "%s", oss.str().c_str() );
-        }
-        else
-          getNextToken();
-      }
   } // end namespace Parse
 } // end namespace C4
 

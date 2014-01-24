@@ -22,7 +22,7 @@ namespace C4
 {
   namespace Lex
   {
-		/// The kind of a token.
+    /// The kind of a token.
     enum class TK
     {
       IDENTIFIER,
@@ -226,7 +226,7 @@ namespace C4
 
       Pos const pos;
       TK const kind;
-      Symbol sym;
+      Symbol const sym;
 
       static std::unordered_map< Symbol, TK > KeywordsTable;
       static void INIT_KEYWORDS_TABLE();

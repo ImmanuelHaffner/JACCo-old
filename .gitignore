@@ -1,9 +1,14 @@
 # Generated files
 doc/
 build/
+default.cfg
 
 # Vim Swap Files
 .*.sw*
+
+# Other Swap Files
+*.h~
+*.cc~
 
 # Cleanup Shell Script
 cleanup.sh

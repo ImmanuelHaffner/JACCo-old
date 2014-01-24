@@ -1,4 +1,0 @@
-1
-comment_unterminated.c:1:1: constant 123
-comment_unterminated.c:7:1: error: Unexpected end of file
-

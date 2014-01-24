@@ -37,7 +37,7 @@ void LexerTest::testConstructor()
   // check pos
   CPPUNIT_ASSERT( strEq( fileName, lexer.getPos().name ) );
   CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().line );
-  CPPUNIT_ASSERT_EQUAL( 0u, lexer.getPos().column );
+  CPPUNIT_ASSERT_EQUAL( 1u, lexer.getPos().column );
 
   Lexer lexer2;
   // check file name
@@ -45,7 +45,7 @@ void LexerTest::testConstructor()
 
   // check pos
   CPPUNIT_ASSERT_EQUAL( 1u, lexer2.getPos().line );
-  CPPUNIT_ASSERT_EQUAL( 0u, lexer2.getPos().column );
+  CPPUNIT_ASSERT_EQUAL( 1u, lexer2.getPos().column );
 }
 
 void LexerTest::testEof()
@@ -60,14 +60,14 @@ void LexerTest::testEof()
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 0u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
   }
 
   {
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 0u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
   }
 
 
@@ -938,7 +938,7 @@ void LexerTest::testComments()
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 1u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
   }
 
 
@@ -946,11 +946,16 @@ void LexerTest::testComments()
   stream.str( "\n//\\\n" );
   std::cin.rdbuf( stream.rdbuf() );
 
+  /*
+   *  <CR>
+   *  //\<CR>
+   *  <EOF>
+   */
   {
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 3u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 0u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 1u, token.pos.column );
   }
 
 
@@ -962,7 +967,7 @@ void LexerTest::testComments()
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 4u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 5u, token.pos.column );
   }
 
 
@@ -974,7 +979,7 @@ void LexerTest::testComments()
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 7u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 2u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
   }
 
 
@@ -986,7 +991,7 @@ void LexerTest::testComments()
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 8u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 3u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
   }
 
 
@@ -998,7 +1003,7 @@ void LexerTest::testComments()
     Token token = lexer.getToken();
     CPPUNIT_ASSERT( token.kind == TK::END_OF_FILE );
     CPPUNIT_ASSERT_EQUAL( 9u, token.pos.line );
-    CPPUNIT_ASSERT_EQUAL( 4u, token.pos.column );
+    CPPUNIT_ASSERT_EQUAL( 5u, token.pos.column );
   }
 
 

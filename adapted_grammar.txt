@@ -1,0 +1,224 @@
+//===----------------------------------------------------------------------===//
+//
+// Expression
+//
+//===----------------------------------------------------------------------===//
+
+primary_expression
+  : IDENTIFIER
+  | CONSTANT
+  | STRING_LITERAL
+  | '(' expression ')'
+  ;
+
+postfix_expression
+  : primary_expression
+  | postfix_expression '[' expression ']'
+  | postfix_expression '(' [expression] ')'
+  | postfix_expression '.' IDENTIFIER
+  | postfix_expression PTR_OP IDENTIFIER
+  | postfix_expression INC_OP
+  | postfix_expression DEC_OP
+  ;
+
+unary_expression
+  : postfix_expression
+  | INC_OP unary_expression
+  | DEC_OP unary_expression
+  | unary_operator unary_expression
+  | SIZEOF unary_expression
+  | SIZEOF '(' type_name ')'
+  ;
+
+unary_operator
+  : '&'
+  | '*'
+  | '+'
+  | '-'
+  | '~'
+  | '!'
+  ;
+
+binary_expression
+  : unary_expression
+  | bianry_expression binary_operator unary_expession
+  ;
+
+binary_operator
+  : '+'
+  | '/'
+  | '%'
+  | '+'
+  | '-'
+  | '>>'
+  | '<<'
+  | '<'
+  | '>'
+  | '<='
+  | '>='
+  | '=='
+  | '!='
+  | '&'
+  | '^'
+  | '|'
+  | '&&'
+  | '||'
+  ;
+
+conditional_expression
+  : binary_expression ['?' expression ':' conditional_expression]
+  ;
+
+assignment_expression
+  : conditional_expression [assignment_operator assignment_expression]
+  ;
+
+assignment_operator
+  : '='
+  | MUL_ASSIGN
+  | DIV_ASSIGN
+  | MOD_ASSIGN
+  | ADD_ASSIGN
+  | SUB_ASSIGN
+  | LEFT_ASSIGN
+  | RIGHT_ASSIGN
+  | AND_ASSIGN
+  | XOR_ASSIGN
+  | OR_ASSIGN
+  ;
+
+expression
+  : assignment_expression
+  | expression ',' assignment_expression
+  ;
+
+
+//===----------------------------------------------------------------------===//
+//
+// Declaration + Type
+//
+//===----------------------------------------------------------------------===//
+
+declaration
+  : type_specifier [declarator] ';'             // declarator is NORMAL
+  ;
+
+type_specifier
+  : VOID
+  | CHAR
+  | INT
+  | struct_specifier
+  ;
+
+struct_specifier
+  : STRUCT IDENTIFIER ['{' struct_declaration_list '}']
+  | STRUCT '{' struct_declaration_list '}'
+  ;
+
+struct_declaration_list
+  : struct_declaration +
+  ;
+
+struct_declaration
+  : type_specifier [struct_declarator_list] ';'
+  ;
+
+struct_declarator_list
+  : declarator
+  | struct_declarator_list ',' declarator
+  ;
+
+declarator
+  : [pointer] direct_declarator
+  | pointer                       // ABSTRACT
+  ;
+
+pointer
+  : '*' +
+
+direct_declarator
+  : IDENTIFIER                                    // NORMAL
+  | '(' declarator ')'
+  | '(' [parameter_list] ')'                      // ABSTRACT
+  | direct_declarator '( [parameter_list] ')'
+  ;
+
+parameter_list
+  : parameter_declaration
+  | parameter_list ',' parameter_declaration
+  ;
+
+parameter_declaration
+  : type_specifier [declarator]                   // declarator is UNKNOWN
+  ;
+
+type_name
+  : type_specifier [declarator]                   // declarator is ABSTRACT
+  ;
+
+
+//===----------------------------------------------------------------------===//
+//
+// Statement
+//
+//===----------------------------------------------------------------------===//
+
+statement
+  : labeled_statement
+  | compound_statement
+  | expression_statement
+  | selection_statement
+  | iteration_statement
+  | jump_statement
+  ;
+
+labeled_statement
+  : IDENTIFIER ':' statement
+  | CASE conditional_expression ':' statement
+  | DEFAULT ':' statement
+  ;
+
+compound_statement
+  : '{' block_item * '}'
+  ;
+
+block_item
+  : declaration
+  | statement
+  ;
+
+expression_statement
+  : [expression] ';'
+  ;
+
+selection_statement
+  : IF '(' expression ')' statement [ELSE statement]
+  | SWITCH '(' expression ')' statement
+  ;
+
+iteration_statement
+  : WHILE '(' expression ')' statement
+  | DO statement WHILE '(' expression ')' ';'
+  | FOR '(' [expression] ; [expression] ; [expression] ')' statement
+  | FOR '(' declaration [expression] ; [expression] ')' statement
+  ;
+
+jump_statement
+  : GOTO IDENTIFIER ';'
+  | CONTINUE ';'
+  | BREAK ';'
+  | RETURN [expression] ';'
+  ;
+
+external_declaration
+  : function_definition
+  | declaration
+  ;
+
+translation_unit
+  : external_declaration +
+  ;
+
+function_definition
+  : type_specifier declarator compound_statement // declarator is NORMAL
+  ;

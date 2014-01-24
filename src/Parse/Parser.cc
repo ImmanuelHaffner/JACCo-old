@@ -7,757 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "Parser.h"
-
-
-//===----------------------------------------------------------------------===//
-//
-//  First1
-//
-//===----------------------------------------------------------------------===//
-
-#define PARAMETER_LIST \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define TYPE_SPECIFIER \
-  "char", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void"
-
-#define POSTFIX_EXPRESSION \
-  "(", \
-  Lex::TK::CONSTANT, \
-  Lex::TK::IDENTIFIER, \
-  Lex::TK::STRING_LITERAL
-
-#define FUNCTION_DEFINITION \
-  "(", \
-  "*", \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  Lex::TK::IDENTIFIER, \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define DECLARATOR \
-  "(", \
-  "*", \
-  Lex::TK::IDENTIFIER
-
-#define STATEMENT \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  ";", \
-  "{", \
-  "~", \
-  "break", \
-  "case", \
-  Lex::TK::CONSTANT, \
-  "continue", \
-  "dec_op", \
-  "default", \
-  "do", \
-  "for", \
-  "goto", \
-  Lex::TK::IDENTIFIER, \
-  "if", \
-  "inc_op", \
-  "return", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL, \
-  "switch", \
-  "while"
-
-#define UNARY_OPERATOR \
-  "!", \
-  "&", \
-  "*", \
-  "+", \
-  "-", \
-  "~"
-
-#define STRUCT_DECLARATOR_LIST \
-  "(", \
-  "*", \
-  ":", \
-  Lex::TK::IDENTIFIER
-
-#define ASSIGNMENT_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define INIT_DECLARATOR \
-  "(", \
-  "*", \
-  Lex::TK::IDENTIFIER
-
-#define ENUMERATOR \
-  Lex::TK::IDENTIFIER
-
-#define LABELED_STATEMENT \
-  "case", \
-  "default", \
-  Lex::TK::IDENTIFIER
-
-#define LOGICAL_OR_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define PARAMETER_TYPE_LIST \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define STATEMENT_LIST \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  ";", \
-  "{", \
-  "~", \
-  "break", \
-  "case", \
-  Lex::TK::CONSTANT, \
-  "continue", \
-  "dec_op", \
-  "default", \
-  "do", \
-  "for", \
-  "goto", \
-  Lex::TK::IDENTIFIER, \
-  "if", \
-  "inc_op", \
-  "return", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL, \
-  "switch", \
-  "while"
-
-#define STRUCT_DECLARATOR \
-  "(", \
-  "*", \
-  ":", \
-  Lex::TK::IDENTIFIER
-
-#define POINTER \
-  "*"
-
-#define INCLUSIVE_OR_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define EXPRESSION_STATEMENT \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  ";", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define ENUMERATOR_LIST \
-  Lex::TK::IDENTIFIER
-
-#define TYPE_QUALIFIER \
-  "const", \
-  "volatile"
-
-#define ENUM_SPECIFIER \
-  "enum"
-
-#define ARGUMENT_EXPRESSION_LIST \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define UNARY_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define IDENTIFIER_LIST \
-  Lex::TK::IDENTIFIER
-
-#define TYPE_NAME \
-  "char", \
-  "const", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define LOGICAL_AND_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define DIRECT_DECLARATOR \
-  "(", \
-  Lex::TK::IDENTIFIER
-
-#define STRUCT_DECLARATION \
-  "char", \
-  "const", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define ADDITIVE_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define DECLARATION_SPECIFIERS \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define MULTIPLICATIVE_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define AND_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define EXTERNAL_DECLARATION \
-  "(", \
-  "*", \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  Lex::TK::IDENTIFIER, \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define INIT_DECLARATOR_LIST \
-  "(", \
-  "*", \
-  Lex::TK::IDENTIFIER
-
-#define CONSTANT_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define ASSIGNMENT_OPERATOR \
-  "=", \
-  "add_assign", \
-  "and_assign", \
-  "div_assign", \
-  "left_assign", \
-  "mod_assign", \
-  "mul_assign", \
-  "or_assign", \
-  "right_assign", \
-  "sub_assign", \
-  "xor_assign"
-
-#define TYPE_QUALIFIER_LIST \
-  "const", \
-  "volatile"
-
-#define STRUCT_OR_UNION_SPECIFIER \
-  "struct"
-
-#define DIRECT_ABSTRACT_DECLARATOR \
-  "(", \
-  "["
-
-#define SHIFT_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define DECLARATION \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define STRUCT_DECLARATION_LIST \
-  "char", \
-  "const", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define INITIALIZER_LIST \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "{", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define JUMP_STATEMENT \
-  "break", \
-  "continue", \
-  "goto", \
-  "return"
-
-#define RELATIONAL_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define COMPOUND_STATEMENT \
-  "{"
-
-#define TRANSLATION_UNIT \
-  "(", \
-  "*", \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  Lex::TK::IDENTIFIER, \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define PARAMETER_DECLARATION \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define STRUCT_OR_UNION \
-  "struct"
-
-#define STORAGE_CLASS_SPECIFIER \
-  "auto", \
-  "extern", \
-  "register", \
-  "static", \
-  "typedef"
-
-#define EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define ABSTRACT_DECLARATOR \
-  "(", \
-  "*", \
-  "["
-
-#define EXCLUSIVE_OR_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define INITIALIZER \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "{", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define ITERATION_STATEMENT \
-  "do", \
-  "for", \
-  "while"
-
-#define DECLARATION_LIST \
-  "auto", \
-  "char", \
-  "const", \
-  "enum", \
-  "extern", \
-  "int", \
-  "long", \
-  "register", \
-  "short", \
-  "signed", \
-  "static", \
-  "struct", \
-  "typedef", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define CAST_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define SPECIFIER_QUALIFIER_LIST \
-  "char", \
-  "const", \
-  "enum", \
-  "int", \
-  "long", \
-  "short", \
-  "signed", \
-  "struct", \
-  "type_name", \
-  "unsigned", \
-  "void", \
-  "volatile"
-
-#define PRIMARY_EXPRESSION \
-  "(", \
-  Lex::TK::CONSTANT, \
-  Lex::TK::IDENTIFIER, \
-  Lex::TK::STRING_LITERAL
-
-#define EQUALITY_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define CONDITIONAL_EXPRESSION \
-  "!", \
-  "&", \
-  "(", \
-  "*", \
-  "+", \
-  "-", \
-  "~", \
-  Lex::TK::CONSTANT, \
-  "dec_op", \
-  Lex::TK::IDENTIFIER, \
-  "inc_op", \
-  "sizeof", \
-  Lex::TK::STRING_LITERAL
-
-#define SELECTION_STATEMENT \
-  "if", \
-  "switch"
-
-//
-// End First1
-//
-
+#include <vector>
 
 using namespace C4;
 using namespace Parse;
@@ -775,18 +25,158 @@ Parser::Parser( Lexer &lexer ) : lexer(lexer), current(NULL), next(NULL) {}
 
 Parser::~Parser() {}
 
-void Parser::getNextToken()
+
+//===----------------------------------------------------------------------===//
+//
+//  Parser Helper Functions
+//
+//===----------------------------------------------------------------------===//
+
+/// Binary Operator Precedences
+///
+/// \return the precedence of the binary operator 'tok', or -1 iff tok is not a
+/// binary operator
+static int getBinOpPrecedence( Lex::TK tk )
+{
+  switch ( tk )
+  {
+    case Lex::TK::Mul:
+    case Lex::TK::Div:
+    case Lex::TK::Mod:
+      return 100;
+
+    case Lex::TK::Plus:
+    case Lex::TK::Minus:
+      return 90;
+
+    case Lex::TK::RShift:
+    case Lex::TK::LShift:
+      return 80;
+
+    case Lex::TK::Le:
+    case Lex::TK::Gr:
+    case Lex::TK::LEq:
+    case Lex::TK::GEq:
+      return 70;
+
+    case Lex::TK::Eq:
+    case Lex::TK::NE:
+      return 60;
+
+    case Lex::TK::And:
+      return 50;
+
+    case Lex::TK::Xor:
+      return 40;
+
+    case Lex::TK::Or:
+      return 30;
+
+    case Lex::TK::LAnd:
+      return 20;
+
+    case Lex::TK::LOr:
+      return 10;
+
+      //
+      //  IMPORTANT:
+      //  Must never return 0.
+      //
+
+    default: return -1;
+  }
+} // end getBinOpPrecedence
+
+int Parser::getTokenPrecedence()
+{
+  if ( ! this->current )
+    return -1;
+
+  int prec = getBinOpPrecedence( this->current->kind );
+  return  prec > 0 ? prec : -1;
+}
+
+void Parser::readNextToken()
 {
   if ( current ) delete current;
   current = next;
   next = new Lex::Token( lexer.getToken() );
 }
 
-void Parser::parse()
+static inline void errorpf( Pos pos, char const * const expected,
+    char const * const actual )
 {
-  getNextToken();
-  getNextToken();
-  parseExpression();
+  errorf( pos, "expected %s before %s", expected, actual );
+}
+
+#define ERROR( MSG ) \
+{ std::ostringstream actual; printTok( actual, current ); \
+  errorpf( current->pos, ( MSG ), actual.str().c_str() ); }
+
+static inline void printTK( std::ostream &out, TK const tk )
+{
+  switch ( tk )
+  {
+    case Lex::TK::IDENTIFIER:
+    case Lex::TK::CONSTANT:
+    case Lex::TK::STRING_LITERAL:
+    case Lex::TK::END_OF_FILE:
+      out << tk;
+      break;
+
+    default:
+      out << "'" << tk << "'";
+  }
+}
+
+static inline void printTok( std::ostream &out, Token const &tok )
+{
+  printTK( out, tok.kind );
+  switch ( tok.kind )
+  {
+    case TK::IDENTIFIER:
+    case Lex::TK::CONSTANT:
+    case Lex::TK::STRING_LITERAL:
+      out << " '" << tok.sym << "'";
+
+    default:;
+  }
+}
+
+static inline void printTok( std::ostream &out, Token const * const tok )
+{
+  printTok( out, *tok );
+}
+
+/// If the current token is of kind tk, i.e. a call to is( tk ) would
+/// return true, gets the next token, otherwise prints an error message.
+bool Parser::accept( Lex::TK tk )
+{
+  if ( ! is( tk ) )
+  {
+    std::ostringstream expected;
+    printTK( expected, tk );
+
+    std::ostringstream actual;
+    printTok( actual, current );
+
+    errorpf( current->pos, expected.str().c_str(), actual.str().c_str() );
+    return false;
+  }
+  else
+    readNextToken(); // eat token
+  return true;
+} // end accept
+// End Parser Helper Functions
+
+
+TranslationUnit const * Parser::parse()
+{
+  readNextToken();
+  readNextToken();
+  assert( current && "must not be NULL" );
+  assert( next && "must not be NULL" );
+  return parseTranslationUnit();
 }
 
 
@@ -803,45 +193,49 @@ void Parser::parse()
 //  Expressions
 //
 
-Expression & Parser::parsePrimaryExpression()
+Expr const * Parser::parsePrimaryExpr()
 {
-  Expression * expr = NULL;
   switch( current->kind )
   {
     case TK::IDENTIFIER:
-      expr = new Variable( *current ); getNextToken(); break;
+      {
+        Expr *expr = new Variable( *current );
+        readNextToken(); // eat identifier
+        return expr;
+      }
 
     case TK::CONSTANT:
-      expr = new Constant( *current ); getNextToken(); break;
+      {
+        Expr *expr = new Constant( *current );
+        readNextToken(); // eat constant
+        return expr;
+      }
 
     case TK::STRING_LITERAL:
-      expr = new StringLiteral( *current ); getNextToken(); break;
+      {
+        Expr *expr = new StringLiteral( *current );
+        readNextToken(); // eat string-literal
+        return expr;
+      }
 
     case TK::LPar:
       {
-        getNextToken(); // eat '('
-        parseExpression();
+        readNextToken(); // eat '('
+        Expr const * const expr = parseExpr();
         accept( TK::RPar ); // eat ')'
-        break;
+        return expr;
       }
 
     default:
-      {
-        std::ostringstream oss;
-        oss << current->kind;
-        errorf( current->pos, "%s - %s", oss.str().c_str(),
-            "identifier, constant, string-literal or '(' expression ')' "
-            "expected" );
-        expr = new IllegalExpression();
-      }
-  }
+      ERROR( "identifier, constant, string-literal or '(' expression ')'" );
 
-  return *expr;
-} // end parsePrimaryExpression
+  } // end switch
+  return new IllegalExpr( *current );
+} // end parsePrimaryExpr
 
-Expression & Parser::parsePostfixExpression()
+Expr const * Parser::parsePostfixExpr()
 {
-  parsePrimaryExpression();
+  Expr const * expr = parsePrimaryExpr();
 
   for (;;)
   {
@@ -849,75 +243,119 @@ Expression & Parser::parsePostfixExpression()
     {
       case TK::LBracket: // array subscript
         {
-          getNextToken(); // eat '['
-          parseExpression();
+          Token const tok( *current );
+          readNextToken(); // eat '['
+          Expr const * const subscript = parseExpr();
           accept( TK::RBracket ); // eat ']'
-          break;
+          expr = new SubscriptExpr( tok, expr, subscript );
         }
+        break;
 
       case TK::LPar: // function call
         {
-          getNextToken(); // eat '('
+          Token const tok( *current );
+          readNextToken(); // eat '('
+          Expr const * args = NULL;
           if ( current->kind != TK::RPar )
-            parseArgumentExpressionList();
+            args = parseArgumentExprList();
           accept( TK::RPar ); // eat ')'
-          break;
+          expr = new FunctionCall( tok, expr, args );
         }
+        break;
 
       case TK::PtrOp:
+        {
+          Token const  tok( *current );
+          readNextToken(); // eat '->'
+          Token const id( *current );
+          if ( accept( TK::IDENTIFIER ) ) // eat Identifier
+            expr = new ArrowExpr( tok, expr, id );
+          else
+            expr = new IllegalExpr( id );
+        }
+        break;
+
       case TK::Dot:
         {
-          getNextToken(); // eat operator
-          accept( TK::IDENTIFIER ); // eat Identifier
-          break;
+          Token const tok( *current );
+          readNextToken(); // eat '.'
+          Token const id( *current );
+          if ( accept( TK::IDENTIFIER ) ) // eat Identifier
+            expr = new DotExpr( tok, expr, id );
+          else
+            expr = new IllegalExpr( id );
         }
+        break;
 
       case TK::IncOp:
+        expr = new PostIncExpr( *current, *expr );
+        readNextToken(); // eat '++'
+        break;
+
       case TK::DecOp:
-        {
-          getNextToken(); // eat operator
-          break;
-        }
+        expr = new PostDecExpr( *current, *expr );
+        readNextToken(); // eat '--'
+        break;
 
       default: goto for_end; // exit loop
     } // end switch
   } // end for
 for_end:
-  return *( new IllegalExpression() );
-} // end parsePostfixExpression
+  return expr;
+} // end parsePostfixExpr
 
-Expression & Parser::parseArgumentExpressionList()
+ExprList const * Parser::parseArgumentExprList()
 {
-  parseAssignmentExpression();
+  ExprList * const args = new ExprList( *current );
+  args->append( parseAssignmentExpr() );
   while ( current->kind == TK::Comma )
-    parseAssignmentExpression();
-  return *( new IllegalExpression() );
-}
+  {
+    readNextToken(); // eat ','
+    args->append( parseAssignmentExpr() );
+  }
+  return args;
+} // end parseArgumentExprList
 
-Expression & Parser::parseUnaryExpression()
+Expr const * Parser::parseUnaryExpr()
 {
   switch ( current->kind )
   {
     case TK::IncOp:
+      {
+        Token const tok( *current );
+        readNextToken(); // eat '++'
+        return new PreIncExpr( tok, parseUnaryExpr() );
+      }
+
     case TK::DecOp:
       {
-        getNextToken(); // eat operator
-        parseUnaryExpression();
-        break;
+        Token const tok( *current );
+        readNextToken(); // eat '--'
+        return new PreDecExpr( tok, parseUnaryExpr() );
       }
 
     case TK::Sizeof:
       {
-        getNextToken(); // eat 'sizeof'
-        if ( next->kind == TK::LPar )
-        {
-          getNextToken(); // eat '('
-          // TODO parse type-name
-          accept( TK::RPar ); // eat ')'
-        }
-        else
-          parseUnaryExpression();
-        break;
+        Token const tok( *current );
+        readNextToken(); // eat 'sizeof'
+        if ( current->kind == TK::LPar )
+          switch ( next->kind )
+          {
+            case TK::Void:
+            case TK::Char:
+            case TK::Int:
+            case TK::Struct:
+              {
+                // SIZEOF '(' type_name ')'
+                readNextToken(); // eat '('
+                TypeName const * const type = parseTypeName();
+                accept( TK::RPar ); // eat ')'
+                return new SizeofTypeExpr( tok, type );
+              }
+
+            default:; // SIZEOF '(' expr ')'
+          } // end switch
+        return new SizeofExpr( tok, parseUnaryExpr() );
       }
 
     case Lex::TK::And:
@@ -927,72 +365,63 @@ Expression & Parser::parseUnaryExpression()
     case Lex::TK::Neg:
     case Lex::TK::Not:
       {
-        getNextToken(); // eat unary operator
-        parseCastExpression();
-        break;
+        Token const tok( *current );
+        readNextToken(); // eat unary operator
+        return new UnaryOperation( tok, parseUnaryExpr() );
       }
 
-    default:
-      return parsePostfixExpression();
-  }
-  return *( new IllegalExpression() );
-} // end parseUnaryExpression
+    default:;
+  } // end switch
 
-Expression & Parser::parseCastExpression()
-{
-  while ( current->kind == TK::LPar )
-  {
-    getNextToken(); // eat '('
-    // TODO parse type-name
-    accept( TK::RPar ); // eat ')'
-  }
-  parseUnaryExpression();
-  return *( new IllegalExpression() );
-} // end parseCastExpression
+  return parsePostfixExpr();
+} // end parseUnaryExpr
 
-Expression & Parser::parseBinaryExpression()
+Expr const * Parser::parseBinaryExpr()
 {
-  Expression &lhs = parseUnaryExpression();
+  Expr const * const lhs = parseUnaryExpr();
   return parseBinOpRHS( 0, lhs );
-} // end parseBinaryExpression
+} // end parseBinaryExpr
 
-Expression & Parser::parseBinOpRHS( int exprPrec, AST::Expression &lhs )
+Expr const * Parser::parseBinOpRHS( int exprPrec, Expr const * lhs )
 {
-  int tokPrec = getTokenPrecedence();
+  for (;;)
+  {
+    int tokPrec = getTokenPrecedence();
 
-  // If this binary expression binds less than lhs, we are done.
-  if ( tokPrec < exprPrec )
-    return lhs;
+    // If this binary expression binds less than lhs, we are done.
+    if ( tokPrec < exprPrec )
+      return lhs;
 
-  Token const * binOp = this->current;
-  getNextToken(); // eat BinOp
+    Token const binOp( *current );
+    readNextToken(); // eat BinOp
 
-  Expression &rhs = parseUnaryExpression();
+    Expr const * rhs = parseUnaryExpr();
 
-  // If binOp binds less with the RHS than the operator after RHS, let the
-  // pending operator take RHS as its LHS.
-  int nextPrec = getTokenPrecedence();
-  if ( tokPrec < nextPrec )
-    return *( new BinaryExpression( *binOp, lhs,
-          parseBinOpRHS( tokPrec + 1, rhs ) ) );
+    // If binOp binds less with the RHS than the operator after RHS, let the
+    // pending operator take RHS as its LHS.
+    int nextPrec = getTokenPrecedence();
+    if ( tokPrec < nextPrec )
+      rhs = parseBinOpRHS( tokPrec + 1, rhs );
 
-  return *( new BinaryExpression( *binOp, lhs, rhs ) );
+    lhs = new BinaryExpr( binOp, lhs, rhs );
+  } // end for
 } // end parseBinOpRHS
 
-Expression & Parser::parseConditionalExpression()
+Expr const * Parser::parseConditionalExpr()
 {
-  parseBinaryExpression();
+  Expr const * const expr = parseBinaryExpr();
 
   if ( current->kind == TK::QMark )
   {
-    getNextToken(); // eat '?'
-    parseExpression();
+    Token const tok( *current );
+    readNextToken(); // eat '?'
+    Expr const * const lhs = parseExpr();
     accept( TK::Col ); // eat ':'
-    parseConditionalExpression();
+    return new ConditionalExpr( tok, expr, lhs, parseConditionalExpr() );
   }
 
-  return *( new IllegalExpression() );
-} // end parseConditionalExpression
+  return expr;
+} // end parseConditionalExpr
 
 /// Note: we diverge from the ANSI-C grammar when parsing the
 /// assignment-expression production. ANSI-C specifies that the LHS of an
@@ -1003,60 +432,764 @@ Expression & Parser::parseConditionalExpression()
 /// produce. Because we want consistency, we parse the LHS as a
 /// conditional-expression, then check for l-value-ness in semantic analysis
 /// stages.
-Expression & Parser::parseAssignmentExpression()
+Expr const * Parser::parseAssignmentExpr()
 {
-  parseConditionalExpression();
+  Expr const * const expr = parseConditionalExpr();
 
-  for (;;)
+  switch ( current->kind )
   {
-    switch ( current->kind )
-    {
-      case TK::Assign:
-      case TK::MulAssign:
-      case TK::DivAssign:
-      case TK::ModAssign:
-      case TK::AddAssign:
-      case TK::SubAssign:
-      case TK::LShiftAssign:
-      case TK::RShiftAssign:
-      case TK::AndAssign:
-      case TK::XorAssign:
-      case TK::OrAssign:
-        getNextToken(); // eat assignment-operator
-        parseConditionalExpression();
+    case TK::Assign:
+    case TK::MulAssign:
+    case TK::DivAssign:
+    case TK::ModAssign:
+    case TK::AddAssign:
+    case TK::SubAssign:
+    case TK::LShiftAssign:
+    case TK::RShiftAssign:
+    case TK::AndAssign:
+    case TK::XorAssign:
+    case TK::OrAssign:
+      {
+        Token const tok( *current );
+        readNextToken(); // eat assignment-operator
+        return new AssignmentExpr( tok, expr, parseAssignmentExpr() );
+      }
 
-      default:
-        goto for_end2;
-    }
-  }
-for_end2:
-  return *( new IllegalExpression() );
-} // end parseAssignmentExpression
+    default:;
+  } // end switch
 
-Expression & Parser::parseExpression()
+  return expr;
+} // end parseAssignmentExpr
+
+Expr const * Parser::parseExpr()
 {
-  parseAssignmentExpression();
+  Expr const * const expr = parseAssignmentExpr();
+  if ( current->kind != TK::Comma )
+    return expr;
+
+  ExprList * const exprList = new ExprList( *current );
+  exprList->append( expr );
 
   while ( current->kind == TK::Comma )
   {
-    getNextToken(); // eat ','
-    parseAssignmentExpression();
+    readNextToken(); // eat ','
+    exprList->append( parseAssignmentExpr() );
   }
 
-  return *( new IllegalExpression() );
-} // end parseExpression
+  return exprList;
+} // end parseExpr
 
 
 //
 //  Declarations
 //
 
-AST::Declaration & Parser::parseDeclaration()
+Decl const * Parser::parseDecl()
 {
-  // TODO parse declaration-specifiers
+  TypeSpecifier const * const typeSpec = parseTypeSpecifier();
+  Declarator const * declarator = NULL;
   if ( current->kind != TK::SCol )
-  {}
-    // TODO parse init-declarator-list
+    declarator = parseDeclarator();
   accept( TK::SCol ); // eat ';'
-  return *( new IllegalDeclaration() );
-}
+  return new Decl( typeSpec, declarator );
+} // end parseDecl
+
+TypeSpecifier const * Parser::parseTypeSpecifier()
+{
+  switch ( current->kind )
+  {
+    case TK::Void:
+    case TK::Char:
+    case TK::Int:
+      {
+        Token tok( *current );
+        readNextToken(); // eat type
+        return new TypeSpecifier( tok );
+      }
+
+    case TK::Struct:
+      return parseStructSpecifier();
+
+    default:
+      ERROR( "type-specifier ('void', 'char', 'int' or 'struct')" );
+
+  } // end switch
+  return new IllegalTypeSpecifier( *current );
+} // end parseTypeSpecifier
+
+TypeSpecifier const * Parser::parseStructSpecifier()
+{
+  Token const tok( *current );
+  accept( TK::Struct ); // eat 'struct'
+  switch ( current->kind )
+  {
+    case TK::IDENTIFIER:
+      {
+        Token const * const id = new Token( *current );
+        readNextToken(); // eat identifier
+        if ( current->kind == TK::LBrace )
+        {
+          readNextToken(); // eat '{'
+          StructDeclList const * const structDecls = parseStructDeclList();
+          accept( TK::RBrace ); // eat '}'
+          return new StructSpecifier( tok, id, structDecls );
+        }
+        return new StructSpecifier( tok, id );
+      }
+
+    case TK::LBrace:
+      {
+        readNextToken(); // eat '{'
+        StructDeclList const * const structDecls = parseStructDeclList();
+        accept( TK::RBrace ); // eat '}'
+        return new StructSpecifier( tok, structDecls );
+      }
+
+    default:
+      ERROR( "identifier or '{' struct-declaration-list '}'" );
+
+  } // end switch
+  return new IllegalTypeSpecifier( *current );
+} // end parseStructOrUnionSpecifier
+
+StructDeclList const * Parser::parseStructDeclList()
+{
+  StructDeclList * const structDecls = new StructDeclList();
+  do
+    structDecls->append( parseStructDecl() );
+  while ( current->kind != TK::RBrace ); // until '}'
+  return structDecls;
+} // end parseStructDeclList
+
+StructDecl const * Parser::parseStructDecl()
+{
+  TypeSpecifier const * const typeSpec = parseTypeSpecifier();
+  StructDeclaratorList const * structDeclarators = NULL;
+  if ( current->kind != TK::SCol )
+    structDeclarators = parseStructDeclaratorList();
+  accept( TK::SCol ); // eat ';'
+  return new StructDecl( typeSpec, structDeclarators );
+} // end parseStructDecl
+
+StructDeclaratorList const * Parser::parseStructDeclaratorList()
+{
+  StructDeclaratorList * const structDeclarators =
+    new StructDeclaratorList();
+
+  structDeclarators->append( parseDeclarator() );
+  while ( current->kind == TK::Comma )
+  {
+    readNextToken(); // eat ','
+    structDeclarators->append( parseDeclarator() );
+  }
+  return structDeclarators;
+} // end parseStructDeclaratorList
+
+PointerDeclarator const * Parser::parsePointerDeclarator(
+    DeclaratorType const dt /*= NORMAL*/ )
+{
+  Token const tok( *current );
+  Declarator const * subDeclarator = NULL;
+
+  readNextToken(); // eat *
+  if ( dt == DeclaratorType::NORMAL )
+    subDeclarator = parseDeclarator();
+  else
+    switch ( current->kind )
+    {
+      case TK::IDENTIFIER:
+      case TK::LPar:
+        subDeclarator = parseDeclarator( dt );
+        break;
+
+      default:;
+    } // end switch
+
+  return new PointerDeclarator( tok, subDeclarator );
+} // end parsePointerDeclarator
+
+Declarator const * Parser::parseDeclarator(
+    DeclaratorType const dt /*= NORMAL*/ )
+{
+  Token const tok( *current );
+  Declarator const * declarator = NULL;
+  ParamList const * paramList = NULL;
+
+  switch ( current->kind )
+  {
+    case TK::LPar:
+      readNextToken(); // eat '('
+      if ( dt == DeclaratorType::NORMAL )
+        declarator = parseDeclarator( dt );
+      else
+      {
+        switch ( current->kind )
+        {
+          /* Empty parameter list: '(' ')'
+           */
+          case TK::RPar:
+            paramList = new ParamList();
+            break;
+
+          /* Non-empty parameter list.
+           */
+          case TK::Void:
+          case TK::Char:
+          case TK::Int:
+          case TK::Struct:
+            paramList = parseParameterList();
+            break;
+
+          case TK::Mul:
+            declarator = parsePointerDeclarator( dt );
+            break;
+
+          /* Nested parenthesis.
+           */
+          case TK::LPar:
+            declarator = parseDeclarator( dt );
+            break;
+
+          default:
+            ERROR( "declarator or parameter-list" );
+        } // end switch
+      }
+      accept( TK::RPar ); // eat ')'
+      break;
+
+    case TK::Mul:
+      declarator = parsePointerDeclarator( dt );
+      break;
+
+    case TK::IDENTIFIER:
+      if ( dt != DeclaratorType::ABSTRACT )
+      {
+        readNextToken(); // eat identifier
+        declarator = new Identifier( tok );
+        break;
+      }
+      // no break here; run into default
+
+    default:
+      switch ( dt )
+      {
+        case DeclaratorType::NORMAL:
+          ERROR( "identifier or '(' declarator ')'" );
+          break;
+
+        case DeclaratorType::ABSTRACT:
+          ERROR( "'(' declarator ')' or '(' [parameter-list] ')'" );
+          break;
+
+        default:
+          ERROR( "identifier, '(' declarator ')' or '(' [parameter-list] ')'" );
+      } // end switch
+  } // end switch
+
+  /* Read parameter-list suffix, if it exists and we did not already parse a
+   * parameter list.
+   */
+  if ( ! paramList && current->kind == TK::LPar )
+  {
+    readNextToken(); // eat '('
+    switch ( current->kind )
+    {
+      case TK::RPar:
+        paramList = new ParamList();
+        break;
+
+      case TK::Void:
+      case TK::Char:
+      case TK::Int:
+      case TK::Struct:
+        paramList = parseParameterList();
+        break;
+
+      default:
+        ERROR( "parameter-list" );
+
+    } // end switch
+    accept( TK::RPar ); // eat ')'
+  }
+
+  if ( paramList )
+    return new FunctionDeclarator( tok, declarator, paramList );
+  return declarator;
+} // end parseDeclarator
+
+ParamList const * Parser::parseParameterList()
+{
+  ParamList * const params = new ParamList();
+  params->append( parseParameterDecl() );
+  while ( current->kind == TK::Comma )
+  {
+    readNextToken(); // eat ','
+    params->append( parseParameterDecl() );
+  }
+  return params;
+} // end parseParameterList
+
+ParamDecl const * Parser::parseParameterDecl()
+{
+  TypeSpecifier const * const typeSpec = parseTypeSpecifier();
+  switch ( current->kind )
+  {
+    case TK::IDENTIFIER:
+      return new ParamDecl( typeSpec, parseDeclarator() );
+
+    case TK::Mul:
+    case TK::LPar:
+      return new ParamDecl( typeSpec,
+          parseDeclarator( DeclaratorType::UNKNOWN ) );
+
+    default:;
+  }
+  return new ParamDecl( typeSpec );
+} // end parseParameterDecl
+
+TypeName const * Parser::parseTypeName()
+{
+  Token const tok( *current );
+  TypeSpecifier const * const typeSpec = parseTypeSpecifier();
+  Declarator const * declarator = NULL;
+  switch ( current->kind )
+  {
+    case TK::Mul:
+    case TK::LPar:
+      declarator = parseDeclarator( DeclaratorType::ABSTRACT );
+      break;
+
+    default:;
+  }
+  return new TypeName( tok, typeSpec, declarator );
+} // end parseTypeName
+
+Stmt const * Parser::parseStmt()
+{
+  switch ( current->kind )
+  {
+    case TK::IDENTIFIER:
+      // labeled-statement or expression-statement
+      if ( next->kind == TK::Col )
+        return parseLabeledStmt();
+      else
+        return parseExprStmt();
+      break;
+
+    case TK::Case:
+    case TK::Default:
+      return parseLabeledStmt();
+      break;
+
+    case TK::LBrace:
+      return parseCompoundStmt();
+      break;
+
+    case TK::If:
+    case TK::Switch:
+      return parseSelectionStmt();
+      break;
+
+    case TK::For:
+    case TK::While:
+    case TK::Do:
+      return parseIterationStmt();
+      break;
+
+    case TK::Goto:
+    case TK::Break:
+    case TK::Continue:
+    case TK::Return:
+      return parseJumpStmt();
+      break;
+
+    case TK::CONSTANT:
+    case TK::STRING_LITERAL:
+    case TK::SCol:
+    case TK::Sizeof:
+    case TK::IncOp:
+    case TK::DecOp:
+    case TK::Mul:
+    case TK::And:
+    case TK::LPar:
+    case TK::Plus:
+    case TK::Minus:
+    case TK::Not:
+    case TK::Neg:
+      return parseExprStmt();
+      break;
+
+    default:
+      ERROR( "statement" );
+
+  } // end switch
+  return new IllegalStmt( *current );
+} // end parseStmt
+
+Stmt const * Parser::parseLabeledStmt()
+{
+  Token const tok( *current );
+  switch ( current->kind )
+  {
+    case TK::IDENTIFIER:
+      readNextToken(); // eat identifier
+      accept( TK::Col ); // eat ':'
+      break;
+
+    case TK::Case:
+      {
+        readNextToken(); // eat 'case'
+        Expr const * const expr = parseConditionalExpr();
+        accept( TK::Col ); // eat ':'
+        return new CaseStmt( tok, expr, parseStmt() );
+      }
+
+    case TK::Default:
+      readNextToken(); // eat 'default'
+      accept( TK::Col ); // eat ':'
+      break;
+
+    default:
+      {
+        ERROR( "identifier, 'case' or 'default'" );
+        return new IllegalStmt( *current );
+      }
+  } // end switch
+  return new LabelStmt( tok, parseStmt() );
+} // end parseLabeledStmt
+
+CompoundStmt const * Parser::parseCompoundStmt()
+{
+  CompoundStmt * const compStmt = new CompoundStmt( *current );
+
+  accept( TK::LBrace ); // eat '{'
+
+  for (;;)
+  {
+    switch ( current->kind )
+    {
+      case TK::RBrace:
+        goto for_end;
+
+      /*case TK::Comma:
+        readNextToken(); // eat ','
+        break;*/
+
+      case TK::Void:
+      case TK::Char:
+      case TK::Int:
+      case TK::Struct:
+        compStmt->append( new BlockItem( parseDecl() ) );
+        break;
+
+      case TK::IDENTIFIER:
+      case TK::CONSTANT:
+      case TK::STRING_LITERAL:
+      case TK::Goto:
+      case TK::If:
+      case TK::For:
+      case TK::While:
+      case TK::Do:
+      case TK::Break:
+      case TK::Continue:
+      case TK::Switch:
+      case TK::Case:
+      case TK::Default:
+      case TK::IncOp:
+      case TK::DecOp:
+      case TK::Return:
+      case TK::Sizeof:
+      case TK::Not:
+      case TK::Neg:
+      case TK::And:
+      case TK::Mul:
+      case TK::Plus:
+      case TK::Minus:
+      case TK::LPar:
+      case TK::LBrace:
+      case TK::SCol:
+        compStmt->append( new BlockItem( parseStmt() ) );
+        break;
+
+      default:
+        ERROR( "declaration or statement" );
+        goto for_end;
+
+    } // end switch
+  } // end for
+
+for_end:
+  accept( TK::RBrace ); // eat '}'
+  return compStmt;
+} // end parseCompoundStmt
+
+DeclList const * Parser::parseDeclList()
+{
+  DeclList * const declList = new DeclList();
+  declList->append( parseDecl() );
+  for (;;)
+  {
+    switch ( current->kind )
+    {
+      case TK::Void:
+      case TK::Char:
+      case TK::Int:
+      case TK::Struct:
+        declList->append( parseDecl() );
+        break;
+
+      default: goto for_end;
+    }
+  } // end for
+for_end:
+  return declList;
+} // end parseDeclList
+
+ExprStmt const * Parser::parseExprStmt()
+{
+  Token const tok( *current );
+  Expr const * expr = NULL;
+  if ( current->kind != TK::SCol )
+    expr = parseExpr();
+  accept( TK::SCol ); // eat ';'
+  return new ExprStmt( tok, expr );
+} // end parseExprStmt
+
+Stmt const * Parser::parseSelectionStmt()
+{
+  Token const tok( *current );
+  switch ( current->kind )
+  {
+    case TK::If:
+      {
+        readNextToken(); // eat 'if'
+        accept( TK::LPar ); // eat '('
+        Expr const * const cond = parseExpr();
+        accept( TK::RPar ); // eat ')'
+        Stmt const * const thenStmt = parseStmt();
+        Stmt const * elseStmt = NULL;
+        if ( current->kind == TK::Else )
+        {
+          readNextToken(); // eat 'else'
+          elseStmt = parseStmt();
+        }
+        return new IfStmt( tok, cond, thenStmt, elseStmt );
+      }
+
+    case TK::Switch:
+      {
+        readNextToken(); // eat 'switch'
+        accept( TK::LPar ); // eat '('
+        Expr const * const cond = parseExpr();
+        accept( TK::RPar ); // eat ')'
+        Stmt const * const body = parseStmt();
+        return new SwitchStmt( tok, cond, body );
+      }
+
+    default:
+      {
+        ERROR( "'if' or 'switch'" );
+      }
+  } // end switch
+  return new IllegalStmt( *current );
+} // end parseSelectionStmt
+
+Stmt const * Parser::parseIterationStmt()
+{
+  Token const tok( *current );
+  switch ( current->kind )
+  {
+    case TK::For:
+      {
+        readNextToken(); // eat 'for'
+        accept( TK::LPar ); // eat '('
+
+        Expr const * init = NULL;
+        Decl const * initDecl = NULL;
+        switch ( current->kind )
+        {
+          case TK::SCol:
+            break;
+
+          case TK::Void:
+          case TK::Char:
+          case TK::Int:
+          case TK::Struct:
+            initDecl = parseDecl(); // init declaration
+            break;
+
+          default:
+            init = parseExpr(); // initialization
+        } // end switch
+        accept( TK::SCol ); // eat ';'
+
+        Expr const * cond = NULL;
+        if ( current->kind != TK::SCol )
+          cond = parseExpr(); // condition
+        accept( TK::SCol ); // eat ';'
+
+        Expr const * step = NULL;
+        if ( current->kind != TK::RPar )
+          step = parseExpr(); // increment
+
+        accept( TK::RPar ); // eat ')'
+        Stmt const * const body = parseStmt(); // body
+        if ( init )
+          return new ForStmt( tok, init, cond, step, body );
+        return new ForStmt( tok, initDecl, cond, step, body );
+      }
+
+    case TK::While:
+      {
+        readNextToken(); // eat 'while'
+        accept( TK::LPar ); // eat '('
+        Expr const * cond = parseExpr(); // condition
+        accept( TK::RPar ); // eat ')'
+        Stmt const * body = parseStmt(); // body
+        return new WhileStmt( tok, cond, body );
+      }
+
+    case TK::Do:
+      {
+        readNextToken(); // eat 'do'
+        Stmt const * const body = parseStmt(); // body
+        accept( TK::While ); // eat 'while'
+        accept( TK::LPar ); // eat '('
+        Expr const * const cond = parseExpr(); // condition
+        accept( TK::RPar ); // eat ')'
+        accept( TK::SCol ); // eat ';'
+        return new DoStmt( tok, body, cond );
+      }
+
+    default:
+      ERROR( "'for', 'do' or 'while'" );
+
+  } // end switch
+  return new IllegalStmt( *current );
+} // end parseIterationStmt
+
+Stmt const * Parser::parseJumpStmt()
+{
+  Token const tok( *current );
+  switch ( current->kind )
+  {
+    case TK::Goto:
+      {
+        readNextToken(); // eat 'goto'
+        Token const id( *current );
+        bool b = accept( TK::IDENTIFIER ); // eat identifier
+        accept( TK::SCol ); // eat ';'
+        if ( b )
+          return new GotoStmt( id );
+      }
+      break;
+
+    case TK::Continue:
+      readNextToken(); // eat 'continue'
+      accept( TK::SCol ); // eat ';'
+      return new ContinueStmt( tok );
+
+    case TK::Break:
+      readNextToken(); // eat 'break'
+      accept( TK::SCol ); // eat ';'
+      return new BreakStmt( tok );
+
+    case TK::Return:
+      {
+        Expr const * expr = NULL;
+        readNextToken(); // eat 'return'
+        if ( current->kind != TK::SCol )
+          expr = parseExpr();
+        accept( TK::SCol ); // eat ';'
+        return new ReturnStmt( tok, expr );
+      }
+
+    default:
+      ERROR( "'return', 'continue', 'break' or 'goto'" );
+
+  } // end switch
+  return new IllegalStmt( *current );
+} // end parseJumpStmt
+
+TranslationUnit const * Parser::parseTranslationUnit()
+{
+  TranslationUnit * unit = new TranslationUnit();
+  do
+  {
+    Pos const old( current->pos );
+    unit->append( parseExtDecl() ); // in bad cases, does not consume any token
+
+    // If the parseExtDecl function did not consume anything, consume one token,
+    // to avoid divergance of the parser.
+    //if ( old == current->pos )
+    //readNextToken();
+
+    // Recover until the end of a block (e.g compound statement) or semicolon
+    // ';'
+    if ( old == current->pos )
+    {
+      for (;;)
+      {
+        switch ( current->kind )
+        {
+          case TK::END_OF_FILE:
+            goto for_end;
+
+          case TK::SCol:
+          case TK::RBrace:
+            readNextToken();
+            goto for_end;
+
+          default:
+            readNextToken();
+        } // end switch
+      } // end for
+
+for_end:
+      continue;
+    }
+  }
+  while ( current->kind != TK::END_OF_FILE );
+  return unit;
+} // end parseTranslationUnit
+
+ExtDecl const * Parser::parseExtDecl()
+{
+  switch ( current->kind )
+  {
+    // type_specifier
+    case TK::Void:
+    case TK::Char:
+    case TK::Int:
+    case TK::Struct:
+      {
+        TypeSpecifier const * const typeSpec = parseTypeSpecifier();
+        if ( current->kind == TK::SCol )
+        {
+          readNextToken(); // eat ';'
+          return new Decl( typeSpec );
+        }
+        Declarator const * const declarator = parseDeclarator();
+        switch ( current->kind )
+        {
+          case TK::SCol:
+            readNextToken(); // eat ';'
+            return new Decl( typeSpec, declarator );
+
+          case TK::LBrace:
+            // check whether the declarator is actually a function declarator
+            if ( ! dynamic_cast< FunctionDeclarator const * >( declarator ) )
+              ERROR( "'(' [parameter-list] ')'" );
+            return new FunctionDef( typeSpec, declarator, parseCompoundStmt() );
+
+          default:
+            ERROR( "';' or function-definition" );
+        } // end switch
+        return new IllegalDecl( *current, typeSpec );
+      }
+
+    default:
+      ERROR( "function-definition or declaration" );
+  } // end switch
+  return new IllegalExtDecl( *current );
+} // end parseExtDecl

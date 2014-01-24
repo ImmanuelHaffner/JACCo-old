@@ -43,9 +43,9 @@ DUMMY				:= $(shell mkdir -p $(sort $(dir $(TEST_OBJ))))
 #DEBUG				?= 1
 
 ifeq ($(DEBUG), 1)
-	CXXFLAGS	+= -g -DDEBUG
+	CFLAGS	+= -g -DDEBUG
 else
-	CXXFLAGS	+= -O2
+	CFLAGS	?= -O2
 endif
 
 ifeq ($(VERBOSE), 1)
@@ -56,7 +56,7 @@ CFLAGS			+= -Wall -W -pedantic# -Werror
 CXXFLAGS		+= $(CFLAGS) -std=c++11
 
 
-.PHONY: all check check-all clean cleanall doxy
+.PHONY: all check check-lexer check-parser check-printer check-all clean cleanall doxy
 
 all: $(BIN)
 
@@ -64,16 +64,36 @@ all: $(BIN)
 
 -include $(DEP)
 
-check: $(TESTBIN)
+check: all $(TESTBIN)
 	-	$(TESTBIN)
 
 -include $(TEST_DEP)
 
-check-all: all check
+check-lexer: all
 	@echo ""
 	@cd test/;\
 	./test-tokenize.sh;\
 	cd ..
+
+check-sema: all
+	@echo ""
+	@cd test/;\
+		./test-sema.sh;\
+		cd ..
+
+check-parser: all
+	@echo ""
+	@cd test/;\
+	./test-parse.sh;\
+	cd ..
+
+check-printer: all
+	@echo ""
+	@cd test/;\
+	./test-print.sh;\
+	cd ..
+
+check-all: check check-lexer check-parser check-printer
 
 clean:
 	@echo "===> CLEAN"
