@@ -8,13 +8,12 @@
 #include "Parse/Parser.h"
 #include "AST/Printable.h"
 
-#include "Sema/SemaTypeFactory.h" // TODO remove after testing
-
 
 using namespace C4;
 using namespace Lex;
 using namespace Parse;
 using namespace AST;
+
 
 enum class Mode {
   TOKENIZE,
