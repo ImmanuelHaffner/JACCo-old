@@ -71,112 +71,6 @@ Sema::Type const * TypeFactory::getChar() { return &CHAR; }
 
 Sema::Type const * TypeFactory::getInt() { return &INT; }
 
-Sema::Type const * TypeFactory::getType( TypeSpecifier const * const typeSpec )
-{
-  switch ( typeSpec->tok.kind )
-  {
-    case TK::Void:
-      return getVoid();
-
-    case TK::Char:
-      return getChar();
-
-    case TK::Int:
-      return getInt();
-
-    case TK::Struct:
-      return getType( static_cast< StructSpecifier const * >( typeSpec ) );
-
-    default:
-      return NULL;
-  }
-}
-
-Sema::Type const * TypeFactory::getType( Decl const * decl )
-{
-  Sema::Type const * retType = getType( decl->typeSpec );
-
-  if ( ! decl->declarator ) return retType;
-
-  // Traverse all pointer declarators, and modify the return type.
-  //
-  // e.g.:  int * * p; => int -> int * -> int * *
-  Declarator const * declarator = decl->declarator;
-  while ( auto pd = dynamic_cast< PointerDeclarator const * >( declarator ) )
-  {
-    retType = getPtr( retType ); // get a pointer to the current return type
-    declarator = pd->declarator;
-  }
-
-  if ( ! declarator ) return retType;
-
-  if ( auto fd = dynamic_cast< FunctionDeclarator const * >( declarator ) )
-  {
-    return getType( retType, fd );
-  }
-
-  return NULL;
-}
-
-Sema::Type const * TypeFactory::getType( Type const * retType,
-    FunctionDeclarator const * fd )
-{
-  std::vector< Type const * > args;
-
-  // Iterate over all parameters.
-  ParamList const * const params = fd->params;
-  for ( auto it = params->begin(); it != params->end(); ++it )
-    args.push_back( getType( *it ) );
-
-  // Construct the function type.
-  FuncType const * const ft = new FuncType( retType, args );
-
-  // Internalize.
-  auto it = funcTable.find( ft );
-  if ( it != funcTable.end() )
-  {
-    delete ft;
-    return *it;
-  }
-  funcTable.insert( ft );
-  return ft;
-}
-
-Sema::Type const * TypeFactory::getType( AST::StructSpecifier const * const ss )
-{
-  std::unordered_map< Symbol, Type const * > args;
-
-  // Iterate over all declarations.
-  //
-  // e.g.:  int x;
-  //        int y;
-  //        int z;
-  StructDeclList const * decls = ss->structDecls;
-  for ( auto decl = decls->begin(); decl != decls->end(); ++decl )
-  {
-    Type const * const type = getType( (*decl)->typeSpec );
-
-    // Iterate over all declarators.
-    //
-    // e.g.:  int x, y, z;
-    StructDeclaratorList const * const declarators = (*decl)->structDeclarators;
-    for ( auto declarator = declarators->begin();
-        declarator != declarators->end(); ++declarator )
-    {
-      // TODO iterate over the pointer declarators and get a modified type
-      // e.g.:  int * * x;
-
-      // TODO check the dynamic type of the declarator, and invoke the correct
-      // getType method
-      // e.g.:  int (*p)()
-
-      // TODO insert a mapping from the identifier to the returned type
-    }
-  }
-
-  return new StructType( args );
-}
-
 Sema::Type const * TypeFactory::getPtr( Type const * const innerType )
 {
   PtrType const * const ptr = new PtrType( innerType );
@@ -190,4 +84,26 @@ Sema::Type const * TypeFactory::getPtr( Type const * const innerType )
   }
   ptrTable.insert( ptr );
   return ptr;
+}
+
+Sema::Type const * TypeFactory::getFunc( Type const * const retType,
+    std::vector< Type const * > &argTypes )
+{
+  FuncType const * const func = new FuncType( retType, argTypes );
+
+  // Internalize.
+  auto it = funcTable.find( func );
+  if ( it != funcTable.end() )
+  {
+    delete func;
+    return *it;
+  }
+  funcTable.insert( func );
+  return func;
+}
+
+Sema::Type const * TypeFactory::getStruct(
+    std::unordered_map< Symbol, Type const * > &params )
+{
+  return new StructType( params );
 }

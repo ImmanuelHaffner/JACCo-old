@@ -97,28 +97,23 @@ namespace C4
       /// \return the int type
       static Type const * getInt();
 
-      /// \return the type of the type specifier
-      static Type const * getType( AST::TypeSpecifier const * const typeSpec );
-
-      /// \return the type of the declaration
-      static Type const * getType( AST::Decl const * const decl );
-
-      /// \brief Creates a new internalized function type.
-      ///
-      /// \return the new function type
-      static Type const * getType( Type const * retType,
-          AST::FunctionDeclarator const * fd );
-
-      /// \brief Creates a new internalized structure type.
-      ///
-      /// \return the new structure type
-      static Type const * getType( AST::StructSpecifier const * const ss );
-
       /// \brief Creates a new internalized pointer type, with the given inner
       /// type.
       ///
       /// \return the new pointer type
       static Type const * getPtr( Type const * const innerType );
+
+      /// \brief Creates a new internalized function type, given the return type
+      /// and the argument types.
+      ///
+      /// \return the new function type
+      static Type const * getFunc( Type const * retType,
+          std::vector< Type const * > &argTypes );
+
+      /// \brief Creates a new internalized structure type, given the parameter
+      /// types.
+      static Type const * getStruct(
+          std::unordered_map< Symbol, Type const * > &paramTypes );
 
       private:
       // Constant object types.

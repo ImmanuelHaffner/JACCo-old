@@ -96,17 +96,26 @@ namespace C4
     /// type.
     struct StructType : ObjType
     {
-      StructType( std::unordered_map< Symbol, Type const * > const content ) :
-        content(content)
+      StructType( std::unordered_map< Symbol, Type const * > const &elements ) :
+        elements(elements), size_(-1u)
       {}
 
       ~StructType() {}
 
-      inline void complete() { completed = true; }
-      inline bool isComplete() { return completed; }
+      inline void complete() {
+        if ( size_ == -1u )
+        {
+          for ( auto it = elements.begin(); it != elements.end(); ++it )
+          {
+            size_ += static_cast< ObjType const * >( it->second )->size();
+          }
+        }
+      }
+
+      inline bool isComplete() { return size_ != -1u; }
       inline size_t size() const
       {
-        return completed ? content.size() : -1;
+        return size_;
       }
 
       /// Since structure types are not internalized, we can simply return 0.
@@ -115,10 +124,10 @@ namespace C4
         return 0;
       }
 
-      std::unordered_map< Symbol, Type const * > const content;
+      std::unordered_map< Symbol, Type const * > const elements;
 
       private:
-      bool completed;
+      size_t size_;
     }; // end struct StructType
 
 
