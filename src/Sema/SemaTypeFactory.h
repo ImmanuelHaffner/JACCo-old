@@ -69,7 +69,10 @@ namespace C4
     };
 
 
-    /// \brief Constructs internalized types from AST nodes.
+    /// \brief Constructs types for semantic analysis.
+    ///
+    /// Except for structure types, the factory returns internalized type
+    /// objects.  The type factory keeps a set of all constructed types.
     struct TypeFactory
     {
       /// Destroys all tables of internalized types, as well as their elements.

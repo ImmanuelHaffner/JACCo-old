@@ -7,12 +7,14 @@
 #include "Lex/Lexer.h"
 #include "Parse/Parser.h"
 #include "AST/Printable.h"
+#include "Sema/SemaTypeFactory.h"
 
 
 using namespace C4;
 using namespace Lex;
 using namespace Parse;
 using namespace AST;
+using namespace Sema;
 
 
 enum class Mode {
@@ -123,6 +125,7 @@ int main(int, char** const argv)
           << Symbol::size() - Token::KeywordsTable.size() - 1 /* empty symbol */
           << " symbols created\n";
       Symbol::destroy();
+      TypeFactory::destroy();
     }
   } catch (std::exception const& e) {
     errorf("caught exception: %s", e.what());
