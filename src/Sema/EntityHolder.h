@@ -1,7 +1,17 @@
+//===--- EntityHolder.h ---------------------------------------------------===//
+//
+//	~~~ The C4 Compiler ~~~
+//
+//	This file declares the entity holder interface.
+//
+//===----------------------------------------------------------------------===//
+
+
 #ifndef C4_ENTITY_HOLDER_H
 #define C4_ENTITY_HOLDER_H
 
 #include "Entity.h"
+
 
 namespace C4
 {
@@ -9,28 +19,34 @@ namespace C4
   {
     struct EntityHolderException : std::exception
     {
-      const char* what() const noexcept
+      const char * what() const noexcept
       {
         return "EntityHolder::attachEntity called more than once.";
       }
     };
 
+
+    /// \brief A super class for all AST nodes that must keep a reference to
+    /// their entity.
     struct EntityHolder
     {
-      EntityHolder() :
-        entity(NULL), isCalled(false)
-      {}
+      EntityHolder() : entity(NULL) {}
+      virtual ~EntityHolder() {}
 
-      /// \brief Can only be called once, otherwise asserts.
-      void attachEntity(Entity* entity);
+      /// Attches an entity to this holder.
+      /// Should only be called once, otherwise asserts.
+      ///
+      /// \param entity the entity to attach to this holder
+      void attachEntity(Entity const * entity);
 
-      Entity const* getEntity();
+      /// \return the attached entity, or NULL if no entity was attached yet
+      Entity const * getEntity();
 
-    private:
+      private:
       Entity const * entity;
-      bool isCalled;
     };
-  }
-}
+  } // end namespace Sema
+} // end namespace C4
+
 
 #endif
