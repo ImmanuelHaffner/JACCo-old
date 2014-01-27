@@ -19,7 +19,9 @@ class EnvTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST_SUITE ( EnvTest );
   CPPUNIT_TEST ( testScopeInsert );
   CPPUNIT_TEST ( testScopeInsertType );
-  CPPUNIT_TEST ( testEnvPushScope );
+  CPPUNIT_TEST ( testInit );
+  CPPUNIT_TEST ( testPushPop );
+  CPPUNIT_TEST ( testInsert );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -30,7 +32,9 @@ class EnvTest : public CPPUNIT_NS::TestFixture
 	void testScopeInsert();
 	void testScopeInsertType();
 
-  void testEnvPushScope();
+  void testInit();
+  void testPushPop();
+  void testInsert();
 };
 
 
