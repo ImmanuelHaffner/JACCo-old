@@ -9,6 +9,8 @@
 
 #include "Env.h"
 
+#include <cassert>
+
 
 using namespace C4;
 using namespace AST;
@@ -60,6 +62,7 @@ void Env::pushScope()
 
 void Env::popScope()
 {
+  assert( scopeStack.size() > 1 && "cannot pop the global scope" );
   scopeStack.pop_back();
 }
 

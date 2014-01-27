@@ -69,14 +69,17 @@ namespace C4
     /// Defines an environment class, that keeps track of the scopes.
     struct Env
     {
-      Env();
-      ~Env();
+      Env() { pushScope(); /* create global scope */ }
+      ~Env() {}
 
       /// \brief Pushes a new, empty scope onto the stack.
       void pushScope();
 
       /// \brief Pops the topmost scope from the stack.
       void popScope();
+
+      /// \return the depth of the scope stack, including the global scope
+      inline size_t depth() const { return scopeStack.size(); }
 
       /// Traverses the scope stack, starting at the current scope, and searches
       /// for the first mapping for an identifier.
