@@ -23,7 +23,7 @@ Entity const * Scope::lookup( Symbol const id ) const
   return elem->second;
 }
 
-Type const * Scope::lookup_type( Symbol const id ) const
+Type const * Scope::lookupType( Symbol const id ) const
 {
   auto elem = typeTable.find( id );
   if ( elem == typeTable.end() )
@@ -33,9 +33,10 @@ Type const * Scope::lookup_type( Symbol const id ) const
 
 Entity const * Scope::insert( Symbol const id )
 {
-  auto elem = idMap.find( id );
-  if ( elem == idMap.end() )
+  // Check whether id is already mapped.
+  if ( idMap.find( id ) != idMap.end() )
     return NULL;
+
   Entity const * entity = new Entity();
   idMap.insert( std::pair< Symbol, Entity const * >( id, entity ) );
   return entity;
@@ -43,9 +44,10 @@ Entity const * Scope::insert( Symbol const id )
 
 bool Scope::insert( Symbol const id, Type const * const type )
 {
-  auto elem = typeTable.find( id );
-  if ( elem == typeTable.end() )
+  // Check whether id is already mapped.
+  if ( typeTable.find( id ) != typeTable.end() )
     return false;
+
   typeTable.insert( std::pair< Symbol, Type const * >( id, type ) );
   return true;
 }
@@ -72,11 +74,11 @@ Entity const * Env::lookup( Symbol const id )
   return NULL;
 }
 
-Type const * Env::lookup_type( Symbol const id )
+Type const * Env::lookupType( Symbol const id )
 {
   for ( auto scope = scopeStack.rbegin(); scope != scopeStack.rend(); ++scope )
   {
-    Type const * const type = scope->lookup_type( id );
+    Type const * const type = scope->lookupType( id );
     if ( type ) return type;
   }
   return NULL;

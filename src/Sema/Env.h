@@ -6,18 +6,14 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_ENV_H
 #define C4_ENV_H
 
-#include <iostream>
-#include <sstream>
-#include <set>
+
 #include <vector>
 #include <unordered_map>
-#include <cstring>
 #include "../Support/Symbol.h"
-#include "../util.h"
-#include "../diagnostic.h"
 #include "SemaType.h"
 #include "Entity.h"
 
@@ -49,9 +45,19 @@ namespace C4
       Scope() {}
       ~Scope() {}
 
+      /// \return the entity the id is mapped to, or NULL if the id was not
+      /// mapped
       Entity const * lookup( Symbol const id ) const;
-      Type const * lookup_type( Symbol const id ) const;
+
+      /// \return the type the id is mapped to, or NULL if the id was not
+      /// mapped
+      Type const * lookupType( Symbol const id ) const;
+
+      /// \return a new entity for the id, if the id was not already mapped,
+      /// NULL otherwise
       Entity const * insert( Symbol const id );
+
+      /// \return true iff the id was not already mapped, false otherwise
       bool insert( Symbol const id, Type const * const type );
 
       private:
@@ -82,9 +88,8 @@ namespace C4
       /// Traveres the scope stack, starting at the current scope, and searches
       /// for the first mapping for a type identifier.
       ///
-      /// \return the first mapped type pointer, if the id was mapped, NULL
-      /// otherwise
-      Type const * lookup_type( Symbol const id );
+      /// \return the first mapped type, if the id was mapped, NULL otherwise
+      Type const * lookupType( Symbol const id );
 
       /// Inserts a new mapping from id to a new created entity to the
       /// identifier map.
@@ -104,5 +109,6 @@ namespace C4
     };
   }
 }
+
 
 #endif
