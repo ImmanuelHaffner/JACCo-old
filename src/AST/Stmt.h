@@ -130,12 +130,24 @@ namespace C4
     }; // end struct SwitchStmt
 
 
+    /// Iteration Statement
+    ///
+    /// A super class for while, do-while, and for.
+    struct IterationStmt : Stmt
+    {
+      IterationStmt( Lex::Token const &tok, Stmt const * const Body ) :
+        Stmt(tok), Body(nonNull(Body)) {}
+      virtual ~IterationStmt() {}
+
+      Stmt const * const Body;
+    };
+
     /// While Statement
-    struct WhileStmt : Stmt
+    struct WhileStmt : IterationStmt
     {
       WhileStmt( Lex::Token const &tok, Expr const * const Cond,
-          Stmt const * const Body )
-        : Stmt(tok), Cond(nonNull(Cond)), Body(nonNull(Body))
+          Stmt const * const Body ) :
+        IterationStmt(tok, Body), Cond(nonNull(Cond))
       {}
 
       ~WhileStmt() {}
@@ -143,42 +155,40 @@ namespace C4
       void print( Printer const p ) const;
 
       Expr const * const Cond;
-      Stmt const * const Body;
     }; // end struct WhileStmt
 
 
     /// Do-While Statement
-    struct DoStmt : Stmt
+    struct DoStmt : IterationStmt
     {
       DoStmt( Lex::Token const &tok, Stmt const * const Body,
-          Expr const * const Cond )
-        : Stmt(tok), Body(nonNull(Body)), Cond(nonNull(Cond))
+          Expr const * const Cond ) :
+        IterationStmt(tok, Body), Cond(nonNull(Cond))
       {}
 
       ~DoStmt() {}
 
       void print( Printer const p ) const;
 
-      Stmt const * const Body;
       Expr const * const Cond;
     }; // end struct DoStmt
 
 
     /// For Statement
-    struct ForStmt : Stmt
+    struct ForStmt : IterationStmt
     {
       ForStmt( Lex::Token const &tok, Expr const * const Init,
           Expr const * const Cond, Expr const * const Step,
-          Stmt const * const Body )
-        : Stmt(tok), Init(Init), InitDecl(NULL), Cond(Cond),
-        Step(Step), Body(nonNull(Body))
+          Stmt const * const Body ) :
+        IterationStmt(tok, Body), Init(Init), InitDecl(NULL),
+        Cond(Cond), Step(Step)
       {}
 
       ForStmt( Lex::Token const &tok, Decl const * const InitDecl,
           Expr const * const Cond, Expr const * const Step,
-          Stmt const * const Body )
-        : Stmt(tok), Init(NULL), InitDecl(InitDecl),
-        Cond(Cond), Step(Step), Body(nonNull(Body))
+          Stmt const * const Body ) :
+        IterationStmt(tok, Body), Init(NULL), InitDecl(InitDecl),
+        Cond(Cond), Step(Step)
       {}
 
       ~ForStmt() {}
@@ -189,7 +199,6 @@ namespace C4
       Decl const * const InitDecl;
       Expr const * const Cond;
       Expr const * const Step;
-      Stmt const * const Body;
     }; // end struct ForStmt
 
 
