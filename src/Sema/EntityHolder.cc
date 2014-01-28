@@ -8,18 +8,17 @@
 
 
 #include "EntityHolder.h"
-#include <assert.h>
+#include <cassert>
 
 using namespace C4;
 using namespace Sema;
 
 
-void EntityHolder::attachEntity(Entity const * entity)
+void EntityHolder::attachEntity( Entity const * entity )
 {
-  if ( ! entity )
-    throw EntityHolderException(); // REVIEW don't we want to assert instead of
+  assert( ! this->entity ); // check that entity was not assigned yet
+    //throw EntityHolderException(); // REVIEW don't we want to assert instead of
                                    // throwing an exception
-
   this->entity = entity;
 }
 

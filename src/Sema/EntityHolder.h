@@ -37,7 +37,7 @@ namespace C4
       /// Should only be called once, otherwise asserts.
       ///
       /// \param entity the entity to attach to this holder
-      void attachEntity(Entity const * entity);
+      void attachEntity( Entity const * entity );
 
       /// \return the attached entity, or NULL if no entity was attached yet
       Entity const * getEntity();
