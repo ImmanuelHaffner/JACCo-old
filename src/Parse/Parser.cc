@@ -15,6 +15,9 @@ using namespace Lex;
 using namespace AST;
 
 
+static bool functionDeclarator = false;
+
+
 /*
  *
  * Parser Main Functions
@@ -713,7 +716,10 @@ Declarator const * Parser::parseDeclarator(
   }
 
   if ( paramList )
+	{
+		functionDeclarator = true;
     return new FunctionDeclarator( tok, declarator, paramList );
+	}
   return declarator;
 } // end parseDeclarator
 
@@ -1169,6 +1175,7 @@ ExtDecl const * Parser::parseExtDecl()
           readNextToken(); // eat ';'
           return new Decl( typeSpec );
         }
+				functionDeclarator = false;
         Declarator const * const declarator = parseDeclarator();
         switch ( current->kind )
         {
@@ -1177,18 +1184,9 @@ ExtDecl const * Parser::parseExtDecl()
             return new Decl( typeSpec, declarator );
 
           case TK::LBrace:
-            // check whether the declarator is actually a function declarator
-						{
-							// traverse all pointer declarators along the tree
-							Declarator const * _declarator = declarator;
-							while ( PointerDeclarator const * const ptrDeclarator =
-									dynamic_cast< PointerDeclarator const * >( _declarator ) )
-								_declarator = ptrDeclarator->declarator;
-
-							if ( ! dynamic_cast< FunctionDeclarator const * >( _declarator ) )
-								ERROR( "'(' [parameter-list] ')'" );
-						}
-            return new FunctionDef( typeSpec, declarator, parseCompoundStmt() );
+						if ( ! functionDeclarator )
+							ERROR( "'(' [parameter-list] ')'" );
+						return new FunctionDef( typeSpec, declarator, parseCompoundStmt() );
 
           default:
             ERROR( "';' or function-definition" );
