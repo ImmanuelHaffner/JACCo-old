@@ -1,8 +1,8 @@
 //===--- Parser.cc --------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file implements the Parser interface.
+//  This file implements the Parser interface.
 //
 //===----------------------------------------------------------------------===//
 
@@ -13,6 +13,9 @@ using namespace C4;
 using namespace Parse;
 using namespace Lex;
 using namespace AST;
+
+
+static bool functionDeclarator = false;
 
 
 /*
@@ -557,7 +560,8 @@ StructDeclList const * Parser::parseStructDeclList()
   StructDeclList * const structDecls = new StructDeclList();
   do
     structDecls->append( parseStructDecl() );
-  while ( current->kind != TK::RBrace ); // until '}'
+  while ( current->kind != TK::END_OF_FILE &&
+      current->kind != TK::RBrace ); // until EOF or '}'
   return structDecls;
 } // end parseStructDeclList
 
@@ -713,8 +717,12 @@ Declarator const * Parser::parseDeclarator(
   }
 
   if ( paramList )
+  {
+    functionDeclarator = true;
     return new FunctionDeclarator( tok, declarator, paramList );
-  return declarator;
+  }
+  if ( declarator ) return declarator;
+  return new IllegalDeclarator( *current );
 } // end parseDeclarator
 
 ParamList const * Parser::parseParameterList()
@@ -1164,11 +1172,16 @@ ExtDecl const * Parser::parseExtDecl()
     case TK::Struct:
       {
         TypeSpecifier const * const typeSpec = parseTypeSpecifier();
-        if ( current->kind == TK::SCol )
+
+        // check whether we have a struct decl, and the decl ends here
+        if ( typeSpec->tok.kind == TK::Struct &&
+            ( current->kind == TK::END_OF_FILE || current->kind == TK::SCol ) )
         {
-          readNextToken(); // eat ';'
+          accept( TK::SCol ); // eat ';'
           return new Decl( typeSpec );
         }
+
+        functionDeclarator = false;
         Declarator const * const declarator = parseDeclarator();
         switch ( current->kind )
         {
@@ -1177,17 +1190,8 @@ ExtDecl const * Parser::parseExtDecl()
             return new Decl( typeSpec, declarator );
 
           case TK::LBrace:
-            // check whether the declarator is actually a function declarator
-						{
-							// traverse all pointer declarators along the tree
-							Declarator const * _declarator = declarator;
-							while ( PointerDeclarator const * const ptrDeclarator =
-									dynamic_cast< PointerDeclarator const * >( _declarator ) )
-								_declarator = ptrDeclarator->declarator;
-
-							if ( ! dynamic_cast< FunctionDeclarator const * >( _declarator ) )
-								ERROR( "'(' [parameter-list] ')'" );
-						}
+            if ( ! functionDeclarator )
+              ERROR( "'(' [parameter-list] ')'" );
             return new FunctionDef( typeSpec, declarator, parseCompoundStmt() );
 
           default:
