@@ -14,3 +14,14 @@ struct Q
 	char y;
 	int z;
 } (*(foobar()));
+
+struct R
+{
+	int x;
+	char y;
+	int z;
+} (*(f()))
+{
+	struct R r;
+	return (&r);
+}
