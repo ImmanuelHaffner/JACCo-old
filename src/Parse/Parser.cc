@@ -1178,8 +1178,16 @@ ExtDecl const * Parser::parseExtDecl()
 
           case TK::LBrace:
             // check whether the declarator is actually a function declarator
-            if ( ! dynamic_cast< FunctionDeclarator const * >( declarator ) )
-              ERROR( "'(' [parameter-list] ')'" );
+						{
+							// traverse all pointer declarators along the tree
+							Declarator const * _declarator = declarator;
+							while ( PointerDeclarator const * const ptrDeclarator =
+									dynamic_cast< PointerDeclarator const * >( _declarator ) )
+								_declarator = ptrDeclarator->declarator;
+
+							if ( ! dynamic_cast< FunctionDeclarator const * >( _declarator ) )
+								ERROR( "'(' [parameter-list] ')'" );
+						}
             return new FunctionDef( typeSpec, declarator, parseCompoundStmt() );
 
           default:
