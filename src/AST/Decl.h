@@ -134,8 +134,7 @@ namespace C4
 		{
 			PointerDeclarator( Lex::Token const &tok,
 					Declarator const * const declarator )
-				: Declarator(tok),
-				declarator(declarator)
+				: Declarator(tok), declarator(declarator)
 			{}
 
 			~PointerDeclarator() {}
