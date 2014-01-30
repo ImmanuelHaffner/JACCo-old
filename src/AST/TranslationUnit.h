@@ -24,6 +24,12 @@ namespace C4
     /// Translation Unit
     struct TranslationUnit : List< ExtDecl >
     {
+      TranslationUnit() {}
+
+      TranslationUnit( std::vector< ExtDecl const * > extDecls ) :
+        List(extDecls)
+      {}
+
       ~TranslationUnit() {}
 
       void print( Printer const p ) const;

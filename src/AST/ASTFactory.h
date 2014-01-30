@@ -27,6 +27,12 @@ namespace C4
 
 #define TOK Lex::Token const &tok
 
+      inline TranslationUnit const * getTranslationUnit(
+          std::vector< ExtDecl const * > extDecls )
+      {
+        return new TranslationUnit( extDecls );
+      }
+
       //===----------------------------------------------------------------===//
       //
       //  Expressions
@@ -78,13 +84,14 @@ namespace C4
         return new AssignmentExpr( tok, lhs, rhs );
       }
 
-      inline UnaryOperation const * getUnaryOperation( TOK, Expr const * const expr )
+      inline UnaryOperation const * getUnaryOperation( TOK,
+          Expr const * const expr )
       {
         return new UnaryOperation( tok, expr );
       }
 
-      inline SubscriptExpr const * getSubscriptExpr( TOK, Expr const * const expr,
-          Expr const * const index )
+      inline SubscriptExpr const * getSubscriptExpr( TOK,
+          Expr const * const expr, Expr const * const index )
       {
         return new SubscriptExpr( tok, expr, index );
       }
@@ -168,19 +175,22 @@ namespace C4
         return new StructDeclList( decls );
       }
 
-      inline StructDecl const * getStructDecl( TypeSpecifier const * const typeSpec,
+      inline StructDecl const * getStructDecl(
+          TypeSpecifier const * const typeSpec,
           StructDeclaratorList const * const structDeclarators )
       {
         return new StructDecl( typeSpec, structDeclarators );
       }
 
-      inline ParamDecl const * getParamDecl( TypeSpecifier const * const typeSpec,
+      inline ParamDecl const * getParamDecl(
+          TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
       {
         return new ParamDecl( typeSpec, declarator );
       }
 
-      inline ParamList const * getParamList( std::vector< ParamDecl const * > &params )
+      inline ParamList const * getParamList(
+          std::vector< ParamDecl const * > &params )
       {
         return new ParamList( params );
       }
@@ -290,7 +300,7 @@ namespace C4
         return new WhileStmt( tok, Cond, Body );
       }
 
-      inline DoStmt const * getDoWhileStmt( TOK, Stmt const * const Body,
+      inline DoStmt const * getDoStmt( TOK, Stmt const * const Body,
           Expr const * const Cond )
       {
         return new DoStmt( tok, Body, Cond );
@@ -353,6 +363,35 @@ namespace C4
       //
       //===----------------------------------------------------------------===//
 
+      inline TypeSpecifier const * getTypeSpecifier( TOK )
+      {
+        return new TypeSpecifier( tok );
+      }
+
+      inline TypeName const * getTypeName( TOK,
+          TypeSpecifier const * const typeSpec,
+          Declarator const * const declarator = NULL )
+      {
+        return new TypeName( tok, typeSpec, declarator );
+      }
+
+      inline IllegalTypeSpecifier const * getIllegalTypeSpecifier( TOK )
+      {
+        return new IllegalTypeSpecifier( tok );
+      }
+
+      inline StructSpecifier const * getStructSpecifier( TOK,
+          Lex::Token const * const name,
+          StructDeclList const * const decls = NULL )
+      {
+        return new StructSpecifier( tok, name, decls );
+      }
+
+      inline StructSpecifier const * getStructSpecifier( TOK,
+          StructDeclList const * const decls )
+      {
+        return new StructSpecifier( tok, decls );
+      }
 
 #undef TOK
 

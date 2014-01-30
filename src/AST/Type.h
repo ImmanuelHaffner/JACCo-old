@@ -6,8 +6,10 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_TYPE_H
 #define C4_TYPE_H
+
 
 #include <iostream>
 #include "../util.h"
@@ -88,5 +90,6 @@ namespace C4
     }; // end struct StructSpecifier
   } // end namespace AST
 } // end namespace C4
+
 
 #endif

@@ -191,21 +191,21 @@ Expr const * Parser::parsePrimaryExpr()
   {
     case TK::IDENTIFIER:
       {
-        Expr *expr = new Variable( *current );
+        Expr const * const expr = factory.getVariable( *current );
         readNextToken(); // eat identifier
         return expr;
       }
 
     case TK::CONSTANT:
       {
-        Expr *expr = new Constant( *current );
+        Expr const * const expr = factory.getConstant( *current );
         readNextToken(); // eat constant
         return expr;
       }
 
     case TK::STRING_LITERAL:
       {
-        Expr *expr = new StringLiteral( *current );
+        Expr const * const expr = factory.getStringLiteral( *current );
         readNextToken(); // eat string-literal
         return expr;
       }
@@ -222,7 +222,7 @@ Expr const * Parser::parsePrimaryExpr()
       ERROR( "identifier, constant, string-literal or '(' expression ')'" );
 
   } // end switch
-  return new IllegalExpr( *current );
+  return factory.getIllegalExpr( *current );
 } // end parsePrimaryExpr
 
 Expr const * Parser::parsePostfixExpr()
@@ -239,7 +239,7 @@ Expr const * Parser::parsePostfixExpr()
           readNextToken(); // eat '['
           Expr const * const subscript = parseExpr();
           accept( TK::RBracket ); // eat ']'
-          expr = new SubscriptExpr( tok, expr, subscript );
+          expr = factory.getSubscriptExpr( tok, expr, subscript );
         }
         break;
 
@@ -251,7 +251,7 @@ Expr const * Parser::parsePostfixExpr()
           if ( current->kind != TK::RPar )
             args = parseArgumentExprList();
           accept( TK::RPar ); // eat ')'
-          expr = new FunctionCall( tok, expr, args );
+          expr = factory.getFunctionCall( tok, expr, args );
         }
         break;
 
@@ -261,9 +261,9 @@ Expr const * Parser::parsePostfixExpr()
           readNextToken(); // eat '->'
           Token const id( *current );
           if ( accept( TK::IDENTIFIER ) ) // eat Identifier
-            expr = new ArrowExpr( tok, expr, id );
+            expr = factory.getArrowExpr( tok, expr, id );
           else
-            expr = new IllegalExpr( id );
+            expr = factory.getIllegalExpr( tok );
         }
         break;
 
@@ -273,19 +273,19 @@ Expr const * Parser::parsePostfixExpr()
           readNextToken(); // eat '.'
           Token const id( *current );
           if ( accept( TK::IDENTIFIER ) ) // eat Identifier
-            expr = new DotExpr( tok, expr, id );
+            expr = factory.getDotExpr( tok, expr, id );
           else
-            expr = new IllegalExpr( id );
+            expr = factory.getIllegalExpr( *current );
         }
         break;
 
       case TK::IncOp:
-        expr = new PostIncExpr( *current, expr );
+        expr = factory.getPostIncExpr( *current, expr );
         readNextToken(); // eat '++'
         break;
 
       case TK::DecOp:
-        expr = new PostDecExpr( *current, expr );
+        expr = factory.getPostDecExpr( *current, expr );
         readNextToken(); // eat '--'
         break;
 
@@ -298,14 +298,16 @@ for_end:
 
 ExprList const * Parser::parseArgumentExprList()
 {
-  ExprList * const args = new ExprList( *current );
-  args->append( parseAssignmentExpr() );
+  std::vector< Expr const * > exprs;
+  Token const tok(*current);
+
+  exprs.push_back( parseAssignmentExpr() );
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    args->append( parseAssignmentExpr() );
+    exprs.push_back( parseAssignmentExpr() );
   }
-  return args;
+  return factory.getExprList( tok, exprs );
 } // end parseArgumentExprList
 
 Expr const * Parser::parseUnaryExpr()
@@ -316,14 +318,14 @@ Expr const * Parser::parseUnaryExpr()
       {
         Token const tok( *current );
         readNextToken(); // eat '++'
-        return new PreIncExpr( tok, parseUnaryExpr() );
+        return factory.getPreIncExpr( tok, parseUnaryExpr() );
       }
 
     case TK::DecOp:
       {
         Token const tok( *current );
         readNextToken(); // eat '--'
-        return new PreDecExpr( tok, parseUnaryExpr() );
+        return factory.getPreDecExpr( tok, parseUnaryExpr() );
       }
 
     case TK::Sizeof:
@@ -342,12 +344,12 @@ Expr const * Parser::parseUnaryExpr()
                 readNextToken(); // eat '('
                 TypeName const * const type = parseTypeName();
                 accept( TK::RPar ); // eat ')'
-                return new SizeofTypeExpr( tok, type );
+                return factory.getSizeofTypeExpr( tok, type );
               }
 
             default:; // SIZEOF '(' expr ')'
           } // end switch
-        return new SizeofExpr( tok, parseUnaryExpr() );
+        return factory.getSizeofExpr( tok, parseUnaryExpr() );
       }
 
     case Lex::TK::And:
@@ -359,7 +361,7 @@ Expr const * Parser::parseUnaryExpr()
       {
         Token const tok( *current );
         readNextToken(); // eat unary operator
-        return new UnaryOperation( tok, parseUnaryExpr() );
+        return factory.getUnaryOperation( tok, parseUnaryExpr() );
       }
 
     default:;
@@ -395,7 +397,7 @@ Expr const * Parser::parseBinOpRHS( int exprPrec, Expr const * lhs )
     if ( tokPrec < nextPrec )
       rhs = parseBinOpRHS( tokPrec + 1, rhs );
 
-    lhs = new BinaryExpr( binOp, lhs, rhs );
+    lhs = factory.getBinaryExpr( binOp, lhs, rhs );
   } // end for
 } // end parseBinOpRHS
 
@@ -409,7 +411,7 @@ Expr const * Parser::parseConditionalExpr()
     readNextToken(); // eat '?'
     Expr const * const lhs = parseExpr();
     accept( TK::Col ); // eat ':'
-    return new ConditionalExpr( tok, expr, lhs, parseConditionalExpr() );
+    return factory.getConditionalExpr( tok, expr, lhs, parseConditionalExpr() );
   }
 
   return expr;
@@ -444,7 +446,7 @@ Expr const * Parser::parseAssignmentExpr()
       {
         Token const tok( *current );
         readNextToken(); // eat assignment-operator
-        return new AssignmentExpr( tok, expr, parseAssignmentExpr() );
+        return factory.getAssignmentExpr( tok, expr, parseAssignmentExpr() );
       }
 
     default:;
@@ -455,20 +457,21 @@ Expr const * Parser::parseAssignmentExpr()
 
 Expr const * Parser::parseExpr()
 {
+  Token const tok(*current);
   Expr const * const expr = parseAssignmentExpr();
   if ( current->kind != TK::Comma )
     return expr;
 
-  ExprList * const exprList = new ExprList( *current );
-  exprList->append( expr );
+  std::vector< Expr const * > exprs;
+  exprs.push_back( expr );
 
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    exprList->append( parseAssignmentExpr() );
+    exprs.push_back( parseAssignmentExpr() );
   }
 
-  return exprList;
+  return factory.getExprList( tok, exprs );
 } // end parseExpr
 
 
@@ -483,7 +486,7 @@ Decl const * Parser::parseDecl()
   if ( current->kind != TK::SCol )
     declarator = parseDeclarator();
   accept( TK::SCol ); // eat ';'
-  return new Decl( typeSpec, declarator );
+  return factory.getDecl( typeSpec, declarator );
 } // end parseDecl
 
 TypeSpecifier const * Parser::parseTypeSpecifier()
@@ -496,7 +499,7 @@ TypeSpecifier const * Parser::parseTypeSpecifier()
       {
         Token tok( *current );
         readNextToken(); // eat type
-        return new TypeSpecifier( tok );
+        return factory.getTypeSpecifier( tok );
       }
 
     case TK::Struct:
@@ -506,7 +509,7 @@ TypeSpecifier const * Parser::parseTypeSpecifier()
       ERROR( "type-specifier ('void', 'char', 'int' or 'struct')" );
 
   } // end switch
-  return new IllegalTypeSpecifier( *current );
+  return factory.getIllegalTypeSpecifier( *current );
 } // end parseTypeSpecifier
 
 TypeSpecifier const * Parser::parseStructSpecifier()
@@ -517,16 +520,16 @@ TypeSpecifier const * Parser::parseStructSpecifier()
   {
     case TK::IDENTIFIER:
       {
-        Token const * const id = new Token( *current );
+        Token const * const id = new Token(*current);
         readNextToken(); // eat identifier
         if ( current->kind == TK::LBrace )
         {
           readNextToken(); // eat '{'
           StructDeclList const * const structDecls = parseStructDeclList();
           accept( TK::RBrace ); // eat '}'
-          return new StructSpecifier( tok, id, structDecls );
+          return factory.getStructSpecifier( tok, id, structDecls );
         }
-        return new StructSpecifier( tok, id );
+        return factory.getStructSpecifier( tok, id );
       }
 
     case TK::LBrace:
@@ -534,24 +537,24 @@ TypeSpecifier const * Parser::parseStructSpecifier()
         readNextToken(); // eat '{'
         StructDeclList const * const structDecls = parseStructDeclList();
         accept( TK::RBrace ); // eat '}'
-        return new StructSpecifier( tok, structDecls );
+        return factory.getStructSpecifier( tok, structDecls );
       }
 
     default:
       ERROR( "identifier or '{' struct-declaration-list '}'" );
 
   } // end switch
-  return new IllegalTypeSpecifier( *current );
+  return factory.getIllegalTypeSpecifier( *current );
 } // end parseStructOrUnionSpecifier
 
 StructDeclList const * Parser::parseStructDeclList()
 {
-  StructDeclList * const structDecls = new StructDeclList();
+  std::vector< StructDecl const * > structDecls;
   do
-    structDecls->append( parseStructDecl() );
+    structDecls.push_back( parseStructDecl() );
   while ( current->kind != TK::END_OF_FILE &&
       current->kind != TK::RBrace ); // until EOF or '}'
-  return structDecls;
+  return factory.getStructDeclList( structDecls );
 } // end parseStructDeclList
 
 StructDecl const * Parser::parseStructDecl()
@@ -561,21 +564,20 @@ StructDecl const * Parser::parseStructDecl()
   if ( current->kind != TK::SCol )
     structDeclarators = parseStructDeclaratorList();
   accept( TK::SCol ); // eat ';'
-  return new StructDecl( typeSpec, structDeclarators );
+  return factory.getStructDecl( typeSpec, structDeclarators );
 } // end parseStructDecl
 
 StructDeclaratorList const * Parser::parseStructDeclaratorList()
 {
-  StructDeclaratorList * const structDeclarators =
-    new StructDeclaratorList();
+  std::vector< Declarator const * > structDeclarators;
 
-  structDeclarators->append( parseDeclarator() );
+  structDeclarators.push_back( parseDeclarator() );
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    structDeclarators->append( parseDeclarator() );
+    structDeclarators.push_back( parseDeclarator() );
   }
-  return structDeclarators;
+  return factory.getStructDeclaratorList( structDeclarators );
 } // end parseStructDeclaratorList
 
 PointerDeclarator const * Parser::parsePointerDeclarator(
@@ -598,7 +600,7 @@ PointerDeclarator const * Parser::parsePointerDeclarator(
       default:;
     } // end switch
 
-  return new PointerDeclarator( tok, subDeclarator );
+  return factory.getPointerDeclarator( tok, subDeclarator );
 } // end parsePointerDeclarator
 
 Declarator const * Parser::parseDeclarator(
@@ -658,7 +660,7 @@ Declarator const * Parser::parseDeclarator(
       if ( dt != DeclaratorType::ABSTRACT )
       {
         readNextToken(); // eat identifier
-        declarator = new Identifier( tok );
+        declarator = factory.getIdentifier( tok );
         break;
       }
       // no break here; run into default
@@ -708,22 +710,23 @@ Declarator const * Parser::parseDeclarator(
   if ( paramList )
   {
     functionDeclarator = true;
-    return new FunctionDeclarator( tok, declarator, paramList );
+    return factory.getFunctionDeclarator( tok, declarator, paramList );
   }
   if ( declarator ) return declarator;
-  return new IllegalDeclarator( *current );
+  return factory.getIllegalDeclarator( *current );
 } // end parseDeclarator
 
 ParamList const * Parser::parseParameterList()
 {
-  ParamList * const params = new ParamList();
-  params->append( parseParameterDecl() );
+  std::vector< ParamDecl const * > paramDecls;
+
+  paramDecls.push_back( parseParameterDecl() );
   while ( current->kind == TK::Comma )
   {
     readNextToken(); // eat ','
-    params->append( parseParameterDecl() );
+    paramDecls.push_back( parseParameterDecl() );
   }
-  return params;
+  return factory.getParamList( paramDecls );
 } // end parseParameterList
 
 ParamDecl const * Parser::parseParameterDecl()
@@ -732,16 +735,16 @@ ParamDecl const * Parser::parseParameterDecl()
   switch ( current->kind )
   {
     case TK::IDENTIFIER:
-      return new ParamDecl( typeSpec, parseDeclarator() );
+      return factory.getParamDecl( typeSpec, parseDeclarator() );
 
     case TK::Mul:
     case TK::LPar:
-      return new ParamDecl( typeSpec,
+      return factory.getParamDecl( typeSpec,
           parseDeclarator( DeclaratorType::UNKNOWN ) );
 
     default:;
   }
-  return new ParamDecl( typeSpec );
+  return factory.getParamDecl( typeSpec );
 } // end parseParameterDecl
 
 TypeName const * Parser::parseTypeName()
@@ -758,7 +761,7 @@ TypeName const * Parser::parseTypeName()
 
     default:;
   }
-  return new TypeName( tok, typeSpec, declarator );
+  return factory.getTypeName( tok, typeSpec, declarator );
 } // end parseTypeName
 
 Stmt const * Parser::parseStmt()
@@ -820,7 +823,7 @@ Stmt const * Parser::parseStmt()
       ERROR( "statement" );
 
   } // end switch
-  return new IllegalStmt( *current );
+  return factory.getIllegalStmt( *current );
 } // end parseStmt
 
 Stmt const * Parser::parseLabeledStmt()
@@ -838,7 +841,7 @@ Stmt const * Parser::parseLabeledStmt()
         readNextToken(); // eat 'case'
         Expr const * const expr = parseConditionalExpr();
         accept( TK::Col ); // eat ':'
-        return new CaseStmt( tok, expr, parseStmt() );
+        return factory.getCaseStmt( tok, expr, parseStmt() );
       }
 
     case TK::Default:
@@ -849,15 +852,16 @@ Stmt const * Parser::parseLabeledStmt()
     default:
       {
         ERROR( "identifier, 'case' or 'default'" );
-        return new IllegalStmt( *current );
+        return factory.getIllegalStmt( *current );
       }
   } // end switch
-  return new LabelStmt( tok, parseStmt() );
+  return factory.getLabelStmt( tok, parseStmt() );
 } // end parseLabeledStmt
 
 CompoundStmt const * Parser::parseCompoundStmt()
 {
-  CompoundStmt * const compStmt = new CompoundStmt( *current );
+  Token const tok(*current);
+  std::vector< BlockItem const * > items;
 
   accept( TK::LBrace ); // eat '{'
 
@@ -876,7 +880,7 @@ CompoundStmt const * Parser::parseCompoundStmt()
       case TK::Char:
       case TK::Int:
       case TK::Struct:
-        compStmt->append( new BlockItem( parseDecl() ) );
+        items.push_back( factory.getBlockItem( parseDecl() ) );
         break;
 
       case TK::IDENTIFIER:
@@ -905,7 +909,7 @@ CompoundStmt const * Parser::parseCompoundStmt()
       case TK::LPar:
       case TK::LBrace:
       case TK::SCol:
-        compStmt->append( new BlockItem( parseStmt() ) );
+        items.push_back( factory.getBlockItem( parseStmt() ) );
         break;
 
       default:
@@ -917,13 +921,14 @@ CompoundStmt const * Parser::parseCompoundStmt()
 
 for_end:
   accept( TK::RBrace ); // eat '}'
-  return compStmt;
+  return factory.getCompoundStmt( tok, items );
 } // end parseCompoundStmt
 
 DeclList const * Parser::parseDeclList()
 {
-  DeclList * const declList = new DeclList();
-  declList->append( parseDecl() );
+  std::vector< Decl const * > decls;
+
+  decls.push_back( parseDecl() );
   for (;;)
   {
     switch ( current->kind )
@@ -932,14 +937,14 @@ DeclList const * Parser::parseDeclList()
       case TK::Char:
       case TK::Int:
       case TK::Struct:
-        declList->append( parseDecl() );
+        decls.push_back( parseDecl() );
         break;
 
       default: goto for_end;
     }
   } // end for
 for_end:
-  return declList;
+  return factory.getDeclList( decls );
 } // end parseDeclList
 
 ExprStmt const * Parser::parseExprStmt()
@@ -949,7 +954,7 @@ ExprStmt const * Parser::parseExprStmt()
   if ( current->kind != TK::SCol )
     expr = parseExpr();
   accept( TK::SCol ); // eat ';'
-  return new ExprStmt( tok, expr );
+  return factory.getExprStmt( tok, expr );
 } // end parseExprStmt
 
 Stmt const * Parser::parseSelectionStmt()
@@ -970,7 +975,7 @@ Stmt const * Parser::parseSelectionStmt()
           readNextToken(); // eat 'else'
           elseStmt = parseStmt();
         }
-        return new IfStmt( tok, cond, thenStmt, elseStmt );
+        return factory.getIfStmt( tok, cond, thenStmt, elseStmt );
       }
 
     case TK::Switch:
@@ -980,7 +985,7 @@ Stmt const * Parser::parseSelectionStmt()
         Expr const * const cond = parseExpr();
         accept( TK::RPar ); // eat ')'
         Stmt const * const body = parseStmt();
-        return new SwitchStmt( tok, cond, body );
+        return factory.getSwitchStmt( tok, cond, body );
       }
 
     default:
@@ -988,7 +993,7 @@ Stmt const * Parser::parseSelectionStmt()
         ERROR( "'if' or 'switch'" );
       }
   } // end switch
-  return new IllegalStmt( *current );
+  return factory.getIllegalStmt( *current );
 } // end parseSelectionStmt
 
 Stmt const * Parser::parseIterationStmt()
@@ -1032,8 +1037,8 @@ Stmt const * Parser::parseIterationStmt()
         accept( TK::RPar ); // eat ')'
         Stmt const * const body = parseStmt(); // body
         if ( init )
-          return new ForStmt( tok, init, cond, step, body );
-        return new ForStmt( tok, initDecl, cond, step, body );
+          return factory.getForStmt( tok, init, cond, step, body );
+        return factory.getForStmt( tok, initDecl, cond, step, body );
       }
 
     case TK::While:
@@ -1043,7 +1048,7 @@ Stmt const * Parser::parseIterationStmt()
         Expr const * cond = parseExpr(); // condition
         accept( TK::RPar ); // eat ')'
         Stmt const * body = parseStmt(); // body
-        return new WhileStmt( tok, cond, body );
+        return factory.getWhileStmt( tok, cond, body );
       }
 
     case TK::Do:
@@ -1055,14 +1060,14 @@ Stmt const * Parser::parseIterationStmt()
         Expr const * const cond = parseExpr(); // condition
         accept( TK::RPar ); // eat ')'
         accept( TK::SCol ); // eat ';'
-        return new DoStmt( tok, body, cond );
+        return factory.getDoStmt( tok, body, cond );
       }
 
     default:
       ERROR( "'for', 'do' or 'while'" );
 
   } // end switch
-  return new IllegalStmt( *current );
+  return factory.getIllegalStmt( *current );
 } // end parseIterationStmt
 
 Stmt const * Parser::parseJumpStmt()
@@ -1077,19 +1082,19 @@ Stmt const * Parser::parseJumpStmt()
         bool b = accept( TK::IDENTIFIER ); // eat identifier
         accept( TK::SCol ); // eat ';'
         if ( b )
-          return new GotoStmt( id );
+          return factory.getGotoStmt( id );
       }
       break;
 
     case TK::Continue:
       readNextToken(); // eat 'continue'
       accept( TK::SCol ); // eat ';'
-      return new ContinueStmt( tok );
+      return factory.getContinueStmt( tok );
 
     case TK::Break:
       readNextToken(); // eat 'break'
       accept( TK::SCol ); // eat ';'
-      return new BreakStmt( tok );
+      return factory.getBreakStmt( tok );
 
     case TK::Return:
       {
@@ -1098,23 +1103,24 @@ Stmt const * Parser::parseJumpStmt()
         if ( current->kind != TK::SCol )
           expr = parseExpr();
         accept( TK::SCol ); // eat ';'
-        return new ReturnStmt( tok, expr );
+        return factory.getReturnStmt( tok, expr );
       }
 
     default:
       ERROR( "'return', 'continue', 'break' or 'goto'" );
 
   } // end switch
-  return new IllegalStmt( *current );
+  return factory.getIllegalStmt( *current );
 } // end parseJumpStmt
 
 TranslationUnit const * Parser::parseTranslationUnit()
 {
-  TranslationUnit * unit = new TranslationUnit();
+  std::vector< ExtDecl const * > extDecls;
+
   do
   {
     Pos const old( current->pos );
-    unit->append( parseExtDecl() ); // in bad cases, does not consume any token
+    extDecls.push_back( parseExtDecl() ); // in bad cases, does not consume any token
 
     // If the parseExtDecl function did not consume anything, consume one token,
     // to avoid divergance of the parser.
@@ -1147,7 +1153,7 @@ for_end:
     }
   }
   while ( current->kind != TK::END_OF_FILE );
-  return unit;
+  return factory.getTranslationUnit( extDecls );
 } // end parseTranslationUnit
 
 ExtDecl const * Parser::parseExtDecl()
@@ -1167,7 +1173,7 @@ ExtDecl const * Parser::parseExtDecl()
             ( current->kind == TK::END_OF_FILE || current->kind == TK::SCol ) )
         {
           accept( TK::SCol ); // eat ';'
-          return new Decl( typeSpec );
+          return factory.getDecl( typeSpec );
         }
 
         functionDeclarator = false;
@@ -1176,21 +1182,22 @@ ExtDecl const * Parser::parseExtDecl()
         {
           case TK::SCol:
             readNextToken(); // eat ';'
-            return new Decl( typeSpec, declarator );
+            return factory.getDecl( typeSpec, declarator );
 
           case TK::LBrace:
             if ( ! functionDeclarator )
               ERROR( "'(' [parameter-list] ')'" );
-            return new FunctionDef( typeSpec, declarator, parseCompoundStmt() );
+            return factory.getFunctionDef( typeSpec, declarator,
+                parseCompoundStmt() );
 
           default:
             ERROR( "';' or function-definition" );
         } // end switch
-        return new IllegalDecl( *current, typeSpec );
+        return factory.getIllegalDecl( *current, typeSpec );
       }
 
     default:
       ERROR( "function-definition or declaration" );
   } // end switch
-  return new IllegalExtDecl( *current );
+  return factory.getIllegalExtDecl( *current );
 } // end parseExtDecl
