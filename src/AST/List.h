@@ -1,8 +1,8 @@
 //===--- List.h -----------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines the Abstract Syntax Tree interface.
+//  This file defines the Abstract Syntax Tree interface.
 //
 //===----------------------------------------------------------------------===//
 
@@ -22,25 +22,25 @@ namespace C4
     /// List
     template< class T >
       struct List : Printable
-      {
-				List() {}
-				List( std::vector< T const * > &list ) : list(list) {}
-        virtual ~List() {}
+    {
+      List() {}
+      List( std::vector< T const * > &list ) : list(list) {}
+      virtual ~List() {}
 
-        typedef typename std::vector< T const * >::iterator iterator;
-        typedef typename std::vector< T const * >::const_iterator const_iterator;
+      typedef typename std::vector< T const * >::iterator iterator;
+      typedef typename std::vector< T const * >::const_iterator const_iterator;
 
-        inline size_t size() const { return list.size(); }
-        void append( T const * const t );
-        List & operator+=( T const * const t );
-        iterator begin();
-        const_iterator begin() const;
-        iterator end();
-        const_iterator end() const;
+      inline size_t size() const { return list.size(); }
+      void append( T const * const t );
+      List & operator+=( T const * const t );
+      iterator begin();
+      const_iterator begin() const;
+      iterator end();
+      const_iterator end() const;
 
-        private:
-				std::vector< T const * > list;
-      }; // end struct List
+      private:
+      std::vector< T const * > list;
+    }; // end struct List
 
     template< class T >
       void List<T>::append( T const * const t )

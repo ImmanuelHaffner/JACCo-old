@@ -1,8 +1,8 @@
 //===--- StrBuf.h ---------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines a string buffer for fast buffering of C-Strings.
+//  This file defines a string buffer for fast buffering of C-Strings.
 //
 //===----------------------------------------------------------------------===//
 

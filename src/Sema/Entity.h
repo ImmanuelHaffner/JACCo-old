@@ -1,10 +1,10 @@
 //===--- Entity.h ---------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file declares the entity object.
+//  This file declares the entity object.
 //
-//	The entity is used to connect AST nodes with types or LLVM values.
+//  The entity is used to connect AST nodes with types or LLVM values.
 //
 //===----------------------------------------------------------------------===//
 

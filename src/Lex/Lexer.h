@@ -1,8 +1,8 @@
 //===--- Lexer.h ----------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines the Lexer interface.
+//  This file defines the Lexer interface.
 //
 //===----------------------------------------------------------------------===//
 

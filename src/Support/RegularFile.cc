@@ -1,8 +1,8 @@
 //===--- RegularFile.cc ---------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines the tokens.
+//  This file defines the tokens.
 //
 //===----------------------------------------------------------------------===//
 

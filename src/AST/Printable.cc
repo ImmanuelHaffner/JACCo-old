@@ -172,8 +172,8 @@ void FunctionCall::print( Printer const p ) const
   // print the arguments
   if ( this->args )
     this->args->print( p );
-	else
-		p.out << "()";
+  else
+    p.out << "()";
 
   p.out << ")";
 }

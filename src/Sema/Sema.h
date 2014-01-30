@@ -1,8 +1,8 @@
 //===--- Sema.h -----------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines the SemaObject interface.
+//  This file defines the SemaObject interface.
 //
 //===----------------------------------------------------------------------===//
 

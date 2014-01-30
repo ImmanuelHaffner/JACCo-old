@@ -1,8 +1,8 @@
 //===--- SemaType.h -------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file declares the semantic types.
+//  This file declares the semantic types.
 //
 //===----------------------------------------------------------------------===//
 

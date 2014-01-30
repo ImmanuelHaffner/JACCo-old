@@ -1,8 +1,8 @@
 //===--- EntityHolder.h ---------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file declares the entity holder interface.
+//  This file declares the entity holder interface.
 //
 //===----------------------------------------------------------------------===//
 

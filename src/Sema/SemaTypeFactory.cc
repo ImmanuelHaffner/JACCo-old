@@ -1,8 +1,8 @@
 //===--- SemaTypeFactory.cc -----------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file implements a factory to construct sema types from the AST.
+//  This file implements a factory to construct sema types from the AST.
 //
 //===----------------------------------------------------------------------===//
 

@@ -14,21 +14,21 @@ typedef uint64_t u8;
 
 template<typename T> inline T* nonNull(T* const p)
 {
-	assert(p);
-	return p;
+  assert(p);
+  return p;
 }
 
 [[noreturn]] static inline void panic(char const* const file, int const line, char const* const msg)
 {
-	fprintf(stderr, ">>>>> %s:%d: %s\n", file, line, msg);
-	abort();
+  fprintf(stderr, ">>>>> %s:%d: %s\n", file, line, msg);
+  abort();
 }
 
 #define PANIC(msg) panic(__FILE__, __LINE__, (msg))
 
 static inline bool strEq(char const* const a, char const* const b)
 {
-	return strcmp(a, b) == 0;
+  return strcmp(a, b) == 0;
 }
 
 #endif

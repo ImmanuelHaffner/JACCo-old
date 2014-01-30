@@ -1,8 +1,8 @@
 //===--- Locatable.h -----------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines the Abstract Syntax Tree interface.
+//  This file defines the Abstract Syntax Tree interface.
 //
 //===----------------------------------------------------------------------===//
 

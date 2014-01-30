@@ -1,8 +1,8 @@
 //===--- Parser.h ---------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines the Parser interface.
+//  This file defines the Parser interface.
 //
 //===----------------------------------------------------------------------===//
 
@@ -29,11 +29,11 @@ namespace C4
     /// \brief The parser.
     struct Parser
     {
-			Parser( Lex::Lexer &lexer ) :
-				lexer(lexer), current(NULL), next(NULL), factory(env)
-			{}
+      Parser( Lex::Lexer &lexer ) :
+        lexer(lexer), current(NULL), next(NULL), factory(env)
+      {}
 
-			~Parser() {}
+      ~Parser() {}
 
       /// Parses the tokens returned by the lexer, and construct the
       /// corresponding AST.
@@ -45,8 +45,8 @@ namespace C4
       Lex::Lexer &lexer;
       Lex::Token const * current;
       Lex::Token const * next;
-			Sema::Env env;
-			AST::ASTFactory factory;
+      Sema::Env env;
+      AST::ASTFactory factory;
 
 
       //===----------------------------------------------------------------===//

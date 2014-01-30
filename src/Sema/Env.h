@@ -1,8 +1,8 @@
 //===--- Environment.h-----------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines the Environment interface.
+//  This file defines the Environment interface.
 //
 //===----------------------------------------------------------------------===//
 
@@ -14,6 +14,7 @@
 #include <vector>
 #include <unordered_map>
 #include "../Support/Symbol.h"
+#include "../AST/Stmt.h"
 #include "SemaType.h"
 #include "Entity.h"
 
@@ -109,6 +110,7 @@ namespace C4
 
       private:
       std::vector< Scope > scopeStack;
+      std::vector< AST::IterationStmt > iterStmtStack;
     };
   }
 }

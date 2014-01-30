@@ -1,8 +1,8 @@
 //===--- Lexer.cc ---------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file implements the Lexer interface.
+//  This file implements the Lexer interface.
 //
 //===----------------------------------------------------------------------===//
 

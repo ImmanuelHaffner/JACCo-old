@@ -1,8 +1,8 @@
 //===--- Type.h -----------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines the Abstract Syntax tree interface.
+//  This file defines the Abstract Syntax tree interface.
 //
 //===----------------------------------------------------------------------===//
 
@@ -16,95 +16,77 @@
 
 namespace C4
 {
-	namespace AST
-	{
-		// Forward Declarations
-		struct StructDeclList;
-		struct Declarator;
+  namespace AST
+  {
+    // Forward Declarations
+    struct StructDeclList;
+    struct Declarator;
 
 
 
-		/// Type
-		struct Type : Locatable
-		{
-			Type( Lex::Token const &tok ) : Locatable(tok) {}
-			~Type() {}
-		}; // end struct Type
+    /// Type Name
+    struct TypeSpecifier;
+    struct TypeName : Locatable
+    {
+      TypeName( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
+          Declarator const * const declarator = NULL )
+        : Locatable(tok), typeSpec(nonNull(typeSpec)), declarator(declarator)
+      {}
+
+      ~TypeName() {}
+
+      void print( Printer const p ) const;
+
+      TypeSpecifier const * const typeSpec;
+      Declarator const * const declarator;
+    }; // end struct TypeName
 
 
-		/// Type Name
-		struct TypeSpecifier;
-		struct TypeName : Locatable
-		{
-			TypeName( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
-					Declarator const * const declarator = NULL )
-				: Locatable(tok), typeSpec(nonNull(typeSpec)), declarator(declarator)
-			{}
+    /// Type Specifier
+    struct StructSpecifier;
+    struct TypeSpecifier : Locatable
+    {
+      TypeSpecifier( Lex::Token const &tok ) : Locatable(tok) {}
+      virtual ~TypeSpecifier() {}
 
-			~TypeName() {}
-
-			void print( Printer const p ) const;
-
-			TypeSpecifier const * const typeSpec;
-			Declarator const * const declarator;
-		}; // end struct TypeName
+      void print( Printer const p ) const;
+    }; // end struct TypeSpecifier
 
 
-		/// Illegal Type
-		struct IllegalType : Type
-		{
-			IllegalType( Lex::Token const &tok ) : Type(tok) {}
-			virtual ~IllegalType() {}
+    /// Illegal Type Specifier
+    struct IllegalTypeSpecifier : TypeSpecifier
+    {
+      IllegalTypeSpecifier( Lex::Token const &tok ) : TypeSpecifier(tok) {}
+      ~IllegalTypeSpecifier() {}
 
-			void print( Printer const p ) const;
-		}; // end struct IllegalType
-
-
-		/// Type Specifier
-		struct StructSpecifier;
-		struct TypeSpecifier : Type
-		{
-			TypeSpecifier( Lex::Token const &tok ) : Type(tok) {}
-			virtual ~TypeSpecifier() {}
-
-			void print( Printer const p ) const;
-		}; // end struct TypeSpecifier
+      void print( Printer const p ) const;
+    }; // end struct IllegalTypeSpecifier
 
 
-		/// Illegal Type Specifier
-		struct IllegalTypeSpecifier : TypeSpecifier
-		{
-			IllegalTypeSpecifier( Lex::Token const &tok ) : TypeSpecifier(tok) {}
-			~IllegalTypeSpecifier() {}
+    /// Struct Specifier
+    struct StructSpecifier : TypeSpecifier
+    {
+      StructSpecifier( Lex::Token const &tok, Lex::Token const * const name,
+          StructDeclList const * const structDecls = NULL )
+        : TypeSpecifier(tok), name(nonNull(name)), structDecls(structDecls)
+      {
+        assert( tok.kind == Lex::TK::Struct &&
+            "struct specifier must start with the keyword 'struct'" );
+      }
 
-			void print( Printer const p ) const;
-		}; // end struct IllegalTypeSpecifier
+      StructSpecifier( Lex::Token const &tok, StructDeclList const * const
+          structDecls )
+        : TypeSpecifier(tok), name(NULL), structDecls(nonNull(structDecls))
+      {}
 
+      ~StructSpecifier() {}
 
-		/// Struct Specifier
-		struct StructSpecifier : TypeSpecifier
-		{
-			StructSpecifier( Lex::Token const &tok, Lex::Token const * const name,
-					StructDeclList const * const structDecls = NULL )
-				: TypeSpecifier(tok), name(nonNull(name)), structDecls(structDecls)
-			{
-				assert( tok.kind == Lex::TK::Struct &&
-						"struct specifier must start with the keyword 'struct'" );
-			}
+      void print( Printer const p ) const;
 
-			StructSpecifier( Lex::Token const &tok, StructDeclList const * const
-					structDecls )
-				: TypeSpecifier(tok), name(NULL), structDecls(nonNull(structDecls))
-			{}
-
-			~StructSpecifier() {}
-
-			void print( Printer const p ) const;
-
-			Lex::Token const * const name;
-			StructDeclList const * const structDecls;
-		}; // end struct StructSpecifier
-	} // end namespace AST
+      Lex::Token const * const name;
+      StructDeclList const * const structDecls;
+    }; // end struct StructSpecifier
+  } // end namespace AST
 } // end namespace C4
 
 #endif

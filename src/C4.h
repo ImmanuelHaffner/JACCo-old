@@ -1,8 +1,8 @@
 //===--- C4.h ----------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines and describes the C4 Compiler namespace.
+//  This file defines and describes the C4 Compiler namespace.
 //
 //===----------------------------------------------------------------------===//
 

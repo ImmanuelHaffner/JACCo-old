@@ -1,8 +1,8 @@
 //===--- Stmt.h ------------------------------------------------------------===//
 //
-//	~~~ The C4 Compiler ~~~
+//  ~~~ The C4 Compiler ~~~
 //
-//	This file defines the Abstract Syntax tree interface.
+//  This file defines the Abstract Syntax tree interface.
 //
 //===----------------------------------------------------------------------===//
 
@@ -38,7 +38,7 @@ namespace C4
     struct IllegalStmt : Stmt
     {
       IllegalStmt( Lex::Token const &tok ) : Stmt(tok) {}
-      virtual ~IllegalStmt() {}
+      ~IllegalStmt() {}
 
       void print ( Printer const p ) const;
     }; // end struct IllegalStmt
@@ -278,6 +278,11 @@ namespace C4
     struct CompoundStmt : Stmt, List< BlockItem >
     {
       CompoundStmt( Lex::Token const &tok ) : Stmt(tok) {}
+
+      CompoundStmt( Lex::Token const &tok,
+          std::vector< BlockItem const * > &items ) :
+        Stmt(tok), List(items) {}
+
       ~CompoundStmt() {}
 
       void print( Printer const p ) const;
