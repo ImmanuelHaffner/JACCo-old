@@ -45,6 +45,10 @@ namespace C4
 		struct ExprList : Expr, List< Expr >
 		{
 			explicit ExprList( Lex::Token const &tok ) : Expr(tok) {}
+
+			ExprList( Lex::Token const &tok, std::vector< Expr const * > &list ) :
+				Expr(tok), List(list) {}
+
 			~ExprList() {}
 
 			void print( Printer const p ) const;
@@ -125,7 +129,7 @@ namespace C4
 		/// Assignment Expression
 		struct AssignmentExpr : BinaryExpr
 		{
-			AssignmentExpr( Lex::Token const & tok, Expr const * const lhs,
+			AssignmentExpr( Lex::Token const &tok, Expr const * const lhs,
 					Expr const * const rhs ) :
 				BinaryExpr(tok, lhs, rhs) {}
 			~AssignmentExpr() {};
@@ -139,7 +143,6 @@ namespace C4
 		{
 			UnaryExpr( Lex::Token const &tok ) : Expr(tok) {}
 			virtual ~UnaryExpr() {}
-
 		}; // end struct UnaryExpr
 
 
@@ -228,26 +231,26 @@ namespace C4
 		/// Post Increment Expression
 		struct PostIncExpr : PostfixExpr
 		{
-			PostIncExpr( Lex::Token const &tok, Expr const &expr ) :
+			PostIncExpr( Lex::Token const &tok, Expr const * const expr ) :
 				PostfixExpr(tok), expr(expr) {}
 			~PostIncExpr() {}
 
 			void print( Printer const ) const;
 
-			Expr const &expr;
+			Expr const * const expr;
 		}; // end struct PostIncExpr
 
 
 		/// Post Decrement Expression
 		struct PostDecExpr : PostfixExpr
 		{
-			PostDecExpr( Lex::Token const &tok, Expr const &expr ) :
+			PostDecExpr( Lex::Token const &tok, Expr const * const expr ) :
 				PostfixExpr(tok), expr(expr) {}
 			~PostDecExpr() {}
 
 			void print( Printer const ) const;
 
-			Expr const &expr;
+			Expr const * const expr;
 		}; // end struct PostDecExpr
 
 

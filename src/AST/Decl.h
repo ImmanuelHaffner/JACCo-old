@@ -74,7 +74,13 @@ namespace C4
 		struct StructDecl;
 		struct StructDeclList : List< StructDecl >
 		{
+			StructDeclList() {}
+
+			StructDeclList( std::vector< StructDecl const * > &decls ) :
+				List(decls) {}
+
 			~StructDeclList() {}
+
 			void print( Printer const p ) const;
 		}; // end struct StructDeclList
 
@@ -110,7 +116,12 @@ namespace C4
 		/// Parameter List
 		struct ParamList : List< ParamDecl >
 		{
+			ParamList() {}
+
+			ParamList( std::vector< ParamDecl const * > &params ) : List(params) {}
+
 			~ParamList() {}
+
 			void print( Printer const p ) const;
 		}; // end struct ParamList
 
@@ -214,7 +225,13 @@ namespace C4
 		/// Struct Declarator List
 		struct StructDeclaratorList : List< Declarator >
 		{
+			StructDeclaratorList() {}
+
+			StructDeclaratorList( std::vector< Declarator const * > &declarators ) :
+				List(declarators) {}
+
 			~StructDeclaratorList() {}
+
 			void print( Printer const p ) const;
 		}; // end struct StructDeclaratorList
 
@@ -222,7 +239,12 @@ namespace C4
 		/// Declaration List
 		struct DeclList : List< Decl >
 		{
+			DeclList() {}
+
+			DeclList( std::vector< Decl const * > &decls ) : List(decls) {}
+
 			~DeclList() {}
+
 			void print( Printer const p ) const;
 		}; // end struct DeclList
 

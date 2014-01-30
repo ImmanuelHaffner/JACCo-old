@@ -23,6 +23,8 @@ namespace C4
     template< class T >
       struct List : Printable
       {
+				List() {}
+				List( std::vector< T const * > &list ) : list(list) {}
         virtual ~List() {}
 
         typedef typename std::vector< T const * >::iterator iterator;
@@ -37,7 +39,7 @@ namespace C4
         const_iterator end() const;
 
         private:
-          std::vector< T const * > list;
+				std::vector< T const * > list;
       }; // end struct List
 
     template< class T >

@@ -105,14 +105,14 @@ void BinaryExpr::print( Printer const p ) const
 void PostIncExpr::print( Printer const p ) const
 {
   p.out << "(";
-  this->expr.print( p );
+  this->expr->print( p );
   p.out << "++)";
 }
 
 void PostDecExpr::print( Printer const p ) const
 {
   p.out << "(";
-  this->expr.print( p );
+  this->expr->print( p );
   p.out << "--)";
 }
 

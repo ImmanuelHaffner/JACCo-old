@@ -18,17 +18,6 @@ using namespace AST;
 static bool functionDeclarator = false;
 
 
-/*
- *
- * Parser Main Functions
- *
- */
-
-Parser::Parser( Lexer &lexer ) : lexer(lexer), current(NULL), next(NULL) {}
-
-Parser::~Parser() {}
-
-
 //===----------------------------------------------------------------------===//
 //
 //  Parser Helper Functions
@@ -291,12 +280,12 @@ Expr const * Parser::parsePostfixExpr()
         break;
 
       case TK::IncOp:
-        expr = new PostIncExpr( *current, *expr );
+        expr = new PostIncExpr( *current, expr );
         readNextToken(); // eat '++'
         break;
 
       case TK::DecOp:
-        expr = new PostDecExpr( *current, *expr );
+        expr = new PostDecExpr( *current, expr );
         readNextToken(); // eat '--'
         break;
 

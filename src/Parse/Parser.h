@@ -18,6 +18,8 @@
 #include "../Lex/Token.h"
 #include "../Lex/Lexer.h"
 #include "../AST/AST.h"
+#include "../AST/ASTFactory.h"
+#include "../Sema/Env.h"
 
 
 namespace C4
@@ -27,8 +29,11 @@ namespace C4
     /// \brief The parser.
     struct Parser
     {
-      Parser( Lex::Lexer &lexer );
-      ~Parser();
+			Parser( Lex::Lexer &lexer ) :
+				lexer(lexer), current(NULL), next(NULL), factory(env)
+			{}
+
+			~Parser() {}
 
       /// Parses the tokens returned by the lexer, and construct the
       /// corresponding AST.
@@ -40,6 +45,8 @@ namespace C4
       Lex::Lexer &lexer;
       Lex::Token const * current;
       Lex::Token const * next;
+			Sema::Env env;
+			AST::ASTFactory factory;
 
 
       //===----------------------------------------------------------------===//
