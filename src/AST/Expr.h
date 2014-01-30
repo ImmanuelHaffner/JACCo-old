@@ -144,10 +144,10 @@ namespace C4
 
 
 		/// Unary Operation
-		struct UnaryOperation : Expr
+		struct UnaryOperation : UnaryExpr
 		{
 			UnaryOperation( Lex::Token const &tok, Expr const * const expr )
-				: Expr(tok), expr(expr) {}
+				: UnaryExpr(tok), expr(expr) {}
 			~UnaryOperation() {}
 
 			void print( Printer const p ) const;
