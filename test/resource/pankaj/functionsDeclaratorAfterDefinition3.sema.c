@@ -1,6 +1,6 @@
-0
+1
 
-int f()
+int f(char)
 {
   return 10;
 }
@@ -11,4 +11,4 @@ int main()
   x = f(19);
 }
 
-int f(void);
+int f(int);

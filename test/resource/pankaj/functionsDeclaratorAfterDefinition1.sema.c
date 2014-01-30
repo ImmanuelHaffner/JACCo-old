@@ -1,13 +1,14 @@
 0
 
-int f(int)
+int f(int x)
 {
-  return 10;
+  return x;
 }
 
 int main()
 {
-  int x = f(19);
+  int x;
+  x = f(19);
 }
 
 int f(int);
