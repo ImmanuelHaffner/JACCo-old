@@ -69,7 +69,7 @@ void EnvTest::testInit()
 {
   Env env;
 
-  CPPUNIT_ASSERT_EQUAL( 1ul, env.depth() );
+  CPPUNIT_ASSERT_EQUAL( (size_t) 1, env.depth() );
 }
 
 void EnvTest::testPushPop()
@@ -77,20 +77,20 @@ void EnvTest::testPushPop()
   Env env;
 
   env.pushScope();
-  CPPUNIT_ASSERT_EQUAL( 2ul, env.depth() );
+  CPPUNIT_ASSERT_EQUAL( (size_t) 2, env.depth() );
 
   env.pushScope();
   env.pushScope();
   env.pushScope();
-  CPPUNIT_ASSERT_EQUAL( 5ul, env.depth() );
+  CPPUNIT_ASSERT_EQUAL( (size_t) 5, env.depth() );
 
   env.popScope();
-  CPPUNIT_ASSERT_EQUAL( 4ul, env.depth() );
+  CPPUNIT_ASSERT_EQUAL( (size_t) 4, env.depth() );
 
   env.popScope();
   env.popScope();
   env.popScope();
-  CPPUNIT_ASSERT_EQUAL( 1ul, env.depth() );
+  CPPUNIT_ASSERT_EQUAL( (size_t) 1, env.depth() );
 }
 
 void EnvTest::testInsert()
