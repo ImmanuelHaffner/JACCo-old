@@ -226,7 +226,7 @@ namespace C4
     /// Function Definition
     struct FunctionDef : Decl
     {
-      FunctionDef( TypeSpecifier const * const typeSpec,
+      FunctionDef( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator,
           CompoundStmt const * const compStmt ) :
         Decl(tok, typeSpec, nonNull(declarator)), compStmt(nonNull(compStmt))

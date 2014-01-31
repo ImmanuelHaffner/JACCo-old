@@ -231,11 +231,11 @@ namespace C4
       }
 
       inline FunctionDef const * getFunctionDef(
-          TypeSpecifier const * const typeSpec,
+          Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator,
           CompoundStmt const * const compStmt )
       {
-        return new FunctionDef( typeSpec, declarator, compStmt );
+        return new FunctionDef( tok, typeSpec, declarator, compStmt );
       }
 
 

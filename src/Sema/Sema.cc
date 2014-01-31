@@ -43,8 +43,11 @@ Sema::Type const * PointerDeclarator::analyze( Env &env, Sema::Type const * t ) 
 
 Sema::Type const * FunctionDeclarator::analyze( Env &env, Sema::Type const * t ) const
 {
+  //Scope for parameters
+  env.pushScope();
   std::vector<Sema::Type const *> paramTypes = params->analyze( env );
   Sema::Type const * funType = TypeFactory::getFunc( t, paramTypes );
+  env.popScope();
   if ( declarator )
   {
     return declarator->analyze( env, funType );

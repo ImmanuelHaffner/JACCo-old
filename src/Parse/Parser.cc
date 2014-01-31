@@ -1191,7 +1191,7 @@ ExtDecl const * Parser::parseExtDecl()
           case TK::LBrace:
             if ( ! functionDeclarator )
               ERROR( "'(' [parameter-list] ')'" );
-            return factory.getFunctionDef( typeSpec, declarator,
+            return factory.getFunctionDef( tok, typeSpec, declarator,
                 parseCompoundStmt() );
 
           default:
