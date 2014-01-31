@@ -69,6 +69,7 @@ Scope Env::popScope()
 {
   assert( scopeStack.size() > 1 && "cannot pop the global scope" );
   Scope &scope = scopeStack.back();
+  scopeStack.pop_back();
   return scope; 
 }
 
