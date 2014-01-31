@@ -79,6 +79,11 @@ Sema::Type const * IllegalDeclarator::analyze( Env &env, Sema::Type const * t ) 
 Sema::Type const * FunctionDef::analyze( Env &env ) const
 {
   Sema::Type const * const t = typeSpec->analyze( env );
+  if ( dynamic_cast< FuncType const * const >( t ) ||
+      dynamic_cast< StructType const * const >( t ))
+  {
+    ERROR( "Function may not return struct or function" );
+  }
   if ( declarator )
     return declarator->analyze( env, t );
   return t;
@@ -87,7 +92,12 @@ Sema::Type const * FunctionDef::analyze( Env &env ) const
 void StructDeclList::analyze( Env &env ) const
 {
   for ( auto &it : * this )
+  {
+    //Push parameter scope in case of function arguments
+    env.pushScope();
     it->analyze( env );
+    env.popScope();
+  }
 }
 
 Sema::Type const * StructDecl::analyze( Env &env ) const
@@ -107,6 +117,7 @@ void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 
 Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
+  //TODO functions => function pointers
   Sema::Type const * t = typeSpec->analyze( env );
   if ( declarator )
   {
@@ -143,7 +154,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
     }
     if ( oldType != NULL )
     {
-      ERROR( "Cannot replace type information of already completed struct" ); 
+      ERROR( "Cannot replace type information of already completed struct" );
       env.pushScope( paramScope );
       return oldType;
     }
@@ -165,7 +176,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
     {
       if ( !env.insert ( name->sym, t ) )
       {
-        ERROR( "Struct name already in use" ); 
+        ERROR( "Struct name already in use" );
       }
     }
     else
@@ -185,7 +196,10 @@ Sema::Type const * TypeSpecifier::analyze( Env &env ) const
       return TypeFactory::getInt();
     case Lex::TK::Char:
       return TypeFactory::getChar();
+    case Lex::TK::Struct:
+      return dynamic_cast< StructSpecifier const * >( this )->analyze( env );
     default:
+      ERROR ( "Token is not a type" );
       return NULL;
   }
 }
@@ -200,12 +214,19 @@ Sema::Type const * Decl::analyze( Env &env ) const
   Sema::Type const * const t = typeSpec->analyze( env );
   if ( declarator )
   {
-    if ( t == NULL || t == TypeFactory::getVoid() )
+    if ( t == NULL )
     {
-      ERROR( "Cannot instantiate a variable with incomplete type" ); 
+      std::ostringstream oss;
+      oss << "Cannot instantiate " << declarator <<
+        " with incomplete type " << typeSpec;
+      ERROR( oss.str().c_str() );
     }
     else
+    {
+      //TODO check for void if not function; check for struct / function
+      //return type otherwise
       return declarator->analyze( env, t );
+    }
   }
   return t;
 }
