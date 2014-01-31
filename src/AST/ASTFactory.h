@@ -161,10 +161,6 @@ namespace C4
           Declarator const * const declarator = NULL )
       {
         Decl const * const decl = new Decl( tok, typeSpec, declarator );
-        //Scope for parameters
-        env.pushScope();
-        decl->analyze( env );
-        env.popScope();
         return decl;
       }
 
@@ -236,16 +232,10 @@ namespace C4
       }
 
       inline FunctionDef const * getFunctionDef(
-          Lex::Token const &tok, TypeSpecifier const * const typeSpec,
-          Declarator const * const declarator,
+          Decl const * const decl,
           CompoundStmt const * const compStmt )
       {
-        FunctionDef const * const funDef = new FunctionDef( tok, typeSpec,
-            declarator, compStmt );
-        //Scope for parameters
-        env.pushScope();
-        funDef->analyze( env );
-        env.popScope();
+        FunctionDef const * const funDef = new FunctionDef( decl, compStmt );
         return funDef;
       }
 

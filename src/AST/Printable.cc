@@ -673,9 +673,9 @@ void IllegalDeclarator::print( Printer const p ) const
 
 void FunctionDef::print( Printer const p ) const
 {
-  this->typeSpec->print( p );
+  this->decl->typeSpec->print( p );
   p.out << " ";
-  this->declarator->print( p );
+  this->decl->declarator->print( p );
   p.out << "\n";
   this->compStmt->print( p );
 }

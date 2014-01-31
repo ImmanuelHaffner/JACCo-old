@@ -1191,10 +1191,16 @@ ExtDecl const * Parser::parseExtDecl()
             return factory.getDecl( tok, typeSpec, declarator );
 
           case TK::LBrace:
-            if ( ! functionDeclarator )
-              ERROR( "'(' [parameter-list] ')'" );
-            return factory.getFunctionDef( tok, typeSpec, declarator,
-                parseCompoundStmt() );
+            {
+              if ( ! functionDeclarator )
+                ERROR( "'(' [parameter-list] ')'" );
+              env.pushScope();
+              Decl const * const decl = factory.getDecl( tok, typeSpec,
+                  declarator);
+              CompoundStmt const * const cStmt = parseCompoundStmt();
+              env.popScope();
+              return factory.getFunctionDef( decl, cStmt );
+            }
 
           default:
             ERROR( "';' or function-definition" );

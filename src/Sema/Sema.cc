@@ -61,6 +61,7 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
     e->type = t;
   else
   {
+    //TODO check for function to complete
     std::ostringstream oss;
     oss << "identifier '" << this->tok.sym.str() <<
       "' has already been declared";
@@ -78,15 +79,7 @@ Sema::Type const * IllegalDeclarator::analyze( Env &env, Sema::Type const * t ) 
 
 Sema::Type const * FunctionDef::analyze( Env &env ) const
 {
-  Sema::Type const * const t = typeSpec->analyze( env );
-  if ( dynamic_cast< FuncType const * const >( t ) ||
-      dynamic_cast< StructType const * const >( t ))
-  {
-    ERROR( "Function may not return struct or function" );
-  }
-  if ( declarator )
-    return declarator->analyze( env, t );
-  return t;
+  return NULL;
 }
 
 void StructDeclList::analyze( Env &env ) const

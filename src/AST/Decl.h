@@ -224,12 +224,11 @@ namespace C4
 
 
     /// Function Definition
-    struct FunctionDef : Decl
+    struct FunctionDef : ExtDecl
     {
-      FunctionDef( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
-          Declarator const * const declarator,
-          CompoundStmt const * const compStmt ) :
-        Decl(tok, typeSpec, nonNull(declarator)), compStmt(nonNull(compStmt))
+      FunctionDef( Decl const * const decl,
+          CompoundStmt const * const compStmt ) : decl(nonNull(decl)),
+      compStmt(nonNull(compStmt))
       {}
 
       ~FunctionDef() {}
@@ -237,6 +236,7 @@ namespace C4
 			void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
 
+      Decl const * const decl;
       CompoundStmt const * const compStmt;
     }; // end struct FunctionDef
   } // end namespace AST
