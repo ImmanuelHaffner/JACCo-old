@@ -43,11 +43,8 @@ Sema::Type const * PointerDeclarator::analyze( Env &env, Sema::Type const * t ) 
 
 Sema::Type const * FunctionDeclarator::analyze( Env &env, Sema::Type const * t ) const
 {
-  //Scope for parameters
-  env.pushScope();
   std::vector<Sema::Type const *> paramTypes = params->analyze( env );
   Sema::Type const * funType = TypeFactory::getFunc( t, paramTypes );
-  env.popScope();
   if ( declarator )
   {
     return declarator->analyze( env, funType );
@@ -58,6 +55,8 @@ Sema::Type const * FunctionDeclarator::analyze( Env &env, Sema::Type const * t )
 Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
   const
 {
+  //Pop and save possible parameter scope
+  Scope paramScope = env.popScope();
   if ( Entity * const e = env.insert( tok.sym ) )
     e->type = t;
   else
@@ -67,6 +66,8 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
       "' has already been declared";
     ERROR( oss.str().c_str() );
   }
+  //Push the parameter scope again for possible function definition
+  env.pushScope( paramScope );
   return t;
 }
 
@@ -108,7 +109,9 @@ Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
   Sema::Type const * t = typeSpec->analyze( env );
   if ( declarator )
+  {
     return declarator->analyze( env, t );
+  }
   return t;
 }
 
@@ -116,21 +119,32 @@ std::vector< Sema::Type const * > ParamList::analyze( Env &env ) const
 {
   std::vector< Sema::Type const * > paramTypes;
   for ( auto &it : * this )
+  {
+    //Push parameter scope in case of function arguments
+    env.pushScope();
     paramTypes.push_back( it->analyze( env ) );
+    env.popScope();
+  }
   return paramTypes;
 }
 
 Sema::Type const * StructSpecifier::analyze( Env &env ) const
 {
+  //Pop and save possible parameter scope
+  Scope paramScope = env.popScope();
   Type const * oldType = NULL;
   if ( name )
   {
     oldType = env.lookupType( name->sym );
     if ( !structDecls )
-     return oldType;
+    {
+      env.pushScope( paramScope );
+      return oldType;
+    }
     if ( oldType != NULL )
     {
       ERROR( "Cannot replace type information of already completed struct" ); 
+      env.pushScope( paramScope );
       return oldType;
     }
   }
@@ -148,13 +162,16 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   if ( name )
   {
     if ( oldType == NULL )
+    {
       if ( !env.insert ( name->sym, t ) )
       {
         ERROR( "Struct name already in use" ); 
       }
+    }
     else
       env.replaceType ( name->sym, t );
   }
+  env.pushScope( paramScope );
   return t;
 }
 

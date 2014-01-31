@@ -91,7 +91,7 @@ namespace C4
     struct StructDeclaratorList;
     struct StructDecl : Decl
     {
-      StructDecl( TypeSpecifier const * const typeSpec,
+      StructDecl( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           StructDeclaratorList const * const structDeclarators )
         : Decl(tok, typeSpec), structDeclarators(structDeclarators)
       {}
@@ -106,7 +106,7 @@ namespace C4
     /// Parameter Declaration
     struct ParamDecl : Decl
     {
-      ParamDecl( TypeSpecifier const * const typeSpec,
+      ParamDecl( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL ) :
         Decl(tok, typeSpec, declarator)
       {}

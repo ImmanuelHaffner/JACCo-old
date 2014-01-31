@@ -81,6 +81,9 @@ namespace C4
       /// \brief Pushes a new, empty scope onto the stack.
       void pushScope();
 
+      /// \brief Pushes the given scope onto the stack.
+      void pushScope( Scope scope );
+      
       /// \brief Pops the topmost scope from the stack.
       Scope popScope();
 

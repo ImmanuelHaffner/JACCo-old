@@ -82,6 +82,11 @@ void Env::pushScope()
   scopeStack.push_back( Scope() );
 }
 
+void Env::pushScope( Scope scope )
+{
+  scopeStack.push_back( scope );
+}
+
 Scope Env::popScope()
 {
   assert( scopeStack.size() > 1 && "cannot pop the global scope" );

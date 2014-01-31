@@ -161,7 +161,10 @@ namespace C4
           Declarator const * const declarator = NULL )
       {
         Decl const * const decl = new Decl( tok, typeSpec, declarator );
+        //Scope for parameters
+        env.pushScope();
         decl->analyze( env );
+        env.popScope();
         return decl;
       }
 
@@ -178,17 +181,19 @@ namespace C4
       }
 
       inline StructDecl const * getStructDecl(
-          TypeSpecifier const * const typeSpec,
+          Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           StructDeclaratorList const * const structDeclarators )
       {
-        return new StructDecl( typeSpec, structDeclarators );
+        return new StructDecl( tok, typeSpec, structDeclarators );
       }
 
       inline ParamDecl const * getParamDecl(
-          TypeSpecifier const * const typeSpec,
+          Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
       {
-        return new ParamDecl( typeSpec, declarator );
+        ParamDecl const * const decl = new ParamDecl( tok, typeSpec,
+            declarator );
+        return decl;
       }
 
       inline ParamList const * getParamList(
@@ -235,7 +240,13 @@ namespace C4
           Declarator const * const declarator,
           CompoundStmt const * const compStmt )
       {
-        return new FunctionDef( tok, typeSpec, declarator, compStmt );
+        FunctionDef const * const funDef = new FunctionDef( tok, typeSpec,
+            declarator, compStmt );
+        //Scope for parameters
+        env.pushScope();
+        funDef->analyze( env );
+        env.popScope();
+        return funDef;
       }
 
 

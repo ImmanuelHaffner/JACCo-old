@@ -560,12 +560,13 @@ StructDeclList const * Parser::parseStructDeclList()
 
 StructDecl const * Parser::parseStructDecl()
 {
+  Token tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   StructDeclaratorList const * structDeclarators = NULL;
   if ( current->kind != TK::SCol )
     structDeclarators = parseStructDeclaratorList();
   accept( TK::SCol ); // eat ';'
-  return factory.getStructDecl( typeSpec, structDeclarators );
+  return factory.getStructDecl( tok, typeSpec, structDeclarators );
 } // end parseStructDecl
 
 StructDeclaratorList const * Parser::parseStructDeclaratorList()
@@ -732,20 +733,21 @@ ParamList const * Parser::parseParameterList()
 
 ParamDecl const * Parser::parseParameterDecl()
 {
+  Token tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   switch ( current->kind )
   {
     case TK::IDENTIFIER:
-      return factory.getParamDecl( typeSpec, parseDeclarator() );
+      return factory.getParamDecl( tok, typeSpec, parseDeclarator() );
 
     case TK::Mul:
     case TK::LPar:
-      return factory.getParamDecl( typeSpec,
+      return factory.getParamDecl( tok, typeSpec,
           parseDeclarator( DeclaratorType::UNKNOWN ) );
 
     default:;
   }
-  return factory.getParamDecl( typeSpec );
+  return factory.getParamDecl( tok, typeSpec );
 } // end parseParameterDecl
 
 TypeName const * Parser::parseTypeName()
