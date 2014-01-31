@@ -481,12 +481,13 @@ Expr const * Parser::parseExpr()
 
 Decl const * Parser::parseDecl()
 {
+  Token tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   Declarator const * declarator = NULL;
   if ( current->kind != TK::SCol )
     declarator = parseDeclarator();
   accept( TK::SCol ); // eat ';'
-  return factory.getDecl( typeSpec, declarator );
+  return factory.getDecl( tok, typeSpec, declarator );
 } // end parseDecl
 
 TypeSpecifier const * Parser::parseTypeSpecifier()
@@ -1168,6 +1169,7 @@ ExtDecl const * Parser::parseExtDecl()
     case TK::Int:
     case TK::Struct:
       {
+        Token tok( *current );
         TypeSpecifier const * const typeSpec = parseTypeSpecifier();
 
         // check whether we have a struct decl, and the decl ends here
@@ -1175,7 +1177,7 @@ ExtDecl const * Parser::parseExtDecl()
             ( current->kind == TK::END_OF_FILE || current->kind == TK::SCol ) )
         {
           accept( TK::SCol ); // eat ';'
-          return factory.getDecl( typeSpec );
+          return factory.getDecl( tok, typeSpec );
         }
 
         functionDeclarator = false;
@@ -1184,7 +1186,7 @@ ExtDecl const * Parser::parseExtDecl()
         {
           case TK::SCol:
             readNextToken(); // eat ';'
-            return factory.getDecl( typeSpec, declarator );
+            return factory.getDecl( tok, typeSpec, declarator );
 
           case TK::LBrace:
             if ( ! functionDeclarator )

@@ -157,10 +157,10 @@ namespace C4
         return new IllegalExtDecl( tok );
       }
 
-      inline Decl const * getDecl( TypeSpecifier const * const typeSpec,
+      inline Decl const * getDecl( TOK, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
       {
-        Decl const * const decl = new Decl( typeSpec, declarator );
+        Decl const * const decl = new Decl( tok, typeSpec, declarator );
         decl->analyze( env );
         return decl;
       }

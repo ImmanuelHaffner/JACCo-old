@@ -45,11 +45,11 @@ namespace C4
 
     /// Declaration
     struct Declarator;
-    struct Decl : ExtDecl
+    struct Decl : ExtDecl, Locatable
     {
-      Decl( TypeSpecifier const * const typeSpec,
+      Decl( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
-        : typeSpec(nonNull(typeSpec)), declarator(declarator)
+        : Locatable(tok), typeSpec(nonNull(typeSpec)), declarator(declarator)
       {}
 
       virtual ~Decl() {}
@@ -62,10 +62,10 @@ namespace C4
     }; // end struct Declaration
 
 
-    struct IllegalDecl : Locatable, Decl
+    struct IllegalDecl : Decl
     {
       IllegalDecl( Lex::Token const &tok, TypeSpecifier const * const typeSpec )
-        : Locatable(tok), Decl(typeSpec) {}
+        : Decl(tok, typeSpec) {}
       ~IllegalDecl() {}
 
       void print( Printer const p ) const;
@@ -93,7 +93,7 @@ namespace C4
     {
       StructDecl( TypeSpecifier const * const typeSpec,
           StructDeclaratorList const * const structDeclarators )
-        : Decl(typeSpec), structDeclarators(structDeclarators)
+        : Decl(tok, typeSpec), structDeclarators(structDeclarators)
       {}
 
       StructDeclaratorList const * const structDeclarators;
@@ -108,7 +108,7 @@ namespace C4
     {
       ParamDecl( TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL ) :
-        Decl(typeSpec, declarator)
+        Decl(tok, typeSpec, declarator)
       {}
 
       ~ParamDecl() {}
@@ -229,7 +229,7 @@ namespace C4
       FunctionDef( TypeSpecifier const * const typeSpec,
           Declarator const * const declarator,
           CompoundStmt const * const compStmt ) :
-        Decl(typeSpec, nonNull(declarator)), compStmt(nonNull(compStmt))
+        Decl(tok, typeSpec, nonNull(declarator)), compStmt(nonNull(compStmt))
       {}
 
       ~FunctionDef() {}

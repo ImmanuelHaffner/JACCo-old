@@ -127,8 +127,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
      return oldType;
     if ( oldType != NULL )
     {
-      //ERROR
-      ;
+      ERROR( "Cannot replace type information of already completed struct" ); 
       return oldType;
     }
   }
@@ -147,8 +146,9 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   {
     if ( oldType == NULL )
       if ( !env.insert ( name->sym, t ) )
-        //TODO: ERROR
-       1;
+      {
+        ERROR( "Struct name already in use" ); 
+      }
     else
       env.replaceType ( name->sym, t );
   }
@@ -181,8 +181,9 @@ Sema::Type const * Decl::analyze( Env &env ) const
   if ( declarator )
   {
     if ( t == NULL || t == TypeFactory::getVoid() )
-      //TODO ERROR
-      ;
+    {
+      ERROR( "Cannot instantiate a variable with incomplete type" ); 
+    }
     else
       return declarator->analyze( env, t );
   }
