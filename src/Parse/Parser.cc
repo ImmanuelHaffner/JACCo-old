@@ -860,6 +860,7 @@ Stmt const * Parser::parseLabeledStmt()
 
 CompoundStmt const * Parser::parseCompoundStmt()
 {
+  env.pushScope();
   Token const tok(*current);
   std::vector< BlockItem const * > items;
 
@@ -921,6 +922,7 @@ CompoundStmt const * Parser::parseCompoundStmt()
 
 for_end:
   accept( TK::RBrace ); // eat '}'
+  env.popScope();
   return factory.getCompoundStmt( tok, items );
 } // end parseCompoundStmt
 
