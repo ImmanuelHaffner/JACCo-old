@@ -160,7 +160,7 @@ namespace C4
       inline Decl const * getDecl( TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
       {
-        Decl const * decl = new Decl( typeSpec, declarator );
+        Decl const * const decl = new Decl( typeSpec, declarator );
         decl->analyze( env );
         return decl;
       }

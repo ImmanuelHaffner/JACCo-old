@@ -39,7 +39,8 @@ Sema::Type const * FunctionDeclarator::analyze( Env &env, Sema::Type const * t )
   return funType;
 }
 
-Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * t ) const
+Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
+  const
 {
   if ( Entity * e = env.insert( tok.sym ) )
     e->type = t;
