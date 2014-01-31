@@ -6,11 +6,24 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #include "Sema.h"
+
+#include <iostream>
+#include <sstream>
+#include <cstring>
+#include "../diagnostic.h"
+
 
 using namespace C4;
 using namespace AST;
 using namespace Sema;
+
+
+#define ERROR( MSG ) \
+{ std::ostringstream actual; \
+  errorf( this->tok.pos, "%s", ( MSG ) ); }
+
 
 //===----------------------------------------------------------------------===//
 //
@@ -42,11 +55,15 @@ Sema::Type const * FunctionDeclarator::analyze( Env &env, Sema::Type const * t )
 Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
   const
 {
-  if ( Entity * e = env.insert( tok.sym ) )
+  if ( Entity * const e = env.insert( tok.sym ) )
     e->type = t;
   else
-    //TODO: ERROR. Move to Environment?
-    1;
+  {
+    std::ostringstream oss;
+    oss << "identifier '" << this->tok.sym.str() <<
+      "' has already been declared";
+    ERROR( oss.str().c_str() );
+  }
   return t;
 }
 
