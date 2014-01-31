@@ -9,11 +9,11 @@
 class EntityHolderTest : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE ( EntityHolderTest );
-  CPPUNIT_TEST ( testExceptionCallAgain );
+  CPPUNIT_TEST ( testAttach );
   CPPUNIT_TEST_SUITE_END ();
 
 protected:
-  void testExceptionCallAgain();
+  void testAttach();
 };
 
 #endif

@@ -9,18 +9,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION ( EntityHolderTest );
 using namespace C4;
 using namespace Sema;
 
-void EntityHolderTest::testExceptionCallAgain()
+void EntityHolderTest::testAttach()
 {
   EntityHolder h;
-  h.attachEntity(NULL);
-  std::string message;
-  try
-  {
-    h.attachEntity(NULL);
-  }
-  catch(EntityHolderException const& e)
-  {
-    message = e.what();
-  }
-  CPPUNIT_ASSERT_EQUAL_MESSAGE(message, true, !message.empty());
+  Entity const * e = new Entity();
+  h.attachEntity( e );
+  CPPUNIT_ASSERT_EQUAL( e, h.getEntity() );
 }

@@ -34,10 +34,16 @@ void TypeFactoryTest::testDestroy()
 
   TypeFactory::getPtr( TypeFactory::getVoid() );
   TypeFactory::getPtr( TypeFactory::getInt() );
-  // TODO insert function types
+
+  std::vector< Type const * > args0;
+  args0.push_back( TypeFactory::getChar() );
+  args0.push_back( TypeFactory::getChar() );
+  args0.push_back( TypeFactory::getInt() );
+  TypeFactory::getFunc( TypeFactory::getVoid(), args0 );
+  TypeFactory::getFunc( TypeFactory::getInt(), args0 );
 
   CPPUNIT_ASSERT( 0u != (unsigned) TypeFactory::sizeP() );
-  // TODO CPPUNIT_ASSERT( 0u != (unsigned) TypeFactory::sizeF() );
+  CPPUNIT_ASSERT( 0u != (unsigned) TypeFactory::sizeF() );
 
   TypeFactory::destroy();
   CPPUNIT_ASSERT_EQUAL( 0u, (unsigned) TypeFactory::sizeP() );
