@@ -105,8 +105,8 @@ Sema::Type const * StructDecl::analyze( Env &env ) const
   Sema::Type const * const t = typeSpec->analyze( env );
   if ( structDeclarators )
     structDeclarators->analyze( env, t );
-  //we could do it better, but probably won't need it
-  return NULL;
+  //we could do it better (for declarator lists), but probably won't need it
+  return t;
 }
 
 void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
@@ -196,10 +196,7 @@ Sema::Type const * TypeSpecifier::analyze( Env &env ) const
       return TypeFactory::getInt();
     case Lex::TK::Char:
       return TypeFactory::getChar();
-    case Lex::TK::Struct:
-      return dynamic_cast< StructSpecifier const * >( this )->analyze( env );
     default:
-      ERROR ( "Token is not a type" );
       return NULL;
   }
 }
