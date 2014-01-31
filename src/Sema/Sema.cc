@@ -114,8 +114,9 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   Sema::Type const * t = TypeFactory::getStruct( innerTypes );
   if ( name )
   {
-    Entity * e = env.insert ( name->sym );
-    e->type = t; 
+    if ( !env.insert ( name->sym, t ) )
+      //TODO: ERROR
+      1;
   }
   return t;
 }
