@@ -14,6 +14,7 @@
 #include "List.h"
 #include "../util.h"
 #include <vector>
+#include "../Sema/Env.h"
 
 namespace C4
 {
@@ -53,7 +54,8 @@ namespace C4
 
       virtual ~Decl() {}
 
-      virtual void print( Printer const p ) const;
+			virtual void print( Printer const p ) const;
+      virtual Sema::Type const * analyze( Sema::Env &env ) const;
 
       TypeSpecifier const * const typeSpec;
       Declarator const * const declarator;
@@ -67,6 +69,7 @@ namespace C4
       ~IllegalDecl() {}
 
       void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env ) const;
     }; // end IllegalDecl
 
 
@@ -75,14 +78,14 @@ namespace C4
     struct StructDeclList : List< StructDecl >
     {
       StructDeclList() {}
+      ~StructDeclList() {}
 
       StructDeclList( std::vector< StructDecl const * > &decls ) :
         List(decls) {}
 
-      ~StructDeclList() {}
-
-      void print( Printer const p ) const;
-    }; // end struct StructDeclList
+			void print( Printer const p ) const;
+      void analyze( Sema::Env &env ) const;
+		}; // end struct StructDeclList
 
     /// Struct Declaration
     struct StructDeclaratorList;
@@ -95,8 +98,9 @@ namespace C4
 
       StructDeclaratorList const * const structDeclarators;
 
-      void print( Printer const p ) const;
-    }; // end struct StructDecl
+			void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env ) const;
+		}; // end struct StructDecl
 
 
     /// Parameter Declaration
@@ -109,28 +113,28 @@ namespace C4
 
       ~ParamDecl() {}
 
-      void print( Printer const p ) const;
-    }; // end struct ParamDecl
-
+			void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env ) const;
+		}; // end struct ParamDecl
 
     /// Parameter List
     struct ParamList : List< ParamDecl >
     {
       ParamList() {}
-
       ParamList( std::vector< ParamDecl const * > &params ) : List(params) {}
+			~ParamList() {}
+			void print( Printer const p ) const;
+      std::vector< Sema::Type const * >  analyze( Sema::Env &env ) const;
+		}; // end struct ParamList
 
-      ~ParamList() {}
-
-      void print( Printer const p ) const;
-    }; // end struct ParamList
-
-    /// Declarator
-    struct DirectDeclarator;
+		/// Declarator
     struct Declarator : Locatable
     {
       Declarator( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Declarator() {}
+
+      virtual Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t )
+        const;
     }; // end struct Declarator
 
     /// Identifier
@@ -138,7 +142,9 @@ namespace C4
     {
       Identifier( Lex::Token const &tok ) : Declarator(tok) {}
       ~Identifier() {}
+
       void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t ) const;
     }; // end struct Identifier
 
 
@@ -152,7 +158,8 @@ namespace C4
 
       ~PointerDeclarator() {}
 
-      void print( Printer const p ) const;
+			void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t ) const;
 
       Declarator const * const declarator;
     }; // end struct PointerDeclarator
@@ -170,6 +177,7 @@ namespace C4
       ~FunctionDeclarator() {}
 
       void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t ) const;
 
       Declarator const * const declarator;
       ParamList const * const params;
@@ -182,45 +190,9 @@ namespace C4
       IllegalDeclarator( Lex::Token const &tok ) : Declarator(tok) {}
       ~IllegalDeclarator() {}
 
-      void print( Printer const p ) const;
-    }; // end struct IllegalDeclarator
-
-
-    /// Direct Declarator
-    struct DirectDeclarator : Locatable
-    {
-      DirectDeclarator( Lex::Token const &tok )
-        : Locatable(tok), declarator(NULL), directDeclarator(NULL), params(NULL)
-      {}
-
-      DirectDeclarator( Lex::Token const &tok,
-          Declarator const * const declarator,
-          ParamList const * const params = NULL )
-        : Locatable(tok), declarator(nonNull(declarator)),
-        directDeclarator(NULL), params(params)
-      {}
-
-      DirectDeclarator( Lex::Token const &tok,
-          DirectDeclarator const * const directDeclarator,
-          ParamList const * const params = NULL )
-        : Locatable(tok), declarator(NULL),
-        directDeclarator(nonNull(directDeclarator)), params(params)
-      {}
-
-      DirectDeclarator( Lex::Token const &tok, ParamList const * const params )
-        : Locatable(tok), declarator(NULL), directDeclarator(NULL),
-        params(nonNull(params))
-      {}
-
-      ~DirectDeclarator() {}
-
-      void print( Printer const p ) const;
-
-      Declarator const * const declarator;
-      DirectDeclarator const * const directDeclarator;
-      ParamList const * const params;
-    }; // end struct DirectDeclarator
-
+			void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t ) const;
+		}; // end struct IllegalDeclarator
 
     /// Struct Declarator List
     struct StructDeclaratorList : List< Declarator >
@@ -231,6 +203,10 @@ namespace C4
         List(declarators) {}
 
       ~StructDeclaratorList() {}
+
+			void print( Printer const p ) const;
+      void analyze( Sema::Env &env, Sema::Type const * t ) const;
+		}; // end struct StructDeclaratorList
 
       void print( Printer const p ) const;
     }; // end struct StructDeclaratorList
@@ -260,7 +236,8 @@ namespace C4
 
       ~FunctionDef() {}
 
-      void print( Printer const p ) const;
+			void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env ) const;
 
       CompoundStmt const * const compStmt;
     }; // end struct FunctionDef

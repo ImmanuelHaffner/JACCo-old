@@ -14,6 +14,7 @@
 #include <iostream>
 #include "../util.h"
 #include "Locatable.h"
+#include "../Sema/Env.h"
 
 
 namespace C4
@@ -61,8 +62,9 @@ namespace C4
       IllegalTypeSpecifier( Lex::Token const &tok ) : TypeSpecifier(tok) {}
       ~IllegalTypeSpecifier() {}
 
-      void print( Printer const p ) const;
-    }; // end struct IllegalTypeSpecifier
+			void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env ) const;
+		}; // end struct TypeSpecifier
 
 
     /// Struct Specifier
@@ -81,14 +83,15 @@ namespace C4
         : TypeSpecifier(tok), name(NULL), structDecls(nonNull(structDecls))
       {}
 
-      ~StructSpecifier() {}
+			~StructSpecifier() {}
 
-      void print( Printer const p ) const;
+			void print( Printer const p ) const;
+      Sema::Type const * analyze( Sema::Env &env ) const;
 
-      Lex::Token const * const name;
-      StructDeclList const * const structDecls;
-    }; // end struct StructSpecifier
-  } // end namespace AST
+			Lex::Token const * const name;
+			StructDeclList const * const structDecls;
+		}; // end struct StructSpecifier
+	} // end namespace AST
 } // end namespace C4
 
 

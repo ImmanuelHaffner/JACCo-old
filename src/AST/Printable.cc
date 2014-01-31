@@ -671,43 +671,6 @@ void IllegalDeclarator::print( Printer const p ) const
   p.out << "illegal declaration " << this->tok << " ";
 }
 
-void DirectDeclarator::print( Printer const p ) const
-{
-  if ( ! ( this->declarator || this->directDeclarator || this->params ) )
-    p.out << this->tok.sym;
-  else
-  {
-    /*
-     * If this direct declarator has a LHS and a RHS, print a parenthesis around
-     * them, e.g.:
-     *
-     *    (foo(int))
-     */
-    if ( this->params )
-      p.out << "(";
-
-    if ( this->declarator )
-      this->declarator->print ( p );
-    else if ( this->directDeclarator )
-      this->directDeclarator->print( p );
-    else if ( ! this->params )
-      p.out << this->tok; // IDENTIFIER
-
-    if ( this->params )
-    {
-      if ( this->declarator || this->directDeclarator )
-        p.out << "(";
-      this->params->print( p );
-      if ( this->declarator || this->directDeclarator )
-        p.out << ")";
-    }
-
-    // close parenthesis
-    if ( this->params )
-      p.out << ")";
-  }
-}
-
 void FunctionDef::print( Printer const p ) const
 {
   this->typeSpec->print( p );

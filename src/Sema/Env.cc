@@ -33,13 +33,13 @@ Type const * Scope::lookupType( Symbol const id ) const
   return elem->second;
 }
 
-Entity const * Scope::insert( Symbol const id )
+Entity * Scope::insert( Symbol const id )
 {
   // Check whether id is already mapped.
   if ( idMap.find( id ) != idMap.end() )
     return NULL;
 
-  Entity const * entity = new Entity();
+  Entity * entity = new Entity();
   idMap.insert( std::pair< Symbol, Entity const * >( id, entity ) );
   return entity;
 }
@@ -54,16 +54,22 @@ bool Scope::insert( Symbol const id, Type const * const type )
   return true;
 }
 
+IdMap Scope::getIdMap()
+{
+  return idMap;
+}
+
 
 void Env::pushScope()
 {
   scopeStack.push_back( Scope() );
 }
 
-void Env::popScope()
+Scope Env::popScope()
 {
   assert( scopeStack.size() > 1 && "cannot pop the global scope" );
-  scopeStack.pop_back();
+  Scope &scope = scopeStack.back();
+  return scope; 
 }
 
 Entity const * Env::lookup( Symbol const id )
@@ -87,7 +93,7 @@ Type const * Env::lookupType( Symbol const id )
   return NULL;
 }
 
-Entity const * Env::insert( Symbol const id )
+Entity * Env::insert( Symbol const id )
 {
   // Obtain the topmost scope.
   Scope &scope = scopeStack.back();

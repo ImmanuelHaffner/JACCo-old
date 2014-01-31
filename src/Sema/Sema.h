@@ -10,7 +10,9 @@
 #define C4_SEMA_H
 
 #include <cstring>
+#include "../AST/AST.h"
 #include "Env.h"
+#include "SemaTypeFactory.h"
 
 namespace C4
 {

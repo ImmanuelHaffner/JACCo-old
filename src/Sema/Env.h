@@ -56,10 +56,13 @@ namespace C4
 
       /// \return a new entity for the id, if the id was not already mapped,
       /// NULL otherwise
-      Entity const * insert( Symbol const id );
+      Entity * insert( Symbol const id );
 
       /// \return true iff the id was not already mapped, false otherwise
       bool insert( Symbol const id, Type const * const type );
+
+      /// \return the identifier map
+      IdMap getIdMap();
 
       private:
       TypeTable typeTable;
@@ -77,7 +80,7 @@ namespace C4
       void pushScope();
 
       /// \brief Pops the topmost scope from the stack.
-      void popScope();
+      Scope popScope();
 
       /// \return the depth of the scope stack, including the global scope
       inline size_t depth() const { return scopeStack.size(); }
@@ -100,7 +103,7 @@ namespace C4
       ///
       /// \return NULL iff the id was already mapped in the current scope, the 
       /// pointer to the created entity otherwise
-      Entity const * insert( Symbol const id );
+      Entity * insert( Symbol const id );
 
       /// Inserts a new mapping from the identifier to the type in the type
       /// table.
