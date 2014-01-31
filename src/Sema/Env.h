@@ -60,6 +60,8 @@ namespace C4
 
       /// \return true iff the id was not already mapped, false otherwise
       bool insert( Symbol const id, Type const * const type );
+      
+      void replaceType( Symbol const id, Type const * const type );
 
       /// \return the identifier map
       IdMap getIdMap();
@@ -110,6 +112,11 @@ namespace C4
       ///
       /// \return false iff the identifier was already mapped, true otherwise
       bool insert( Symbol const typeName, Type const * const type );
+      
+      /// Replaces a type for a struct identifier with a new one
+      ///
+      /// \return false iff the identifier was completed before
+      bool replaceType( Symbol const typeName, Type const * const type );
 
       private:
       std::vector< Scope > scopeStack;

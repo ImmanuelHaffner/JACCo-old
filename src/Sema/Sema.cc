@@ -146,6 +146,12 @@ Sema::Type const * Decl::analyze( Env &env ) const
 {
   Sema::Type const * const t = typeSpec->analyze( env );
   if ( declarator )
-    return declarator->analyze( env, t );
+  {
+    if ( t == NULL || t == TypeFactory::getVoid() )
+      //TODO ERROR
+      ;
+    else
+      return declarator->analyze( env, t );
+  }
   return t;
 }
