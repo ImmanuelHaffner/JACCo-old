@@ -54,6 +54,23 @@ bool Scope::insert( Symbol const id, Type const * const type )
   return true;
 }
 
+bool Scope::replaceType( Symbol const id, Type const * const type )
+{
+  auto it = typeTable.find( id );
+  // Check whether id is already mapped.
+  if ( it == typeTable.end() )
+    return false;
+
+  // Check whether it is mapped to NULL
+  if ( (*it).second != NULL )
+    return false;
+
+  typeTable.erase( it );
+  typeTable.insert( std::pair< Symbol, Type const * >( id, type ) );
+  return true;
+}
+
+
 IdMap Scope::getIdMap()
 {
   return idMap;
@@ -106,4 +123,11 @@ bool Env::insert( Symbol const id, Type const * const type )
   // Obtain the topmost scope.
   Scope &scope = scopeStack.back();
   return scope.insert( id, type );
+}
+
+bool Env::replaceType( Symbol const id, Type const * const type )
+{
+  // Obtain the topmost scope.
+  Scope &scope = scopeStack.back();
+  return scope.replaceType( id, type );
 }

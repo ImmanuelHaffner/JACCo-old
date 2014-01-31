@@ -61,7 +61,7 @@ namespace C4
       /// \return true iff the id was not already mapped, false otherwise
       bool insert( Symbol const id, Type const * const type );
       
-      void replaceType( Symbol const id, Type const * const type );
+      bool replaceType( Symbol const id, Type const * const type );
 
       /// \return the identifier map
       IdMap getIdMap();

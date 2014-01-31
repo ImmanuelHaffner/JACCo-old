@@ -119,10 +119,23 @@ std::vector< Sema::Type const * > ParamList::analyze( Env &env ) const
 
 Sema::Type const * StructSpecifier::analyze( Env &env ) const
 {
-  if ( name && !structDecls )
-    return env.lookupType( name->sym );
+  Type const * oldType = NULL;
+  if ( name )
+  {
+    oldType = env.lookupType( name->sym );
+    if ( !structDecls )
+     return oldType;
+    if ( oldType != NULL )
+    {
+      //ERROR
+      ;
+      return oldType;
+    }
+  }
+
   //assume we have structDecls, otherwise we constructed a StructSpecifier
   //without name nor structDecls
+
   std::unordered_map< Symbol, Sema::Type const * > innerTypes;
   env.pushScope();
   structDecls->analyze( env );
@@ -132,9 +145,12 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   Sema::Type const * t = TypeFactory::getStruct( innerTypes );
   if ( name )
   {
-    if ( !env.insert ( name->sym, t ) )
-      //TODO: ERROR
-      1;
+    if ( oldType == NULL )
+      if ( !env.insert ( name->sym, t ) )
+        //TODO: ERROR
+       1;
+    else
+      env.replaceType ( name->sym, t );
   }
   return t;
 }
