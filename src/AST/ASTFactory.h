@@ -217,24 +217,6 @@ namespace C4
         return new IllegalDeclarator( tok );
       }
 
-      inline DirectDeclarator const * getDirectDeclarator( TOK )
-      {
-        return new DirectDeclarator( tok );
-      }
-
-      inline DirectDeclarator const * getDirectDeclarator( TOK,
-          Declarator const * const declarator, ParamList const * const params )
-      {
-        return new DirectDeclarator( tok, declarator, params );
-      }
-
-      inline DirectDeclarator const * getDirectDeclarator( TOK,
-          DirectDeclarator const * const directDeclarator,
-          ParamList const * const params )
-      {
-        return new DirectDeclarator( tok, directDeclarator, params );
-      }
-
       inline StructDeclaratorList const * getStructDeclaratorList(
           std::vector< Declarator const * > &declarators )
       {

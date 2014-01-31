@@ -134,7 +134,7 @@ namespace C4
       virtual ~Declarator() {}
 
       virtual Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t )
-        const;
+        const {};
     }; // end struct Declarator
 
     /// Identifier
@@ -207,9 +207,6 @@ namespace C4
 			void print( Printer const p ) const;
       void analyze( Sema::Env &env, Sema::Type const * t ) const;
 		}; // end struct StructDeclaratorList
-
-      void print( Printer const p ) const;
-    }; // end struct StructDeclaratorList
 
 
     /// Declaration List
