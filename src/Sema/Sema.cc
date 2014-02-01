@@ -131,8 +131,10 @@ void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 
 Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
-  //TODO functions => function pointers
   Sema::Type const * t = typeSpec->analyze( env );
+  //functions are interpreted as function pointers
+  if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
+    t = TypeFactory::getPtr( funcType );
   if ( declarator )
     return declarator->analyze( env, t );
   return t;
