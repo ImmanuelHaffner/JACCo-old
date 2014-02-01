@@ -57,7 +57,7 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
 {
   //Pop and save possible parameter scope
   Scope paramScope = env.popScope();
-  if ( auto funcType = dynamic_cast< FuncType const * const >( t ) )
+  if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
   {
     if ( dynamic_cast< FuncType const * const >( funcType->retType ) )
     {

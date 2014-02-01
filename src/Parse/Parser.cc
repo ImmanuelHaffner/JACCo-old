@@ -1179,7 +1179,10 @@ ExtDecl const * Parser::parseExtDecl()
             ( current->kind == TK::END_OF_FILE || current->kind == TK::SCol ) )
         {
           accept( TK::SCol ); // eat ';'
-          return factory.getDecl( tok, typeSpec );
+          env.pushScope();
+          Decl const * const decl = factory.getDecl( tok, typeSpec );
+          env.popScope();
+          return decl;
         }
 
         functionDeclarator = false;
@@ -1187,9 +1190,14 @@ ExtDecl const * Parser::parseExtDecl()
         switch ( current->kind )
         {
           case TK::SCol:
-            readNextToken(); // eat ';'
-            return factory.getDecl( tok, typeSpec, declarator );
-
+            {
+              readNextToken(); // eat ';'
+              env.pushScope();
+              Decl const * const decl = factory.getDecl( tok, typeSpec,
+                  declarator );
+              env.popScope();
+              return decl;
+            }
           case TK::LBrace:
             {
               if ( ! functionDeclarator )
