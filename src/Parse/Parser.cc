@@ -647,6 +647,11 @@ Declarator const * Parser::parseDeclarator(
             declarator = parseDeclarator( dt );
             break;
 
+          case TK::IDENTIFIER:
+            readNextToken(); // eat identifier
+            declarator = factory.getIdentifier( tok );
+            break;
+
           default:
             ERROR( "declarator or parameter-list" );
         } // end switch
