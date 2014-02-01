@@ -161,6 +161,7 @@ namespace C4
           Declarator const * const declarator = NULL )
       {
         Decl const * const decl = new Decl( tok, typeSpec, declarator );
+        decl->analyze( env );
         return decl;
       }
 

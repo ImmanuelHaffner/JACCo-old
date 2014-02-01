@@ -57,6 +57,27 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
 {
   //Pop and save possible parameter scope
   Scope paramScope = env.popScope();
+  if ( auto funcType = dynamic_cast< FuncType const * const >( t ) )
+  {
+    if ( dynamic_cast< FuncType const * const >( funcType->retType ) )
+    {
+      std::ostringstream oss;
+      oss << "Function  " << this <<
+        " may not be declared with function return type " << funcType->retType;
+      ERROR( oss.str().c_str() );
+    }
+    //TODO complete function
+  }
+  else
+  {
+    if ( t == NULL || t == TypeFactory::getVoid() )
+    {
+      std::ostringstream oss;
+      oss << "Cannot instantiate " << this <<
+        " with incomplete type";
+      ERROR( oss.str().c_str() );
+    }
+  }
   if ( Entity * const e = env.insert( tok.sym ) )
     e->type = t;
   else
@@ -113,9 +134,7 @@ Sema::Type const * ParamDecl::analyze( Env &env ) const
   //TODO functions => function pointers
   Sema::Type const * t = typeSpec->analyze( env );
   if ( declarator )
-  {
     return declarator->analyze( env, t );
-  }
   return t;
 }
 
@@ -203,20 +222,6 @@ Sema::Type const * Decl::analyze( Env &env ) const
 {
   Sema::Type const * const t = typeSpec->analyze( env );
   if ( declarator )
-  {
-    if ( t == NULL )
-    {
-      std::ostringstream oss;
-      oss << "Cannot instantiate " << declarator <<
-        " with incomplete type " << typeSpec;
-      ERROR( oss.str().c_str() );
-    }
-    else
-    {
-      //TODO check for void if not function; check for struct / function
-      //return type otherwise
-      return declarator->analyze( env, t );
-    }
-  }
+        return declarator->analyze( env, t );
   return t;
 }
