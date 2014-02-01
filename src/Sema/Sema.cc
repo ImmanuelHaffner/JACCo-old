@@ -164,12 +164,6 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
       env.pushScope( paramScope );
       return oldType;
     }
-    if ( oldType != NULL )
-    {
-      ERROR( "Cannot replace type information of already completed struct" );
-      env.pushScope( paramScope );
-      return oldType;
-    }
   }
 
   //assume we have structDecls, otherwise we constructed a StructSpecifier
@@ -184,15 +178,22 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   Sema::Type const * t = TypeFactory::getStruct( innerTypes );
   if ( name )
   {
-    if ( oldType == NULL )
+    if ( !env.insert ( name->sym, t ) )
     {
-      if ( !env.insert ( name->sym, t ) )
+      if ( oldType == NULL )
+      {
+        if ( !env.replaceType ( name->sym, t ) )
+        {
+          ERROR( "Cannot replace type information of already completed struct" );
+          env.pushScope( paramScope );
+          return oldType;
+        }
+      }
+      else
       {
         ERROR( "Struct name already in use" );
       }
     }
-    else
-      env.replaceType ( name->sym, t );
   }
   env.pushScope( paramScope );
   return t;
@@ -222,6 +223,6 @@ Sema::Type const * Decl::analyze( Env &env ) const
 {
   Sema::Type const * const t = typeSpec->analyze( env );
   if ( declarator )
-        return declarator->analyze( env, t );
+    return declarator->analyze( env, t );
   return t;
 }
