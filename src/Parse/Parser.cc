@@ -644,12 +644,8 @@ Declarator const * Parser::parseDeclarator(
           /* Nested parenthesis.
            */
           case TK::LPar:
-            declarator = parseDeclarator( dt );
-            break;
-
           case TK::IDENTIFIER:
-            readNextToken(); // eat identifier
-            declarator = factory.getIdentifier( tok );
+            declarator = parseDeclarator( dt );
             break;
 
           default:
