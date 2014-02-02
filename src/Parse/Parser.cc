@@ -623,13 +623,13 @@ Declarator const * Parser::parseDeclarator(
         switch ( current->kind )
         {
           /* Empty parameter list: '(' ')'
-           */
+          */
           case TK::RPar:
             paramList = new ParamList();
             break;
 
-          /* Non-empty parameter list.
-           */
+            /* Non-empty parameter list.
+            */
           case TK::Void:
           case TK::Char:
           case TK::Int:
@@ -641,8 +641,8 @@ Declarator const * Parser::parseDeclarator(
             declarator = parsePointerDeclarator( dt );
             break;
 
-          /* Nested parenthesis.
-           */
+            /* Nested parenthesis.
+            */
           case TK::LPar:
           case TK::IDENTIFIER:
             declarator = parseDeclarator( dt );
@@ -877,9 +877,9 @@ CompoundStmt const * Parser::parseCompoundStmt()
       case TK::RBrace:
         goto for_end;
 
-      /*case TK::Comma:
-        readNextToken(); // eat ','
-        break;*/
+        /*case TK::Comma:
+          readNextToken(); // eat ','
+          break;*/
 
       case TK::Void:
       case TK::Char:
