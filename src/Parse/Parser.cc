@@ -653,6 +653,12 @@ Declarator const * Parser::parseDeclarator(
         } // end switch
       }
       accept( TK::RPar ); // eat ')'
+      if ( paramList )
+      {
+        declarator = factory.getFunctionDeclarator( tok, declarator,
+            paramList );
+        paramList = NULL;
+      }
       break;
 
     case TK::Mul:
@@ -687,7 +693,7 @@ Declarator const * Parser::parseDeclarator(
   /* Read parameter-list suffix, if it exists and we did not already parse a
    * parameter list.
    */
-  if ( ! paramList && current->kind == TK::LPar )
+  if ( current->kind == TK::LPar )
   {
     readNextToken(); // eat '('
     switch ( current->kind )
