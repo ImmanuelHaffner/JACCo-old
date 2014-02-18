@@ -649,6 +649,7 @@ Declarator const * Parser::parseDeclarator(
             break;
 
           default:
+            exit(5);//diagnostic
             ERROR( "declarator or parameter-list" );
         } // end switch
       }
@@ -678,6 +679,7 @@ Declarator const * Parser::parseDeclarator(
       switch ( dt )
       {
         case DeclaratorType::NORMAL:
+          exit(139);//diagnostic
           ERROR( "identifier or '(' declarator ')'" );
           break;
 
@@ -710,7 +712,9 @@ Declarator const * Parser::parseDeclarator(
         break;
 
       default:
-        ERROR( "parameter-list" );
+        //diagnstic; remove // later
+        //ERROR( "parameter-list" );
+        ;
 
     } // end switch
     accept( TK::RPar ); // eat ')'
