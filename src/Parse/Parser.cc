@@ -682,12 +682,10 @@ Declarator const * Parser::parseDeclarator(
           break;
 
         case DeclaratorType::ABSTRACT:
-          exit(5);//diagnostic
           ERROR( "'(' declarator ')' or '(' [parameter-list] ')'" );
           break;
 
         default:
-          exit(139);//diagnostic
           ERROR( "identifier, '(' declarator ')' or '(' [parameter-list] ')'" );
       } // end switch
   } // end switch
@@ -712,6 +710,7 @@ Declarator const * Parser::parseDeclarator(
         break;
 
       default:
+        exit(139);//diagnostic
         ERROR( "parameter-list" );
         ;
 
