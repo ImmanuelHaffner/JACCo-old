@@ -12,7 +12,7 @@
 #ifndef C4_ENTITY_H
 #define C4_ENTITY_H
 
-#include "SemaType.h"
+#include "Type.h"
 
 
 namespace C4

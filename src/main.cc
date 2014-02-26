@@ -7,7 +7,7 @@
 #include "Lex/Lexer.h"
 #include "Parse/Parser.h"
 #include "AST/Printable.h"
-#include "Sema/SemaTypeFactory.h"
+#include "Sema/TypeFactory.h"
 
 
 using namespace C4;

@@ -7,8 +7,8 @@
 //===----------------------------------------------------------------------===//
 
 
-#ifndef C4_TYPE_H
-#define C4_TYPE_H
+#ifndef C4_AST_TYPE_H
+#define C4_AST_TYPE_H
 
 
 #include <iostream>

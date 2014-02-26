@@ -1,4 +1,4 @@
-//===--- SemaTypeFactory.h ------------------------------------------------===//
+//===--- TypeFactory.h ----------------------------------------------------===//
 //
 //  ~~~ The C4 Compiler ~~~
 //
@@ -10,7 +10,7 @@
 #ifndef C4_SEMA_TYPE_FACTORY_H
 #define C4_SEMA_TYPE_FACTORY_H
 
-#include "SemaType.h"
+#include "Type.h"
 
 #include <functional>
 #include <unordered_set>

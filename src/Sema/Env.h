@@ -15,7 +15,7 @@
 #include <unordered_map>
 #include "../Support/Symbol.h"
 #include "../AST/Stmt.h"
-#include "SemaType.h"
+#include "Type.h"
 #include "Entity.h"
 
 

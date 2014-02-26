@@ -12,7 +12,7 @@
 #include <cstring>
 #include "../AST/AST.h"
 #include "Env.h"
-#include "SemaTypeFactory.h"
+#include "TypeFactory.h"
 
 namespace C4
 {
