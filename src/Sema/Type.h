@@ -14,6 +14,7 @@
 #include <cstring>
 #include <string>
 #include <unordered_map>
+#include <cassert>
 #include "../Support/Symbol.h"
 
 namespace C4
@@ -96,22 +97,36 @@ namespace C4
     /// type.
     struct StructType : ObjType
     {
+      // The data structure holding the elements of a structure type.
+      typedef std::unordered_map< Symbol, Type const * > elements_t;
+
       StructType() : size_(-1u) {}
 
-      StructType( std::unordered_map< Symbol, Type const * > const &elements ) :
-        elements(elements), size_(-1u)
+      StructType( elements_t const &elements ) : size_(-1u)
       {
-        complete();
+        complete( elements );
       }
 
       ~StructType() {}
 
-      inline void complete() {
-        if ( size_ == -1u )
+      /// Specifies the elements of this structure type, computes its size and
+      /// marks it as completed.
+      ///
+      /// $6.7.2.1.3:
+      /// A structure or union shall not contain a member with incomplete or
+      /// function type
+      inline void complete( elements_t const &elements )
+      {
+        assert( size_ == -1u && "structure type already completed" );
+
+        // Iterate over all elements, accumulate their sizes and add them to
+        // this structure type.
+        size_ = 0;
+        for ( auto it = elements.begin(); it != elements.end(); ++it )
         {
-          size_ = 0;
-          for ( auto it = elements.begin(); it != elements.end(); ++it )
-            size_ += static_cast< ObjType const * >( it->second )->size();
+          this->elements.insert( *it );
+          ObjType const *elem = static_cast< ObjType const * >( it->second );
+          size_ += elem->size();
         }
       }
 
@@ -134,7 +149,7 @@ namespace C4
         return (size_t) this;
       }
 
-      std::unordered_map< Symbol, Type const * > const elements;
+      elements_t elements;
 
       private:
       size_t size_;

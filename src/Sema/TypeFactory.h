@@ -113,10 +113,18 @@ namespace C4
       static Type const * getFunc( Type const * retType,
           std::vector< Type const * > &argTypes );
 
-      /// \brief Creates a new internalized structure type, given the parameter
-      /// types.
-      static Type const * getStruct(
-          std::unordered_map< Symbol, Type const * > &paramTypes );
+      /// \brief Creates a new incomplete structure type, that contains no
+      /// elements.
+      ///
+      /// Structure types are not being internalized.
+      static Type const * getStruct();
+
+      /// \brief Creates a new structure type, given the elemens.
+      ///
+      /// Every element
+      /// needs to have a complete type.  The newly created structure type is
+      /// already completed.  Structure types are not being internalized.
+      static Type const * getStruct( StructType::elements_t const &paramTypes );
 
       private:
       // Constant object types.

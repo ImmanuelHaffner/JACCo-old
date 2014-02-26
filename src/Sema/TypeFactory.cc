@@ -103,7 +103,7 @@ Sema::Type const * TypeFactory::getFunc( Type const * const retType,
 }
 
 Sema::Type const * TypeFactory::getStruct(
-    std::unordered_map< Symbol, Type const * > &params )
+    StructType::elements_t const &params )
 {
   return new StructType( params );
 }
