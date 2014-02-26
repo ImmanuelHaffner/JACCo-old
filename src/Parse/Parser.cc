@@ -289,7 +289,8 @@ Expr const * Parser::parsePostfixExpr()
         readNextToken(); // eat '--'
         break;
 
-      default: goto for_end; // exit loop
+      default:
+        goto for_end; // exit loop
     } // end switch
   } // end for
 for_end:
@@ -710,9 +711,7 @@ Declarator const * Parser::parseDeclarator(
         break;
 
       default:
-        exit(139);//diagnostic
         ERROR( "parameter-list" );
-        ;
 
     } // end switch
     accept( TK::RPar ); // eat ')'
