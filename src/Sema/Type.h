@@ -65,7 +65,7 @@ namespace C4
       /// completely constructed. Hence, it is impossible to compute their size.
       ///
       /// \return true iff the object is complete, false otherwise
-      virtual bool isComplete() = 0;
+      virtual bool isComplete() const = 0;
 
       /// \return the size of the object in bytes
       virtual size_t size() const = 0;
@@ -79,7 +79,7 @@ namespace C4
       VoidType( size_t const hashCode ) : hashCode_(hashCode) {}
       ~VoidType() {}
 
-      inline bool isComplete() { return false; }
+      inline bool isComplete() const { return false; }
       inline size_t size() const { return -1; } // since Void is incomplete, the
                                                 // size is irrelevant
 
@@ -96,23 +96,26 @@ namespace C4
     /// type.
     struct StructType : ObjType
     {
+      StructType() : size_(-1u) {}
+
       StructType( std::unordered_map< Symbol, Type const * > const &elements ) :
         elements(elements), size_(-1u)
-      {}
+      {
+        complete();
+      }
 
       ~StructType() {}
 
       inline void complete() {
         if ( size_ == -1u )
         {
+          size_ = 0;
           for ( auto it = elements.begin(); it != elements.end(); ++it )
-          {
             size_ += static_cast< ObjType const * >( it->second )->size();
-          }
         }
       }
 
-      inline bool isComplete() { return size_ != -1u; }
+      inline bool isComplete() const { return size_ != -1u; }
 
       inline size_t size() const
       {
@@ -153,7 +156,7 @@ namespace C4
 
       ~PtrType() {}
 
-      inline bool isComplete() { return true; }
+      inline bool isComplete() const { return true; }
       inline size_t size() const { return 4; }
       inline size_t hashCode() const
       {
@@ -186,7 +189,7 @@ namespace C4
 
       ~BasicType() {}
 
-      inline bool isComplete() { return true; }
+      inline bool isComplete() const { return true; }
       inline size_t size() const { return size_; }
       inline size_t hashCode() const { return hashCode_; }
 
