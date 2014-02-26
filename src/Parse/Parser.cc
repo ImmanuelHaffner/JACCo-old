@@ -597,6 +597,7 @@ PointerDeclarator const * Parser::parsePointerDeclarator(
     {
       case TK::IDENTIFIER:
       case TK::LPar:
+      case TK::Mul:
         subDeclarator = parseDeclarator( dt );
         break;
 
