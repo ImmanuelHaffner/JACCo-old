@@ -113,15 +113,22 @@ namespace C4
       }
 
       inline bool isComplete() { return size_ != -1u; }
+
       inline size_t size() const
       {
         return size_;
       }
 
-      /// Since structure types are not internalized, we can simply return 0.
+      /// Structure types must not be internalized. However, they can be
+      /// referenced by internalized types (e.g. pointer types). To be able to
+      /// compute a hash code for the type holding a reference to a structure
+      /// type, we need to have a hash code that is unique for each structure
+      /// type object.
+      ///
+      /// \return the address of this object
       inline size_t hashCode() const
       {
-        return 0;
+        return (size_t) this;
       }
 
       std::unordered_map< Symbol, Type const * > const elements;
