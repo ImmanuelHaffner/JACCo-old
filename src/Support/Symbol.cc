@@ -2,7 +2,7 @@
 //
 //  ~~~ The C4 Compiler ~~~
 //
-//  This file defines the tokens.
+//  This file implements the Symbol class for internalizing strings.
 //
 //===----------------------------------------------------------------------===//
 
@@ -17,11 +17,11 @@ size_t StrHash::operator()( char const * s ) const
 {
   size_t hash = 0;
   int offset = 'a' - 1;
-  char const * i = s;
+  char const *i = s;
 
   while ( *i != '\0' )
   {
-    hash = hash << 1 | ( *i - offset );
+    hash = hash << 1 ^ ( *i - offset );
     ++i;
   }
 

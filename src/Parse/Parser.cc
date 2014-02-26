@@ -289,7 +289,8 @@ Expr const * Parser::parsePostfixExpr()
         readNextToken(); // eat '--'
         break;
 
-      default: goto for_end; // exit loop
+      default:
+        goto for_end; // exit loop
     } // end switch
   } // end for
 for_end:
