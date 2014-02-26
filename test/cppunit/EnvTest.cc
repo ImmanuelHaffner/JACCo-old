@@ -8,7 +8,7 @@
 #include "EnvTest.h"
 
 #include "../../src/Sema/Env.h"
-#include "../../src/Sema/SemaTypeFactory.h"
+#include "../../src/Sema/TypeFactory.h"
 #include "../../src/util.h"
 
 

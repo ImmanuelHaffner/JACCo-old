@@ -18,6 +18,7 @@ class TypeFactoryTest : public CPPUNIT_NS::TestFixture
   CPPUNIT_TEST ( testDestroy );
   CPPUNIT_TEST ( testSimpleTypes );
   CPPUNIT_TEST ( testPtrTypes );
+  CPPUNIT_TEST ( testStructureTypes );
   CPPUNIT_TEST_SUITE_END ();
 
   public:
@@ -28,6 +29,7 @@ class TypeFactoryTest : public CPPUNIT_NS::TestFixture
   void testDestroy();
   void testSimpleTypes();
   void testPtrTypes();
+  void testStructureTypes();
 };
 
 #endif

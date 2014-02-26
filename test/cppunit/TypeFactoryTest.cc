@@ -6,14 +6,15 @@
 
 #include "TypeFactoryTest.h"
 
-#include "../../src/Sema/SemaTypeFactory.h"
+#include <unordered_map>
+#include "../../src/Sema/TypeFactory.h"
 
 
 using namespace C4;
 using namespace Sema;
 
 
-// register this test 
+// register this test
 CPPUNIT_TEST_SUITE_REGISTRATION ( TypeFactoryTest );
 
 
@@ -72,7 +73,7 @@ void TypeFactoryTest::testPtrTypes()
   // Create simple types
   Type const * const v = TypeFactory::getVoid();
   Type const * const i = TypeFactory::getInt();
-  
+
   // Create 5 pointer types
   Type const * const vp0 = TypeFactory::getPtr( v );
   Type const * const ip0 = TypeFactory::getPtr( i );
@@ -85,4 +86,33 @@ void TypeFactoryTest::testPtrTypes()
 
   CPPUNIT_ASSERT_EQUAL( 3u, (unsigned) TypeFactory::sizeP() );
   CPPUNIT_ASSERT_EQUAL( 0u, (unsigned) TypeFactory::sizeF() );
+}
+
+void TypeFactoryTest::testStructureTypes()
+{
+  // Create structure members.
+  typedef std::pair< Symbol, Type const * > member;
+  member x( "x", TypeFactory::getInt() );
+  member y( "y", TypeFactory::getChar() );
+  member z( "z", TypeFactory::getPtr( TypeFactory::getChar() ) );
+
+  // Create structure type.
+  std::unordered_map< Symbol, Type const * > members;
+  members.insert( x );
+  members.insert( y );
+  members.insert( z );
+  StructType const * s =
+    static_cast< StructType const * >( TypeFactory::getStruct( members ) );
+
+  // Assert that the the structure type has been constructed properly.
+  CPPUNIT_ASSERT( s->isComplete() );
+  CPPUNIT_ASSERT_EQUAL( 9u,
+      (unsigned) static_cast< StructType const * >( s )->size() );
+
+  // Create pointer to structure type.
+  Type const * const p0 = TypeFactory::getPtr( s );
+  Type const * const p1 = TypeFactory::getPtr( s );
+  
+  // Assert that the pointers have been internalized properly.
+  CPPUNIT_ASSERT( p0 == p1 );
 }
