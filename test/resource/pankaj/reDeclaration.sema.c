@@ -2,8 +2,8 @@
 
 void f(int x)
 {
-	int x = 20;
-	x++;
+	int x;
+	x = 20;
 }
 
 int main()
