@@ -1,7 +1,7 @@
 int (foo());
 
-struct S (foo());
+struct S (foo2());
 
-void (foo());
+void (foo3());
 
-struct S (*(foo()));
+struct S (*(foo4()));

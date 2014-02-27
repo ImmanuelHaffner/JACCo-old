@@ -1,5 +1,3 @@
-void a;
-
 char b;
 
 int c;
@@ -22,12 +20,12 @@ struct S
 	struct S (*t);
 } (*x);
 
-struct S
+struct S2
 {
 	int x;
 };
 
-struct S
+struct S3
 {
 	struct Q (*q);
 	struct Q
@@ -39,11 +37,11 @@ struct S
 	struct Q p;
 };
 
-struct S (*((*f)()));
+struct S4 (*((*f2)()));
 
-struct S
+struct S5
 {
 	int x;
-} (*((*f)()));
+} (*((*f3)()));
 
-void (*((*f)(struct S (*s))));
+void (*((*f4)(struct S (*s))));

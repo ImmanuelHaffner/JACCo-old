@@ -1,6 +1,6 @@
 int (foo(int (*(*x))));
 
-int (*(*(foo(void))));
+int (*(*(foo2(void))));
 
 struct S
 {

@@ -1,5 +1,5 @@
 int (foo())
 {
 	int (*p);
-	int (*(*p));
+	int (*(*q));
 }

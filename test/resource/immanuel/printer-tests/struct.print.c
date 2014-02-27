@@ -9,7 +9,7 @@ int (foo())
 	struct
 	{
 		int;
-	} s;
+	} s2;
 	struct
 	{
 		int x;
