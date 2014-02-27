@@ -11,6 +11,7 @@ NAME				?= c4
 SRCDIR			?= src
 TESTDIR			?= test/cppunit
 DOCSDIR			?= doc
+LLVM_CONFIG ?= llvm-config
 
 CPPUNIT_PATH	?= /usr/lib/
 CPPUNIT_INCLUDE	?= /usr/include/cppunit/
@@ -52,8 +53,13 @@ ifeq ($(VERBOSE), 1)
 	CXXFLAGS	+= -v
 endif
 
-CFLAGS			+= -Wall -W -pedantic# -Werror
+LLVM_CFLAGS  := $(shell $(LLVM_CONFIG) --cppflags)
+LLVM_LDFLAGS := $(shell $(LLVM_CONFIG) --libs core transformutils) $(shell $(LLVM_CONFIG) --ldflags)
+
+CFLAGS			+= $(LLVM_CFLAGS) -Wall -W -pedantic# -Werror
 CXXFLAGS		+= $(CFLAGS) -std=c++11
+
+LDFLAGS  += $(LLVM_LDFLAGS)
 
 
 .PHONY: all check check-lexer check-parser check-printer check-all clean cleanall doxy
@@ -110,7 +116,7 @@ doxy:
 
 $(BIN): $(OBJ)
 	@echo "===> LD $@"
-	$(Q)$(CXX) $(CXXFLAGS) -o $(BIN) $^
+	$(Q)$(CXX) $(CXXFLAGS) -o $(BIN) $^ $(LDFLAGS)
 
 $(TESTBIN): $(TEST_OBJ)
 	@echo "===> LD $@"
