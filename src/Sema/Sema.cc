@@ -156,8 +156,8 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
 {
   //Pop and save possible parameter scope
   Scope paramScope = env.popScope();
-  StructType * t = NULL;
-  std::unordered_map< Symbol, Sema::Type const * > innerTypes;
+  Type * t = NULL;
+  StructType::elements_t innerTypes;
   if ( structDecls )
   {
     env.pushScope();
@@ -174,15 +174,18 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
     if ( !env.insert( name->sym, t ) )
     {
       t = env.lookupType( name->sym );
+      auto st = static_cast< StructType * >( t );
       if ( structDecls )
-        if ( t->isComplete() )
+      {
+        if ( st->isComplete() )
         {
           ERROR( "Cannot replace type information of already completed struct" );
-          env.pushScope( paramScope );
-          return t;
         }
         else
-         t->complete( innerTypes );
+          st->complete( innerTypes );
+      }
+      env.pushScope( paramScope );
+      return st;
     }
   }
   env.pushScope( paramScope );
