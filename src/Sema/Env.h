@@ -35,7 +35,7 @@ namespace C4
     typedef std::unordered_map< Symbol, Type const * > TypeTable;
 
     /// Maps symbols to entities
-    typedef std::unordered_map< Symbol, Entity const * > IdMap;
+    typedef std::unordered_map< Symbol, Entity * > IdMap;
 
     /// \brief Defines a scope.
     ///
@@ -48,7 +48,7 @@ namespace C4
 
       /// \return the entity the id is mapped to, or NULL if the id was not
       /// mapped
-      Entity const * lookup( Symbol const id ) const;
+      Entity * lookup( Symbol const id ) const;
 
       /// \return the type the id is mapped to, or NULL if the id was not
       /// mapped
@@ -93,7 +93,7 @@ namespace C4
       ///
       /// \return the first mapped entitity, if the id was mapped, NULL
       /// otherwise
-      Entity const * lookup( Symbol const id );
+      Entity * lookup( Symbol const id );
 
       /// Traveres the scope stack, starting at the current scope, and searches
       /// for the first mapping for a type identifier.

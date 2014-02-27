@@ -67,7 +67,38 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
 				<< funcType->retType;
       ERROR( oss.str().c_str() );
     }
-    //TODO complete function
+    if ( Entity * const e = env.insert( tok.sym ) )
+      e->type = t;
+    else
+    {
+      Entity * const oe = env.lookup( tok.sym );
+      Type const * ot = oe->type;
+      if ( auto oft = dynamic_cast< FuncType const * >( ot ) )
+      {
+        if ( oft->argTypes.size() > 0 )
+        {
+          if ( oft->argTypes != funcType->argTypes )
+          {
+            std::ostringstream oss;
+            oss << "function '" << this->tok.sym.str() <<
+              "' has been declared with other arguments before";
+            ERROR( oss.str().c_str() );
+          }
+        }
+        else {
+          if ( funcType->argTypes.size() > 0 )
+          {
+            oe->type = t;
+          }
+        }
+      }
+      else {
+        std::ostringstream oss;
+        oss << "identifier '" << this->tok.sym.str() <<
+          "' has already been declared";
+        ERROR( oss.str().c_str() );
+      }
+    }
   }
   else
   {
@@ -78,17 +109,15 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
         " with incomplete type";
       ERROR( oss.str().c_str() );
     }
-  }
-
-  if ( Entity * const e = env.insert( tok.sym ) )
-    e->type = t;
-  else
-  {
-    //TODO check for function to complete
-    std::ostringstream oss;
-    oss << "identifier '" << this->tok.sym.str() <<
-      "' has already been declared";
-    ERROR( oss.str().c_str() );
+    if ( Entity * const e = env.insert( tok.sym ) )
+      e->type = t;
+    else
+    {
+      std::ostringstream oss;
+      oss << "identifier '" << this->tok.sym.str() <<
+        "' has already been declared";
+      ERROR( oss.str().c_str() );
+    }
   }
 
   //Push the parameter scope again for possible function definition

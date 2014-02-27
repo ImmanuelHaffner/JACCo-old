@@ -17,7 +17,7 @@ using namespace AST;
 using namespace Sema;
 
 
-Entity const * Scope::lookup( Symbol const id ) const
+Entity * Scope::lookup( Symbol const id ) const
 {
   auto elem = idMap.find( id );
   if ( elem == idMap.end() )
@@ -40,7 +40,7 @@ Entity * Scope::insert( Symbol const id )
     return NULL;
 
   Entity * entity = new Entity();
-  idMap.insert( std::pair< Symbol, Entity const * >( id, entity ) );
+  idMap.insert( std::pair< Symbol, Entity * >( id, entity ) );
   return entity;
 }
 
@@ -78,12 +78,12 @@ Scope Env::popScope()
   return scope; 
 }
 
-Entity const * Env::lookup( Symbol const id )
+Entity * Env::lookup( Symbol const id )
 {
   // iterate over all scopes, starting with the last
   for ( auto scope = scopeStack.rbegin(); scope != scopeStack.rend(); ++scope )
   {
-    Entity const * const entity = scope->lookup( id );
+    Entity * const entity = scope->lookup( id );
     if ( entity ) return entity;
   }
   return NULL;
