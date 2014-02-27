@@ -32,7 +32,7 @@ namespace C4
   namespace Sema
   {
     /// Maps symbols to types 
-    typedef std::unordered_map< Symbol, Type const * > TypeTable;
+    typedef std::unordered_map< Symbol, StructType * > TypeTable;
 
     /// Maps symbols to entities
     typedef std::unordered_map< Symbol, Entity const * > IdMap;
@@ -52,16 +52,14 @@ namespace C4
 
       /// \return the type the id is mapped to, or NULL if the id was not
       /// mapped
-      Type const * lookupType( Symbol const id ) const;
+      StructType * lookupType( Symbol const id ) const;
 
       /// \return a new entity for the id, if the id was not already mapped,
       /// NULL otherwise
       Entity * insert( Symbol const id );
 
       /// \return true iff the id was not already mapped, false otherwise
-      bool insert( Symbol const id, Type const * const type );
-      
-      bool replaceType( Symbol const id, Type const * const type );
+      bool insert( Symbol const id, StructType * const type );
 
       /// \return the identifier map
       IdMap getIdMap();
@@ -101,7 +99,7 @@ namespace C4
       /// for the first mapping for a type identifier.
       ///
       /// \return the first mapped type, if the id was mapped, NULL otherwise
-      Type const * lookupType( Symbol const id );
+      StructType * lookupType( Symbol const id );
 
       /// Inserts a new mapping from id to a new created entity to the
       /// identifier map.
@@ -114,13 +112,8 @@ namespace C4
       /// table.
       ///
       /// \return false iff the identifier was already mapped, true otherwise
-      bool insert( Symbol const typeName, Type const * const type );
+      bool insert( Symbol const typeName, StructType * const type );
       
-      /// Replaces a type for a struct identifier with a new one
-      ///
-      /// \return false iff the identifier was completed before
-      bool replaceType( Symbol const typeName, Type const * const type );
-
       private:
       std::vector< Scope > scopeStack;
       std::vector< AST::IterationStmt > iterStmtStack;

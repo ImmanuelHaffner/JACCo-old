@@ -25,7 +25,7 @@ Entity const * Scope::lookup( Symbol const id ) const
   return elem->second;
 }
 
-Type const * Scope::lookupType( Symbol const id ) const
+StructType * Scope::lookupType( Symbol const id ) const
 {
   auto elem = typeTable.find( id );
   if ( elem == typeTable.end() )
@@ -44,32 +44,15 @@ Entity * Scope::insert( Symbol const id )
   return entity;
 }
 
-bool Scope::insert( Symbol const id, Type const * const type )
+bool Scope::insert( Symbol const id, StructType * const type )
 {
   // Check whether id is already mapped.
   if ( typeTable.find( id ) != typeTable.end() )
     return false;
 
-  typeTable.insert( std::pair< Symbol, Type const * >( id, type ) );
+  typeTable.insert( std::pair< Symbol, StructType * >( id, type ) );
   return true;
 }
-
-bool Scope::replaceType( Symbol const id, Type const * const type )
-{
-  auto it = typeTable.find( id );
-  // Check whether id is already mapped.
-  if ( it == typeTable.end() )
-    return false;
-
-  // Check whether it is mapped to NULL
-  if ( (*it).second != NULL )
-    return false;
-
-  typeTable.erase( it );
-  typeTable.insert( std::pair< Symbol, Type const * >( id, type ) );
-  return true;
-}
-
 
 IdMap Scope::getIdMap()
 {
@@ -106,11 +89,11 @@ Entity const * Env::lookup( Symbol const id )
   return NULL;
 }
 
-Type const * Env::lookupType( Symbol const id )
+StructType * Env::lookupType( Symbol const id )
 {
   for ( auto scope = scopeStack.rbegin(); scope != scopeStack.rend(); ++scope )
   {
-    Type const * const type = scope->lookupType( id );
+    StructType * type = scope->lookupType( id );
     if ( type ) return type;
   }
   return NULL;
@@ -123,16 +106,9 @@ Entity * Env::insert( Symbol const id )
   return scope.insert( id );
 }
 
-bool Env::insert( Symbol const id, Type const * const type )
+bool Env::insert( Symbol const id, StructType * const type )
 {
   // Obtain the topmost scope.
   Scope &scope = scopeStack.back();
   return scope.insert( id, type );
-}
-
-bool Env::replaceType( Symbol const id, Type const * const type )
-{
-  // Obtain the topmost scope.
-  Scope &scope = scopeStack.back();
-  return scope.replaceType( id, type );
 }

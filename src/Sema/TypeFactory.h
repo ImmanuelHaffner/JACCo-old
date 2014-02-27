@@ -117,14 +117,14 @@ namespace C4
       /// elements.
       ///
       /// Structure types are not being internalized.
-      static Type const * getStruct();
+      static StructType * getStruct();
 
       /// \brief Creates a new structure type, given the elemens.
       ///
       /// Every element
       /// needs to have a complete type.  The newly created structure type is
       /// already completed.  Structure types are not being internalized.
-      static Type const * getStruct( StructType::elements_t const &paramTypes );
+      static StructType * getStruct( StructType::elements_t const &paramTypes );
 
       private:
       // Constant object types.

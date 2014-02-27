@@ -112,10 +112,9 @@ void StructDeclList::analyze( Env &env ) const
     it->analyze( env );
     env.popScope();
   }
-}
+} 
 
-Sema::Type const * StructDecl::analyze( Env &env ) const
-{
+Sema::Type const * StructDecl::analyze( Env &env ) const {
   Sema::Type const * const t = typeSpec->analyze( env );
   if ( structDeclarators )
     structDeclarators->analyze( env, t );
@@ -157,19 +156,28 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
 {
   //Pop and save possible parameter scope
   Scope paramScope = env.popScope();
-  Type const * oldType = NULL;
+  StructType * t = NULL;
   if ( name )
   {
-    oldType = env.lookupType( name->sym );
+    t = env.lookupType( name->sym );
     if ( !structDecls )
     {
+      if ( t == NULL )
+      {
+        t = TypeFactory::getStruct();
+        env.insert( name->sym, t );
+      }
       env.pushScope( paramScope );
-      return oldType;
+      return t;
     }
   }
 
-  //assume we have structDecls, otherwise we constructed a StructSpecifier
-  //without name nor structDecls
+  if ( structDecls && t != NULL && t->isComplete() )
+  {
+    ERROR( "Cannot replace type information of already completed struct" );
+    env.pushScope( paramScope );
+    return t;
+  }
 
   std::unordered_map< Symbol, Sema::Type const * > innerTypes;
   env.pushScope();
@@ -177,29 +185,18 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   Scope structScope = env.popScope();
   for ( auto &it : structScope.getIdMap() )
     innerTypes.insert( std::make_pair( it.first, it.second->type ) );
-  Sema::Type const * t = TypeFactory::getStruct( innerTypes );
-  if ( name )
+  if ( t != NULL )
+    t->complete( innerTypes );
+  else
   {
-    if ( !env.insert ( name->sym, t ) )
-    {
-      if ( oldType == NULL )
-      {
-        if ( !env.replaceType ( name->sym, t ) )
-        {
-          ERROR( "Cannot replace type information of already completed struct" );
-          env.pushScope( paramScope );
-          return oldType;
-        }
-      }
-      else
-      {
-        ERROR( "Struct name already in use" );
-      }
-    }
+    t = TypeFactory::getStruct( innerTypes );
+    if ( name )
+      env.insert( name->sym, t );
   }
   env.pushScope( paramScope );
   return t;
 }
+
 
 Sema::Type const * TypeSpecifier::analyze( Env &env ) const
 {

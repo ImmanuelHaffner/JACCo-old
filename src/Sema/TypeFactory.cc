@@ -102,8 +102,13 @@ Sema::Type const * TypeFactory::getFunc( Type const * const retType,
   return func;
 }
 
-Sema::Type const * TypeFactory::getStruct(
+Sema::StructType * TypeFactory::getStruct(
     StructType::elements_t const &params )
 {
   return new StructType( params );
+}
+
+Sema::StructType * TypeFactory::getStruct()
+{
+  return new StructType();
 }
