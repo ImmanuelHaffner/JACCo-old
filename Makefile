@@ -122,7 +122,7 @@ $(BIN): $(OBJ)
 
 $(TESTBIN): $(TEST_OBJ)
 	@echo "===> LD $@"
-	$(Q)$(CXX) $(CXXFLAGS) -o $(TESTBIN) $^ -L${CPPUNIT_PATH}/lib -lstdc++ -lcppunit -ldl
+	$(Q)$(CXX) $(CXXFLAGS) -o $(TESTBIN) $^ -L${CPPUNIT_PATH}/lib -lstdc++ -lcppunit -ldl $(LDFLAGS)
 
 $(BINDIR)/%.o: $(SRCDIR)/%.cc
 	@echo "===> $(CXX) $<   ->   $@"
