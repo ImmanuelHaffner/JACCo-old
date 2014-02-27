@@ -157,41 +157,33 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   //Pop and save possible parameter scope
   Scope paramScope = env.popScope();
   StructType * t = NULL;
+  std::unordered_map< Symbol, Sema::Type const * > innerTypes;
+  if ( structDecls )
+  {
+    env.pushScope();
+    structDecls->analyze( env );
+    Scope structScope = env.popScope();
+    for ( auto &it : structScope.getIdMap() )
+      innerTypes.insert( std::make_pair( it.first, it.second->type ) );
+    t = TypeFactory::getStruct( innerTypes );
+  }
+  else
+    t = TypeFactory::getStruct();
   if ( name )
   {
-    t = env.lookupType( name->sym );
-    if ( !structDecls )
+    if ( !env.insert( name->sym, t ) )
     {
-      if ( t == NULL )
-      {
-        t = TypeFactory::getStruct();
-        env.insert( name->sym, t );
-      }
-      env.pushScope( paramScope );
-      return t;
+      t = env.lookupType( name->sym );
+      if ( structDecls )
+        if ( t->isComplete() )
+        {
+          ERROR( "Cannot replace type information of already completed struct" );
+          env.pushScope( paramScope );
+          return t;
+        }
+        else
+         t->complete( innerTypes );
     }
-  }
-
-  if ( structDecls && t != NULL && t->isComplete() )
-  {
-    ERROR( "Cannot replace type information of already completed struct" );
-    env.pushScope( paramScope );
-    return t;
-  }
-
-  std::unordered_map< Symbol, Sema::Type const * > innerTypes;
-  env.pushScope();
-  structDecls->analyze( env );
-  Scope structScope = env.popScope();
-  for ( auto &it : structScope.getIdMap() )
-    innerTypes.insert( std::make_pair( it.first, it.second->type ) );
-  if ( t != NULL )
-    t->complete( innerTypes );
-  else
-  {
-    t = TypeFactory::getStruct( innerTypes );
-    if ( name )
-      env.insert( name->sym, t );
   }
   env.pushScope( paramScope );
   return t;
