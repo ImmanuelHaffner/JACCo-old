@@ -57,13 +57,14 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
 {
   //Pop and save possible parameter scope
   Scope paramScope = env.popScope();
+
   if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
   {
     if ( dynamic_cast< FuncType const * const >( funcType->retType ) )
     {
       std::ostringstream oss;
-      oss << "Function  " << this <<
-        " may not be declared with function return type " << funcType->retType;
+      oss << this << "\nfunction may not be declared with function return type "
+				<< funcType->retType;
       ERROR( oss.str().c_str() );
     }
     //TODO complete function
@@ -78,6 +79,7 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
       ERROR( oss.str().c_str() );
     }
   }
+
   if ( Entity * const e = env.insert( tok.sym ) )
     e->type = t;
   else
@@ -88,6 +90,7 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
       "' has already been declared";
     ERROR( oss.str().c_str() );
   }
+
   //Push the parameter scope again for possible function definition
   env.pushScope( paramScope );
   return t;
@@ -173,8 +176,8 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   {
     if ( !env.insert( name->sym, t ) )
     {
-      t = env.lookupType( name->sym );
-      auto st = static_cast< StructType * >( t );
+      auto st = const_cast< StructType * >(
+					static_cast< StructType const * >( env.lookupType( name->sym ) ) );
       if ( structDecls )
       {
         if ( st->isComplete() )
