@@ -41,7 +41,20 @@ TEST_DEP		:= $(TEST_OBJ:%.o=%.d)
 DUMMY				:= $(shell mkdir -p $(sort $(dir $(OBJ))))
 DUMMY				:= $(shell mkdir -p $(sort $(dir $(TEST_OBJ))))
 
-#DEBUG				?= 1
+
+.PHONY: all check check-lexer check-parser check-printer check-all clean cleanall doxy
+
+all: $(BIN)
+
+-include $(CFG).cfg
+
+-include $(DEP)
+
+check: all $(TESTBIN)
+	-	$(TESTBIN)
+
+-include $(TEST_DEP)
+
 
 ifeq ($(DEBUG), 1)
 	CFLAGS	+= -g -DDEBUG
@@ -61,19 +74,8 @@ CXXFLAGS		+= $(CFLAGS) -std=c++11
 
 LDFLAGS  += $(LLVM_LDFLAGS)
 
+DUMMY := $(shell echo $(CXXFLAGS) > out)
 
-.PHONY: all check check-lexer check-parser check-printer check-all clean cleanall doxy
-
-all: $(BIN)
-
--include $(CFG).cfg
-
--include $(DEP)
-
-check: all $(TESTBIN)
-	-	$(TESTBIN)
-
--include $(TEST_DEP)
 
 check-lexer: all
 	@echo ""
