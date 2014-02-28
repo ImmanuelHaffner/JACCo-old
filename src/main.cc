@@ -19,6 +19,7 @@ using namespace Lex;
 using namespace Parse;
 using namespace AST;
 using namespace Sema;
+using namespace CodeGen;
 
 
 enum class Mode {
@@ -118,6 +119,7 @@ int main(int argc, char** const argv)
           {
             sys::PrintStackTraceOnErrorSignal();
             PrettyStackTraceProgram X(argc, argv);
+            CodeGenFunction CGF( name );
             PANIC("TODO implement");
           }
       }
