@@ -37,12 +37,14 @@ Sema::Type const * IllegalDecl::analyze( Env &env ) const
   return NULL;
 }
 
-Sema::Type const * PointerDeclarator::analyze( Env &env, Sema::Type const * t ) const
+Sema::Type const * PointerDeclarator::analyze( Env &env,
+		Sema::Type const * const t ) const
 {
   return declarator->analyze( env, TypeFactory::getPtr( t ) );
 }
 
-Sema::Type const * FunctionDeclarator::analyze( Env &env, Sema::Type const * t ) const
+Sema::Type const * FunctionDeclarator::analyze( Env &env,
+		Sema::Type const * const t ) const
 {
   env.pushScope();
   std::vector<Sema::Type const *> paramTypes = params->analyze( env );
