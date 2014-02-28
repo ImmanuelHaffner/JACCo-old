@@ -2,6 +2,6 @@ int (foo())
 {
 	(sizeof(int));
 	(sizeof(int (*)));
-	(sizeof(int ()));
-	(sizeof(int (char (*))));
+	(sizeof(int (())));
+	(sizeof(int ((char (*)))));
 }
