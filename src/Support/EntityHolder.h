@@ -10,42 +10,31 @@
 #ifndef C4_ENTITY_HOLDER_H
 #define C4_ENTITY_HOLDER_H
 
+
 #include "Entity.h"
 
 
 namespace C4
 {
-  namespace Sema
+  /// \brief A super class for all AST nodes that must keep a reference to
+  /// their entity.
+  struct EntityHolder
   {
-    struct EntityHolderException : std::exception
-    {
-      const char * what() const noexcept
-      {
-        return "EntityHolder::attachEntity called more than once.";
-      }
-    };
+    EntityHolder() : entity(NULL) {}
+    virtual ~EntityHolder() {}
 
+    /// Attches an entity to this holder.
+    /// Should only be called once, otherwise asserts.
+    ///
+    /// \param entity the entity to attach to this holder
+    void attachEntity( Entity * const entity );
 
-    /// \brief A super class for all AST nodes that must keep a reference to
-    /// their entity.
-    struct EntityHolder
-    {
-      EntityHolder() : entity(NULL) {}
-      virtual ~EntityHolder() {}
+    /// \return the attached entity, or NULL if no entity was attached yet
+    Entity * getEntity() const;
 
-      /// Attches an entity to this holder.
-      /// Should only be called once, otherwise asserts.
-      ///
-      /// \param entity the entity to attach to this holder
-      void attachEntity( Entity const * entity );
-
-      /// \return the attached entity, or NULL if no entity was attached yet
-      Entity const * getEntity() const;
-
-      private:
-      Entity const * entity;
-    };
-  } // end namespace Sema
+    private:
+    Entity *entity;
+  };
 } // end namespace C4
 
 

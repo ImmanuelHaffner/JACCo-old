@@ -16,7 +16,7 @@
 #include "../Support/Symbol.h"
 #include "../AST/Stmt.h"
 #include "Type.h"
-#include "Entity.h"
+#include "../Support/Entity.h"
 
 
 namespace C4

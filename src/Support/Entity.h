@@ -12,27 +12,25 @@
 #ifndef C4_ENTITY_H
 #define C4_ENTITY_H
 
-#include "Type.h"
+
+#include "../Sema/Type.h"
 
 
 namespace C4
 {
-  namespace Sema
+  /// \brief Used to map identifiers to types, values, and anything else.
+  struct Entity
   {
-    /// \brief Used to map identifiers to types, values, and anything else.
-    struct Entity
-    {
-      Entity() : type(NULL) {}
+    Entity() : type(NULL) {}
 
-      Entity( Type const * const type ) :
-        type(type)
-      {}
+    Entity( Sema::Type const * const type ) :
+      type(type)
+    {}
 
-      ~Entity() {}
+    ~Entity() {}
 
-      Type const * type;
-    };
-  } // end namespace Sema
+    Sema::Type const * type;
+  };
 } // end namespace C4
 
 
