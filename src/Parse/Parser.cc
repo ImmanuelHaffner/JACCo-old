@@ -799,9 +799,13 @@ Stmt const * Parser::parseStmt()
 
     case TK::LBrace:
       {
+#ifndef NOSEMA
         env.pushScope();
+#endif
         CompoundStmt const * cStmt = parseCompoundStmt();
+#ifndef NOSEMA
         env.popScope();
+#endif
         return cStmt;
       }
 
@@ -1140,12 +1144,7 @@ TranslationUnit const * Parser::parseTranslationUnit()
   do
   {
     Pos const old( current->pos );
-    extDecls.push_back( parseExtDecl() ); // in bad cases, does not consume any token
-
-    // If the parseExtDecl function did not consume anything, consume one token,
-    // to avoid divergance of the parser.
-    //if ( old == current->pos )
-    //readNextToken();
+    extDecls.push_back( parseExtDecl() );
 
     // Recover until the end of a block (e.g compound statement) or semicolon
     // ';'
@@ -1208,10 +1207,13 @@ ExtDecl const * Parser::parseExtDecl()
               readNextToken(); // eat ';'
               Decl const * const decl = factory.getDecl( tok, typeSpec,
                   declarator );
+#ifndef NOSEMA
               if ( functionDeclarator )
                 env.popScope();
+#endif
               return decl;
             }
+
           case TK::LBrace:
             {
               if ( ! functionDeclarator )
@@ -1224,7 +1226,9 @@ ExtDecl const * Parser::parseExtDecl()
                   declarator);
               CompoundStmt const * const cStmt = parseCompoundStmt();
               //pop parameter scope
+#ifndef NOSEMA
               env.popScope();
+#endif
               return factory.getFunctionDef( decl, cStmt );
             }
 
