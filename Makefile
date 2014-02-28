@@ -53,7 +53,7 @@ all: $(BIN)
 -include $(TEST_DEP)
 
 
-ifneq ($(SEMA), 1)
+ifeq ($(SEMA), 0)
 	CXXFLAGS += -DNOSEMA
 endif
 
