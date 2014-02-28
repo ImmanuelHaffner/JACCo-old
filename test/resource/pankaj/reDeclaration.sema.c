@@ -2,7 +2,7 @@
 
 void f(int x)
 {
-	int x;
+  int x;
 	x = 20;
 }
 

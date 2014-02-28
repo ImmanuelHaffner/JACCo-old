@@ -486,10 +486,16 @@ Decl const * Parser::parseDecl()
   Token tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   Declarator const * declarator = NULL;
+  functionDeclarator = false;
   if ( current->kind != TK::SCol )
     declarator = parseDeclarator();
   accept( TK::SCol ); // eat ';'
-  return factory.getDecl( tok, typeSpec, declarator );
+  Decl const * decl = factory.getDecl( tok, typeSpec, declarator );
+#ifndef NOSEMA
+  if ( functionDeclarator )
+    env.popScope();
+#endif
+  return decl;
 } // end parseDecl
 
 TypeSpecifier const * Parser::parseTypeSpecifier()

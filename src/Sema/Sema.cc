@@ -58,14 +58,24 @@ Sema::Type const * FunctionDeclarator::analyze( Env &env,
   if ( declarator )
     funType = declarator->analyze( env, funType );
   if ( parameterDepth == 0 )
+  {
     //we don't need this scope otherwise
     env.pushScope( paramScope );
+  }
   return funType;
 }
 
 Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
   const
 {
+  env.pushScope();
+  env.insert( tok.sym );
+  Scope * testScope = env.popScope();
+  assert ( testScope->getIdMap().size() > 0 );
+  assert ( !env.lookup( tok.sym ) );
+  env.pushScope( testScope );
+  assert ( !env.lookup( tok.sym ) );
+  env.popScope();
   if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
   {
     if ( dynamic_cast< FuncType const * const >( funcType->retType ) )

@@ -21,7 +21,15 @@ namespace C4
   {
     struct ASTFactory
     {
-      ASTFactory( Sema::Env &env ) : env(env) {}
+      ASTFactory(
+#ifndef NOSEMA
+          Sema::Env &env
+#endif
+          )
+#ifndef NOSEMA
+        : env(env)
+#endif
+        {}
       ~ASTFactory() {}
 
 
@@ -388,8 +396,10 @@ namespace C4
 
 #undef TOK
 
+#ifndef NOSEMA
       private:
       Sema::Env &env;
+#endif
     };
   } // end namespace AST
 } // end namespace C4
