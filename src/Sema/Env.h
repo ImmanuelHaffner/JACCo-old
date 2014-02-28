@@ -28,7 +28,6 @@ namespace C4
     struct ParamList;
   }
 
-
   namespace Sema
   {
     /// Maps symbols to types 
