@@ -19,6 +19,7 @@ using namespace C4;
 using namespace AST;
 using namespace Sema;
 
+static int parameterDepth = 0;
 
 #define ERROR( MSG ) \
 { std::ostringstream actual; \
@@ -43,21 +44,26 @@ Sema::Type const * PointerDeclarator::analyze( Env &env, Sema::Type const * t ) 
 
 Sema::Type const * FunctionDeclarator::analyze( Env &env, Sema::Type const * t ) const
 {
+  env.pushScope();
   std::vector<Sema::Type const *> paramTypes = params->analyze( env );
+  Scope paramScope = env.popScope();
   Sema::Type const * funType = TypeFactory::getFunc( t, paramTypes );
-  if ( declarator )
+  if ( parameterDepth > 0 )
   {
-    return declarator->analyze( env, funType );
+    //functions are interpreted as function pointers
+    funType = TypeFactory::getPtr( funType );
   }
+  if ( declarator )
+    funType = declarator->analyze( env, funType );
+  if ( parameterDepth == 0 )
+    //we don't need this scope otherwise
+    env.pushScope( paramScope );
   return funType;
 }
 
 Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
   const
 {
-  //Pop and save possible parameter scope
-  Scope paramScope = env.popScope();
-
   if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
   {
     if ( dynamic_cast< FuncType const * const >( funcType->retType ) )
@@ -119,9 +125,6 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
       ERROR( oss.str().c_str() );
     }
   }
-
-  //Push the parameter scope again for possible function definition
-  env.pushScope( paramScope );
   return t;
 }
 
@@ -163,31 +166,27 @@ void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
   Sema::Type const * t = typeSpec->analyze( env );
-  //functions are interpreted as function pointers
-  if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
-    t = TypeFactory::getPtr( funcType );
   if ( declarator )
-    return declarator->analyze( env, t );
+  {
+    t = declarator->analyze( env, t );
+  }
   return t;
 }
 
 std::vector< Sema::Type const * > ParamList::analyze( Env &env ) const
 {
+  parameterDepth++;
   std::vector< Sema::Type const * > paramTypes;
   for ( auto &it : * this )
   {
-    //Push parameter scope in case of function arguments
-    env.pushScope();
     paramTypes.push_back( it->analyze( env ) );
-    env.popScope();
   }
+  parameterDepth--;
   return paramTypes;
 }
 
 Sema::Type const * StructSpecifier::analyze( Env &env ) const
 {
-  //Pop and save possible parameter scope
-  Scope paramScope = env.popScope();
   Type * t = NULL;
   StructType::elements_t innerTypes;
   if ( structDecls )
@@ -216,11 +215,9 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
         else
           st->complete( innerTypes );
       }
-      env.pushScope( paramScope );
       return st;
     }
   }
-  env.pushScope( paramScope );
   return t;
 }
 

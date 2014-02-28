@@ -24,4 +24,4 @@ int (*r(void *(void (*blubb)(int))(int))(int));
 
 
 char *(*p()(int));
-int foo(char *((*)(int)));
+int foo(char *(*()(int)));

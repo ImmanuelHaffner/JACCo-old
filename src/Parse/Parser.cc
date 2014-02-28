@@ -16,6 +16,7 @@ using namespace AST;
 
 
 static bool functionDeclarator = false;
+static Token * nameless_param = NULL;
 
 
 //===----------------------------------------------------------------------===//
@@ -794,8 +795,12 @@ Stmt const * Parser::parseStmt()
       break;
 
     case TK::LBrace:
-      return parseCompoundStmt();
-      break;
+      {
+        env.pushScope();
+        CompoundStmt const * cStmt = parseCompoundStmt();
+        env.popScope();
+        return cStmt;
+      }
 
     case TK::If:
     case TK::Switch:
@@ -872,7 +877,6 @@ Stmt const * Parser::parseLabeledStmt()
 
 CompoundStmt const * Parser::parseCompoundStmt()
 {
-  env.pushScope();
   Token const tok(*current);
   std::vector< BlockItem const * > items;
 
@@ -934,7 +938,6 @@ CompoundStmt const * Parser::parseCompoundStmt()
 
 for_end:
   accept( TK::RBrace ); // eat '}'
-  env.popScope();
   return factory.getCompoundStmt( tok, items );
 } // end parseCompoundStmt
 
@@ -1188,33 +1191,36 @@ ExtDecl const * Parser::parseExtDecl()
             ( current->kind == TK::END_OF_FILE || current->kind == TK::SCol ) )
         {
           accept( TK::SCol ); // eat ';'
-          env.pushScope();
           Decl const * const decl = factory.getDecl( tok, typeSpec );
-          env.popScope();
           return decl;
         }
 
         functionDeclarator = false;
+        nameless_param = NULL;
         Declarator const * const declarator = parseDeclarator();
         switch ( current->kind )
         {
           case TK::SCol:
             {
               readNextToken(); // eat ';'
-              env.pushScope();
               Decl const * const decl = factory.getDecl( tok, typeSpec,
                   declarator );
-              env.popScope();
+              if ( functionDeclarator )
+                env.popScope();
               return decl;
             }
           case TK::LBrace:
             {
               if ( ! functionDeclarator )
                 ERROR( "'(' [parameter-list] ')'" );
-              env.pushScope();
+              if ( nameless_param )
+              {
+                ERROR( ";" );
+              }
               Decl const * const decl = factory.getDecl( tok, typeSpec,
                   declarator);
               CompoundStmt const * const cStmt = parseCompoundStmt();
+              //pop parameter scope
               env.popScope();
               return factory.getFunctionDef( decl, cStmt );
             }
