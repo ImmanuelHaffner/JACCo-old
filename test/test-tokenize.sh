@@ -41,7 +41,7 @@ do
     result=$(mktemp /tmp/"${testname}".XXXX);
     expectedfile="$test"
     expected=$(mktemp /tmp/"${testname}".expected.XXXX);
-    tail -n +3 "${expectedfile}" > "${expected}";
+    tail -n +2 "${expectedfile}" > "${expected}";
 
     $("${C4}" --tokenize "${base}.c" > "${result}" 2>&1)
     RES=$?
