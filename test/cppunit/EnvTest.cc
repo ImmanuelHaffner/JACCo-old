@@ -37,7 +37,7 @@ void EnvTest::testScopeInsert()
   CPPUNIT_ASSERT( scope.lookup( "a" ) == NULL );
 
   // Check first insert.
-  Entity const * const ea = scope.insert( "a" );
+  Entity * const ea = scope.insert( "a" );
   CPPUNIT_ASSERT( ea != NULL );
 
   // Check lookup.
@@ -100,9 +100,9 @@ void EnvTest::testInsert()
   Type const * const t_b0 = TypeFactory::getChar();
 
   // Check insert id.
-  Entity const * const e_a0 = env.insert( "id_a" );
+  Entity * const e_a0 = env.insert( "id_a" );
   CPPUNIT_ASSERT( e_a0 != NULL );
-  Entity const * const e_b0 = env.insert( "id_b" );
+  Entity * const e_b0 = env.insert( "id_b" );
   CPPUNIT_ASSERT( e_b0 != NULL );
 
   // Check insert type.
@@ -126,7 +126,7 @@ void EnvTest::testInsert()
   Type const * const t_a1 = TypeFactory::getVoid();
 
   // Check insert id.
-  Entity const * const e_a1 = env.insert( "id_a" );
+  Entity * const e_a1 = env.insert( "id_a" );
   CPPUNIT_ASSERT( e_a1 != NULL );
 
   // Check that a new entity has been created.

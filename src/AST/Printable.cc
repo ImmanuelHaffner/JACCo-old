@@ -658,7 +658,7 @@ void FunctionDeclarator::print( Printer const p ) const
   if ( this->declarator )
     p.out << "(" << this->declarator << "(" << this->params << "))";
   else
-    p.out << "(" << this->params << ")";
+    p.out << "((" << this->params << "))";
 }
 
 void Identifier::print( Printer const p ) const

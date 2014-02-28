@@ -3,6 +3,6 @@ int (foo(struct S (*s)))
 	struct
 	{
 		int x, y;
-	} (*s);
+	} (*s2);
 	return 9;
 }

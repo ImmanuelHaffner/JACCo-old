@@ -18,7 +18,7 @@ do
     expected=$(head -n 1 "$test")
     result=$(mktemp /tmp/"${test}".result.XXXX)
     input=$(mktemp /tmp/"${test}".input.XXXX);
-    tail -n +2 "$test" > $input
+    tail -n +3 "$test" > $input
 
     $("${C4}" --parse "${input}" > "${result}" 2>&1)
 

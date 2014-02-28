@@ -21,7 +21,15 @@ namespace C4
   {
     struct ASTFactory
     {
-      ASTFactory( Sema::Env &env ) : env(env) {}
+      ASTFactory(
+#ifndef NOSEMA
+          Sema::Env &env
+#endif
+          )
+#ifndef NOSEMA
+        : env(env)
+#endif
+        {}
       ~ASTFactory() {}
 
 
@@ -161,7 +169,9 @@ namespace C4
           Declarator const * const declarator = NULL )
       {
         Decl const * const decl = new Decl( tok, typeSpec, declarator );
+#ifndef NOSEMA
         decl->analyze( env );
+#endif
         return decl;
       }
 
@@ -197,6 +207,11 @@ namespace C4
           std::vector< ParamDecl const * > &params )
       {
         return new ParamList( params );
+      }
+
+      inline ParamList const * getParamList()
+      {
+        return new ParamList();
       }
 
       inline Identifier const * getIdentifier( TOK )
@@ -381,8 +396,10 @@ namespace C4
 
 #undef TOK
 
+#ifndef NOSEMA
       private:
       Sema::Env &env;
+#endif
     };
   } // end namespace AST
 } // end namespace C4

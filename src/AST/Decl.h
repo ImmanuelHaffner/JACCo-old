@@ -133,7 +133,8 @@ namespace C4
       Declarator( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Declarator() {}
 
-      virtual Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t )
+      virtual Sema::Type const * analyze( Sema::Env &env,
+					Sema::Type const * const t )
         const = 0;
     }; // end struct Declarator
 
@@ -160,7 +161,8 @@ namespace C4
       ~PointerDeclarator() {}
 
 			void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t ) const;
+      Sema::Type const * analyze( Sema::Env &env,
+					Sema::Type const * const t ) const;
 
       Declarator const * const declarator;
     }; // end struct PointerDeclarator
@@ -178,7 +180,8 @@ namespace C4
       ~FunctionDeclarator() {}
 
       void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t ) const;
+      Sema::Type const * analyze( Sema::Env &env,
+					Sema::Type const * const t ) const;
 
       Declarator const * const declarator;
       ParamList const * const params;

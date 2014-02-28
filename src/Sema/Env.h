@@ -32,10 +32,10 @@ namespace C4
   namespace Sema
   {
     /// Maps symbols to types 
-    typedef std::unordered_map< Symbol, StructType * > TypeTable;
+    typedef std::unordered_map< Symbol, Type const * > TypeTable;
 
     /// Maps symbols to entities
-    typedef std::unordered_map< Symbol, Entity const * > IdMap;
+    typedef std::unordered_map< Symbol, Entity * > IdMap;
 
     /// \brief Defines a scope.
     ///
@@ -48,18 +48,18 @@ namespace C4
 
       /// \return the entity the id is mapped to, or NULL if the id was not
       /// mapped
-      Entity const * lookup( Symbol const id ) const;
+      Entity * lookup( Symbol const id ) const;
 
       /// \return the type the id is mapped to, or NULL if the id was not
       /// mapped
-      StructType * lookupType( Symbol const id ) const;
+      Type const * lookupType( Symbol const id ) const;
 
       /// \return a new entity for the id, if the id was not already mapped,
       /// NULL otherwise
       Entity * insert( Symbol const id );
 
       /// \return true iff the id was not already mapped, false otherwise
-      bool insert( Symbol const id, StructType * const type );
+      bool insert( Symbol const id, Type const * const type );
 
       /// \return the identifier map
       IdMap getIdMap();
@@ -80,10 +80,10 @@ namespace C4
       void pushScope();
 
       /// \brief Pushes the given scope onto the stack.
-      void pushScope( Scope scope );
+      void pushScope( Scope * const scope );
       
       /// \brief Pops the topmost scope from the stack.
-      Scope popScope();
+      Scope * popScope();
 
       /// \return the depth of the scope stack, including the global scope
       inline size_t depth() const { return scopeStack.size(); }
@@ -93,13 +93,13 @@ namespace C4
       ///
       /// \return the first mapped entitity, if the id was mapped, NULL
       /// otherwise
-      Entity const * lookup( Symbol const id );
+      Entity * lookup( Symbol const id );
 
       /// Traveres the scope stack, starting at the current scope, and searches
       /// for the first mapping for a type identifier.
       ///
       /// \return the first mapped type, if the id was mapped, NULL otherwise
-      StructType * lookupType( Symbol const id );
+      Type const * lookupType( Symbol const id );
 
       /// Inserts a new mapping from id to a new created entity to the
       /// identifier map.
@@ -112,10 +112,10 @@ namespace C4
       /// table.
       ///
       /// \return false iff the identifier was already mapped, true otherwise
-      bool insert( Symbol const typeName, StructType * const type );
+      bool insert( Symbol const typeName, Type const * const type );
       
       private:
-      std::vector< Scope > scopeStack;
+      std::vector< Scope * > scopeStack;
       std::vector< AST::IterationStmt > iterStmtStack;
     };
   }

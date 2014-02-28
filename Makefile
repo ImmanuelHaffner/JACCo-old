@@ -41,7 +41,22 @@ TEST_DEP		:= $(TEST_OBJ:%.o=%.d)
 DUMMY				:= $(shell mkdir -p $(sort $(dir $(OBJ))))
 DUMMY				:= $(shell mkdir -p $(sort $(dir $(TEST_OBJ))))
 
-#DEBUG				?= 1
+
+.PHONY: all check check-lexer check-parser check-printer check-sema check-all clean cleanall doxy
+
+all: $(BIN)
+
+-include $(CFG).cfg
+
+-include $(DEP)
+
+-include $(TEST_DEP)
+
+
+ifneq ($(SEMA), 1)
+	CXXFLAGS += -DNOSEMA
+endif
+
 
 ifeq ($(DEBUG), 1)
 	CFLAGS	+= -g -DDEBUG
@@ -58,34 +73,21 @@ LLVM_LDFLAGS := $(shell $(LLVM_CONFIG) --libs core transformutils) $(shell $(LLV
 
 CFLAGS			+= $(LLVM_CFLAGS) -Wall -W -pedantic# -Werror
 CXXFLAGS		+= $(CFLAGS) -std=c++11
+CXXFLAGS_DEFAULT = $(CXXFLAGS)
 
 LDFLAGS  += $(LLVM_LDFLAGS)
 
+DUMMY := $(shell echo $(CXXFLAGS) > out)
 
-.PHONY: all check check-lexer check-parser check-printer check-all clean cleanall doxy
-
-all: $(BIN)
-
--include $(CFG).cfg
-
--include $(DEP)
 
 check: all $(TESTBIN)
 	-	$(TESTBIN)
-
--include $(TEST_DEP)
 
 check-lexer: all
 	@echo ""
 	@cd test/;\
 	./test-tokenize.sh;\
 	cd ..
-
-check-sema: all
-	@echo ""
-	@cd test/;\
-		./test-sema.sh;\
-		cd ..
 
 check-parser: all
 	@echo ""
@@ -99,7 +101,20 @@ check-printer: all
 	./test-print.sh;\
 	cd ..
 
-check-all: check check-lexer check-parser check-printer
+check-sema: all
+	@echo ""
+	@cd test/;\
+		./test-sema.sh;\
+		cd ..
+
+check-nosema: check check-lexer check-parser check-printer
+
+check-all:
+	@echo "==> CHECK ALL"
+	@make clean
+	@make check-nosema SEMA=0 -j4
+	@make clean
+	@make check-sema SEMA=1 -j4
 
 clean:
 	@echo "===> CLEAN"
@@ -120,7 +135,7 @@ $(BIN): $(OBJ)
 
 $(TESTBIN): $(TEST_OBJ)
 	@echo "===> LD $@"
-	$(Q)$(CXX) $(CXXFLAGS) -o $(TESTBIN) $^ -L${CPPUNIT_PATH}/lib -lstdc++ -lcppunit -ldl
+	$(Q)$(CXX) $(CXXFLAGS) -o $(TESTBIN) $^ -L${CPPUNIT_PATH}/lib -lstdc++ -lcppunit -ldl $(LDFLAGS)
 
 $(BINDIR)/%.o: $(SRCDIR)/%.cc
 	@echo "===> $(CXX) $<   ->   $@"

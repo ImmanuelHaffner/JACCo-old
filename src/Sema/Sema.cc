@@ -19,6 +19,7 @@ using namespace C4;
 using namespace AST;
 using namespace Sema;
 
+static int parameterDepth = 0;
 
 #define ERROR( MSG ) \
 { std::ostringstream actual; \
@@ -36,18 +37,32 @@ Sema::Type const * IllegalDecl::analyze( Env &env ) const
   return NULL;
 }
 
-Sema::Type const * PointerDeclarator::analyze( Env &env, Sema::Type const * t ) const
+Sema::Type const * PointerDeclarator::analyze( Env &env,
+		Sema::Type const * const t ) const
 {
-  return declarator->analyze( env, TypeFactory::getPtr( t ) );
+  if ( declarator )
+    return declarator->analyze( env, TypeFactory::getPtr( t ) );
+  return TypeFactory::getPtr( t );
 }
 
-Sema::Type const * FunctionDeclarator::analyze( Env &env, Sema::Type const * t ) const
+Sema::Type const * FunctionDeclarator::analyze( Env &env,
+		Sema::Type const * const t ) const
 {
+  env.pushScope();
   std::vector<Sema::Type const *> paramTypes = params->analyze( env );
+  Scope * const paramScope = env.popScope();
   Sema::Type const * funType = TypeFactory::getFunc( t, paramTypes );
-  if ( declarator )
+  if ( parameterDepth > 0 )
   {
-    return declarator->analyze( env, funType );
+    //functions are interpreted as function pointers
+    funType = TypeFactory::getPtr( funType );
+  }
+  if ( declarator )
+    funType = declarator->analyze( env, funType );
+  if ( parameterDepth == 0 )
+  {
+    //we don't need this scope otherwise
+    env.pushScope( paramScope );
   }
   return funType;
 }
@@ -55,18 +70,47 @@ Sema::Type const * FunctionDeclarator::analyze( Env &env, Sema::Type const * t )
 Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
   const
 {
-  //Pop and save possible parameter scope
-  Scope paramScope = env.popScope();
   if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
   {
     if ( dynamic_cast< FuncType const * const >( funcType->retType ) )
     {
       std::ostringstream oss;
-      oss << "Function  " << this <<
-        " may not be declared with function return type " << funcType->retType;
+      oss << this << "\nfunction may not be declared with function return type "
+				<< funcType->retType;
       ERROR( oss.str().c_str() );
     }
-    //TODO complete function
+    if ( Entity * const e = env.insert( tok.sym ) )
+      e->type = t;
+    else
+    {
+      Entity * const oe = env.lookup( tok.sym );
+      Type const * ot = oe->type;
+      if ( auto oft = dynamic_cast< FuncType const * >( ot ) )
+      {
+        if ( oft->argTypes.size() > 0 )
+        {
+          if ( oft->argTypes != funcType->argTypes )
+          {
+            std::ostringstream oss;
+            oss << "function '" << this->tok.sym.str() <<
+              "' has been declared with other arguments before";
+            ERROR( oss.str().c_str() );
+          }
+        }
+        else {
+          if ( funcType->argTypes.size() > 0 )
+          {
+            oe->type = t;
+          }
+        }
+      }
+      else {
+        std::ostringstream oss;
+        oss << "identifier '" << this->tok.sym.str() <<
+          "' has already been declared";
+        ERROR( oss.str().c_str() );
+      }
+    }
   }
   else
   {
@@ -77,19 +121,16 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
         " with incomplete type";
       ERROR( oss.str().c_str() );
     }
+    if ( Entity * const e = env.insert( tok.sym ) )
+      e->type = t;
+    else
+    {
+      std::ostringstream oss;
+      oss << "identifier '" << this->tok.sym.str() <<
+        "' has already been declared";
+      ERROR( oss.str().c_str() );
+    }
   }
-  if ( Entity * const e = env.insert( tok.sym ) )
-    e->type = t;
-  else
-  {
-    //TODO check for function to complete
-    std::ostringstream oss;
-    oss << "identifier '" << this->tok.sym.str() <<
-      "' has already been declared";
-    ERROR( oss.str().c_str() );
-  }
-  //Push the parameter scope again for possible function definition
-  env.pushScope( paramScope );
   return t;
 }
 
@@ -131,39 +172,35 @@ void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
   Sema::Type const * t = typeSpec->analyze( env );
-  //functions are interpreted as function pointers
-  if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
-    t = TypeFactory::getPtr( funcType );
   if ( declarator )
-    return declarator->analyze( env, t );
+  {
+    t = declarator->analyze( env, t );
+  }
   return t;
 }
 
 std::vector< Sema::Type const * > ParamList::analyze( Env &env ) const
 {
+  parameterDepth++;
   std::vector< Sema::Type const * > paramTypes;
   for ( auto &it : * this )
   {
-    //Push parameter scope in case of function arguments
-    env.pushScope();
     paramTypes.push_back( it->analyze( env ) );
-    env.popScope();
   }
+  parameterDepth--;
   return paramTypes;
 }
 
 Sema::Type const * StructSpecifier::analyze( Env &env ) const
 {
-  //Pop and save possible parameter scope
-  Scope paramScope = env.popScope();
-  StructType * t = NULL;
-  std::unordered_map< Symbol, Sema::Type const * > innerTypes;
+  Type * t = NULL;
+  StructType::elements_t innerTypes;
   if ( structDecls )
   {
     env.pushScope();
     structDecls->analyze( env );
-    Scope structScope = env.popScope();
-    for ( auto &it : structScope.getIdMap() )
+    Scope * const structScope = env.popScope();
+    for ( auto &it : structScope->getIdMap() )
       innerTypes.insert( std::make_pair( it.first, it.second->type ) );
     t = TypeFactory::getStruct( innerTypes );
   }
@@ -173,19 +210,20 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   {
     if ( !env.insert( name->sym, t ) )
     {
-      t = env.lookupType( name->sym );
+      auto st = const_cast< StructType * >(
+					static_cast< StructType const * >( env.lookupType( name->sym ) ) );
       if ( structDecls )
-        if ( t->isComplete() )
+      {
+        if ( st->isComplete() )
         {
           ERROR( "Cannot replace type information of already completed struct" );
-          env.pushScope( paramScope );
-          return t;
         }
         else
-         t->complete( innerTypes );
+          st->complete( innerTypes );
+      }
+      return st;
     }
   }
-  env.pushScope( paramScope );
   return t;
 }
 

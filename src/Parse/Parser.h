@@ -30,7 +30,11 @@ namespace C4
     struct Parser
     {
       Parser( Lex::Lexer &lexer ) :
-        lexer(lexer), current(NULL), next(NULL), factory(env)
+        lexer(lexer), current(NULL), next(NULL), factory(
+#ifndef NOSEMA
+            env
+            #endif
+            )
       {}
 
       ~Parser() {}

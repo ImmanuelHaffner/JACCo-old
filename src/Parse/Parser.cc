@@ -16,6 +16,7 @@ using namespace AST;
 
 
 static bool functionDeclarator = false;
+static Token * nameless_param = NULL;
 
 
 //===----------------------------------------------------------------------===//
@@ -485,10 +486,16 @@ Decl const * Parser::parseDecl()
   Token tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   Declarator const * declarator = NULL;
+  functionDeclarator = false;
   if ( current->kind != TK::SCol )
     declarator = parseDeclarator();
   accept( TK::SCol ); // eat ';'
-  return factory.getDecl( tok, typeSpec, declarator );
+  Decl const * decl = factory.getDecl( tok, typeSpec, declarator );
+#ifndef NOSEMA
+  if ( functionDeclarator )
+    env.popScope();
+#endif
+  return decl;
 } // end parseDecl
 
 TypeSpecifier const * Parser::parseTypeSpecifier()
@@ -611,55 +618,59 @@ Declarator const * Parser::parseDeclarator(
     DeclaratorType const dt /*= NORMAL*/ )
 {
   Token const tok( *current );
-  Declarator const * declarator = NULL;
-  ParamList const * paramList = NULL;
+  Declarator const *declarator = NULL;
 
   switch ( current->kind )
   {
     case TK::LPar:
-      readNextToken(); // eat '('
-      if ( dt == DeclaratorType::NORMAL )
-        declarator = parseDeclarator( dt );
-      else
       {
-        switch ( current->kind )
+        readNextToken(); // eat '('
+        bool isParamList = false;
+
+        if ( dt == DeclaratorType::NORMAL )
+          declarator = parseDeclarator( dt ); // regular sub-declarator
+        else
         {
-          /* Empty parameter list: '(' ')'
-          */
-          case TK::RPar:
-            paramList = new ParamList();
-            break;
+          switch ( current->kind )
+          {
+            /* Empty parameter list: '(' ')'
+             */
+            case TK::RPar:
+              functionDeclarator = true;
+              declarator = factory.getFunctionDeclarator( tok, NULL,
+                  factory.getParamList() );
+              isParamList = true;
+              break;
 
             /* Non-empty parameter list.
-            */
-          case TK::Void:
-          case TK::Char:
-          case TK::Int:
-          case TK::Struct:
-            paramList = parseParameterList();
-            break;
+             */
+            case TK::Void:
+            case TK::Char:
+            case TK::Int:
+            case TK::Struct:
+              functionDeclarator = true;
+              declarator = factory.getFunctionDeclarator( tok, NULL,
+                  parseParameterList() );
+              isParamList = true;
+              break;
 
-          case TK::Mul:
-            declarator = parsePointerDeclarator( dt );
-            break;
+            case TK::Mul:
+              declarator = parsePointerDeclarator( dt );
+              break;
 
-            /* Nested parenthesis.
-            */
-          case TK::LPar:
-          case TK::IDENTIFIER:
-            declarator = parseDeclarator( dt );
-            break;
+            /* Sub-declarator.
+             */
+            case TK::LPar:  // nested parenthesis
+            case TK::IDENTIFIER:
+              declarator = parseDeclarator( dt );
+              break;
 
-          default:
-            ERROR( "declarator or parameter-list" );
-        } // end switch
-      }
-      accept( TK::RPar ); // eat ')'
-      if ( paramList )
-      {
-        declarator = factory.getFunctionDeclarator( tok, declarator,
-            paramList );
-        paramList = NULL;
+            default:
+              ERROR( "declarator or parameter-list" );
+          } // end switch
+        }
+        accept( TK::RPar ); // eat ')'
+        if ( isParamList ) return declarator;
       }
       break;
 
@@ -692,8 +703,7 @@ Declarator const * Parser::parseDeclarator(
       } // end switch
   } // end switch
 
-  /* Read parameter-list suffix, if it exists and we did not already parse a
-   * parameter list.
+  /* Read parameter-list suffix, if it exists.
    */
   if ( current->kind == TK::LPar )
   {
@@ -701,14 +711,18 @@ Declarator const * Parser::parseDeclarator(
     switch ( current->kind )
     {
       case TK::RPar:
-        paramList = new ParamList();
+        functionDeclarator = true;
+        declarator = factory.getFunctionDeclarator( tok, declarator,
+            factory.getParamList() );
         break;
 
       case TK::Void:
       case TK::Char:
       case TK::Int:
       case TK::Struct:
-        paramList = parseParameterList();
+        functionDeclarator = true;
+        declarator = factory.getFunctionDeclarator( tok, declarator,
+            parseParameterList() );
         break;
 
       default:
@@ -716,13 +730,9 @@ Declarator const * Parser::parseDeclarator(
 
     } // end switch
     accept( TK::RPar ); // eat ')'
+    return declarator;
   }
 
-  if ( paramList )
-  {
-    functionDeclarator = true;
-    return factory.getFunctionDeclarator( tok, declarator, paramList );
-  }
   if ( declarator ) return declarator;
   return factory.getIllegalDeclarator( *current );
 } // end parseDeclarator
@@ -794,8 +804,16 @@ Stmt const * Parser::parseStmt()
       break;
 
     case TK::LBrace:
-      return parseCompoundStmt();
-      break;
+      {
+#ifndef NOSEMA
+        env.pushScope();
+#endif
+        CompoundStmt const * cStmt = parseCompoundStmt();
+#ifndef NOSEMA
+        env.popScope();
+#endif
+        return cStmt;
+      }
 
     case TK::If:
     case TK::Switch:
@@ -872,7 +890,6 @@ Stmt const * Parser::parseLabeledStmt()
 
 CompoundStmt const * Parser::parseCompoundStmt()
 {
-  env.pushScope();
   Token const tok(*current);
   std::vector< BlockItem const * > items;
 
@@ -934,7 +951,6 @@ CompoundStmt const * Parser::parseCompoundStmt()
 
 for_end:
   accept( TK::RBrace ); // eat '}'
-  env.popScope();
   return factory.getCompoundStmt( tok, items );
 } // end parseCompoundStmt
 
@@ -1134,12 +1150,7 @@ TranslationUnit const * Parser::parseTranslationUnit()
   do
   {
     Pos const old( current->pos );
-    extDecls.push_back( parseExtDecl() ); // in bad cases, does not consume any token
-
-    // If the parseExtDecl function did not consume anything, consume one token,
-    // to avoid divergance of the parser.
-    //if ( old == current->pos )
-    //readNextToken();
+    extDecls.push_back( parseExtDecl() );
 
     // Recover until the end of a block (e.g compound statement) or semicolon
     // ';'
@@ -1188,34 +1199,46 @@ ExtDecl const * Parser::parseExtDecl()
             ( current->kind == TK::END_OF_FILE || current->kind == TK::SCol ) )
         {
           accept( TK::SCol ); // eat ';'
-          env.pushScope();
           Decl const * const decl = factory.getDecl( tok, typeSpec );
-          env.popScope();
           return decl;
         }
 
         functionDeclarator = false;
-        Declarator const * const declarator = parseDeclarator();
+        nameless_param = NULL;
+        Declarator const * declarator = parseDeclarator();
         switch ( current->kind )
         {
           case TK::SCol:
             {
               readNextToken(); // eat ';'
-              env.pushScope();
               Decl const * const decl = factory.getDecl( tok, typeSpec,
                   declarator );
-              env.popScope();
+#ifndef NOSEMA
+              if ( functionDeclarator )
+                env.popScope();
+#endif
               return decl;
             }
+
           case TK::LBrace:
             {
               if ( ! functionDeclarator )
+              {
+                declarator = factory.getFunctionDeclarator( tok, NULL,
+                    factory.getParamList() );
                 ERROR( "'(' [parameter-list] ')'" );
-              env.pushScope();
+              }
+              if ( nameless_param )
+              {
+                ERROR( ";" );
+              }
               Decl const * const decl = factory.getDecl( tok, typeSpec,
                   declarator);
               CompoundStmt const * const cStmt = parseCompoundStmt();
+              //pop parameter scope
+#ifndef NOSEMA
               env.popScope();
+#endif
               return factory.getFunctionDef( decl, cStmt );
             }
 

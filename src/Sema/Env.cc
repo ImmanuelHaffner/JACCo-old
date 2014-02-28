@@ -17,7 +17,7 @@ using namespace AST;
 using namespace Sema;
 
 
-Entity const * Scope::lookup( Symbol const id ) const
+Entity * Scope::lookup( Symbol const id ) const
 {
   auto elem = idMap.find( id );
   if ( elem == idMap.end() )
@@ -25,7 +25,7 @@ Entity const * Scope::lookup( Symbol const id ) const
   return elem->second;
 }
 
-StructType * Scope::lookupType( Symbol const id ) const
+Type const * Scope::lookupType( Symbol const id ) const
 {
   auto elem = typeTable.find( id );
   if ( elem == typeTable.end() )
@@ -40,17 +40,17 @@ Entity * Scope::insert( Symbol const id )
     return NULL;
 
   Entity * entity = new Entity();
-  idMap.insert( std::pair< Symbol, Entity const * >( id, entity ) );
+  idMap.insert( std::pair< Symbol, Entity * >( id, entity ) );
   return entity;
 }
 
-bool Scope::insert( Symbol const id, StructType * const type )
+bool Scope::insert( Symbol const id, Type const * const type )
 {
   // Check whether id is already mapped.
   if ( typeTable.find( id ) != typeTable.end() )
     return false;
 
-  typeTable.insert( std::pair< Symbol, StructType * >( id, type ) );
+  typeTable.insert( std::pair< Symbol, Type const * >( id, type ) );
   return true;
 }
 
@@ -62,38 +62,38 @@ IdMap Scope::getIdMap()
 
 void Env::pushScope()
 {
-  scopeStack.push_back( Scope() );
+  scopeStack.push_back( new Scope() );
 }
 
-void Env::pushScope( Scope scope )
+void Env::pushScope( Scope * const scope )
 {
   scopeStack.push_back( scope );
 }
 
-Scope Env::popScope()
+Scope * Env::popScope()
 {
   assert( scopeStack.size() > 1 && "cannot pop the global scope" );
-  Scope &scope = scopeStack.back();
+  Scope * const scope = scopeStack.back();
   scopeStack.pop_back();
   return scope; 
 }
 
-Entity const * Env::lookup( Symbol const id )
+Entity * Env::lookup( Symbol const id )
 {
   // iterate over all scopes, starting with the last
   for ( auto scope = scopeStack.rbegin(); scope != scopeStack.rend(); ++scope )
   {
-    Entity const * const entity = scope->lookup( id );
+    Entity * const entity = (*scope)->lookup( id );
     if ( entity ) return entity;
   }
   return NULL;
 }
 
-StructType * Env::lookupType( Symbol const id )
+Type const * Env::lookupType( Symbol const id )
 {
   for ( auto scope = scopeStack.rbegin(); scope != scopeStack.rend(); ++scope )
   {
-    StructType * type = scope->lookupType( id );
+    Type const *type = (*scope)->lookupType( id );
     if ( type ) return type;
   }
   return NULL;
@@ -101,14 +101,12 @@ StructType * Env::lookupType( Symbol const id )
 
 Entity * Env::insert( Symbol const id )
 {
-  // Obtain the topmost scope.
-  Scope &scope = scopeStack.back();
-  return scope.insert( id );
+  // Insert into the top-most scope.
+  return scopeStack.back()->insert( id );
 }
 
-bool Env::insert( Symbol const id, StructType * const type )
+bool Env::insert( Symbol const id, Type const * const type )
 {
-  // Obtain the topmost scope.
-  Scope &scope = scopeStack.back();
-  return scope.insert( id, type );
+  // Insert into the top-most scope.
+  return scopeStack.back()->insert( id, type );
 }

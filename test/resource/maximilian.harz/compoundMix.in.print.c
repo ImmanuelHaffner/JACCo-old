@@ -10,5 +10,5 @@ int f(int x, int y)
 			}
 		}
 	}
-	int x;
+	int x2;
 }
