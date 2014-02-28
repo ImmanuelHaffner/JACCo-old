@@ -8,6 +8,10 @@
 #include "Parse/Parser.h"
 #include "AST/Printable.h"
 #include "Sema/TypeFactory.h"
+#include "CodeGen/CodeGen.h"
+#include "llvm/Support/Signals.h"          /* Nice stacktrace output */
+#include "llvm/Support/SystemUtils.h"
+#include "llvm/Support/PrettyStackTrace.h"
 
 
 using namespace C4;
@@ -24,7 +28,7 @@ enum class Mode {
   COMPILE,
 };
 
-int main(int, char** const argv)
+int main(int argc, char** const argv)
 {
   char** i = argv + 1;
 
@@ -112,6 +116,8 @@ int main(int, char** const argv)
 
         case Mode::COMPILE:
           {
+            sys::PrintStackTraceOnErrorSignal();
+            PrettyStackTraceProgram X(argc, argv);
             PANIC("TODO implement");
           }
       }
