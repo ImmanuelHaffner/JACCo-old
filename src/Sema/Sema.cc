@@ -48,7 +48,7 @@ Sema::Type const * FunctionDeclarator::analyze( Env &env,
 {
   env.pushScope();
   std::vector<Sema::Type const *> paramTypes = params->analyze( env );
-  Scope paramScope = env.popScope();
+  Scope * const paramScope = env.popScope();
   Sema::Type const * funType = TypeFactory::getFunc( t, paramTypes );
   if ( parameterDepth > 0 )
   {
@@ -195,8 +195,8 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   {
     env.pushScope();
     structDecls->analyze( env );
-    Scope structScope = env.popScope();
-    for ( auto &it : structScope.getIdMap() )
+    Scope * const structScope = env.popScope();
+    for ( auto &it : structScope->getIdMap() )
       innerTypes.insert( std::make_pair( it.first, it.second->type ) );
     t = TypeFactory::getStruct( innerTypes );
   }

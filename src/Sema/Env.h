@@ -80,10 +80,10 @@ namespace C4
       void pushScope();
 
       /// \brief Pushes the given scope onto the stack.
-      void pushScope( Scope scope );
+      void pushScope( Scope * const scope );
       
       /// \brief Pops the topmost scope from the stack.
-      Scope popScope();
+      Scope * popScope();
 
       /// \return the depth of the scope stack, including the global scope
       inline size_t depth() const { return scopeStack.size(); }
@@ -115,7 +115,7 @@ namespace C4
       bool insert( Symbol const typeName, Type const * const type );
       
       private:
-      std::vector< Scope > scopeStack;
+      std::vector< Scope * > scopeStack;
       std::vector< AST::IterationStmt > iterStmtStack;
     };
   }
