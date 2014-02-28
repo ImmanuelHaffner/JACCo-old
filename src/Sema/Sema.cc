@@ -40,7 +40,9 @@ Sema::Type const * IllegalDecl::analyze( Env &env ) const
 Sema::Type const * PointerDeclarator::analyze( Env &env,
 		Sema::Type const * const t ) const
 {
-  return declarator->analyze( env, TypeFactory::getPtr( t ) );
+  if ( declarator )
+    return declarator->analyze( env, TypeFactory::getPtr( t ) );
+  return TypeFactory::getPtr( t );
 }
 
 Sema::Type const * FunctionDeclarator::analyze( Env &env,
@@ -68,14 +70,6 @@ Sema::Type const * FunctionDeclarator::analyze( Env &env,
 Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
   const
 {
-  env.pushScope();
-  env.insert( tok.sym );
-  Scope * testScope = env.popScope();
-  assert ( testScope->getIdMap().size() > 0 );
-  assert ( !env.lookup( tok.sym ) );
-  env.pushScope( testScope );
-  assert ( !env.lookup( tok.sym ) );
-  env.popScope();
   if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
   {
     if ( dynamic_cast< FuncType const * const >( funcType->retType ) )

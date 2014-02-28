@@ -1205,7 +1205,7 @@ ExtDecl const * Parser::parseExtDecl()
 
         functionDeclarator = false;
         nameless_param = NULL;
-        Declarator const * const declarator = parseDeclarator();
+        Declarator const * declarator = parseDeclarator();
         switch ( current->kind )
         {
           case TK::SCol:
@@ -1223,7 +1223,11 @@ ExtDecl const * Parser::parseExtDecl()
           case TK::LBrace:
             {
               if ( ! functionDeclarator )
+              {
+                declarator = factory.getFunctionDeclarator( tok, NULL,
+                    factory.getParamList() );
                 ERROR( "'(' [parameter-list] ')'" );
+              }
               if ( nameless_param )
               {
                 ERROR( ";" );
