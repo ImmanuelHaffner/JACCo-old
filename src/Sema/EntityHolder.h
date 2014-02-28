@@ -40,7 +40,7 @@ namespace C4
       void attachEntity( Entity const * entity );
 
       /// \return the attached entity, or NULL if no entity was attached yet
-      Entity const * getEntity();
+      Entity const * getEntity() const;
 
       private:
       Entity const * entity;

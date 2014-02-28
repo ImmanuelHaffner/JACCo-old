@@ -22,7 +22,7 @@ void EntityHolder::attachEntity( Entity const * entity )
   this->entity = entity;
 }
 
-Entity const* EntityHolder::getEntity()
+Entity const* EntityHolder::getEntity() const
 {
   return entity;
 }
