@@ -18,18 +18,35 @@
 
 namespace C4
 {
+  // Forward declarations
+  struct EntityHolder;
+
   /// \brief Used to map identifiers to types, values, and anything else.
   struct Entity
   {
-    Entity() : type(NULL) {}
+    Entity() : type(NULL), parent(NULL) {}
 
     Entity( Sema::Type const * const type ) :
-      type(type)
+      type(type), parent(NULL)
     {}
 
     ~Entity() {}
 
-    Sema::Type const * type;
+    void attachParent( EntityHolder const * const p )
+    {
+      assert( ! this->parent && "the entity already has a parent" );
+      parent = p;
+    }
+
+    inline EntityHolder const * getParent() const
+    {
+      return parent;
+    }
+
+    Sema::Type const *type;
+
+    private:
+    EntityHolder const *parent;
   };
 } // end namespace C4
 

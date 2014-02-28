@@ -15,6 +15,7 @@
 #include "../util.h"
 #include <vector>
 #include "../Sema/Env.h"
+#include "../Support/EntityHolder.h"
 
 namespace C4
 {
@@ -139,7 +140,7 @@ namespace C4
     }; // end struct Declarator
 
     /// Identifier
-    struct Identifier : Declarator
+    struct Identifier : Declarator, EntityHolder
     {
       Identifier( Lex::Token const &tok ) : Declarator(tok) {}
       ~Identifier() {}
