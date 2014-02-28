@@ -161,7 +161,9 @@ namespace C4
           Declarator const * const declarator = NULL )
       {
         Decl const * const decl = new Decl( tok, typeSpec, declarator );
+#ifndef NOSEMA
         decl->analyze( env );
+#endif
         return decl;
       }
 
@@ -197,6 +199,11 @@ namespace C4
           std::vector< ParamDecl const * > &params )
       {
         return new ParamList( params );
+      }
+
+      inline ParamList const * getParamList()
+      {
+        return new ParamList();
       }
 
       inline Identifier const * getIdentifier( TOK )

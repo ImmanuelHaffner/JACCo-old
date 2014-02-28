@@ -612,55 +612,59 @@ Declarator const * Parser::parseDeclarator(
     DeclaratorType const dt /*= NORMAL*/ )
 {
   Token const tok( *current );
-  Declarator const * declarator = NULL;
-  ParamList const * paramList = NULL;
+  Declarator const *declarator = NULL;
 
   switch ( current->kind )
   {
     case TK::LPar:
-      readNextToken(); // eat '('
-      if ( dt == DeclaratorType::NORMAL )
-        declarator = parseDeclarator( dt );
-      else
       {
-        switch ( current->kind )
+        readNextToken(); // eat '('
+        bool isParamList = false;
+
+        if ( dt == DeclaratorType::NORMAL )
+          declarator = parseDeclarator( dt ); // regular sub-declarator
+        else
         {
-          /* Empty parameter list: '(' ')'
-          */
-          case TK::RPar:
-            paramList = new ParamList();
-            break;
+          switch ( current->kind )
+          {
+            /* Empty parameter list: '(' ')'
+             */
+            case TK::RPar:
+              functionDeclarator = true;
+              declarator = factory.getFunctionDeclarator( tok, NULL,
+                  factory.getParamList() );
+              isParamList = true;
+              break;
 
             /* Non-empty parameter list.
-            */
-          case TK::Void:
-          case TK::Char:
-          case TK::Int:
-          case TK::Struct:
-            paramList = parseParameterList();
-            break;
+             */
+            case TK::Void:
+            case TK::Char:
+            case TK::Int:
+            case TK::Struct:
+              functionDeclarator = true;
+              declarator = factory.getFunctionDeclarator( tok, NULL,
+                  parseParameterList() );
+              isParamList = true;
+              break;
 
-          case TK::Mul:
-            declarator = parsePointerDeclarator( dt );
-            break;
+            case TK::Mul:
+              declarator = parsePointerDeclarator( dt );
+              break;
 
-            /* Nested parenthesis.
-            */
-          case TK::LPar:
-          case TK::IDENTIFIER:
-            declarator = parseDeclarator( dt );
-            break;
+            /* Sub-declarator.
+             */
+            case TK::LPar:  // nested parenthesis
+            case TK::IDENTIFIER:
+              declarator = parseDeclarator( dt );
+              break;
 
-          default:
-            ERROR( "declarator or parameter-list" );
-        } // end switch
-      }
-      accept( TK::RPar ); // eat ')'
-      if ( paramList )
-      {
-        declarator = factory.getFunctionDeclarator( tok, declarator,
-            paramList );
-        paramList = NULL;
+            default:
+              ERROR( "declarator or parameter-list" );
+          } // end switch
+        }
+        accept( TK::RPar ); // eat ')'
+        if ( isParamList ) return declarator;
       }
       break;
 
@@ -693,8 +697,7 @@ Declarator const * Parser::parseDeclarator(
       } // end switch
   } // end switch
 
-  /* Read parameter-list suffix, if it exists and we did not already parse a
-   * parameter list.
+  /* Read parameter-list suffix, if it exists.
    */
   if ( current->kind == TK::LPar )
   {
@@ -702,14 +705,18 @@ Declarator const * Parser::parseDeclarator(
     switch ( current->kind )
     {
       case TK::RPar:
-        paramList = new ParamList();
+        functionDeclarator = true;
+        declarator = factory.getFunctionDeclarator( tok, declarator,
+            factory.getParamList() );
         break;
 
       case TK::Void:
       case TK::Char:
       case TK::Int:
       case TK::Struct:
-        paramList = parseParameterList();
+        functionDeclarator = true;
+        declarator = factory.getFunctionDeclarator( tok, declarator,
+            parseParameterList() );
         break;
 
       default:
@@ -717,13 +724,9 @@ Declarator const * Parser::parseDeclarator(
 
     } // end switch
     accept( TK::RPar ); // eat ')'
+    return declarator;
   }
 
-  if ( paramList )
-  {
-    functionDeclarator = true;
-    return factory.getFunctionDeclarator( tok, declarator, paramList );
-  }
   if ( declarator ) return declarator;
   return factory.getIllegalDeclarator( *current );
 } // end parseDeclarator
