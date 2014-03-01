@@ -60,17 +60,29 @@ namespace C4
 
       inline Variable const * getVariable( TOK )
       {
-        return new Variable( tok );
+        Variable * variable = new Variable( tok );
+#ifndef NOSEMA
+        variable->analyze(env);
+#endif
+        return variable;
       }
 
       inline Constant const * getConstant( TOK )
       {
-        return new Constant( tok );
+        Constant *constant = new Constant( tok );
+#ifndef NOSEMA
+        constant->analyze();
+#endif
+        return constant;
       }
 
       inline StringLiteral const * getStringLiteral( TOK )
       {
-        return new StringLiteral( tok );
+        StringLiteral *string = new StringLiteral( tok );
+#ifndef NOSEMA
+        string->analyze();
+#endif
+        return string;
       }
 
       inline BinaryExpr const * getBinaryExpr( TOK, Expr const * const lhs,

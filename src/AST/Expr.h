@@ -12,6 +12,7 @@
 #include <iostream>
 #include "List.h"
 #include "Locatable.h"
+#include "../Support/EntityHolder.h"
 
 
 namespace C4
@@ -24,10 +25,12 @@ namespace C4
 
 
     /// Expression
-    struct Expr : Locatable
+    struct Expr : Locatable, EntityHolder
     {
       explicit Expr( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Expr() {}
+
+      bool isLvalue;
     }; // end struct Expression
 
 
@@ -66,6 +69,7 @@ namespace C4
       ~Variable() {}
 
       void print( Printer const p ) const;
+      void analyze(Sema::Env &env);
     }; // end struct Variable
 
 
@@ -79,6 +83,7 @@ namespace C4
       ~Constant() {}
 
       void print( Printer const p ) const;
+      void analyze();
     }; // end struct Constant
 
 
@@ -93,6 +98,7 @@ namespace C4
       ~StringLiteral() {}
 
       void print( Printer const p ) const;
+      void analyze();
     }; // end struct StringLiteral
 
 
@@ -135,6 +141,7 @@ namespace C4
       ~AssignmentExpr() {};
 
       virtual void print( Printer const ) const;
+      void analyze();
     }; // end struct AssignmentExpr
 
 
@@ -222,6 +229,7 @@ namespace C4
       ~FunctionCall() {}
 
       void print( Printer const p ) const;
+      void analyze();
 
       Expr const * const fun;
       Expr const * const args;
