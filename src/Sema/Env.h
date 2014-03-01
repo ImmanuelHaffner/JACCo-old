@@ -30,7 +30,7 @@ namespace C4
 
   namespace Sema
   {
-    /// Maps symbols to types 
+    /// Maps symbols to types
     typedef std::unordered_map< Symbol, Type const * > TypeTable;
 
     /// Maps symbols to entities
@@ -72,7 +72,7 @@ namespace C4
     /// Defines an environment class, that keeps track of the scopes.
     struct Env
     {
-      Env() { pushScope(); /* create global scope */ }
+      Env() { pushScope(); /* create global scope */ pushFunction( NULL ); }
       ~Env() {}
 
       /// \brief Pushes a new, empty scope onto the stack.
@@ -80,9 +80,12 @@ namespace C4
 
       /// \brief Pushes the given scope onto the stack.
       void pushScope( Scope * const scope );
-      
+
       /// \brief Pops the topmost scope from the stack.
       Scope * popScope();
+
+      /// \brief Returns a pointer to the top scope
+      Scope * topScope();
 
       /// \return the depth of the scope stack, including the global scope
       inline size_t depth() const { return scopeStack.size(); }
@@ -103,7 +106,7 @@ namespace C4
       /// Inserts a new mapping from id to a new created entity to the
       /// identifier map.
       ///
-      /// \return NULL iff the id was already mapped in the current scope, the 
+      /// \return NULL iff the id was already mapped in the current scope, the
       /// pointer to the created entity otherwise
       Entity * insert( Symbol const id );
 
@@ -112,10 +115,22 @@ namespace C4
       ///
       /// \return false iff the identifier was already mapped, true otherwise
       bool insert( Symbol const typeName, Type const * const type );
-      
+
+      /// push entity of function currently parsed
+      void pushFunction( Entity * );
+
+      /// \return entitiy of function currently parsed
+      Entity * topFunction();
+
+      /// \return entitiy of function currently parsed, and remove it from stack
+      Entity * popFunction();
+
+
+
       private:
       std::vector< Scope * > scopeStack;
       std::vector< AST::IterationStmt > iterStmtStack;
+      std::vector< Entity * > functionStack;
     };
   }
 }

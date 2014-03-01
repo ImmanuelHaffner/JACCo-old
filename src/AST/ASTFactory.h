@@ -252,6 +252,9 @@ namespace C4
           CompoundStmt const * const compStmt )
       {
         FunctionDef const * const funDef = new FunctionDef( decl, compStmt );
+#ifndef NOSEMA
+        funDef->analyze( env );
+#endif
         return funDef;
       }
 

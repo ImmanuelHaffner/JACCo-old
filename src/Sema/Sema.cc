@@ -21,10 +21,16 @@ using namespace Sema;
 
 
 static int parameterDepth = 0;
+static std::vector< std::pair< Entity const *, 
+  ParamDecl const * > > nameless_params;
 
 #define ERROR( MSG ) \
 { std::ostringstream actual; \
   errorf( this->tok.pos, "%s", ( MSG ) ); }
+
+#define ERROR_TOK( TOK, MSG ) \
+{ std::ostringstream actual; \
+  errorf( ( TOK ).pos, "%s", ( MSG ) ); }
 
 
 //===----------------------------------------------------------------------===//
@@ -50,6 +56,8 @@ Sema::Type const * FunctionDeclarator::analyze( Env &env,
     Sema::Type const * const t ) const
 {
   env.pushScope();
+  if ( parameterDepth == 0 )
+    nameless_params.clear();
   std::vector<Sema::Type const *> paramTypes = params->analyze( env );
   Scope * const paramScope = env.popScope();
   Sema::Type const * funType = TypeFactory::getFunc( t, paramTypes );
@@ -77,8 +85,7 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
     if ( dynamic_cast< FuncType const * const >( funcType->retType ) )
     {
       std::ostringstream oss;
-      oss << "function '" << this
-        << "' may not be declared with function as return type: "
+      oss << this << "\nfunction may not be declared with function return type "
         << funcType->retType;
       ERROR( oss.str().c_str() );
     }
@@ -89,6 +96,8 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
     {
       entity->type = t;
       entity->attachParent( this );
+      if ( parameterDepth == 0 )
+        env.pushFunction( entity );
     }
     else
     {
@@ -102,6 +111,8 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
       // Verify, that the identifier was mapped to a function type.
       if ( auto funcTypeOld = dynamic_cast< FuncType const * >( typeOld ) )
       {
+        if ( parameterDepth == 0 )
+          env.pushFunction( entityOld );
         // If the types differ, check whether the old type even had arguments.
         if ( funcTypeOld->argTypes != funcType->argTypes )
         {
@@ -191,6 +202,28 @@ Sema::Type const * IllegalDeclarator::analyze( Env &env, Sema::Type const * t ) 
 
 Sema::Type const * FunctionDef::analyze( Env &env ) const
 {
+  auto funDeclar = static_cast< FunctionDeclarator const * >( decl->declarator );
+  /*Scope * paramScope = env.popScope();
+  funDeclar->params->
+  if ( paramScope->getIdMap().size() != funDeclar->params->size() )
+  {
+    std::ostringstream oss;
+    oss << "function '" << funDeclar->tok.sym.str() <<
+      "' misses one or more parameter names";
+    ERROR_TOK( funDeclar->tok, oss.str().c_str() );
+  }
+  env.pushScope( paramScope );*/
+  Entity * e = env.popFunction();
+  for ( std::pair< Entity const *, ParamDecl const * > &it : nameless_params ) {
+    if ( it.first  == env.topFunction() )
+    {
+      std::ostringstream oss;
+      oss << "function '" << funDeclar->tok.sym.str() <<
+        "' misses parameter name for " << it.second->tok.sym; //it
+      ERROR_TOK( it.second->tok, oss.str().c_str() );
+    }
+  }
+  env.pushFunction( e );
   return NULL;
 }
 
@@ -203,7 +236,7 @@ void StructDeclList::analyze( Env &env ) const
     it->analyze( env );
     env.popScope();
   }
-} 
+}
 
 Sema::Type const * StructDecl::analyze( Env &env ) const {
   Sema::Type const * const t = typeSpec->analyze( env );
@@ -222,10 +255,15 @@ void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
   Sema::Type const * t = typeSpec->analyze( env );
+  size_t scopeSize1 = env.topScope()->getIdMap().size();
   if ( declarator )
   {
     t = declarator->analyze( env, t );
   }
+  size_t scopeSize2 = env.topScope()->getIdMap().size();
+  if ( t != TypeFactory::getVoid() && parameterDepth == 1 && scopeSize1
+      == scopeSize2 )
+    nameless_params.push_back( std::make_pair( env.topFunction(), this ) );
   return t;
 }
 

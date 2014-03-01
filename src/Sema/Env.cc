@@ -78,6 +78,12 @@ Scope * Env::popScope()
   return scope; 
 }
 
+Scope * Env::topScope()
+{
+  Scope * const scope = scopeStack.back();
+  return scope;
+}
+
 Entity * Env::lookup( Symbol const id )
 {
   // iterate over all scopes, starting with the last
@@ -109,4 +115,21 @@ bool Env::insert( Symbol const id, Type const * const type )
 {
   // Insert into the top-most scope.
   return scopeStack.back()->insert( id, type );
+}
+
+void Env::pushFunction( Entity * e )
+{
+  functionStack.push_back( e );
+}
+
+Entity * Env::topFunction()
+{
+  return functionStack.back();
+}
+
+Entity * Env::popFunction()
+{
+  Entity * e = functionStack.back();
+  functionStack.pop_back();
+  return e;
 }
