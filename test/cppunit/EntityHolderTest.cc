@@ -1,6 +1,6 @@
 #include "EntityHolderTest.h"
 
-#include "../../src/Sema/EntityHolder.h"
+#include "../../src/Support/EntityHolder.h"
 #include <cstdio>
 
 // register this test
@@ -12,7 +12,7 @@ using namespace Sema;
 void EntityHolderTest::testAttach()
 {
   EntityHolder h;
-  Entity const * e = new Entity();
+  Entity *e = new Entity();
   h.attachEntity( e );
   CPPUNIT_ASSERT_EQUAL( e, h.getEntity() );
 }
