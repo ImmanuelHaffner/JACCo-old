@@ -75,8 +75,11 @@ void Variable::analyze(Env &env)
   {
     this->attachEntity(entity);
     //§6.5.1.2 - An identifier is lvalue if not a function designator.
-    // The identifier of functions use the object Identifier.
-    this->isLvalue = true;
+    Type const *objectType = dynamic_cast<ObjType const *>(entity->type);
+    if(objectType != NULL)
+    {
+      this->isLvalue = true;
+    }
   }
 }
 
