@@ -39,8 +39,9 @@ static std::vector< std::pair< Entity const *,
 //
 //===----------------------------------------------------------------------===//
 
-Sema::Type const * IllegalDecl::analyze() const
+Sema::Type const * IllegalDecl::analyze( Env & ) const
 {
+  assert( false && "not implemented yet" );
   return NULL;
 }
 
@@ -195,8 +196,9 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
   return t;
 }
 
-Sema::Type const * IllegalDeclarator::analyze( Env &env, Sema::Type const * t ) const
+Sema::Type const * IllegalDeclarator::analyze( Env &, Sema::Type const * ) const
 {
+  assert( false && "not implemented yet" );
   return NULL;
 }
 
@@ -239,7 +241,7 @@ void StructDeclList::analyze( Env &env ) const
 }
 
 Sema::Type const * StructDecl::analyze( Env &env ) const {
-  Sema::Type const * const t = typeSpec->analyze();
+  Sema::Type const * const t = typeSpec->analyze( env );
   if ( structDeclarators )
     structDeclarators->analyze( env, t );
   //we could do it better (for declarator lists), but probably won't need it
@@ -254,7 +256,7 @@ void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 
 Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
-  Sema::Type const * t = typeSpec->analyze();
+  Sema::Type const * t = typeSpec->analyze( env );
   size_t scopeSize1 = env.topScope()->getIdMap().size();
   if ( declarator )
   {
@@ -318,7 +320,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
 }
 
 
-Sema::Type const * TypeSpecifier::analyze() const
+Sema::Type const * TypeSpecifier::analyze( Env & ) const
 {
   switch( tok.kind )
   {
@@ -329,18 +331,20 @@ Sema::Type const * TypeSpecifier::analyze() const
     case Lex::TK::Char:
       return TypeFactory::getChar();
     default:
-      return NULL;
+      assert( false && "unknown type, should be unreachable" );
   }
+  return NULL;
 }
 
-Sema::Type const * IllegalTypeSpecifier::analyze() const
+Sema::Type const * IllegalTypeSpecifier::analyze( Env & ) const
 {
+  assert( false && "not implemented yet" );
   return NULL;
 }
 
 Sema::Type const * Decl::analyze( Env &env ) const
 {
-  Sema::Type const * const t = typeSpec->analyze();
+  Sema::Type const * const t = typeSpec->analyze( env );
   if ( declarator )
     return declarator->analyze( env, t );
   return t;
