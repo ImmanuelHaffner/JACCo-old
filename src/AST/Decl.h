@@ -6,22 +6,35 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_DECL_H
 #define C4_DECL_H
 
+
 #include <iostream>
+#include <vector>
 #include "Locatable.h"
 #include "List.h"
 #include "../util.h"
-#include <vector>
-#include "../Sema/Env.h"
 #include "../Support/EntityHolder.h"
+
 
 namespace C4
 {
+  /* Forward declarations */
+  namespace Sema
+  {
+    struct Env;
+  }
+
+  namespace CodeGen
+  {
+    struct CodeGenFunction;
+  }
+
   namespace AST
   {
-    // Forward declarations
+    /* Forward declarations */
     struct TypeSpecifier;
     struct CompoundStmt;
 
@@ -31,6 +44,8 @@ namespace C4
     struct ExtDecl : Printable
     {
       virtual ~ExtDecl() {}
+
+      virtual void emit( CodeGen::CodeGenFunction &CGF ) const;
     }; // end struct ExtDecl
 
 

@@ -16,9 +16,15 @@
 
 namespace C4
 {
+  /* Forward declarations */
+  namespace CodeGen
+  {
+    struct CodeGenFunction;
+  }
+
   namespace AST
   {
-    // Forward Declaration
+    /* Forward declarations */
     struct ExtDecl;
 
     /// Translation Unit
@@ -33,6 +39,7 @@ namespace C4
       ~TranslationUnit() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
     }; // end struct TranslationUnit
   } // end namespace AST
 } // end namespace C4

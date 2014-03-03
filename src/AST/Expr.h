@@ -6,8 +6,10 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_EXPR_H
 #define C4_EXPR_H
+
 
 #include <iostream>
 #include "List.h"
@@ -19,7 +21,7 @@ namespace C4
 {
   namespace AST
   {
-    // Forward declaration
+    /* Forward declarations */
     struct TypeName;
 
 

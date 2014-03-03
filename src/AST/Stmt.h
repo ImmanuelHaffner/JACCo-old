@@ -20,7 +20,7 @@ namespace C4
 {
   namespace AST
   {
-    // Forward declaration
+    /* Forward declarations */
     struct Expr;
     struct Decl;
     struct DeclList;

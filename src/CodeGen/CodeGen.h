@@ -31,7 +31,8 @@ namespace C4
     struct CodeGenFunction
     {
       CodeGenFunction( char const * const fileName )
-        : Context( getGlobalContext() ), M( fileName, Context )
+        : Context( getGlobalContext() ), M( fileName, Context ),
+        Builder( getGlobalContext() )
       {}
 
       ~CodeGenFunction() {}
@@ -42,6 +43,9 @@ namespace C4
 
       /* A Module (only one needed) */
       Module M;
+
+      /* An IR-Builder to output intermediate instructions or types. */
+      IRBuilder<> Builder;
     };
   } // end namespace CodeGen
 } // end namespace C4
