@@ -39,8 +39,9 @@ static std::vector< std::pair< Entity const *,
 //
 //===----------------------------------------------------------------------===//
 
-Sema::Type const * IllegalDecl::analyze( Env &env ) const
+Sema::Type const * IllegalDecl::analyze( Env & ) const
 {
+  assert( false && "not implemented yet" );
   return NULL;
 }
 
@@ -195,8 +196,9 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
   return t;
 }
 
-Sema::Type const * IllegalDeclarator::analyze( Env &env, Sema::Type const * t ) const
+Sema::Type const * IllegalDeclarator::analyze( Env &, Sema::Type const * ) const
 {
+  assert( false && "not implemented yet" );
   return NULL;
 }
 
@@ -318,7 +320,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
 }
 
 
-Sema::Type const * TypeSpecifier::analyze( Env &env ) const
+Sema::Type const * TypeSpecifier::analyze( Env & ) const
 {
   switch( tok.kind )
   {
@@ -329,12 +331,14 @@ Sema::Type const * TypeSpecifier::analyze( Env &env ) const
     case Lex::TK::Char:
       return TypeFactory::getChar();
     default:
-      return NULL;
+      assert( false && "unknown type, should be unreachable" );
   }
+  return NULL;
 }
 
-Sema::Type const * IllegalTypeSpecifier::analyze( Env &env ) const
+Sema::Type const * IllegalTypeSpecifier::analyze( Env & ) const
 {
+  assert( false && "not implemented yet" );
   return NULL;
 }
 
