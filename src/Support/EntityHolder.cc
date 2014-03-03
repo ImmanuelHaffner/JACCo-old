@@ -10,19 +10,25 @@
 #include "EntityHolder.h"
 #include <cassert>
 
+
 using namespace C4;
 using namespace Sema;
 
 
-void EntityHolder::attachEntity( Entity const * entity )
+void EntityHolder::attachEntity( Entity * const entity )
 {
-  assert( ! this->entity ); // check that entity was not assigned yet
-    //throw EntityHolderException(); // REVIEW don't we want to assert instead of
-                                   // throwing an exception
+  // check that entity was not assigned yet
+  assert( ! this->entity &&
+      "an entity has already been assigned to this holder ");
+
   this->entity = entity;
+
+  // If the entity does not yet have a parent, make this holder the parent.
+  if ( ! entity->getParent() )
+    entity->attachParent( this );
 }
 
-Entity const* EntityHolder::getEntity()
+Entity * EntityHolder::getEntity() const
 {
   return entity;
 }

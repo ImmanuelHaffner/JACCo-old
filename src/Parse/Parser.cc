@@ -486,10 +486,19 @@ Decl const * Parser::parseDecl()
   Token tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   Declarator const * declarator = NULL;
+  Entity * currentFunction = env.topFunction();
+  functionDeclarator = false;
   if ( current->kind != TK::SCol )
     declarator = parseDeclarator();
   accept( TK::SCol ); // eat ';'
-  return factory.getDecl( tok, typeSpec, declarator );
+  Decl const * decl = factory.getDecl( tok, typeSpec, declarator );
+#ifndef NOSEMA
+  if ( functionDeclarator )
+    env.popScope();
+  if ( currentFunction != env.topFunction() )
+    env.popFunction();
+#endif
+  return decl;
 } // end parseDecl
 
 TypeSpecifier const * Parser::parseTypeSpecifier()
@@ -628,7 +637,7 @@ Declarator const * Parser::parseDeclarator(
           switch ( current->kind )
           {
             /* Empty parameter list: '(' ')'
-             */
+            */
             case TK::RPar:
               functionDeclarator = true;
               declarator = factory.getFunctionDeclarator( tok, NULL,
@@ -636,8 +645,8 @@ Declarator const * Parser::parseDeclarator(
               isParamList = true;
               break;
 
-            /* Non-empty parameter list.
-             */
+              /* Non-empty parameter list.
+              */
             case TK::Void:
             case TK::Char:
             case TK::Int:
@@ -652,8 +661,8 @@ Declarator const * Parser::parseDeclarator(
               declarator = parsePointerDeclarator( dt );
               break;
 
-            /* Sub-declarator.
-             */
+              /* Sub-declarator.
+              */
             case TK::LPar:  // nested parenthesis
             case TK::IDENTIFIER:
               declarator = parseDeclarator( dt );
@@ -698,7 +707,7 @@ Declarator const * Parser::parseDeclarator(
   } // end switch
 
   /* Read parameter-list suffix, if it exists.
-   */
+  */
   if ( current->kind == TK::LPar )
   {
     readNextToken(); // eat '('
@@ -1199,7 +1208,8 @@ ExtDecl const * Parser::parseExtDecl()
 
         functionDeclarator = false;
         nameless_param = NULL;
-        Declarator const * const declarator = parseDeclarator();
+        Entity * currentFunction = env.topFunction();
+        Declarator const * declarator = parseDeclarator();
         switch ( current->kind )
         {
           case TK::SCol:
@@ -1210,6 +1220,8 @@ ExtDecl const * Parser::parseExtDecl()
 #ifndef NOSEMA
               if ( functionDeclarator )
                 env.popScope();
+              if ( currentFunction != env.topFunction() )
+                env.popFunction();
 #endif
               return decl;
             }
@@ -1217,19 +1229,22 @@ ExtDecl const * Parser::parseExtDecl()
           case TK::LBrace:
             {
               if ( ! functionDeclarator )
-                ERROR( "'(' [parameter-list] ')'" );
-              if ( nameless_param )
               {
-                ERROR( ";" );
+                declarator = factory.getFunctionDeclarator( tok, NULL,
+                    factory.getParamList() );
+                ERROR( "'(' [parameter-list] ')'" );
               }
               Decl const * const decl = factory.getDecl( tok, typeSpec,
                   declarator);
               CompoundStmt const * const cStmt = parseCompoundStmt();
+              FunctionDef const * const funDef = factory.getFunctionDef( decl, cStmt );
               //pop parameter scope
 #ifndef NOSEMA
               env.popScope();
+              if ( currentFunction != env.topFunction() )
+                env.popFunction();
 #endif
-              return factory.getFunctionDef( decl, cStmt );
+              return funDef;
             }
 
           default:

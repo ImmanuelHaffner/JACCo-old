@@ -9,10 +9,12 @@
 #ifndef C4_SEMA_H
 #define C4_SEMA_H
 
+
 #include <cstring>
 #include "../AST/AST.h"
 #include "Env.h"
 #include "TypeFactory.h"
+
 
 namespace C4
 {
@@ -28,5 +30,6 @@ namespace C4
     };
   } // end namespace Sema
 } // end namespace C4
+
 
 #endif

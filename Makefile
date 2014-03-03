@@ -53,7 +53,7 @@ all: $(BIN)
 -include $(TEST_DEP)
 
 
-ifneq ($(SEMA), 1)
+ifeq ($(SEMA), 0)
 	CXXFLAGS += -DNOSEMA
 endif
 
@@ -111,8 +111,10 @@ check-nosema: check check-lexer check-parser check-printer
 
 check-all:
 	@echo "==> CHECK ALL"
-	@make check-nosema -j4
 	@make clean
+	@make check-nosema SEMA=0 -j4
+	@make clean
+	@make check-sema SEMA=1 -j4
 
 clean:
 	@echo "===> CLEAN"

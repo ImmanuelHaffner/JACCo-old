@@ -62,20 +62,26 @@ IdMap Scope::getIdMap()
 
 void Env::pushScope()
 {
-  scopeStack.push_back( Scope() );
+  scopeStack.push_back( new Scope() );
 }
 
-void Env::pushScope( Scope scope )
+void Env::pushScope( Scope * const scope )
 {
   scopeStack.push_back( scope );
 }
 
-Scope Env::popScope()
+Scope * Env::popScope()
 {
   assert( scopeStack.size() > 1 && "cannot pop the global scope" );
-  Scope &scope = scopeStack.back();
+  Scope * const scope = scopeStack.back();
   scopeStack.pop_back();
   return scope; 
+}
+
+Scope * Env::topScope()
+{
+  Scope * const scope = scopeStack.back();
+  return scope;
 }
 
 Entity * Env::lookup( Symbol const id )
@@ -83,7 +89,7 @@ Entity * Env::lookup( Symbol const id )
   // iterate over all scopes, starting with the last
   for ( auto scope = scopeStack.rbegin(); scope != scopeStack.rend(); ++scope )
   {
-    Entity * const entity = scope->lookup( id );
+    Entity * const entity = (*scope)->lookup( id );
     if ( entity ) return entity;
   }
   return NULL;
@@ -93,7 +99,7 @@ Type const * Env::lookupType( Symbol const id )
 {
   for ( auto scope = scopeStack.rbegin(); scope != scopeStack.rend(); ++scope )
   {
-    Type const *type = scope->lookupType( id );
+    Type const *type = (*scope)->lookupType( id );
     if ( type ) return type;
   }
   return NULL;
@@ -101,14 +107,29 @@ Type const * Env::lookupType( Symbol const id )
 
 Entity * Env::insert( Symbol const id )
 {
-  // Obtain the topmost scope.
-  Scope &scope = scopeStack.back();
-  return scope.insert( id );
+  // Insert into the top-most scope.
+  return scopeStack.back()->insert( id );
 }
 
 bool Env::insert( Symbol const id, Type const * const type )
 {
-  // Obtain the topmost scope.
-  Scope &scope = scopeStack.back();
-  return scope.insert( id, type );
+  // Insert into the top-most scope.
+  return scopeStack.back()->insert( id, type );
+}
+
+void Env::pushFunction( Entity * e )
+{
+  functionStack.push_back( e );
+}
+
+Entity * Env::topFunction()
+{
+  return functionStack.back();
+}
+
+Entity * Env::popFunction()
+{
+  Entity * e = functionStack.back();
+  functionStack.pop_back();
+  return e;
 }

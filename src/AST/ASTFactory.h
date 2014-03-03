@@ -21,7 +21,15 @@ namespace C4
   {
     struct ASTFactory
     {
-      ASTFactory( Sema::Env &env ) : env(env) {}
+      ASTFactory(
+#ifndef NOSEMA
+          Sema::Env &env
+#endif
+          )
+#ifndef NOSEMA
+        : env(env)
+#endif
+        {}
       ~ASTFactory() {}
 
 
@@ -52,17 +60,29 @@ namespace C4
 
       inline Variable const * getVariable( TOK )
       {
-        return new Variable( tok );
+        Variable * variable = new Variable( tok );
+#ifndef NOSEMA
+        variable->analyze(env);
+#endif
+        return variable;
       }
 
       inline Constant const * getConstant( TOK )
       {
-        return new Constant( tok );
+        Constant *constant = new Constant( tok );
+#ifndef NOSEMA
+        constant->analyze();
+#endif
+        return constant;
       }
 
       inline StringLiteral const * getStringLiteral( TOK )
       {
-        return new StringLiteral( tok );
+        StringLiteral *string = new StringLiteral( tok );
+#ifndef NOSEMA
+        string->analyze();
+#endif
+        return string;
       }
 
       inline BinaryExpr const * getBinaryExpr( TOK, Expr const * const lhs,
@@ -244,6 +264,9 @@ namespace C4
           CompoundStmt const * const compStmt )
       {
         FunctionDef const * const funDef = new FunctionDef( decl, compStmt );
+#ifndef NOSEMA
+        funDef->analyze( env );
+#endif
         return funDef;
       }
 
@@ -388,8 +411,10 @@ namespace C4
 
 #undef TOK
 
+#ifndef NOSEMA
       private:
       Sema::Env &env;
+#endif
     };
   } // end namespace AST
 } // end namespace C4
