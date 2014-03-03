@@ -24,11 +24,7 @@ namespace C4
   /// \brief Used to map identifiers to types, values, and anything else.
   struct Entity
   {
-    Entity() : type(NULL), parent(NULL) {}
-
-    Entity( Sema::Type const * const type ) :
-      type(type), parent(NULL)
-    {}
+    Entity() {}
 
     ~Entity() {}
 
@@ -43,7 +39,8 @@ namespace C4
       return parent;
     }
 
-    Sema::Type const *type;
+    Sema::Type const *type = NULL;
+    bool global = false;
 
     private:
     EntityHolder const *parent;
