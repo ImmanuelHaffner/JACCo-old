@@ -39,7 +39,7 @@ static std::vector< std::pair< Entity const *,
 //
 //===----------------------------------------------------------------------===//
 
-Sema::Type const * IllegalDecl::analyze() const
+Sema::Type const * IllegalDecl::analyze( Env &env ) const
 {
   return NULL;
 }
@@ -239,7 +239,7 @@ void StructDeclList::analyze( Env &env ) const
 }
 
 Sema::Type const * StructDecl::analyze( Env &env ) const {
-  Sema::Type const * const t = typeSpec->analyze();
+  Sema::Type const * const t = typeSpec->analyze( env );
   if ( structDeclarators )
     structDeclarators->analyze( env, t );
   //we could do it better (for declarator lists), but probably won't need it
@@ -254,7 +254,7 @@ void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 
 Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
-  Sema::Type const * t = typeSpec->analyze();
+  Sema::Type const * t = typeSpec->analyze( env );
   size_t scopeSize1 = env.topScope()->getIdMap().size();
   if ( declarator )
   {
@@ -318,7 +318,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
 }
 
 
-Sema::Type const * TypeSpecifier::analyze() const
+Sema::Type const * TypeSpecifier::analyze( Env &env ) const
 {
   switch( tok.kind )
   {
@@ -333,14 +333,14 @@ Sema::Type const * TypeSpecifier::analyze() const
   }
 }
 
-Sema::Type const * IllegalTypeSpecifier::analyze() const
+Sema::Type const * IllegalTypeSpecifier::analyze( Env &env ) const
 {
   return NULL;
 }
 
 Sema::Type const * Decl::analyze( Env &env ) const
 {
-  Sema::Type const * const t = typeSpec->analyze();
+  Sema::Type const * const t = typeSpec->analyze( env );
   if ( declarator )
     return declarator->analyze( env, t );
   return t;
