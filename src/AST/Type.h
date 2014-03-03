@@ -53,7 +53,7 @@ namespace C4
       virtual ~TypeSpecifier() {}
 
       void print( Printer const p ) const;
-      virtual Sema::Type const * analyze( Sema::Env &env ) const;
+      virtual Sema::Type const * analyze() const;
     }; // end struct TypeSpecifier
 
 
@@ -64,7 +64,7 @@ namespace C4
       ~IllegalTypeSpecifier() {}
 
 			void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env ) const;
+      Sema::Type const * analyze() const;
 		}; // end struct TypeSpecifier
 
 

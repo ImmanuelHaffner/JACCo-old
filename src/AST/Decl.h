@@ -70,7 +70,7 @@ namespace C4
       ~IllegalDecl() {}
 
       void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env ) const;
+      Sema::Type const * analyze() const;
     }; // end IllegalDecl
 
 
