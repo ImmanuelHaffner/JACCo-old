@@ -48,6 +48,8 @@ Sema::Type const * IllegalDecl::analyze( Env & ) const
 Sema::Type const * PointerDeclarator::analyze( Env &env,
     Sema::Type const * const t ) const
 {
+  if ( t == NULL )
+    return NULL;
   if ( declarator )
     return declarator->analyze( env, TypeFactory::getPtr( t ) );
   return TypeFactory::getPtr( t );
@@ -60,6 +62,13 @@ Sema::Type const * FunctionDeclarator::analyze( Env &env,
   if ( parameterDepth == 0 )
     nameless_params.clear();
   std::vector<Sema::Type const *> paramTypes = params->analyze( env );
+  if ( t == NULL )
+  {
+    if ( parameterDepth != 0 )
+      env.popScope();
+    return NULL;
+  }
+
   Scope * const paramScope = env.popScope();
   Sema::Type const * funType = TypeFactory::getFunc( t, paramTypes );
   if ( parameterDepth > 0 )
@@ -339,7 +348,7 @@ Sema::Type const * TypeSpecifier::analyze( Env & ) const
 Sema::Type const * IllegalTypeSpecifier::analyze( Env & ) const
 {
   assert( false && "not implemented yet" );
-  return NULL;
+  return TypeFactory::getVoid(); 
 }
 
 Sema::Type const * Decl::analyze( Env &env ) const
