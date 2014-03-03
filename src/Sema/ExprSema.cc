@@ -76,7 +76,8 @@ void AssignmentExpr::analyze()
   }
 
   //§6.5.16.p3 - The type of assignment is type of lhs
-  Entity *entity = new Entity(lhs->getEntity()->type);
+  Entity *entity = new Entity();
+  entity->type = lhs->getEntity()->type;
   this->attachEntity(entity);
 }
 
@@ -103,7 +104,8 @@ void Variable::analyze(Env &env)
 void Constant::analyze()
 {
   //§6.4.4 - In our case both character and integer constant are of type int.
-  Entity *entity = new Entity(TypeFactory::getInt());
+  Entity *entity = new Entity();
+  entity->type = TypeFactory::getInt();
   this->attachEntity(entity);
   //§6.5.1.3
   this->isLvalue = false;
@@ -114,7 +116,8 @@ void StringLiteral::analyze()
   //§6.4.5 - The type of string literal is array type. Since we do not have
   //arrays in our restricted subset, we model it by char*.
   Type const *ch = TypeFactory::getChar();
-  Entity *entity = new Entity(TypeFactory::getPtr(ch));
+  Entity *entity = new Entity();
+  entity->type = TypeFactory::getPtr(ch);
   this->attachEntity(entity);
   //§6.5.1.4 - String literal is lvalue.
   this->isLvalue = true;
