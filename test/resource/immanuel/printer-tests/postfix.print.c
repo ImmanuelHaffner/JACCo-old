@@ -1,9 +1,17 @@
 int (foo())
 {
+	struct S
+	{
+		int a;
+	} x;
+	char (*a);
+	struct S (*p);
+	int y;
+	void (f());
 	(x.a);
-	(x->a);
-	(x++);
-	(x--);
-	(x[y]);
+	(p->a);
+	(y++);
+	(y--);
+	(a[y]);
 	(f(x, y));
 }

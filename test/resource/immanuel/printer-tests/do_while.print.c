@@ -1,5 +1,6 @@
 int (foo())
 {
+	int a;
 	do
 		;
 	while (a);
