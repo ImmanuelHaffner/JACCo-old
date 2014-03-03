@@ -7,6 +7,8 @@
 //===----------------------------------------------------------------------===//
 
 
+#include "CodeGen.h"
+
 #include "../AST/Decl.h"
 
 
@@ -16,7 +18,27 @@ using namespace Sema;
 using namespace CodeGen;
 
 
-void ExtDecl::emit( CodeGenFunction & ) const
+void IllegalExtDecl::emit( CodeGenFunction & ) const
+{
+  assert( false && "cannot emit code for illegal AST node" );
+}
+
+void Decl::emit( CodeGenFunction &CGF ) const
+{
+  assert( false && "not implemented yet" );
+}
+
+void StructDecl::emit( CodeGenFunction &CGF ) const
+{
+  assert( false && "not implemented yet" );
+}
+
+void ParamDecl::emit( CodeGenFunction &CGF ) const
+{
+  assert( false && "not implemented yet" );
+}
+
+void FunctionDef::emit( CodeGenFunction &CGF ) const
 {
   assert( false && "not implemented yet" );
 }

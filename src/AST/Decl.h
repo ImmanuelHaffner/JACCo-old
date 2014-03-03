@@ -45,7 +45,7 @@ namespace C4
     {
       virtual ~ExtDecl() {}
 
-      virtual void emit( CodeGen::CodeGenFunction &CGF ) const;
+      virtual void emit( CodeGen::CodeGenFunction &CGF ) const = 0;
     }; // end struct ExtDecl
 
 
@@ -56,6 +56,7 @@ namespace C4
       ~IllegalExtDecl() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction & ) const;
     }; // end struct IllegalExtDecl
 
 
@@ -72,6 +73,7 @@ namespace C4
 
 			virtual void print( Printer const p ) const;
       virtual Sema::Type const * analyze( Sema::Env &env ) const;
+      virtual void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       TypeSpecifier const * const typeSpec;
       Declarator const * const declarator;
@@ -100,7 +102,7 @@ namespace C4
         List(decls) {}
 
 			void print( Printer const p ) const;
-      void analyze( Sema::Env &env ) const;
+      void analyze( Sema::Env &env ) const; 
 		}; // end struct StructDeclList
 
     /// Struct Declaration
@@ -116,6 +118,7 @@ namespace C4
 
 			void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 		}; // end struct StructDecl
 
 
@@ -131,6 +134,7 @@ namespace C4
 
 			void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 		}; // end struct ParamDecl
 
     /// Parameter List
@@ -254,6 +258,7 @@ namespace C4
 
 			void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Decl const * const decl;
       CompoundStmt const * const compStmt;

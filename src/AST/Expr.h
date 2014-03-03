@@ -19,11 +19,16 @@
 
 namespace C4
 {
+  /* Forward declarations */
+  namespace Sema
+  {
+    struct Env;
+  }
+
   namespace AST
   {
     /* Forward declarations */
     struct TypeName;
-
 
 
     /// Expression
