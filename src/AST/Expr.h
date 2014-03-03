@@ -125,6 +125,7 @@ namespace C4
       ~ConditionalExpr() {}
 
       void print( Printer const ) const;
+      void analyze();
 
       Expr const * const cond;
       Expr const * const lhs;
