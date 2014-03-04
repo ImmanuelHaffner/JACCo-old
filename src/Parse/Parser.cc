@@ -486,13 +486,18 @@ Decl const * Parser::parseDecl()
   Token tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
   Declarator const * declarator = NULL;
+#ifndef NOSEMA
+  // Save the entity of the current function.
   Entity * currentFunction = env.topFunction();
+#endif
   functionDeclarator = false;
   if ( current->kind != TK::SCol )
     declarator = parseDeclarator();
   accept( TK::SCol ); // eat ';'
   Decl const * decl = factory.getDecl( tok, typeSpec, declarator );
 #ifndef NOSEMA
+  // No function definition, pop back top function and parameter
+  // scope.
   if ( functionDeclarator )
     env.popScope();
   if ( currentFunction != env.topFunction() )
@@ -1208,7 +1213,9 @@ ExtDecl const * Parser::parseExtDecl()
 
         functionDeclarator = false;
         nameless_param = NULL;
+#ifndef NOSEMA
         Entity * currentFunction = env.topFunction();
+#endif
         Declarator const * declarator = parseDeclarator();
         switch ( current->kind )
         {
@@ -1218,10 +1225,12 @@ ExtDecl const * Parser::parseExtDecl()
               Decl const * const decl = factory.getDecl( tok, typeSpec,
                   declarator );
 #ifndef NOSEMA
+              // No function definition, pop back top function and parameter
+              // scope.
               if ( functionDeclarator )
-                env.popScope();
+                env.popScope(); // pop parameter scope
               if ( currentFunction != env.topFunction() )
-                env.popFunction();
+                env.popFunction(); // pop top function
 #endif
               return decl;
             }

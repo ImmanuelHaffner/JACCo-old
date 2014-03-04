@@ -119,10 +119,13 @@ namespace C4
       /// push entity of function currently parsed
       void pushFunction( Entity * );
 
-      /// \return entitiy of function currently parsed
+      /// \return entitiy of the function currently parsed
       Entity * topFunction();
 
-      /// \return entitiy of function currently parsed, and remove it from stack
+      /// Returns the entity of the currently parsed function, and removes it
+      /// from the stack.
+      ///
+      /// \return entitiy of function currently parsed
       Entity * popFunction();
 
 
