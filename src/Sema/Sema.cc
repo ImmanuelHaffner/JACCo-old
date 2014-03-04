@@ -45,48 +45,65 @@ Sema::Type const * IllegalDecl::analyze( Env & ) const
   return NULL;
 }
 
-Sema::Type const * PointerDeclarator::analyze( Env &env,
+Entity const * PointerDeclarator::analyze( Env &env,
     Sema::Type const * const t ) const
 {
   if ( t == NULL )
     return NULL;
   if ( declarator )
     return declarator->analyze( env, TypeFactory::getPtr( t ) );
-  return TypeFactory::getPtr( t );
+
+  // If the pointer declarator has no sub-declarator, we need a temporary entity
+  // to ship the type information to the next upper declarator.
+  Entity * const entity = env.insert( "$" );
+  entity->type = TypeFactory::getPtr( t );
+  return entity;
 }
 
-Sema::Type const * FunctionDeclarator::analyze( Env &env,
+Entity const * FunctionDeclarator::analyze( Env &env,
     Sema::Type const * const t ) const
 {
-  env.pushScope();
   if ( parameterDepth == 0 )
     nameless_params.clear();
+
+  env.pushScope();
   std::vector<Sema::Type const *> paramTypes = params->analyze( env );
-  if ( t == NULL )
-  {
-    if ( parameterDepth != 0 )
-      env.popScope();
-    return NULL;
-  }
+
+  //if ( t == NULL )
+  //{
+    //if ( parameterDepth != 0 )
+      //env.popScope();
+    //return NULL;
+  //}
 
   Scope * const paramScope = env.popScope();
+
   Sema::Type const * funType = TypeFactory::getFunc( t, paramTypes );
   if ( parameterDepth > 0 )
   {
     //functions are interpreted as function pointers
     funType = TypeFactory::getPtr( funType );
   }
+
+  Entity const * entity = NULL;
+
   if ( declarator )
-    funType = declarator->analyze( env, funType );
+    entity = declarator->analyze( env, funType );
+
   if ( parameterDepth == 0 )
   {
     //we don't need this scope otherwise
     env.pushScope( paramScope );
   }
-  return funType;
+
+  if ( entity ) return entity;
+
+  Entity * entity2 = env.insert( "$" );
+  entity2->type = funType;
+  return entity2;
 }
 
-Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
+Entity const * Identifier::analyze( Env &env, Sema::Type const * const t )
   const
 {
   if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
@@ -95,8 +112,7 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
     if ( dynamic_cast< FuncType const * const >( funcType->retType ) )
     {
       std::ostringstream oss;
-      oss << this << "\nfunction may not be declared with function return type "
-        << funcType->retType;
+      oss << this << "\nfunction must not return a function";
       ERROR( oss.str().c_str() );
     }
 
@@ -108,6 +124,8 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
       entity->attachParent( this );
       if ( parameterDepth == 0 )
         env.pushFunction( entity );
+
+      return entity;
     }
     else
     {
@@ -123,6 +141,7 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
       {
         if ( parameterDepth == 0 )
           env.pushFunction( entityOld );
+
         // If the types differ, check whether the old type even had arguments.
         if ( funcTypeOld->argTypes != funcType->argTypes )
         {
@@ -130,9 +149,8 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
           // already, give an error message.
           if ( funcTypeOld->argTypes.size() > 0 )
           {
-            Entity const * const origin = env.lookup( tok.sym );
             auto other =
-              static_cast< Identifier const * >( origin->getParent() );
+              static_cast< Identifier const * >( entityOld->getParent() );
 
             std::ostringstream oss;
             oss << "function '" << this->tok.sym <<
@@ -152,9 +170,8 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
         // If the old type is not a function type, then the identifier has
         // already been declarad as variable.
 
-        Entity const * const origin = env.lookup( tok.sym );
         auto other =
-          static_cast< Identifier const * >( origin->getParent() );
+          static_cast< Identifier const * >( entityOld->getParent() );
 
         std::ostringstream oss;
         oss << "identifier '" << this->tok.sym.str() <<
@@ -162,14 +179,17 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
           << other->tok.pos;
         ERROR( oss.str().c_str() );
       }
+      return entityOld;
     }
   } // end if FuncType
   else
   {
-    if ( t == NULL || t == TypeFactory::getVoid() )
+    // If the type is not a function type, it must be a object type.
+    ObjType const * const objType = static_cast< ObjType const * >( t );
+    if ( t == NULL || objType->isComplete() )
     {
       std::ostringstream oss;
-      oss << "Cannot instantiate '" << this << "' with incomplete type";
+      oss << "cannot instantiate '" << this << "' with incomplete type";
       ERROR( oss.str().c_str() );
     }
 
@@ -179,6 +199,7 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
     {
       e->type = t;
       e->attachParent( this );
+      return e;
     }
     else
     {
@@ -200,12 +221,13 @@ Sema::Type const * Identifier::analyze( Env &env, Sema::Type const * const t )
           "' has already been declared at " << idOld->tok.pos;
         ERROR( oss.str().c_str() );
       }
+
+      return origin;
     }
-  }
-  return t;
+  } // end else ObjType
 }
 
-Sema::Type const * IllegalDeclarator::analyze( Env &, Sema::Type const * ) const
+Entity const * IllegalDeclarator::analyze( Env &, Sema::Type const * ) const
 {
   assert( false && "not implemented yet" );
   return NULL;
@@ -269,7 +291,7 @@ Sema::Type const * ParamDecl::analyze( Env &env ) const
   size_t scopeSize1 = env.topScope()->getIdMap().size();
   if ( declarator )
   {
-    t = declarator->analyze( env, t );
+    t = declarator->analyze( env, t )->type;
   }
   size_t scopeSize2 = env.topScope()->getIdMap().size();
   if ( t != TypeFactory::getVoid() && parameterDepth == 1 && scopeSize1
@@ -355,6 +377,6 @@ Sema::Type const * Decl::analyze( Env &env ) const
 {
   Sema::Type const * const t = typeSpec->analyze( env );
   if ( declarator )
-    return declarator->analyze( env, t );
+    return declarator->analyze( env, t )->type;
   return t;
 }
