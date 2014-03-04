@@ -263,13 +263,8 @@ Sema::Type const * FunctionDef::analyze( Env &env ) const
 
 void StructDeclList::analyze( Env &env ) const
 {
-  for ( auto &it : * this )
-  {
-    //Push parameter scope in case of function arguments
-    env.pushScope();
+  for ( auto it : * this )
     it->analyze( env );
-    env.popScope();
-  }
 }
 
 Sema::Type const * StructDecl::analyze( Env &env ) const {
