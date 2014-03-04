@@ -402,16 +402,14 @@ Sema::Type const * IllegalTypeSpecifier::analyze( Env & ) const
   return TypeFactory::getVoid();
 }
 
-Sema::Type const * Decl::analyze( Env &env )
+void Decl::analyze_nc( Env &env )
 {
   Sema::Type const * const t = typeSpec->analyze( env );
   if ( declarator )
   {
     Entity * e = declarator->analyze( env, t );
     attachEntity( e );
-    return e->type;
   }
-  return t;
 }
 
 void BreakStmt::analyze() const

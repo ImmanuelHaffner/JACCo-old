@@ -182,7 +182,7 @@ namespace C4
       {
         Decl * const decl = new Decl( tok, typeSpec, declarator );
 #ifndef NOSEMA
-        decl->analyze( env );
+        decl->analyze_nc( env );
 #endif
         return decl;
       }
