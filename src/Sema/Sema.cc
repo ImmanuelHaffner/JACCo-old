@@ -254,10 +254,21 @@ void FunctionDef::analyze( Env &env ) const
   }
   env.pushFunction( e );
 
+  // get entity of the defined function
   e = decl->getEntity();
+
+  //check if entity has function type
+  if ( ! dynamic_cast< FuncType const * >( e->type ) )
+  {
+    std::ostringstream oss;
+    oss << "identifier '" << e->getParent() << "' is no function " <<
+      e->getParent();
+    ERROR_TOK( funDeclar->tok, oss.str().c_str() );
+  }
+
+  // check if function was defined before
   if ( e->defined )
   {
-    // function was defined before
     std::ostringstream oss;
     oss << "function '" << funDeclar->tok.sym.str() <<
       "' was already defined before at " << e->getParent(); //it
@@ -268,6 +279,7 @@ void FunctionDef::analyze( Env &env ) const
     // mark function as defined
     e->defined = true;
   }
+
 }
 
 void StructDeclList::analyze( Env &env ) const
