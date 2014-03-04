@@ -429,7 +429,7 @@ void ContinueStmt::analyze() const
   if ( !Parser::isParsingIter() )
   {
     std::ostringstream oss;
-    oss << "break statement outside body of iteration statement";
+    oss << "continue statement outside body of iteration statement";
     ERROR( oss.str().c_str() );
   }
 }
