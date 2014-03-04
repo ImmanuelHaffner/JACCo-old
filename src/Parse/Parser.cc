@@ -486,7 +486,7 @@ Expr const * Parser::parseExpr()
 //  Declarations
 //
 
-Decl const * Parser::parseDecl()
+Decl * Parser::parseDecl()
 {
   Token tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
@@ -499,7 +499,7 @@ Decl const * Parser::parseDecl()
   if ( current->kind != TK::SCol )
     declarator = parseDeclarator();
   accept( TK::SCol ); // eat ';'
-  Decl const * decl = factory.getDecl( tok, typeSpec, declarator );
+  Decl * decl = factory.getDecl( tok, typeSpec, declarator );
 #ifndef NOSEMA
   // No function definition, pop back top function and parameter
   // scope.
@@ -1225,7 +1225,7 @@ ExtDecl const * Parser::parseExtDecl()
             ( current->kind == TK::END_OF_FILE || current->kind == TK::SCol ) )
         {
           accept( TK::SCol ); // eat ';'
-          Decl const * const decl = factory.getDecl( tok, typeSpec );
+          Decl * const decl = factory.getDecl( tok, typeSpec );
           return decl;
         }
 
@@ -1239,7 +1239,7 @@ ExtDecl const * Parser::parseExtDecl()
           case TK::SCol:
             {
               readNextToken(); // eat ';'
-              Decl const * const decl = factory.getDecl( tok, typeSpec,
+              Decl * const decl = factory.getDecl( tok, typeSpec,
                   declarator );
 #ifndef NOSEMA
               // No function definition, pop back top function and parameter
@@ -1260,7 +1260,7 @@ ExtDecl const * Parser::parseExtDecl()
                     factory.getParamList() );
                 ERROR( "'(' [parameter-list] ')'" );
               }
-              Decl const * const decl = factory.getDecl( tok, typeSpec,
+              Decl * const decl = factory.getDecl( tok, typeSpec,
                   declarator);
               CompoundStmt const * const cStmt = parseCompoundStmt();
               FunctionDef const * const funDef = factory.getFunctionDef( decl, cStmt );

@@ -156,7 +156,7 @@ namespace C4
 
       enum class DeclaratorType { NORMAL, ABSTRACT, UNKNOWN };
 
-      AST::Decl const * parseDecl();
+      AST::Decl * parseDecl();
       AST::TypeSpecifier const * parseTypeSpecifier();
       AST::TypeSpecifier const * parseStructSpecifier();
       AST::Decl const * parseStruct();

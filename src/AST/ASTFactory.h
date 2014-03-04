@@ -177,10 +177,10 @@ namespace C4
         return new IllegalExtDecl( tok );
       }
 
-      inline Decl const * getDecl( TOK, TypeSpecifier const * const typeSpec,
+      inline Decl * getDecl( TOK, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
       {
-        Decl const * const decl = new Decl( tok, typeSpec, declarator );
+        Decl * const decl = new Decl( tok, typeSpec, declarator );
 #ifndef NOSEMA
         decl->analyze( env );
 #endif
