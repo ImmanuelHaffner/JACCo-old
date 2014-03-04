@@ -1,5 +1,8 @@
 int (foo())
 {
+	int c;
+	int b;
+	int a;
 	do
 		do {
 			do

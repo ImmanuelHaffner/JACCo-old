@@ -153,7 +153,7 @@ namespace C4
       Declarator( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Declarator() {}
 
-      virtual Sema::Type const * analyze( Sema::Env &env,
+      virtual Entity const * analyze( Sema::Env &env,
 					Sema::Type const * const t )
         const = 0;
     }; // end struct Declarator
@@ -165,7 +165,7 @@ namespace C4
       ~Identifier() {}
 
       void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env, Sema::Type const * const t )
+      Entity const * analyze( Sema::Env &env, Sema::Type const * const t )
         const;
     }; // end struct Identifier
 
@@ -181,7 +181,7 @@ namespace C4
       ~PointerDeclarator() {}
 
 			void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env,
+      Entity const * analyze( Sema::Env &env,
 					Sema::Type const * const t ) const;
 
       Declarator const * const declarator;
@@ -200,7 +200,7 @@ namespace C4
       ~FunctionDeclarator() {}
 
       void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env,
+      Entity const * analyze( Sema::Env &env,
 					Sema::Type const * const t ) const;
 
       Declarator const * const declarator;
@@ -215,7 +215,7 @@ namespace C4
       ~IllegalDeclarator() {}
 
 			void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env, Sema::Type const * t ) const;
+      Entity const * analyze( Sema::Env &env, Sema::Type const * t ) const;
 		}; // end struct IllegalDeclarator
 
     /// Struct Declarator List

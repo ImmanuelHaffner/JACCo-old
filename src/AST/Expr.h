@@ -117,6 +117,7 @@ namespace C4
       virtual ~BinaryExpr() {}
 
       void print( Printer const p ) const;
+      void analyze();
 
       Expr const * const lhs;
       Expr const * const rhs;

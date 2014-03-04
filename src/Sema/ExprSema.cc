@@ -26,6 +26,9 @@ using namespace Sema;
 { std::ostringstream actual; \
   errorf( this->tok.pos, "%s", ( MSG ) ); }
 
+//TODO: Remove this macro
+#define returnIfEitherNull(e1, e2) if((e1) == NULL || (e2) == NULL) return;
+
 bool checkTypes(Type const  *lhs, Type const *rhs)
 {
   bool isCorrect = false;
@@ -168,6 +171,30 @@ void ConditionalExpr::analyze()
   this->isLvalue = false;
 }
   
+void BinaryExpr::analyze()
+{
+  returnIfEitherNull(lhs->getEntity(), rhs->getEntity());
+  Type const *lhsType = lhs->getEntity()->type;
+  Type const *rhsType = rhs->getEntity()->type;
+  if((this->tok).kind == Lex::TK::Mul)
+  {
+    //§6.5.5.p2 - The operands shall have arithmetic type.
+    if(dynamic_cast<ArithmeticType const *>(lhsType) == NULL ||
+       dynamic_cast<ArithmeticType const *>(rhsType) == NULL)
+    {
+      ERROR("The operands of * must be arithmetic.");
+    }
+    
+    //§6.5.5.p4 ? Make the resulting type as int our case.
+    Entity * const intEntity = new Entity();
+    intEntity->type = TypeFactory::getInt();
+    this->attachEntity(intEntity);
+
+    //? Assuming no lvalue.
+    this->isLvalue = false;
+  }
+}
+
 void FunctionCall::analyze()
 {
   //§6.5.2.2.5 - The function call expression has type of return type

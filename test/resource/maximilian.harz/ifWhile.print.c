@@ -1,5 +1,7 @@
 void (main())
 {
+	int x;
+	int y;
 	if (1)
 		while (3)
 			if (2) {

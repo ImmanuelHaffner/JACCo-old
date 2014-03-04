@@ -1,5 +1,7 @@
-int (f(int x, int y))
+int (f())
 {
+	int a;
+	int b;
 	if (1)
 		return 2;
 	else if ((a + b)) {
