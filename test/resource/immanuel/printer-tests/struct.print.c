@@ -1,7 +1,6 @@
 int (foo())
 {
 	struct S;
-	struct S s;
 	struct
 	{
 		int;

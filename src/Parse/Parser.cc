@@ -1042,6 +1042,7 @@ Stmt const * Parser::parseSelectionStmt()
 Stmt const * Parser::parseIterationStmt()
 {
 #ifndef NOSEMA
+  bool const temp = parsingIter;
   parsingIter = true;
 #endif
   Token const tok( *current );
@@ -1088,6 +1089,7 @@ Stmt const * Parser::parseIterationStmt()
         else
           iterStmt = factory.getForStmt( tok, initDecl, cond, step, body );
       }
+      break;
 
     case TK::While:
       {
@@ -1098,6 +1100,7 @@ Stmt const * Parser::parseIterationStmt()
         Stmt const * body = parseStmt(); // body
         iterStmt = factory.getWhileStmt( tok, cond, body );
       }
+      break;
 
     case TK::Do:
       {
@@ -1110,6 +1113,7 @@ Stmt const * Parser::parseIterationStmt()
         accept( TK::SCol ); // eat ';'
         iterStmt = factory.getDoStmt( tok, body, cond );
       }
+      break;
 
     default:
       ERROR( "'for', 'do' or 'while'" );
@@ -1117,7 +1121,7 @@ Stmt const * Parser::parseIterationStmt()
 
   } // end switch
 #ifndef NOSEMA
-  parsingIter = false;
+  parsingIter = temp;
 #endif
   return iterStmt;
 } // end parseIterationStmt

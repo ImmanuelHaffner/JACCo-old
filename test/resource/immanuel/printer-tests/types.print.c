@@ -2,8 +2,6 @@ char b;
 
 int c;
 
-struct S d;
-
 void (*e);
 
 char (*f);
@@ -16,7 +14,6 @@ struct S
 {
 	int x;
 	char (*y), z;
-	struct S s;
 	struct S (*t);
 } (*x);
 
