@@ -234,19 +234,14 @@ Entity * IllegalDeclarator::analyze( Env &, Sema::Type const * ) const
   return NULL;
 }
 
-Sema::Type const * FunctionDef::analyze( Env &env ) const
+void FunctionDef::analyze( Env &env ) const
 {
-  auto funDeclar = static_cast< FunctionDeclarator const * >( decl->declarator );
-  /*Scope * paramScope = env.popScope();
-  funDeclar->params->
-  if ( paramScope->getIdMap().size() != funDeclar->params->size() )
-  {
-    std::ostringstream oss;
-    oss << "function '" << funDeclar->tok.sym.str() <<
-      "' misses one or more parameter names";
-    ERROR_TOK( funDeclar->tok, oss.str().c_str() );
-  }
-  env.pushScope( paramScope );*/
+  auto funDeclar = static_cast< FunctionDeclarator const * >( decl->declarator
+      );
+  
+  // Check for missing parameter names
+  // When parsing parameter declarations, the function name is still unknown, so
+  // we have to check for the function below
   Entity * e = env.popFunction();
   for ( std::pair< Entity *, ParamDecl const * > &it : nameless_params ) {
     if ( it.first  == env.topFunction() )
@@ -273,7 +268,6 @@ Sema::Type const * FunctionDef::analyze( Env &env ) const
     // mark function as defined
     e->defined = true;
   }
-  return NULL;
 }
 
 void StructDeclList::analyze( Env &env ) const

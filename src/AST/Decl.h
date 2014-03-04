@@ -238,7 +238,7 @@ namespace C4
       ~FunctionDef() {}
 
 			void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env ) const;
+      void analyze( Sema::Env &env ) const;
 
       Decl const * const decl;
       CompoundStmt const * const compStmt;
