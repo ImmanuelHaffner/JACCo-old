@@ -14,8 +14,9 @@
 #include <vector>
 #include <unordered_map>
 #include "../Support/Symbol.h"
-#include "Type.h"
 #include "../Support/Entity.h"
+#include "../Lex/Token.h"
+#include "Type.h"
 
 
 namespace C4
@@ -34,6 +35,12 @@ namespace C4
 
     /// Maps symbols to entities
     typedef std::unordered_map< Symbol, Entity * > IdMap;
+
+    /// Labels 
+    typedef std::unordered_map< Symbol, Lex::Token const * > Labels;
+
+    /// Goto targets 
+    typedef std::vector< Lex::Token const * > Targets;
 
     /// \brief Defines a scope.
     ///
@@ -127,11 +134,20 @@ namespace C4
       /// \return entitiy of function currently parsed
       Entity * popFunction();
 
+      /// \return set of labels in the current function
+      Labels * getLabelSymbols();
 
+      /// \return set of goto targets in the current function
+      Targets * getGotoTokens(); 
+
+      void insertGoto( Lex::Token const * tok );
+      Lex::Token const * insertLabel( Lex::Token const * tok );
 
       private:
       std::vector< Scope * > scopeStack;
       std::vector< Entity * > functionStack;
+      std::unordered_map< Entity *, std::pair< Labels, Targets > >
+        labelScopes;
     };
   }
 }

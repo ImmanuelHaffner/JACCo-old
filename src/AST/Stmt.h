@@ -93,6 +93,7 @@ namespace C4
       ~LabelStmt() {}
 
       void print( Printer const p ) const;
+      void analyze( Sema::Env &env ) const;
 
       Stmt const * const stmt;
     }; // end struct CaseStmt
@@ -250,6 +251,7 @@ namespace C4
       ~GotoStmt() {}
 
       void print( Printer const p ) const;
+      void analyze( Sema::Env &env ) const;
     }; // end struct GotoStmt
 
 

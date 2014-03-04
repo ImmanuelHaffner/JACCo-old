@@ -242,7 +242,7 @@ void FunctionDef::analyze( Env &env ) const
   // Check for missing parameter names
   // When parsing parameter declarations, the function name is still unknown, so
   // we have to check for the function below
-  Entity * e = env.popFunction();
+  Entity * fe = env.popFunction();
   for ( std::pair< Entity *, ParamDecl const * > &it : nameless_params ) {
     if ( it.first  == env.topFunction() )
     {
@@ -252,10 +252,10 @@ void FunctionDef::analyze( Env &env ) const
       ERROR_TOK( it.second->tok, oss.str().c_str() );
     }
   }
-  env.pushFunction( e );
+  env.pushFunction( fe );
 
   // get entity of the defined function
-  e = decl->getEntity();
+  Entity * e = decl->getEntity();
 
   //check if entity has function type
   if ( ! dynamic_cast< FuncType const * >( e->type ) )
@@ -280,6 +280,19 @@ void FunctionDef::analyze( Env &env ) const
     e->defined = true;
   }
 
+  // Check if all labels have corresponding gotos
+  /*SymbolSet s = std::set_intersection( env.getLabelSymbols(),
+      env.getGotoSymbols() );*/
+  for ( auto target : *( env.getGotoTokens() ) )
+  {
+    if ( env.getLabelSymbols()->find( target->sym )
+        == env.getLabelSymbols()->end() )
+    {
+      std::ostringstream oss;
+      oss << "missing label '" << target->sym.str() << "'";
+      ERROR_TOK( *target, oss.str().c_str() );
+    }
+  }
 }
 
 void StructDeclList::analyze( Env &env ) const
@@ -420,7 +433,7 @@ void Decl::analyze_nc( Env &env )
 
 void BreakStmt::analyze() const
 {
-  if ( !Parser::isParsingIter() )
+  if ( ! Parser::isParsingIter() )
   {
     std::ostringstream oss;
     oss << "break statement outside body of iteration statement";
@@ -430,10 +443,26 @@ void BreakStmt::analyze() const
 
 void ContinueStmt::analyze() const
 {
-  if ( !Parser::isParsingIter() )
+  if ( ! Parser::isParsingIter() )
   {
     std::ostringstream oss;
     oss << "continue statement outside body of iteration statement";
+    ERROR( oss.str().c_str() );
+  }
+}
+
+void GotoStmt::analyze( Env &env ) const
+{
+  env.insertGoto( &( this->tok ) );
+}
+
+void LabelStmt::analyze( Env &env ) const
+{
+  Lex::Token const * lt = env.insertLabel( &( this->tok ) );
+  if ( lt != &( this->tok ) )
+  {
+    std::ostringstream oss;
+    oss << "label '" << this->tok.sym << "' already defined at " << lt->pos;
     ERROR( oss.str().c_str() );
   }
 }

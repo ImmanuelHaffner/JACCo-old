@@ -295,7 +295,11 @@ namespace C4
 
       inline LabelStmt const * getLabelStmt( TOK, Stmt const * const stmt )
       {
-        return new LabelStmt( tok, stmt );
+        LabelStmt const * labelStmt = new LabelStmt( tok, stmt );
+#ifndef NOSEMA
+        labelStmt->analyze( env );
+#endif
+        return labelStmt; 
       }
 
       inline IfStmt const * getIfStmt( TOK, Expr const * const Cond,
@@ -356,7 +360,11 @@ namespace C4
 
       inline GotoStmt const * getGotoStmt( TOK )
       {
-        return new GotoStmt( tok );
+        GotoStmt const * stmt = new GotoStmt( tok );
+#ifndef NOSEMA
+        stmt->analyze( env );
+#endif
+        return stmt; 
       }
 
       inline ReturnStmt const * getReturnStmt( TOK,
