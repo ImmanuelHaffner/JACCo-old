@@ -15,8 +15,6 @@ using namespace Lex;
 using namespace AST;
 
 
-static bool functionDeclarator = false;
-static Token * nameless_param = NULL;
 
 
 //===----------------------------------------------------------------------===//
@@ -24,6 +22,13 @@ static Token * nameless_param = NULL;
 //  Parser Helper Functions
 //
 //===----------------------------------------------------------------------===//
+
+static bool parsingIter = false;
+
+bool Parser::isParsingIter()
+{
+  return parsingIter;
+}
 
 /// Binary Operator Precedences
 ///
@@ -1036,7 +1041,11 @@ Stmt const * Parser::parseSelectionStmt()
 
 Stmt const * Parser::parseIterationStmt()
 {
+#ifndef NOSEMA
+  parsingIter = true;
+#endif
   Token const tok( *current );
+  Stmt const * iterStmt;
   switch ( current->kind )
   {
     case TK::For:
@@ -1075,8 +1084,9 @@ Stmt const * Parser::parseIterationStmt()
         accept( TK::RPar ); // eat ')'
         Stmt const * const body = parseStmt(); // body
         if ( init )
-          return factory.getForStmt( tok, init, cond, step, body );
-        return factory.getForStmt( tok, initDecl, cond, step, body );
+          iterStmt = factory.getForStmt( tok, init, cond, step, body );
+        else
+          iterStmt = factory.getForStmt( tok, initDecl, cond, step, body );
       }
 
     case TK::While:
@@ -1086,7 +1096,7 @@ Stmt const * Parser::parseIterationStmt()
         Expr const * cond = parseExpr(); // condition
         accept( TK::RPar ); // eat ')'
         Stmt const * body = parseStmt(); // body
-        return factory.getWhileStmt( tok, cond, body );
+        iterStmt = factory.getWhileStmt( tok, cond, body );
       }
 
     case TK::Do:
@@ -1098,14 +1108,18 @@ Stmt const * Parser::parseIterationStmt()
         Expr const * const cond = parseExpr(); // condition
         accept( TK::RPar ); // eat ')'
         accept( TK::SCol ); // eat ';'
-        return factory.getDoStmt( tok, body, cond );
+        iterStmt = factory.getDoStmt( tok, body, cond );
       }
 
     default:
       ERROR( "'for', 'do' or 'while'" );
+      iterStmt = factory.getIllegalStmt( *current );
 
   } // end switch
-  return factory.getIllegalStmt( *current );
+#ifndef NOSEMA
+  parsingIter = false;
+#endif
+  return iterStmt;
 } // end parseIterationStmt
 
 Stmt const * Parser::parseJumpStmt()
@@ -1212,7 +1226,6 @@ ExtDecl const * Parser::parseExtDecl()
         }
 
         functionDeclarator = false;
-        nameless_param = NULL;
 #ifndef NOSEMA
         Entity * currentFunction = env.topFunction();
 #endif

@@ -33,9 +33,9 @@ namespace C4
         lexer(lexer), current(NULL), next(NULL), factory(
 #ifndef NOSEMA
             env
-            #endif
+#endif
             )
-      {}
+        {}
 
       ~Parser() {}
 
@@ -44,6 +44,7 @@ namespace C4
       AST::TranslationUnit const *  parse();
       Lex::Token const * getCurTok() { return current; }
       Lex::Token const * getNextTok() { return next; }
+      static bool isParsingIter();
 
       private:
       Lex::Lexer &lexer;
@@ -52,6 +53,7 @@ namespace C4
       Sema::Env env;
       AST::ASTFactory factory;
 
+      bool functionDeclarator = false;
 
       //===----------------------------------------------------------------===//
       //

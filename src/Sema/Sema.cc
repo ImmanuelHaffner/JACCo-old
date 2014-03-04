@@ -16,6 +16,7 @@
 
 
 using namespace C4;
+using namespace Parse;
 using namespace AST;
 using namespace Sema;
 
@@ -379,4 +380,24 @@ Sema::Type const * Decl::analyze( Env &env ) const
   if ( declarator )
     return declarator->analyze( env, t )->type;
   return t;
+}
+
+void BreakStmt::analyze() const
+{
+  if ( !Parser::isParsingIter() )
+  {
+      std::ostringstream oss;
+      oss << "break statement outside body of iteration statement";
+      ERROR( oss.str().c_str() );
+  }
+}
+
+void ContinueStmt::analyze() const
+{
+  if ( !Parser::isParsingIter() )
+  {
+      std::ostringstream oss;
+      oss << "break statement outside body of iteration statement";
+      ERROR( oss.str().c_str() );
+  }
 }

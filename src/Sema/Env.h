@@ -14,7 +14,6 @@
 #include <vector>
 #include <unordered_map>
 #include "../Support/Symbol.h"
-#include "../AST/Stmt.h"
 #include "Type.h"
 #include "../Support/Entity.h"
 
@@ -132,7 +131,6 @@ namespace C4
 
       private:
       std::vector< Scope * > scopeStack;
-      std::vector< AST::IterationStmt > iterStmtStack;
       std::vector< Entity * > functionStack;
     };
   }

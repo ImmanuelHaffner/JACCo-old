@@ -11,10 +11,10 @@
 
 
 #include <cstring>
+#include "../Parse/Parser.h"
 #include "../AST/AST.h"
 #include "Env.h"
 #include "TypeFactory.h"
-
 
 namespace C4
 {
