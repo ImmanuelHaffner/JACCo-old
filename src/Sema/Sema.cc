@@ -277,7 +277,7 @@ Sema::Type const * StructDecl::analyze( Env &env ) const {
 
 void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 {
-  for ( auto &it : *this )
+  for ( auto it : *this )
     it->analyze( env, t );
 }
 

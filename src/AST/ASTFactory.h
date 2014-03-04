@@ -338,12 +338,20 @@ namespace C4
 
       inline BreakStmt const * getBreakStmt( TOK )
       {
-        return new BreakStmt( tok );
+        BreakStmt const * const stmt = new BreakStmt( tok );
+#ifndef NOSEMA
+        stmt->analyze();
+#endif
+        return stmt;
       }
 
       inline ContinueStmt const * getContinueStmt( TOK )
       {
-        return new ContinueStmt( tok );
+        ContinueStmt const * const stmt = new ContinueStmt( tok );
+#ifndef NOSEMA
+        stmt->analyze();
+#endif
+        return stmt;
       }
 
       inline GotoStmt const * getGotoStmt( TOK )
