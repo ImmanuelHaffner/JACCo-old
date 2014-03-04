@@ -187,7 +187,7 @@ Entity const * Identifier::analyze( Env &env, Sema::Type const * const t )
   {
     // If the type is not a function type, it must be a object type.
     ObjType const * const objType = static_cast< ObjType const * >( t );
-    if ( t == NULL || objType->isComplete() )
+    if ( t == NULL || ! objType->isComplete() )
     {
       std::ostringstream oss;
       oss << "cannot instantiate '" << this << "' with incomplete type";
@@ -320,6 +320,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
 
   if ( structDecls )
   {
+    // Construct type according to struct declarations
     env.pushScope();
     structDecls->analyze( env );
     Scope * const structScope = env.popScope();
@@ -332,22 +333,39 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
 
   if ( name )
   {
-    if ( !env.insert( name->sym, t ) )
-    {
-      auto st = const_cast< StructType * >(
-          static_cast< StructType const * >( env.lookupType( name->sym ) ) );
-      if ( structDecls )
+    auto st = const_cast< StructType * >(
+        static_cast< StructType const * >( env.lookupType( name->sym ) ) );
+
+    if ( ! structDecls ) {
+      if ( ! st )
       {
-        if ( st->isComplete() )
-        {
-          ERROR( "Cannot replace type information of already completed struct" );
-        }
-        else
-          st->complete( innerTypes );
+        // First occurence of type with name 'name', create new incomplete
+        // structure type
+        env.insert( name->sym, t );
+        return t;
       }
+      // Known type, since we don't have a struct declaration list, we don't
+      // overwrite it.
+      return st;
+    }
+    
+    // Try to insert new struct type
+    if ( ! env.insert( name->sym, t ) )
+    {
+      // Type name already existing in current scope
+      if ( st->isComplete() )
+      {
+        ERROR( "Cannot replace type information of already completed struct" );
+      }
+      else
+        st->complete( innerTypes );
+
       return st;
     }
   }
+  
+  // No name, so just return new struct type according to struct declaration
+  // list
   return t;
 }
 
@@ -386,9 +404,9 @@ void BreakStmt::analyze() const
 {
   if ( !Parser::isParsingIter() )
   {
-      std::ostringstream oss;
-      oss << "break statement outside body of iteration statement";
-      ERROR( oss.str().c_str() );
+    std::ostringstream oss;
+    oss << "break statement outside body of iteration statement";
+    ERROR( oss.str().c_str() );
   }
 }
 
@@ -396,8 +414,8 @@ void ContinueStmt::analyze() const
 {
   if ( !Parser::isParsingIter() )
   {
-      std::ostringstream oss;
-      oss << "break statement outside body of iteration statement";
-      ERROR( oss.str().c_str() );
+    std::ostringstream oss;
+    oss << "break statement outside body of iteration statement";
+    ERROR( oss.str().c_str() );
   }
 }
