@@ -55,14 +55,14 @@ bool checkTypes(Type const  *lhs, Type const *rhs)
 
 void AssignmentExpr::analyze()
 {
+  returnIfEitherNull(lhs->getEntity(), rhs->getEntity());
   //§6.5.16.p2 - lhs must be modifiable lvalue.
   if( !lhs->isLvalue )
   {
     ERROR("Left hand side of assignment must be lvalue.");
   }
   Type const * lhsType = lhs->getEntity()->type;
-  auto ot = dynamic_cast< ObjType const * >( lhsType );
-  if( ot != NULL && !ot->isComplete() )
+  if(isCompleteObjType(lhsType))
   {
     ERROR("Left hand side of assignment must be a complete type.");
   }
@@ -70,13 +70,23 @@ void AssignmentExpr::analyze()
   //§6.5.16.p3 - assignment expression cannot be lvalue.
   this->isLvalue = false;
 
-  //§6.5.16.1.p1.pp5 - either assignment between same types ( 'char' and 'int'
-  //are same 'Basic Type') or assignment of constant 0 to pointer type.
   Type const * rhsType = rhs->getEntity()->type;
-  if(!checkTypes(lhsType, rhsType))
+  if(!(
+      (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
+
+      (isPointerType(lhsType) && isPointerType(rhsType) &&
+          lhsType == rhsType) || //§6.5.16.1.p1.pp3
+
+      (isPointerType(lhsType) && isPointerType(rhsType) &&
+          ( (isObjType(toPointerType(lhsType)->innerType) &&
+              isVoidType(toPointerType(rhsType)->innerType)) ||
+            (isObjType(toPointerType(rhsType)->innerType) &&
+              isVoidType(toPointerType(lhsType)->innerType)))) || //§6.5.16.1.p1.pp4
+
+      (isPointerType(lhsType) && isNullPointerConstant(lhs)) //§6.5.16.1.p1.pp5
+      ))
   {
-    ERROR("Incompatible operands of assignment. "
-          "Must be same or assignment of 0 to a pointer type");
+    ERROR("Incompatible operands of assignment.");
   }
 
   //§6.5.16.p3 - The type of assignment is type of lhs
@@ -201,10 +211,10 @@ void BinaryExpr::analyze()
     if(!(isArithmeticType(lhsType) && isArithmeticType(rhsType)))
     {
       if(!( (isPointerType(lhsType)
-             && pointerType(lhsType)->isPointerToCompleteObj()
+             && toPointerType(lhsType)->isPointerToCompleteObj()
              && isIntegerType(rhsType)) ||
             (isPointerType(rhsType)
-             && pointerType(rhsType)->isPointerToCompleteObj()
+             && toPointerType(rhsType)->isPointerToCompleteObj()
              && isIntegerType(lhsType)) ))
       {
         ERROR("Pointer + Integer expected or integer operands expected.");
