@@ -1,8 +1,10 @@
 int (foo())
 {
-	continue;
-	{
+	while (1) {
 		continue;
-		continue;
+		{
+			continue;
+			continue;
+		}
 	}
 }

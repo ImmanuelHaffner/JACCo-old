@@ -62,7 +62,7 @@ namespace C4
 
     /// Declaration
     struct Declarator;
-    struct Decl : ExtDecl, Locatable
+    struct Decl : ExtDecl, Locatable, EntityHolder
     {
       Decl( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
@@ -72,6 +72,8 @@ namespace C4
       virtual ~Decl() {}
 
 			virtual void print( Printer const p ) const;
+
+      /// \return always NULL
       virtual Sema::Type const * analyze( Sema::Env &env ) const;
       virtual void emit( CodeGen::CodeGenFunction &CGF ) const;
 
@@ -153,7 +155,7 @@ namespace C4
       Declarator( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Declarator() {}
 
-      virtual Entity const * analyze( Sema::Env &env,
+      virtual Entity * analyze( Sema::Env &env,
 					Sema::Type const * const t )
         const = 0;
     }; // end struct Declarator
@@ -165,7 +167,7 @@ namespace C4
       ~Identifier() {}
 
       void print( Printer const p ) const;
-      Entity const * analyze( Sema::Env &env, Sema::Type const * const t )
+      Entity * analyze( Sema::Env &env, Sema::Type const * const t )
         const;
     }; // end struct Identifier
 
@@ -181,7 +183,7 @@ namespace C4
       ~PointerDeclarator() {}
 
 			void print( Printer const p ) const;
-      Entity const * analyze( Sema::Env &env,
+      Entity * analyze( Sema::Env &env,
 					Sema::Type const * const t ) const;
 
       Declarator const * const declarator;
@@ -200,7 +202,7 @@ namespace C4
       ~FunctionDeclarator() {}
 
       void print( Printer const p ) const;
-      Entity const * analyze( Sema::Env &env,
+      Entity * analyze( Sema::Env &env,
 					Sema::Type const * const t ) const;
 
       Declarator const * const declarator;
@@ -215,7 +217,7 @@ namespace C4
       ~IllegalDeclarator() {}
 
 			void print( Printer const p ) const;
-      Entity const * analyze( Sema::Env &env, Sema::Type const * t ) const;
+      Entity * analyze( Sema::Env &env, Sema::Type const * t ) const;
 		}; // end struct IllegalDeclarator
 
     /// Struct Declarator List
@@ -257,7 +259,7 @@ namespace C4
       ~FunctionDef() {}
 
 			void print( Printer const p ) const;
-      Sema::Type const * analyze( Sema::Env &env ) const;
+      void analyze( Sema::Env &env ) const;
       void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Decl const * const decl;

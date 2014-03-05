@@ -18,6 +18,12 @@
 
 namespace C4
 {
+  /* Forward declarations */
+  namespace Sema
+  {
+    struct Env;
+  }
+
   namespace AST
   {
     /* Forward declarations */
@@ -87,6 +93,7 @@ namespace C4
       ~LabelStmt() {}
 
       void print( Printer const p ) const;
+      void analyze( Sema::Env &env ) const;
 
       Stmt const * const stmt;
     }; // end struct CaseStmt
@@ -213,6 +220,7 @@ namespace C4
       ~BreakStmt() {}
 
       void print( Printer const p ) const;
+      void analyze() const;
     }; // end struct BreakStmt
 
 
@@ -227,6 +235,7 @@ namespace C4
       ~ContinueStmt() {}
 
       void print( Printer const p ) const;
+      void analyze() const;
     }; // end struct ContinueStmt
 
 
@@ -242,6 +251,7 @@ namespace C4
       ~GotoStmt() {}
 
       void print( Printer const p ) const;
+      void analyze( Sema::Env &env ) const;
     }; // end struct GotoStmt
 
 
@@ -257,6 +267,7 @@ namespace C4
       ~ReturnStmt() {}
 
       void print( Printer const p ) const;
+      void analyze( Sema::Env &env ) const;
 
       Expr const * const expr;
     }; // end struct ReturnStmt

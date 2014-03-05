@@ -41,6 +41,7 @@ namespace C4
 
     Sema::Type const *type = NULL;
     bool global = false;
+    bool defined = false;
 
     private:
     EntityHolder const *parent;

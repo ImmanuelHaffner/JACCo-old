@@ -75,7 +75,7 @@ Scope * Env::popScope()
   assert( scopeStack.size() > 1 && "cannot pop the global scope" );
   Scope * const scope = scopeStack.back();
   scopeStack.pop_back();
-  return scope; 
+  return scope;
 }
 
 Scope * Env::topScope()
@@ -120,6 +120,11 @@ bool Env::insert( Symbol const id, Type const * const type )
 void Env::pushFunction( Entity * e )
 {
   functionStack.push_back( e );
+  // Create label scope for this function
+  std::pair< Labels, Targets > setPair = std::make_pair( Labels(),
+      Targets() );
+  labelScopes.insert( std::pair< Entity *, std::pair< Labels, Targets > >
+        ( e, setPair ) );
 }
 
 Entity * Env::topFunction()
@@ -132,4 +137,29 @@ Entity * Env::popFunction()
   Entity * e = functionStack.back();
   functionStack.pop_back();
   return e;
+}
+
+Labels * Env::getLabelSymbols()
+{
+  return &( labelScopes.find( topFunction() )->second.first );
+}
+
+Targets * Env::getGotoTokens()
+{
+  return & ( labelScopes.find( topFunction() )->second.second );
+}
+
+void Env::insertGoto( Lex::Token const * tok )
+{
+  getGotoTokens()->push_back( tok );
+}
+
+Lex::Token const * Env::insertLabel( Lex::Token const * tok )
+{
+  Labels * labels = getLabelSymbols();
+  auto elem = labels->find( tok->sym );
+  if ( elem != labels->end() )
+    return (*elem).second;
+  labels->insert( std::make_pair( tok->sym, tok ) );
+  return tok;
 }

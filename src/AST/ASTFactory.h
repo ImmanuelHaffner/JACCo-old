@@ -177,12 +177,12 @@ namespace C4
         return new IllegalExtDecl( tok );
       }
 
-      inline Decl const * getDecl( TOK, TypeSpecifier const * const typeSpec,
+      inline Decl * getDecl( TOK, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
       {
-        Decl const * const decl = new Decl( tok, typeSpec, declarator );
+        Decl * const decl = new Decl( tok, typeSpec, declarator );
 #ifndef NOSEMA
-        decl->analyze( env );
+        decl->analyze( env ); // always returns NULL
 #endif
         return decl;
       }
@@ -295,7 +295,11 @@ namespace C4
 
       inline LabelStmt const * getLabelStmt( TOK, Stmt const * const stmt )
       {
-        return new LabelStmt( tok, stmt );
+        LabelStmt const * labelStmt = new LabelStmt( tok, stmt );
+#ifndef NOSEMA
+        labelStmt->analyze( env );
+#endif
+        return labelStmt; 
       }
 
       inline IfStmt const * getIfStmt( TOK, Expr const * const Cond,
@@ -338,17 +342,29 @@ namespace C4
 
       inline BreakStmt const * getBreakStmt( TOK )
       {
-        return new BreakStmt( tok );
+        BreakStmt const * const stmt = new BreakStmt( tok );
+#ifndef NOSEMA
+        stmt->analyze();
+#endif
+        return stmt;
       }
 
       inline ContinueStmt const * getContinueStmt( TOK )
       {
-        return new ContinueStmt( tok );
+        ContinueStmt const * const stmt = new ContinueStmt( tok );
+#ifndef NOSEMA
+        stmt->analyze();
+#endif
+        return stmt;
       }
 
       inline GotoStmt const * getGotoStmt( TOK )
       {
-        return new GotoStmt( tok );
+        GotoStmt const * stmt = new GotoStmt( tok );
+#ifndef NOSEMA
+        stmt->analyze( env );
+#endif
+        return stmt; 
       }
 
       inline ReturnStmt const * getReturnStmt( TOK,

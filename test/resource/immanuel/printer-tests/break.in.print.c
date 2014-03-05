@@ -1,3 +1,5 @@
 int foo() {
-  break; { break; break; }
+	while (1) {
+		break; { break; break; }
+	}
 }

@@ -1,11 +1,15 @@
 int (foo())
 {
 	int a;
-	int b;
 	switch (a) {
 		default:
 			;
 	}
+}
+
+int (bar())
+{
+	int b;
 	switch (b)
 		default:
 			;

@@ -15,8 +15,6 @@ using namespace Lex;
 using namespace AST;
 
 
-static bool functionDeclarator = false;
-static Token * nameless_param = NULL;
 
 
 //===----------------------------------------------------------------------===//
@@ -24,6 +22,13 @@ static Token * nameless_param = NULL;
 //  Parser Helper Functions
 //
 //===----------------------------------------------------------------------===//
+
+static bool parsingIter = false;
+
+bool Parser::isParsingIter()
+{
+  return parsingIter;
+}
 
 /// Binary Operator Precedences
 ///
@@ -481,7 +486,7 @@ Expr const * Parser::parseExpr()
 //  Declarations
 //
 
-Decl const * Parser::parseDecl()
+Decl * Parser::parseDecl()
 {
   Token tok( *current );
   TypeSpecifier const * const typeSpec = parseTypeSpecifier();
@@ -494,7 +499,7 @@ Decl const * Parser::parseDecl()
   if ( current->kind != TK::SCol )
     declarator = parseDeclarator();
   accept( TK::SCol ); // eat ';'
-  Decl const * decl = factory.getDecl( tok, typeSpec, declarator );
+  Decl * decl = factory.getDecl( tok, typeSpec, declarator );
 #ifndef NOSEMA
   // No function definition, pop back top function and parameter
   // scope.
@@ -1036,7 +1041,12 @@ Stmt const * Parser::parseSelectionStmt()
 
 Stmt const * Parser::parseIterationStmt()
 {
+#ifndef NOSEMA
+  bool const temp = parsingIter;
+  parsingIter = true;
+#endif
   Token const tok( *current );
+  Stmt const * iterStmt;
   switch ( current->kind )
   {
     case TK::For:
@@ -1075,9 +1085,11 @@ Stmt const * Parser::parseIterationStmt()
         accept( TK::RPar ); // eat ')'
         Stmt const * const body = parseStmt(); // body
         if ( init )
-          return factory.getForStmt( tok, init, cond, step, body );
-        return factory.getForStmt( tok, initDecl, cond, step, body );
+          iterStmt = factory.getForStmt( tok, init, cond, step, body );
+        else
+          iterStmt = factory.getForStmt( tok, initDecl, cond, step, body );
       }
+      break;
 
     case TK::While:
       {
@@ -1086,8 +1098,9 @@ Stmt const * Parser::parseIterationStmt()
         Expr const * cond = parseExpr(); // condition
         accept( TK::RPar ); // eat ')'
         Stmt const * body = parseStmt(); // body
-        return factory.getWhileStmt( tok, cond, body );
+        iterStmt = factory.getWhileStmt( tok, cond, body );
       }
+      break;
 
     case TK::Do:
       {
@@ -1098,14 +1111,19 @@ Stmt const * Parser::parseIterationStmt()
         Expr const * const cond = parseExpr(); // condition
         accept( TK::RPar ); // eat ')'
         accept( TK::SCol ); // eat ';'
-        return factory.getDoStmt( tok, body, cond );
+        iterStmt = factory.getDoStmt( tok, body, cond );
       }
+      break;
 
     default:
       ERROR( "'for', 'do' or 'while'" );
+      iterStmt = factory.getIllegalStmt( *current );
 
   } // end switch
-  return factory.getIllegalStmt( *current );
+#ifndef NOSEMA
+  parsingIter = temp;
+#endif
+  return iterStmt;
 } // end parseIterationStmt
 
 Stmt const * Parser::parseJumpStmt()
@@ -1207,12 +1225,11 @@ ExtDecl const * Parser::parseExtDecl()
             ( current->kind == TK::END_OF_FILE || current->kind == TK::SCol ) )
         {
           accept( TK::SCol ); // eat ';'
-          Decl const * const decl = factory.getDecl( tok, typeSpec );
+          Decl * const decl = factory.getDecl( tok, typeSpec );
           return decl;
         }
 
         functionDeclarator = false;
-        nameless_param = NULL;
 #ifndef NOSEMA
         Entity * currentFunction = env.topFunction();
 #endif
@@ -1222,7 +1239,7 @@ ExtDecl const * Parser::parseExtDecl()
           case TK::SCol:
             {
               readNextToken(); // eat ';'
-              Decl const * const decl = factory.getDecl( tok, typeSpec,
+              Decl * const decl = factory.getDecl( tok, typeSpec,
                   declarator );
 #ifndef NOSEMA
               // No function definition, pop back top function and parameter
@@ -1243,7 +1260,7 @@ ExtDecl const * Parser::parseExtDecl()
                     factory.getParamList() );
                 ERROR( "'(' [parameter-list] ')'" );
               }
-              Decl const * const decl = factory.getDecl( tok, typeSpec,
+              Decl * const decl = factory.getDecl( tok, typeSpec,
                   declarator);
               CompoundStmt const * const cStmt = parseCompoundStmt();
               FunctionDef const * const funDef = factory.getFunctionDef( decl, cStmt );

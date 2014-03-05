@@ -16,12 +16,13 @@
 
 
 using namespace C4;
+using namespace Parse;
 using namespace AST;
 using namespace Sema;
 
 
 static int parameterDepth = 0;
-static std::vector< std::pair< Entity const *, 
+static std::vector< std::pair< Entity *,
   ParamDecl const * > > nameless_params;
 
 #define ERROR( MSG ) \
@@ -39,13 +40,26 @@ static std::vector< std::pair< Entity const *,
 //
 //===----------------------------------------------------------------------===//
 
-Sema::Type const * IllegalDecl::analyze( Env & ) const
+Type const * Decl::analyze( Env &env ) const
 {
-  assert( false && "not implemented yet" );
+  Sema::Type const * const type = typeSpec->analyze( env );
+  if ( declarator )
+  {
+    Entity * const e = declarator->analyze( env, type );
+    const_cast< Decl * >( this )->attachEntity( e );
+  }
+
+  // We just have to return something...
   return NULL;
 }
 
-Entity const * PointerDeclarator::analyze( Env &env,
+Sema::Type const * IllegalDecl::analyze( Env & ) const
+{
+  assert( false && "not implemented yet" );
+  return TypeFactory::getVoid();
+}
+
+Entity * PointerDeclarator::analyze( Env &env,
     Sema::Type const * const t ) const
 {
   if ( t == NULL )
@@ -60,7 +74,7 @@ Entity const * PointerDeclarator::analyze( Env &env,
   return entity;
 }
 
-Entity const * FunctionDeclarator::analyze( Env &env,
+Entity * FunctionDeclarator::analyze( Env &env,
     Sema::Type const * const t ) const
 {
   if ( parameterDepth == 0 )
@@ -85,7 +99,7 @@ Entity const * FunctionDeclarator::analyze( Env &env,
     funType = TypeFactory::getPtr( funType );
   }
 
-  Entity const * entity = NULL;
+  Entity * entity = NULL;
 
   if ( declarator )
     entity = declarator->analyze( env, funType );
@@ -103,7 +117,7 @@ Entity const * FunctionDeclarator::analyze( Env &env,
   return entity2;
 }
 
-Entity const * Identifier::analyze( Env &env, Sema::Type const * const t )
+Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
   const
 {
   if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
@@ -186,7 +200,7 @@ Entity const * Identifier::analyze( Env &env, Sema::Type const * const t )
   {
     // If the type is not a function type, it must be a object type.
     ObjType const * const objType = static_cast< ObjType const * >( t );
-    if ( t == NULL || objType->isComplete() )
+    if ( t == NULL || ! objType->isComplete() )
     {
       std::ostringstream oss;
       oss << "cannot instantiate '" << this << "' with incomplete type";
@@ -203,7 +217,7 @@ Entity const * Identifier::analyze( Env &env, Sema::Type const * const t )
     }
     else
     {
-      Entity const * const origin = env.lookup( tok.sym );
+      Entity * const origin = env.lookup( tok.sym );
       assert( origin->getParent() && "must have a parent" );
 
       auto idOld = static_cast< Identifier const * >( origin->getParent() );
@@ -227,27 +241,24 @@ Entity const * Identifier::analyze( Env &env, Sema::Type const * const t )
   } // end else ObjType
 }
 
-Entity const * IllegalDeclarator::analyze( Env &, Sema::Type const * ) const
+Entity * IllegalDeclarator::analyze( Env &env, Sema::Type const * ) const
 {
-  assert( false && "not implemented yet" );
-  return NULL;
+  // Create error entity with type void
+  Entity * const entity = env.insert( "§" );
+  entity->type = TypeFactory::getVoid();
+  return entity;
 }
 
-Sema::Type const * FunctionDef::analyze( Env &env ) const
+void FunctionDef::analyze( Env &env ) const
 {
-  auto funDeclar = static_cast< FunctionDeclarator const * >( decl->declarator );
-  /*Scope * paramScope = env.popScope();
-  funDeclar->params->
-  if ( paramScope->getIdMap().size() != funDeclar->params->size() )
-  {
-    std::ostringstream oss;
-    oss << "function '" << funDeclar->tok.sym.str() <<
-      "' misses one or more parameter names";
-    ERROR_TOK( funDeclar->tok, oss.str().c_str() );
-  }
-  env.pushScope( paramScope );*/
-  Entity * e = env.popFunction();
-  for ( std::pair< Entity const *, ParamDecl const * > &it : nameless_params ) {
+  auto funDeclar = static_cast< FunctionDeclarator const * >( decl->declarator
+      );
+  
+  // Check for missing parameter names
+  // When parsing parameter declarations, the function name is still unknown, so
+  // we have to check for the function below
+  Entity * fe = env.popFunction();
+  for ( std::pair< Entity *, ParamDecl const * > &it : nameless_params ) {
     if ( it.first  == env.topFunction() )
     {
       std::ostringstream oss;
@@ -256,19 +267,53 @@ Sema::Type const * FunctionDef::analyze( Env &env ) const
       ERROR_TOK( it.second->tok, oss.str().c_str() );
     }
   }
-  env.pushFunction( e );
-  return NULL;
+  env.pushFunction( fe );
+
+  // get entity of the defined function
+  Entity * e = decl->getEntity();
+
+  //check if entity has function type
+  if ( ! dynamic_cast< FuncType const * >( e->type ) )
+  {
+    std::ostringstream oss;
+    oss << "identifier '" << e->getParent() << "' is no function " <<
+      e->getParent();
+    ERROR_TOK( funDeclar->tok, oss.str().c_str() );
+  }
+
+  // check if function was defined before
+  if ( e->defined )
+  {
+    std::ostringstream oss;
+    oss << "function '" << funDeclar->tok.sym.str() <<
+      "' was already defined before at " << e->getParent(); //it
+    ERROR_TOK( funDeclar->tok, oss.str().c_str() );
+  }
+  else
+  {
+    // mark function as defined
+    e->defined = true;
+  }
+
+  // Check if all labels have corresponding gotos
+  /*SymbolSet s = std::set_intersection( env.getLabelSymbols(),
+      env.getGotoSymbols() );*/
+  for ( auto target : *( env.getGotoTokens() ) )
+  {
+    if ( env.getLabelSymbols()->find( target->sym )
+        == env.getLabelSymbols()->end() )
+    {
+      std::ostringstream oss;
+      oss << "missing label '" << target->sym.str() << "'";
+      ERROR_TOK( *target, oss.str().c_str() );
+    }
+  }
 }
 
 void StructDeclList::analyze( Env &env ) const
 {
-  for ( auto &it : * this )
-  {
-    //Push parameter scope in case of function arguments
-    env.pushScope();
+  for ( auto it : * this )
     it->analyze( env );
-    env.popScope();
-  }
 }
 
 Sema::Type const * StructDecl::analyze( Env &env ) const {
@@ -281,7 +326,7 @@ Sema::Type const * StructDecl::analyze( Env &env ) const {
 
 void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 {
-  for ( auto &it : *this )
+  for ( auto it : *this )
     it->analyze( env, t );
 }
 
@@ -319,6 +364,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
 
   if ( structDecls )
   {
+    // Construct type according to struct declarations
     env.pushScope();
     structDecls->analyze( env );
     Scope * const structScope = env.popScope();
@@ -331,22 +377,43 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
 
   if ( name )
   {
-    if ( !env.insert( name->sym, t ) )
-    {
-      auto st = const_cast< StructType * >(
-          static_cast< StructType const * >( env.lookupType( name->sym ) ) );
-      if ( structDecls )
+    auto st = const_cast< StructType * >(
+        static_cast< StructType const * >( env.lookupType( name->sym ) ) );
+
+    if ( ! structDecls ) {
+      if ( ! st )
       {
-        if ( st->isComplete() )
-        {
-          ERROR( "Cannot replace type information of already completed struct" );
-        }
-        else
-          st->complete( innerTypes );
+        // First occurence of type with name 'name', create new incomplete
+        // structure type
+        env.insert( name->sym, t );
+        return t;
       }
+      // Known type, since we don't have a struct declaration list, we don't
+      // overwrite it.
+      return st;
+    }
+
+    // Try to insert new struct type
+    if ( ! env.insert( name->sym, t ) )
+    {
+      // Type name already existing in current scope
+      if ( st->isComplete() )
+      {
+        ERROR( "Cannot replace type information of already completed struct" );
+      }
+      else
+        st->complete( innerTypes );
+
       return st;
     }
   }
+
+  if ( t == NULL)
+    // Illegal struct without name nor structdecls
+    return TypeFactory::getVoid();
+  
+  // No name, so just return new struct type according to struct declaration
+  // list
   return t;
 }
 
@@ -369,14 +436,41 @@ Sema::Type const * TypeSpecifier::analyze( Env & ) const
 
 Sema::Type const * IllegalTypeSpecifier::analyze( Env & ) const
 {
-  assert( false && "not implemented yet" );
-  return TypeFactory::getVoid(); 
+  return TypeFactory::getVoid();
 }
 
-Sema::Type const * Decl::analyze( Env &env ) const
+void BreakStmt::analyze() const
 {
-  Sema::Type const * const t = typeSpec->analyze( env );
-  if ( declarator )
-    return declarator->analyze( env, t )->type;
-  return t;
+  if ( ! Parser::isParsingIter() )
+  {
+    std::ostringstream oss;
+    oss << "break statement outside body of iteration statement";
+    ERROR( oss.str().c_str() );
+  }
+}
+
+void ContinueStmt::analyze() const
+{
+  if ( ! Parser::isParsingIter() )
+  {
+    std::ostringstream oss;
+    oss << "continue statement outside body of iteration statement";
+    ERROR( oss.str().c_str() );
+  }
+}
+
+void GotoStmt::analyze( Env &env ) const
+{
+  env.insertGoto( &( this->tok ) );
+}
+
+void LabelStmt::analyze( Env &env ) const
+{
+  Lex::Token const * lt = env.insertLabel( &( this->tok ) );
+  if ( lt != &( this->tok ) )
+  {
+    std::ostringstream oss;
+    oss << "label '" << this->tok.sym << "' already defined at " << lt->pos;
+    ERROR( oss.str().c_str() );
+  }
 }
