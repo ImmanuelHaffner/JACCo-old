@@ -43,7 +43,7 @@ static std::vector< std::pair< Entity *,
 Sema::Type const * IllegalDecl::analyze( Env & ) const
 {
   assert( false && "not implemented yet" );
-  return NULL;
+  return TypeFactory::getVoid();
 }
 
 Entity * PointerDeclarator::analyze( Env &env,
@@ -228,10 +228,12 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
   } // end else ObjType
 }
 
-Entity * IllegalDeclarator::analyze( Env &, Sema::Type const * ) const
+Entity * IllegalDeclarator::analyze( Env &env, Sema::Type const * ) const
 {
-  assert( false && "not implemented yet" );
-  return NULL;
+  // Create error entity with type void
+  Entity * const entity = env.insert( "§" );
+  entity->type = TypeFactory::getVoid();
+  return entity;
 }
 
 void FunctionDef::analyze( Env &env ) const
@@ -393,6 +395,10 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
     }
   }
 
+  if ( t == NULL)
+    // Illegal struct without name nor structdecls
+    return TypeFactory::getVoid();
+  
   // No name, so just return new struct type according to struct declaration
   // list
   return t;
@@ -417,7 +423,6 @@ Sema::Type const * TypeSpecifier::analyze( Env & ) const
 
 Sema::Type const * IllegalTypeSpecifier::analyze( Env & ) const
 {
-  assert( false && "not implemented yet" );
   return TypeFactory::getVoid();
 }
 
