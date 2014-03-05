@@ -56,7 +56,9 @@ namespace C4
       virtual ~Decl() {}
 
 			virtual void print( Printer const p ) const;
-      void analyze_nc( Sema::Env &env );
+
+      /// \return always NULL
+      virtual Sema::Type const * analyze( Sema::Env &env ) const;
 
       TypeSpecifier const * const typeSpec;
       Declarator const * const declarator;

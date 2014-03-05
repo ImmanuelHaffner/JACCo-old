@@ -40,6 +40,19 @@ static std::vector< std::pair< Entity *,
 //
 //===----------------------------------------------------------------------===//
 
+Type const * Decl::analyze( Env &env ) const
+{
+  Sema::Type const * const type = typeSpec->analyze( env );
+  if ( declarator )
+  {
+    Entity * const e = declarator->analyze( env, type );
+    const_cast< Decl * >( this )->attachEntity( e );
+  }
+
+  // We just have to return something...
+  return NULL;
+}
+
 Sema::Type const * IllegalDecl::analyze( Env & ) const
 {
   assert( false && "not implemented yet" );
@@ -424,16 +437,6 @@ Sema::Type const * TypeSpecifier::analyze( Env & ) const
 Sema::Type const * IllegalTypeSpecifier::analyze( Env & ) const
 {
   return TypeFactory::getVoid();
-}
-
-void Decl::analyze_nc( Env &env )
-{
-  Sema::Type const * const t = typeSpec->analyze( env );
-  if ( declarator )
-  {
-    Entity * e = declarator->analyze( env, t );
-    attachEntity( e );
-  }
 }
 
 void BreakStmt::analyze() const
