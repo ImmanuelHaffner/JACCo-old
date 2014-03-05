@@ -16,6 +16,7 @@
 #include "../diagnostic.h"
 #include "../Support/EntityHolder.h"
 #include "../AST/ASTFactory.h"
+#include "TypeHelper.h"
 
 using namespace C4;
 using namespace AST;
@@ -191,6 +192,49 @@ void BinaryExpr::analyze()
     this->attachEntity(intEntity);
 
     //? Assuming no lvalue.
+    this->isLvalue = false;
+  }
+  else if((this->tok).kind == Lex::TK::Plus)
+  {
+    bool isPointer = false;
+    //§6.5.6.p2
+    if(!(isArithmeticType(lhsType) && isArithmeticType(rhsType)))
+    {
+      if(!( (isPointerType(lhsType)
+             && pointerType(lhsType)->isPointerToCompleteObj()
+             && isIntegerType(rhsType)) ||
+            (isPointerType(rhsType)
+             && pointerType(rhsType)->isPointerToCompleteObj()
+             && isIntegerType(lhsType)) ))
+      {
+        ERROR("Pointer + Integer expected or integer operands expected.");
+      }
+      else
+      {
+        isPointer = true;
+      }
+    }
+
+    //§6.5.6.p4
+    Entity * const resultEntity = new Entity();
+    if(isPointer)
+    {
+      if(isPointerType(lhsType))
+      {
+        resultEntity->type = lhsType;
+      }
+      else
+      {
+        resultEntity->type = rhsType;
+      }
+    }
+    else
+    {
+      resultEntity->type = TypeFactory::getInt();
+    }
+    this->attachEntity(resultEntity);
+
+    //? Assuming no lvalue
     this->isLvalue = false;
   }
 }
