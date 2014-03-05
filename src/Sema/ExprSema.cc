@@ -29,28 +29,29 @@ using namespace Sema;
 
 //TODO: Remove this macro
 #define returnIfEitherNull(e1, e2) if((e1) == NULL || (e2) == NULL) return;
+#define returnIfNull(e) if((e) == NULL) return;
 
-bool checkTypes(Type const  *lhs, Type const *rhs)
+bool isAssignmentCompatible(Expr const *lhs, Expr const *rhs)
 {
-  bool isCorrect = false;
-  if( lhs != rhs )
-  {
-    auto pointerType = dynamic_cast< PtrType const * >( lhs );
-    auto rhsExpr = dynamic_cast< Constant const * >( rhs );
-    if( pointerType != NULL && rhsExpr != NULL)
-    {
-      isCorrect = (strcmp(rhsExpr->tok.sym.str(), "0") == 0);
-    }
-    else
-    {
-      isCorrect = false;
-    }
-  }
-  else
-  {
-    isCorrect = true;
-  }
-  return isCorrect;
+  if(lhs->getEntity() == NULL || rhs->getEntity() == NULL) return false;
+
+  Type const *lhsType = lhs->getEntity()->type;
+  Type const *rhsType = rhs->getEntity()->type;
+
+  return
+  (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
+
+  (isPointerType(lhsType) && isPointerType(rhsType) &&
+      lhsType == rhsType) || //§6.5.16.1.p1.pp3
+
+  (isPointerType(lhsType) && isPointerType(rhsType) &&
+      ( (isObjType(toPointerType(lhsType)->innerType) &&
+          isVoidType(toPointerType(rhsType)->innerType)) ||
+        (isObjType(toPointerType(rhsType)->innerType) &&
+          isVoidType(toPointerType(lhsType)->innerType)))) || //§6.5.16.1.p1.pp4
+
+  (isPointerType(lhsType) && isNullPointerConstant(rhs)) //§6.5.16.1.p1.pp5
+  ;
 }
 
 void AssignmentExpr::analyze()
@@ -70,21 +71,7 @@ void AssignmentExpr::analyze()
   //§6.5.16.p3 - assignment expression cannot be lvalue.
   this->isLvalue = false;
 
-  Type const * rhsType = rhs->getEntity()->type;
-  if(!(
-      (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
-
-      (isPointerType(lhsType) && isPointerType(rhsType) &&
-          lhsType == rhsType) || //§6.5.16.1.p1.pp3
-
-      (isPointerType(lhsType) && isPointerType(rhsType) &&
-          ( (isObjType(toPointerType(lhsType)->innerType) &&
-              isVoidType(toPointerType(rhsType)->innerType)) ||
-            (isObjType(toPointerType(rhsType)->innerType) &&
-              isVoidType(toPointerType(lhsType)->innerType)))) || //§6.5.16.1.p1.pp4
-
-      (isPointerType(lhsType) && isNullPointerConstant(lhs)) //§6.5.16.1.p1.pp5
-      ))
+  if(!(isAssignmentCompatible(lhs, rhs)))
   {
     ERROR("Incompatible operands of assignment.");
   }
@@ -140,43 +127,54 @@ void StringLiteral::analyze()
 void ConditionalExpr::analyze()
 {
   Entity *condEntity = cond->getEntity();
-  //TODO: Remove null check
+  returnIfNull(condEntity);
+
   //§6.5.15.p2 - The conditional expression shall have scalar type.
-  if(condEntity == NULL || 
-     dynamic_cast<ScalarType const *>(condEntity->type) == NULL)
+  if(isScalarType(condEntity->type))
   {
     ERROR("Predicate of conditional expression must of scalar type");
   }
   
-  //§6.5.15.p3 - For the restricted subset both lhs, rhs must have same type
-  // or one must be a pointer and other a null pointer constant.
-  Entity * const lhsEntity = lhs->getEntity();
-  Entity * const rhsEntity = rhs->getEntity();
-  //TODO:: Remove null check 
-  if(lhsEntity != NULL && rhsEntity != NULL)
-  {
-    if(!checkTypes(lhsEntity->type, rhsEntity->type) &&
-       !checkTypes(rhsEntity->type, lhsEntity->type))
-    {
-      ERROR("Ant and Cons of condition exp are incompatible.");
-    }
+  //§6.5.15.p3 - In restricted subset this amounts to the same checks
+  // as assignment and additional void type check (§6.5.15.p3.pp3)
+  Entity const *lhsEntity = lhs->getEntity();
+  Entity const *rhsEntity = rhs->getEntity();
+  returnIfEitherNull(lhsEntity, rhsEntity);
+  Entity *e = new Entity();
+  if(isArithmeticType(lhsEntity->type) && isArithmeticType(rhsEntity->type))
+  {//§6.5.15.p5 : Approximate it to int
+    e->type = TypeFactory::getInt();
+  }
+  else if(isVoidType(lhsEntity->type) && isVoidType(rhsEntity->type))
+  {//§6.5.15.p5
+    e->type = TypeFactory::getVoid();
+  }
+  else if((isPointerType(lhsEntity->type) && isPointerType(rhsEntity->type) &&
+      lhsEntity->type == rhsEntity->type))
+  {//§6.5.15.p6
+    e->type = lhsEntity->type;
+  }
+  else if(isPointerType(lhsEntity->type) && isNullPointerConstant(rhs))
+  {//§6.5.15.p6
+    e->type = lhsEntity->type;
+  }
+  else if(isPointerType(rhsEntity->type) && isNullPointerConstant(lhs))
+  {//§6.5.15.p6
+    e->type = rhsEntity->type;
+  }
+  else if(isPointerType(lhsEntity->type) && isPointerType(rhsEntity->type) &&
+      ( (isObjType(toPointerType(lhsEntity->type)->innerType) &&
+          isVoidType(toPointerType(rhsEntity->type)->innerType)) ||
+        (isObjType(toPointerType(rhsEntity->type)->innerType) &&
+          isVoidType(toPointerType(lhsEntity->type)->innerType))))
+  {//§6.5.15.p6
+    e->type = TypeFactory::getVoid();
   }
   else
   {
-    return;
+    ERROR("Invalid consequent and antecedent of conditional expression.");
   }
-
-  //§6.5.15.p6 - For the restricted subset, type of conditional expression
-  // is same as lhs and rhs. When one of them is null pointer constant then
-  // it is of other type.
-  if(dynamic_cast<Constant const *>(lhsEntity->type) != NULL)
-  {
-    this->attachEntity(lhsEntity);
-  }
-  else
-  {
-    this->attachEntity(rhsEntity);
-  }
+  this->attachEntity(e);
 
   //§6.5.15.p4 - A conditional expression does not yield an lvalue.
   this->isLvalue = false;

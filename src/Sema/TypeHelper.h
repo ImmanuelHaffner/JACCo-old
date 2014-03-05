@@ -21,6 +21,10 @@
 #define isVoidType(t) \
   (dynamic_cast<VoidType const*>(t) != NULL)
 
+#define isScalarType(t) \
+  (dynamic_cast<ScalarType const*>(t) != NULL)
+
+//Cast functions
 #define toPointerType(t) \
   (dynamic_cast<PtrType const*>(t))
 
