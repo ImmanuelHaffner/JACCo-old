@@ -25,6 +25,7 @@ namespace C4
   namespace Sema
   {
     struct Env;
+    struct Type;
   }
 
   namespace CodeGen

@@ -9,8 +9,11 @@
 
 #include "CodeGen.h"
 
+#include "../Support/Symbol.h"
 #include "../AST/Decl.h"
 #include "../AST/Stmt.h"
+#include "../Support/Entity.h"
+#include "../Support/EntityHolder.h"
 
 
 using namespace C4;
@@ -47,7 +50,9 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
   if ( dynamic_cast< FuncType const * >( entity->type ) )
     return;
 
-  /* Get the name of the identifier */
+  /* Get the name of the identifier.  The declaration has an declarator,
+   * and thus the parent of the attached entity bust be an identifier.
+   */
   Identifier const * const id =
     static_cast< Identifier const * >( getEntity()->getParent() );
 
@@ -110,4 +115,9 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ )
   CGF.Builder.SetInsertPoint( funcEntry );
 
   this->compStmt->emit( CGF );
+
+  // Connect goto stmts with their labels.
+  CGF.WireLabels();
+
+  verifyFunction( *func );
 }
