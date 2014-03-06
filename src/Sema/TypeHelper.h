@@ -24,6 +24,10 @@
 #define isScalarType(t) \
   (dynamic_cast<ScalarType const*>(t) != NULL)
 
+// Integer + real floating. Same as integer in our case.
+#define isRealType(t) \
+  (dynamic_cast<BasicType const*>(t) != NULL)
+
 //Cast functions
 #define toPointerType(t) \
   (dynamic_cast<PtrType const*>(t))

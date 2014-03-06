@@ -248,25 +248,42 @@ void BinaryExpr::analyze()
   else if((this->tok).kind == Lex::TK::Minus)
   {
     Entity *e = new Entity();
-    if(isArithmeticType(lhsType) && isArithmeticType(rhsType))
-    {//§6.5.6.p3.pp1 int?
+    if(isArithmeticType(lhsType) && isArithmeticType(rhsType)) //§6.5.6.p3.pp1 int?
+    {
       e->type = TypeFactory::getInt();
     }
-    else if(isPointerType(lhsType) &&
+    else if(isPointerType(lhsType) && //§6.5.6.p3.pp2
             toPointerType(lhsType) == toPointerType(rhsType) &&
             toPointerType(lhsType)->isPointerToCompleteObj())
-    {//§6.5.6.p3.pp2
+    {
       e->type = TypeFactory::getInt();
     }
-    else if(isPointerType(lhsType) &&
+    else if(isPointerType(lhsType) && //§6.5.6.p3.pp3
             toPointerType(lhsType)->isPointerToCompleteObj() &&
             isIntegerType(rhsType))
-    {//§6.5.6.p3.pp3
+    {
       e->type = lhsType;
     }
     else
     {
       ERROR("Incompatible operands to minus.");
+    }
+    this->attachEntity(e);
+  }
+  else if((this->tok).kind == Lex::TK::Le)
+  {
+    Entity *e = new Entity();
+    if((isRealType(lhsType) && isRealType(rhsType)) || //§6.5.8.p2.pp1
+       (isPointerType(lhsType) && isPointerType(rhsType) &&//§6.5.8.p2.pp2 ?
+           isObjType(toPointerType(lhsType)->innerType) &&
+           isObjType(toPointerType(rhsType)->innerType) &&
+           lhsType == rhsType))
+    {
+      e->type = TypeFactory::getInt();//§6.5.8.p6
+    }
+    else
+    {
+      ERROR("Expected real types or ponter to object types.")
     }
     this->attachEntity(e);
   }
