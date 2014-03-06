@@ -38,15 +38,15 @@ static const char* duplicate(const char* s) { return strdup(s); }
 
 void Symbol::insert( char const * s )
 {
-    auto i = table_.find( s );
-    if ( i == table_.end() )
-        i = table_.insert( duplicate(s) ).first;
-    str_ = *i;
+  auto it = table_.find( s );
+  if ( it == table_.end() )
+    it = table_.insert( duplicate(s) ).first;
+  str_ = *it;
 }
 
 void Symbol::destroy()
 {
-    for ( auto s : table_ )
-        free( (void*) const_cast< char * >( s ) );
-    table_.clear();
+  for ( auto s : table_ )
+    free( (void*) const_cast< char * >( s ) );
+  table_.clear();
 }

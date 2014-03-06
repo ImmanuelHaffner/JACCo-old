@@ -142,7 +142,6 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
     if ( Entity * const entity = env.insert( tok.sym ) )
     {
       entity->type = t;
-      entity->attachParent( this );
       const_cast< Identifier * >( this )->attachEntity( entity );
       if ( parameterDepth == 0 )
         env.pushFunction( entity );
@@ -221,7 +220,6 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
     if ( Entity * const e = env.insert( tok.sym ) )
     {
       e->type = t;
-      e->attachParent( this );
       const_cast< Identifier * >( this )->attachEntity( e );
       return e;
     }

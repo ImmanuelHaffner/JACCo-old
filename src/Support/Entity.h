@@ -17,6 +17,11 @@
 
 
 /* Forward declarations */
+namespace C4
+{
+  struct EntityHolder;
+}
+
 namespace llvm
 {
   class Value;
@@ -25,21 +30,14 @@ namespace llvm
 
 namespace C4
 {
-  // Forward declarations
-  struct EntityHolder;
-
   /// \brief Used to map identifiers to types, values, and anything else.
   struct Entity
   {
+    friend struct EntityHolder;
+
     Entity() {}
 
     ~Entity() {}
-
-    void attachParent( EntityHolder const * const p )
-    {
-      assert( ! this->parent && "the entity already has a parent" );
-      parent = p;
-    }
 
     inline EntityHolder const * getParent() const
     {
@@ -51,9 +49,15 @@ namespace C4
     bool defined = false;
     llvm::Value *value = NULL;
 
-
     private:
-    EntityHolder const *parent;
+    EntityHolder const *parent = NULL;
+
+    void attachParent( EntityHolder const * const p )
+    {
+      assert( ! this->parent && "the entity already has a parent" );
+      parent = p;
+    }
+
   };
 } // end namespace C4
 

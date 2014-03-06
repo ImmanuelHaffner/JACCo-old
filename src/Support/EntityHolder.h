@@ -11,8 +11,14 @@
 #define C4_ENTITY_HOLDER_H
 
 
-#include "Entity.h"
+#include <cstring>  /* NULL */
 
+
+/* Forward declarations */
+namespace C4
+{
+  struct Entity;
+}
 
 namespace C4
 {
@@ -25,6 +31,8 @@ namespace C4
 
     /// Attches an entity to this holder.
     /// Should only be called once, otherwise asserts.
+    ///
+    /// If the attached entity has no parent yet, makes this holder its parent.
     ///
     /// \param entity the entity to attach to this holder
     void attachEntity( Entity * const entity );
