@@ -10,6 +10,7 @@
 #include "CodeGen.h"
 
 #include "../AST/Expr.h"
+#include "../Support/Entity.h"
 
 
 using namespace C4;
@@ -31,17 +32,18 @@ llvm::Value * ExprList::emit( CodeGenFunction &CGF ) const
 
 llvm::Value * Variable::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  return getEntity()->value;
 }
 
 llvm::Value * AST::Constant::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  return CGF.Builder.getInt32( atoi( this->tok.sym.str() ) );
 }
 
 llvm::Value * StringLiteral::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  /* Always build a string in a 'global' context. */
+  return CGF.Builder.CreateGlobalStringPtr( this->tok.sym.str() );
 }
 
 llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF ) const
@@ -56,7 +58,9 @@ llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF ) const
 
 llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  /* Create the assignment expression. The RHS must be evaluated first. */
+  return CGF.Builder.CreateStore( this->rhs->emit( CGF ),
+      this->lhs->emit( CGF ) );
 }
 
 llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF ) const

@@ -132,9 +132,9 @@ int main(int argc, char** const argv)
               break;
 
             unit->emit( CGF );
-            verifyModule( CGF.M );
 
             CGF.M.dump();
+            verifyModule( CGF.M );
           }
 
       } // end switch

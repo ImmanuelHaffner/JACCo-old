@@ -70,13 +70,30 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
   }
   else
   {
+    /* Get the current basic block. */
+    BasicBlock * curBB = CGF.Builder.GetInsertBlock();
+
     /* Create an alloca at the beginning of the current basic block. */
-    entity->value = new AllocaInst(
-        type,                                   /* Type */
-        0,                                      /* Array Size = 0 */
-        id->tok.sym.str(),                      /* Name */
-        CGF.Builder.GetInsertBlock()->begin()   /* InsertBefore = 0 */
-        );
+    if ( curBB->empty() )
+    {
+      getEntity()->value = CGF.Builder.CreateAlloca(
+          type,             /* Type */
+          0,                /* ArraySize = 0 */
+          id->tok.sym.str() /* Name */
+          );
+    }
+    else
+    {
+      /* Create the alloca instruction. */
+      Instruction * alloca = new AllocaInst(
+          type,             /* Type */
+          0,                /* Array Size = 0 */
+          id->tok.sym.str() /* Name */
+          );
+
+      alloca->insertBefore( curBB->begin() );
+      getEntity()->value = alloca;
+    }
   }
 }
 
@@ -115,6 +132,12 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ )
   CGF.Builder.SetInsertPoint( funcEntry );
 
   this->compStmt->emit( CGF );
+
+  /* If there was no return (allowed if the return type is void), then emit a
+   * return here.
+   */
+  if ( ! CGF.Builder.GetInsertPoint()->isTerminator() )
+    CGF.Builder.CreateRetVoid();
 
   // Connect goto stmts with their labels.
   CGF.WireLabels();
