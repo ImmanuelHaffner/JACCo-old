@@ -43,9 +43,16 @@ static std::vector< std::pair< Entity *,
 Type const * Decl::analyze( Env &env ) const
 {
   Sema::Type const * const type = typeSpec->analyze( env );
+
   if ( declarator )
   {
     Entity * const e = declarator->analyze( env, type );
+    const_cast< Decl * >( this )->attachEntity( e );
+  }
+  else
+  {
+    Entity * const e = new Entity();
+    e->type = type;
     const_cast< Decl * >( this )->attachEntity( e );
   }
 
