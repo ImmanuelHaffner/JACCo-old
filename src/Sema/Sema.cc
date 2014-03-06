@@ -112,14 +112,6 @@ Entity * FunctionDeclarator::analyze( Env &env,
 
   env.pushScope();
   FuncType::params_t params = this->params->analyze( env );
-
-  //if ( t == NULL )
-  //{
-  //if ( parameterDepth != 0 )
-  //env.popScope();
-  //return NULL;
-  //}
-
   Scope * const paramScope = env.popScope();
 
   Sema::Type const * funType = TypeFactory::getFunc( t, params );
@@ -305,14 +297,6 @@ void FunctionDef::analyze( Env &env ) const
 
   // get entity of the defined function
   Entity * e = decl->getEntity();
-
-  //check if entity has function type
-  if ( ! dynamic_cast< FuncType const * >( e->type ) )
-  {
-    std::ostringstream oss;
-    oss << "identifier '" << e->getParent() << "' is no function ";
-    ERROR_TOK( funDeclar->tok, oss.str().c_str() );
-  }
 
   // check if function was defined before
   if ( e->defined )
