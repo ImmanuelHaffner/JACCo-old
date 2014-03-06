@@ -111,7 +111,7 @@ namespace C4
       ///
       /// \return the new function type
       static Type const * getFunc( Type const * retType,
-          std::vector< Type const * > &argTypes );
+          FuncType::params_t &params );
 
       /// \brief Creates a new incomplete structure type, that contains no
       /// elements.

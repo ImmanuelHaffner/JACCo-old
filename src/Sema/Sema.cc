@@ -81,7 +81,7 @@ Entity * FunctionDeclarator::analyze( Env &env,
     nameless_params.clear();
 
   env.pushScope();
-  std::vector<Sema::Type const *> paramTypes = params->analyze( env );
+  FuncType::params_t params = this->params->analyze( env );
 
   //if ( t == NULL )
   //{
@@ -92,7 +92,7 @@ Entity * FunctionDeclarator::analyze( Env &env,
 
   Scope * const paramScope = env.popScope();
 
-  Sema::Type const * funType = TypeFactory::getFunc( t, paramTypes );
+  Sema::Type const * funType = TypeFactory::getFunc( t, params );
   if ( parameterDepth > 0 )
   {
     //functions are interpreted as function pointers
@@ -158,11 +158,11 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
           env.pushFunction( entityOld );
 
         // If the types differ, check whether the old type even had arguments.
-        if ( funcTypeOld->argTypes != funcType->argTypes )
+        if ( funcTypeOld->params != funcType->params )
         {
           // If argument types haven been specified for this function type
           // already, give an error message.
-          if ( funcTypeOld->argTypes.size() > 0 )
+          if ( funcTypeOld->params.size() > 0 )
           {
             auto other =
               static_cast< Identifier const * >( entityOld->getParent() );
@@ -348,16 +348,21 @@ Sema::Type const * ParamDecl::analyze( Env &env ) const
   return t;
 }
 
-std::vector< Sema::Type const * > ParamList::analyze( Env &env ) const
+FuncType::params_t ParamList::analyze( Env &env ) const
 {
   parameterDepth++;
-  std::vector< Sema::Type const * > paramTypes;
+  FuncType::params_t params;
+
   for ( auto &it : * this )
   {
-    paramTypes.push_back( it->analyze( env ) );
+    Type const * const t = it->analyze( env );
+    /* Get the id */
+    Identifier const * const id =
+      static_cast< Identifier const * >( it->getEntity()->getParent() );
+    params.push_back( std::make_pair( id->tok.sym, t ) );
   }
   parameterDepth--;
-  return paramTypes;
+  return params;
 }
 
 Sema::Type const * StructSpecifier::analyze( Env &env ) const

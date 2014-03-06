@@ -6,16 +6,28 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_DECL_H
 #define C4_DECL_H
+
 
 #include <iostream>
 #include "Locatable.h"
 #include "List.h"
 #include "../util.h"
 #include <vector>
-#include "../Sema/Env.h"
 #include "../Support/EntityHolder.h"
+
+
+/* Forward declarations */
+namespace C4
+{
+  namespace Sema
+  {
+    struct Env;
+  }
+}
+
 
 namespace C4
 {
@@ -127,7 +139,8 @@ namespace C4
       ParamList( std::vector< ParamDecl const * > &params ) : List(params) {}
 			~ParamList() {}
 			void print( Printer const p ) const;
-      std::vector< Sema::Type const * >  analyze( Sema::Env &env ) const;
+      std::vector< std::pair< Symbol, Sema::Type const * > >
+        analyze( Sema::Env &env ) const;
 		}; // end struct ParamList
 
 		/// Declarator
@@ -247,5 +260,6 @@ namespace C4
     }; // end struct FunctionDef
   } // end namespace AST
 } // end namespace C4
+
 
 #endif
