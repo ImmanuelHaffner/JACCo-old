@@ -116,17 +116,16 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ )
       &(CGF.M)                      /* Module = 0 */
       );
 
+  /* Set the current function in the CGF. */
+  CGF.parent = func;
+
   /* Add a first basic block to the function, that becomes the entry point for
    * the function.  This will automatically convert the function from a
    * declaration to a definition.
    */
   Twine name( id->tok.sym.str() );
   name.concat( ".entry" );
-  BasicBlock *funcEntry = BasicBlock::Create(
-      CGF.Context,  /* LLVM Context */
-      name,         /* Name */
-      func          /* Parent */
-      );
+  BasicBlock *funcEntry = CGF.getBasicBlock( name );
 
   /* Set the insert point for the builder to the entry of the function. */
   CGF.Builder.SetInsertPoint( funcEntry );
@@ -141,6 +140,9 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ )
 
   // Connect goto stmts with their labels.
   CGF.WireLabels();
+
+  /* Remove the function as current parent from CGF. */
+  CGF.parent = NULL;
 
   verifyFunction( *func );
 }

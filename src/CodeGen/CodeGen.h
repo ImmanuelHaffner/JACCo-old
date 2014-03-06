@@ -70,17 +70,6 @@ namespace C4
         return t;
       }
 
-
-      //===---------------------------------------------------------------------
-      //
-      //  CodeGen Helper Functions
-      //
-      //===---------------------------------------------------------------------
-
-      void EmitBlock( llvm::BasicBlock * const target );
-
-      void WireLabels();
-
       inline void addGoto( Symbol sym, llvm::BasicBlock * const basicBlock )
       {
         gotoTargets.push_back( std::make_pair( sym, basicBlock ) );
@@ -91,6 +80,22 @@ namespace C4
         labels.insert( std::make_pair( sym, basicBlock ) );
       }
 
+
+      //===---------------------------------------------------------------------
+      //
+      //  CodeGen Helper Functions
+      //
+      //===---------------------------------------------------------------------
+
+      void EmitBlock( llvm::BasicBlock * const target );
+
+      llvm::BasicBlock * getBasicBlock( llvm::Twine const &Name = "" );
+
+      void WireLabels();
+
+      llvm::Value * EvaluateExprAsBool( llvm::Value *expr );
+
+
       /* The global context (only one needed) */
       llvm::LLVMContext &Context;
 
@@ -99,6 +104,11 @@ namespace C4
 
       /* An IR-Builder to output intermediate instructions or types. */
       llvm::IRBuilder<> Builder;
+
+      /* Points to the current function.
+       * May be NULL.
+       */
+      llvm::Function *parent = NULL;
 
       private:
       /* A stack of the break/continue targets for loops. */

@@ -35,6 +35,12 @@ void CodeGenFunction::EmitBlock( BasicBlock * const target )
   Builder.SetInsertPoint( target );
 }
 
+BasicBlock * CodeGenFunction::getBasicBlock( Twine const &Name /* = "" */ )
+{
+  assert( parent && "cannot create a basic block without a parent" );
+  return BasicBlock::Create( Context, Name, parent );
+}
+
 void CodeGenFunction::WireLabels()
 {
   for ( auto &it : gotoTargets )
@@ -50,4 +56,19 @@ void CodeGenFunction::WireLabels()
 
   gotoTargets.clear();
   labels.clear();
+}
+
+Value * CodeGenFunction::EvaluateExprAsBool( Value *expr )
+{
+  llvm::Type *type = expr->getType();
+  if ( type->isPointerTy() )
+  {
+    /* Check whether we have a NULL pointer. */
+    return Builder.CreateIsNull( expr );
+  }
+  else
+  {
+    /* Compare the value of the expression to 0. */
+    return Builder.CreateICmpNE( expr, ConstantInt::get( type, 0 ) );
+  }
 }
