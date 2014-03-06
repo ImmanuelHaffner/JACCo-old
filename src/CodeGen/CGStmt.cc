@@ -42,7 +42,24 @@ void LabelStmt::emit( CodeGenFunction &CGF ) const
 
 void IfStmt::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  Value * condV = this->Cond->emit( CGF );
+  BasicBlock * thenBlock = BasicBlock::Create( CGF.Context, "if.then" );
+  BasicBlock * elseBlock = BasicBlock::Create( CGF.Context, "if.else" );
+  BasicBlock * endBlock = BasicBlock::Create( CGF.Context, "if.end" );
+  CGF.Builder.CreateCondBr( condV, thenBlock, elseBlock );
+ 
+  CGF.Builder.SetInsertPoint( thenBlock );
+  thenBlock = this->Then->emit( CGF );
+  CGF.Builder.CreateBr( endBlock );
+
+  if ( Else )
+  {
+    CGF.Builder.SetInsertPoint( elseBlock );
+    elseBlock = this->Else->emit( CGF );
+    CGF.Builder.CreateBr( endBlock );
+  }
+
+  CGF.Builder.SetInsertPoint( endBlock );
 }
 
 void SwitchStmt::emit( CodeGenFunction &CGF ) const
