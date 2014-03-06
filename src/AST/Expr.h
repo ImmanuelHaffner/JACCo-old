@@ -163,6 +163,7 @@ namespace C4
       ~UnaryOperation() {}
 
       void print( Printer const p ) const;
+      void analyze();
 
       Expr const * const expr;
     }; // end struct UnaryOperation

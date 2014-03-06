@@ -198,9 +198,6 @@ void BinaryExpr::analyze()
     Entity * const intEntity = new Entity();
     intEntity->type = TypeFactory::getInt();
     this->attachEntity(intEntity);
-
-    //? Assuming no lvalue.
-    this->isLvalue = false;
   }
   else if((this->tok).kind == Lex::TK::Plus)
   {
@@ -241,9 +238,6 @@ void BinaryExpr::analyze()
       resultEntity->type = TypeFactory::getInt();
     }
     this->attachEntity(resultEntity);
-
-    //? Assuming no lvalue
-    this->isLvalue = false;
   }
   else if((this->tok).kind == Lex::TK::Minus)
   {
@@ -314,8 +308,57 @@ void BinaryExpr::analyze()
     {
       ERROR("Incompatible operands to == or !=.");
     }
+    this->attachEntity(e);
   }
+  this->isLvalue = false;
+}
 
+void UnaryOperation::analyze()
+{
+  Entity *childEntity = this->expr->getEntity();
+  returnIfNull(childEntity);
+  Type const *childType = childEntity->type;
+  Entity *e = new Entity();
+  if((this->tok).kind == Lex::TK::And)
+  {
+    if(isFunctionType(childType) ||
+       (isUnaryOperation(expr) && expr->tok.kind == Lex::TK::Mul) ||
+       (expr->isLvalue && isObjType(childType))) //§6.5.3.2.p1
+    {//§6.5.3.2.p3
+      e->type = TypeFactory::getPtr(childType);
+    }
+    else
+    {
+      ERROR("Incorrect operand for &.");
+    }
+    this->isLvalue = false;
+  }
+  else if((this->tok).kind == Lex::TK::Mul)
+  {
+    if(isPointerType(childType)) //§6.5.3.2.p2
+    {
+      Type const *childInnerType = toPointerType(childType)->innerType;
+      if(isFunctionType(childInnerType))
+      {//§6.5.3.2.p4
+        e->type = childInnerType;
+        this->isLvalue = false;
+      }
+      else if(isObjType(toPointerType(childType)->innerType))
+      {//§6.5.3.2.p4
+        e->type = childInnerType;
+        this->isLvalue = true;
+      }
+      else
+      {//§6.5.3.2.p4
+        ERROR("The operand of * is invalid pointer type.");
+      }
+    }
+    else
+    {
+      ERROR("The operand of * must be pointer type.");
+    }
+  }
+  this->attachEntity(e);
 }
 
 void FunctionCall::analyze()
