@@ -12,6 +12,7 @@
 #include "llvm/Support/Signals.h"          /* Nice stacktrace output */
 #include "llvm/Support/SystemUtils.h"
 #include "llvm/Support/PrettyStackTrace.h"
+#include "llvm/IR/Module.h"                /* Module */
 
 
 using namespace C4;
@@ -20,6 +21,7 @@ using namespace Parse;
 using namespace AST;
 using namespace Sema;
 using namespace CodeGen;
+using namespace llvm;
 
 
 enum class Mode {
@@ -83,13 +85,7 @@ int main(int argc, char** const argv)
       if (hasNewErrors())
         continue;
 
-      Lexer * lexer;
-      if ( f == stdin )
-        lexer = new Lexer;
-      else
-        lexer = new Lexer( name );
-
-      Parser parser( *lexer );
+      Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
 
       switch (mode) {
         case Mode::TOKENIZE:
@@ -105,11 +101,18 @@ int main(int argc, char** const argv)
           break;
 
         case Mode::PARSE:
-          parser.parse();
+          {
+            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
+
+            Parser parser( *lexer );
+            parser.parse();
+          }
           break;
 
         case Mode::PRINT_AST:
           {
+            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
+            Parser parser( *lexer );
             TranslationUnit const * const unit = parser.parse();
             unit->print( Printer ( std::cout ) );
           }
@@ -117,12 +120,24 @@ int main(int argc, char** const argv)
 
         case Mode::COMPILE:
           {
+            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
+            Parser parser( *lexer );
+            TranslationUnit const * const unit = parser.parse();
+
             llvm::sys::PrintStackTraceOnErrorSignal();
             llvm::PrettyStackTraceProgram X(argc, argv);
             CodeGenFunction CGF( name );
-            PANIC("TODO implement");
+
+            if ( hasNewErrors() )
+              break;
+
+            unit->emit( CGF );
+            verifyModule( CGF.M );
+
+            CGF.M.dump();
           }
-      }
+
+      } // end switch
       //fclose ( f );
       delete lexer;
     }
