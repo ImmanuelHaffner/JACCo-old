@@ -20,6 +20,7 @@
 #include "llvm/IR/LLVMContext.h"           /* LLVMContext */
 #include "llvm/IR/GlobalValue.h"           /* GlobaleVariable, LinkageTypes */
 #include "llvm/Analysis/Verifier.h"        /* verifyFunction, verifyModule */
+#include "../Support/Symbol.h"
 #include "../Sema/Type.h"
 
 
@@ -78,6 +79,17 @@ namespace C4
 
       void EmitBlock( llvm::BasicBlock * const target );
 
+      void WireLabels();
+
+      inline void addGoto( Symbol sym, llvm::BasicBlock * const basicBlock )
+      {
+        gotoTargets.push_back( std::make_pair( sym, basicBlock ) );
+      }
+
+      inline void addLabel( Symbol sym, llvm::BasicBlock * const basicBlock )
+      {
+        labels.insert( std::make_pair( sym, basicBlock ) );
+      }
 
       /* The global context (only one needed) */
       llvm::LLVMContext &Context;
@@ -91,6 +103,13 @@ namespace C4
       private:
       /* A stack of the break/continue targets for loops. */
       std::vector< JumpTarget > jumpTargets;
+
+      /* A map of labels and corresponding basic blocks. */
+      std::unordered_map< Symbol, llvm::BasicBlock * const > labels;
+
+      /* A stack of pairs of goto targets and corresponding insert points. */
+      std::vector< std::pair< Symbol, llvm::BasicBlock * const > > gotoTargets;
+
     };
   } // end namespace CodeGen
 } // end namespace C4

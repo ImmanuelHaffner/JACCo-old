@@ -37,7 +37,13 @@ void CaseStmt::emit( CodeGenFunction &CGF ) const
 
 void LabelStmt::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  Twine name( "label." );
+  name.concat( this->tok.sym.str() );
+  BasicBlock * labelBlock = BasicBlock::Create( CGF.Context, name );
+  CGF.EmitBlock( labelBlock );
+
+  // Add entry to label/block map of current function
+  CGF.addLabel( this->tok.sym, labelBlock );
 }
 
 void IfStmt::emit( CodeGenFunction &CGF ) const
@@ -110,7 +116,8 @@ void ContinueStmt::emit( CodeGenFunction &CGF ) const
 
 void GotoStmt::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  CGF.addGoto( this->tok.sym, CGF.Builder.GetInsertBlock() );
+  CGF.Builder.SetInsertPoint( BasicBlock::Create( CGF.Context ) );
 }
 
 void ReturnStmt::emit( CodeGenFunction &CGF ) const

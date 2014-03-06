@@ -34,3 +34,20 @@ void CodeGenFunction::EmitBlock( BasicBlock * const target )
     Builder.CreateBr( target );
   Builder.SetInsertPoint( target );
 }
+
+void CodeGenFunction::WireLabels()
+{
+  for ( auto &it : gotoTargets )
+  {
+    auto elem = labels.find( it.first );
+    if ( elem != labels.end() )
+    {
+      assert( false && "unknown label, should be unreachable" );
+    }
+    Builder.SetInsertPoint( it.second );
+    Builder.CreateBr( (*elem).second );
+  }
+
+  gotoTargets.clear();
+  labels.clear();
+}
