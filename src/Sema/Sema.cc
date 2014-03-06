@@ -353,14 +353,8 @@ FuncType::params_t ParamList::analyze( Env &env ) const
   parameterDepth++;
   FuncType::params_t params;
 
-  for ( auto &it : * this )
-  {
-    Type const * const t = it->analyze( env );
-    /* Get the id */
-    Identifier const * const id =
-      static_cast< Identifier const * >( it->getEntity()->getParent() );
-    params.push_back( std::make_pair( id->tok.sym, t ) );
-  }
+  for ( auto it : * this )
+    params.push_back( it->analyze( env ) );
   parameterDepth--;
   return params;
 }
@@ -377,7 +371,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
     structDecls->analyze( env );
     Scope * const structScope = env.popScope();
     for ( auto &it : structScope->getIdMap() )
-      innerTypes.push_back( std::make_pair( it.first, it.second->type ) );
+      innerTypes.push_back( it.second->type );
     t = TypeFactory::getStruct( innerTypes );
   }
   else

@@ -158,8 +158,7 @@ namespace C4
       ParamList( std::vector< ParamDecl const * > &params ) : List(params) {}
 			~ParamList() {}
 			void print( Printer const p ) const;
-      std::vector< std::pair< Symbol, Sema::Type const * > >
-        analyze( Sema::Env &env ) const;
+      std::vector< Sema::Type const * > analyze( Sema::Env &env ) const;
 		}; // end struct ParamList
 
 		/// Declarator

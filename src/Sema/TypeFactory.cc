@@ -34,7 +34,7 @@ bool FuncEqual::operator()( FuncType const * const t0,
   for ( auto it0 = params0.begin(), it1 = params1.begin();
       it0 != params0.end() && it1 != params1.end();
       ++it0, ++it1 )
-    if ( it0->second != it1->second ) return false;
+    if ( *it0 != *it1 ) return false;
 
   return true;
 }

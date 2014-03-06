@@ -57,7 +57,7 @@ namespace C4
     /// \brief Represents function types.
     struct FuncType : Type
     {
-      typedef std::vector< std::pair< Symbol, Type const * > > params_t;
+      typedef std::vector< Type const * > params_t;
 
       FuncType( Type const * const retType, params_t params )
         : retType(retType), params(params)
@@ -69,7 +69,7 @@ namespace C4
       {
         size_t h = retType->hashCode();
         for ( auto it = params.begin(); it != params.end(); ++it )
-          h = h * 23 + it->second->hashCode();
+          h = h * 23 + (*it)->hashCode();
         return h;
       }
 
@@ -123,7 +123,7 @@ namespace C4
     struct StructType : ObjType
     {
       // The data structure holding the elements of a structure type.
-      typedef std::vector< std::pair< Symbol, Type const * > > elements_t;
+      typedef std::vector< Type const * > elements_t;
 
       StructType() : size_(-1u) {}
 
@@ -150,7 +150,7 @@ namespace C4
         for ( auto it = elements.begin(); it != elements.end(); ++it )
         {
           this->elements.push_back( *it );
-          ObjType const *elem = static_cast< ObjType const * >( it->second );
+          ObjType const *elem = static_cast< ObjType const * >( *it );
           size_ += elem->size();
         }
       }
