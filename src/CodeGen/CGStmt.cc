@@ -49,13 +49,13 @@ void IfStmt::emit( CodeGenFunction &CGF ) const
   CGF.Builder.CreateCondBr( condV, thenBlock, elseBlock );
  
   CGF.Builder.SetInsertPoint( thenBlock );
-  thenBlock = this->Then->emit( CGF );
+  this->Then->emit( CGF );
   CGF.Builder.CreateBr( endBlock );
 
   if ( Else )
   {
     CGF.Builder.SetInsertPoint( elseBlock );
-    elseBlock = this->Else->emit( CGF );
+    this->Else->emit( CGF );
     CGF.Builder.CreateBr( endBlock );
   }
 
