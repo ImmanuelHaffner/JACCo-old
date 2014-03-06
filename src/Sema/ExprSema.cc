@@ -287,6 +287,35 @@ void BinaryExpr::analyze()
     }
     this->attachEntity(e);
   }
+  else if((this->tok).kind == Lex::TK::Eq || (this->tok).kind == Lex::TK::NE)
+  {
+    Entity *e = new Entity();
+    //§6.5.9.p2
+    if(isAssignmentCompatible(lhs, rhs) || isAssignmentCompatible(rhs, lhs))
+    {
+      //§6.5.9.p3
+      e->type = TypeFactory::getInt();
+    }
+    else
+    {
+      ERROR("Incompatible operands to == or !=.");
+    }
+    this->attachEntity(e);
+  }
+  else if((this->tok).kind == Lex::TK::LAnd || (this->tok).kind == Lex::TK::LOr)
+  {
+    Entity *e = new Entity();
+    //§6.5.13.p2
+    if(isScalarType(lhsType) && isScalarType(rhsType))
+    {//§6.5.13.p3
+      e->type = TypeFactory::getInt();
+    }
+    else
+    {
+      ERROR("Incompatible operands to == or !=.");
+    }
+  }
+
 }
 
 void FunctionCall::analyze()
