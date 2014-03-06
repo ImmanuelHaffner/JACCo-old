@@ -6,6 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_CODEGEN_H
 #define C4_CODEGEN_H
 
@@ -19,9 +20,6 @@
 #include "llvm/IR/LLVMContext.h"           /* LLVMContext */
 #include "llvm/IR/GlobalValue.h"           /* GlobaleVariable, LinkageTypes */
 #include "llvm/Analysis/Verifier.h"        /* verifyFunction, verifyModule */
-
-
-using namespace llvm;
 
 
 namespace C4
@@ -47,8 +45,8 @@ namespace C4
     struct CodeGenFunction
     {
       CodeGenFunction( char const * const fileName )
-        : Context( getGlobalContext() ), M( fileName, Context ),
-        Builder( getGlobalContext() )
+        : Context( llvm::getGlobalContext() ), M( fileName, Context ),
+        Builder( llvm::getGlobalContext() )
       {}
 
       ~CodeGenFunction() {}
@@ -70,20 +68,31 @@ namespace C4
         return t;
       }
 
+
+      //===---------------------------------------------------------------------
+      //
+      //  CodeGen Helper Functions
+      //
+      //===---------------------------------------------------------------------
+
+      void EmitBlock( llvm::BasicBlock * const target );
+
+
       private:
       /* The global context (only one needed) */
-      LLVMContext &Context;
+      llvm::LLVMContext &Context;
 
       /* A Module (only one needed) */
-      Module M;
+      llvm::Module M;
 
       /* An IR-Builder to output intermediate instructions or types. */
-      IRBuilder<> Builder;
+      llvm::IRBuilder<> Builder;
 
       /* A stack of the break/continue targets for loops. */
       std::vector< JumpTarget > jumpTargets;
     };
   } // end namespace CodeGen
 } // end namespace C4
+
 
 #endif

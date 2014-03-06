@@ -16,11 +16,19 @@
 using namespace C4;
 using namespace AST;
 using namespace CodeGen;
+using namespace llvm;
 
 
 void TranslationUnit::emit( CodeGenFunction &CGF ) const
 {
   /* Emit code for all external declarations. */
   for ( auto it = begin(); it != end(); ++it )
-    (*it)->emit( CGF );
+    (*it)->emit( CGF, /* isGlobal = */ true );
+}
+
+void CodeGenFunction::EmitBlock( BasicBlock * const target )
+{
+  if ( ! Builder.GetInsertPoint()->isTerminator() )
+    Builder.CreateBr( target );
+  Builder.SetInsertPoint( target );
 }

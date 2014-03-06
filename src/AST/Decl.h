@@ -19,9 +19,9 @@
 #include "../Support/EntityHolder.h"
 
 
+/* Forward declarations */
 namespace C4
 {
-  /* Forward declarations */
   namespace Sema
   {
     struct Env;
@@ -31,7 +31,16 @@ namespace C4
   {
     struct CodeGenFunction;
   }
+}
 
+namespace llvm
+{
+  class Value;
+}
+
+
+namespace C4
+{
   namespace AST
   {
     /* Forward declarations */
@@ -45,7 +54,8 @@ namespace C4
     {
       virtual ~ExtDecl() {}
 
-      virtual void emit( CodeGen::CodeGenFunction &CGF ) const = 0;
+      virtual void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false )
+        const = 0;
     }; // end struct ExtDecl
 
 
@@ -56,7 +66,7 @@ namespace C4
       ~IllegalExtDecl() {}
 
       void print( Printer const p ) const;
-      void emit( CodeGen::CodeGenFunction & ) const;
+      void emit( CodeGen::CodeGenFunction &, bool ) const;
     }; // end struct IllegalExtDecl
 
 
@@ -75,7 +85,8 @@ namespace C4
 
       /// \return always NULL
       virtual Sema::Type const * analyze( Sema::Env &env ) const;
-      virtual void emit( CodeGen::CodeGenFunction &CGF ) const;
+      virtual void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false )
+        const;
 
       TypeSpecifier const * const typeSpec;
       Declarator const * const declarator;
@@ -90,6 +101,7 @@ namespace C4
 
       void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &, bool ) const;
     }; // end IllegalDecl
 
 
@@ -120,7 +132,7 @@ namespace C4
 
 			void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
-      void emit( CodeGen::CodeGenFunction &CGF ) const;
+      void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false ) const;
 		}; // end struct StructDecl
 
 
@@ -136,7 +148,7 @@ namespace C4
 
 			void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
-      void emit( CodeGen::CodeGenFunction &CGF ) const;
+      void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false ) const;
 		}; // end struct ParamDecl
 
     /// Parameter List
@@ -260,7 +272,7 @@ namespace C4
 
 			void print( Printer const p ) const;
       void analyze( Sema::Env &env ) const;
-      void emit( CodeGen::CodeGenFunction &CGF ) const;
+      void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false ) const;
 
       Decl const * const decl;
       CompoundStmt const * const compStmt;

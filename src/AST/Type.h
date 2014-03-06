@@ -16,21 +16,23 @@
 #include "Locatable.h"
 
 
+/* Forward declarations */
 namespace C4
 {
-  /* Forward declarations */
   namespace Sema
   {
     struct Env;
     struct Type;
   }
-  
+}
+
+namespace C4
+{
   namespace AST
   {
     /* Forward declarations */
     struct StructDeclList;
     struct Declarator;
-
 
 
     /// Type Name

@@ -117,8 +117,8 @@ int main(int argc, char** const argv)
 
         case Mode::COMPILE:
           {
-            sys::PrintStackTraceOnErrorSignal();
-            PrettyStackTraceProgram X(argc, argv);
+            llvm::sys::PrintStackTraceOnErrorSignal();
+            llvm::PrettyStackTraceProgram X(argc, argv);
             CodeGenFunction CGF( name );
             PANIC("TODO implement");
           }
