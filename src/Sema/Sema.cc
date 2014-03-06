@@ -34,6 +34,27 @@ static std::vector< std::pair< Entity *,
   errorf( ( TOK ).pos, "%s", ( MSG ) ); }
 
 
+bool isAssignmentCompatible(Type const *lhsType, Expr const *rhs)
+{
+  if(rhs->getEntity() == NULL) return false;
+  Type const *rhsType = rhs->getEntity()->type;
+
+  return
+    (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
+
+    (isPointerType(lhsType) && isPointerType(rhsType) &&
+     lhsType == rhsType) || //§6.5.16.1.p1.pp3
+
+    (isPointerType(lhsType) && isPointerType(rhsType) &&
+     ( (isObjType(toPointerType(lhsType)->innerType) &&
+        isVoidType(toPointerType(rhsType)->innerType)) ||
+       (isObjType(toPointerType(rhsType)->innerType) &&
+        isVoidType(toPointerType(lhsType)->innerType)))) || //§6.5.16.1.p1.pp4
+
+    (isPointerType(lhsType) && isNullPointerConstant(rhs)) //§6.5.16.1.p1.pp5
+    ;
+}
+
 //===----------------------------------------------------------------------===//
 //
 //  Declaration
@@ -92,9 +113,9 @@ Entity * FunctionDeclarator::analyze( Env &env,
 
   //if ( t == NULL )
   //{
-    //if ( parameterDepth != 0 )
-      //env.popScope();
-    //return NULL;
+  //if ( parameterDepth != 0 )
+  //env.popScope();
+  //return NULL;
   //}
 
   Scope * const paramScope = env.popScope();
@@ -245,7 +266,7 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
           "' has already been declared at " << idOld->tok.pos;
         ERROR( oss.str().c_str() );
       }
-      
+
       const_cast< Identifier * >( this )->attachEntity( origin );
       return origin;
     }
@@ -264,7 +285,7 @@ void FunctionDef::analyze( Env &env ) const
 {
   auto funDeclar = static_cast< FunctionDeclarator const * >( decl->declarator
       );
-  
+
   // Check for missing parameter names
   // When parsing parameter declarations, the function name is still unknown, so
   // we have to check for the function below
@@ -307,7 +328,7 @@ void FunctionDef::analyze( Env &env ) const
 
   // Check if all labels have corresponding gotos
   /*SymbolSet s = std::set_intersection( env.getLabelSymbols(),
-      env.getGotoSymbols() );*/
+    env.getGotoSymbols() );*/
   for ( auto target : *( env.getGotoTokens() ) )
   {
     if ( env.getLabelSymbols()->find( target->sym )
@@ -420,7 +441,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   if ( t == NULL)
     // Illegal struct without name nor structdecls
     return TypeFactory::getVoid();
-  
+
   // No name, so just return new struct type according to struct declaration
   // list
   return t;
@@ -513,39 +534,18 @@ void ReturnStmt::analyze( Env &env ) const
     return;
 
   //TODO uncomment after checkTypes is implemented properly
-  /*if ( checkTypes( funcType->retType, expr->getEntity()->type )
-    {
+  if ( ! isAssignmentCompatible( funcType->retType, expr ) )
+  {
     std::ostringstream oss;
     oss << "return value of type '" << expr->getEntity()->type <<
-    "', should have type '" << env.topFunction()->type << "'"; 
+      "', should have type '" << env.topFunction()->type << "'"; 
     ERROR( oss.str().c_str() );
-    }*/
+  }
 }
 
 //TODO: Remove this macro
 #define returnIfEitherNull(e1, e2) if((e1) == NULL || (e2) == NULL) return;
 #define returnIfNull(e) if((e) == NULL) return;
-
-bool isAssignmentCompatible(Type const *lhsType, Expr const *rhs)
-{
-  if(rhs->getEntity() == NULL) return false;
-  Type const *rhsType = rhs->getEntity()->type;
-
-  return
-  (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
-
-  (isPointerType(lhsType) && isPointerType(rhsType) &&
-      lhsType == rhsType) || //§6.5.16.1.p1.pp3
-
-  (isPointerType(lhsType) && isPointerType(rhsType) &&
-      ( (isObjType(toPointerType(lhsType)->innerType) &&
-          isVoidType(toPointerType(rhsType)->innerType)) ||
-        (isObjType(toPointerType(rhsType)->innerType) &&
-          isVoidType(toPointerType(lhsType)->innerType)))) || //§6.5.16.1.p1.pp4
-
-  (isPointerType(lhsType) && isNullPointerConstant(rhs)) //§6.5.16.1.p1.pp5
-  ;
-}
 
 void AssignmentExpr::analyze()
 {
@@ -643,7 +643,7 @@ void ConditionalExpr::analyze()
     e->type = TypeFactory::getVoid();
   }
   else if((isPointerType(lhsEntity->type) && isPointerType(rhsEntity->type) &&
-      lhsEntity->type == rhsEntity->type))
+        lhsEntity->type == rhsEntity->type))
   {//§6.5.15.p6
     e->type = lhsEntity->type;
   }
@@ -657,9 +657,9 @@ void ConditionalExpr::analyze()
   }
   else if(isPointerType(lhsEntity->type) && isPointerType(rhsEntity->type) &&
       ( (isObjType(toPointerType(lhsEntity->type)->innerType) &&
-          isVoidType(toPointerType(rhsEntity->type)->innerType)) ||
+         isVoidType(toPointerType(rhsEntity->type)->innerType)) ||
         (isObjType(toPointerType(rhsEntity->type)->innerType) &&
-          isVoidType(toPointerType(lhsEntity->type)->innerType))))
+         isVoidType(toPointerType(lhsEntity->type)->innerType))))
   {//§6.5.15.p6
     e->type = TypeFactory::getVoid();
   }
@@ -682,7 +682,7 @@ void BinaryExpr::analyze()
   {
     //§6.5.5.p2 - The operands shall have arithmetic type.
     if(dynamic_cast<ArithmeticType const *>(lhsType) == NULL ||
-       dynamic_cast<ArithmeticType const *>(rhsType) == NULL)
+        dynamic_cast<ArithmeticType const *>(rhsType) == NULL)
     {
       ERROR("The operands of * must be arithmetic.");
     }
@@ -699,8 +699,8 @@ void BinaryExpr::analyze()
     if(!(isArithmeticType(lhsType) && isArithmeticType(rhsType)))
     {
       if(!( (isPointerType(lhsType)
-             && toPointerType(lhsType)->isPointerToCompleteObj()
-             && isIntegerType(rhsType)) ||
+              && toPointerType(lhsType)->isPointerToCompleteObj()
+              && isIntegerType(rhsType)) ||
             (isPointerType(rhsType)
              && toPointerType(rhsType)->isPointerToCompleteObj()
              && isIntegerType(lhsType)) ))
@@ -740,14 +740,14 @@ void BinaryExpr::analyze()
       e->type = TypeFactory::getInt();
     }
     else if(isPointerType(lhsType) && //§6.5.6.p3.pp2
-            toPointerType(lhsType) == toPointerType(rhsType) &&
-            toPointerType(lhsType)->isPointerToCompleteObj())
+        toPointerType(lhsType) == toPointerType(rhsType) &&
+        toPointerType(lhsType)->isPointerToCompleteObj())
     {
       e->type = TypeFactory::getInt();
     }
     else if(isPointerType(lhsType) && //§6.5.6.p3.pp3
-            toPointerType(lhsType)->isPointerToCompleteObj() &&
-            isIntegerType(rhsType))
+        toPointerType(lhsType)->isPointerToCompleteObj() &&
+        isIntegerType(rhsType))
     {
       e->type = lhsType;
     }
@@ -761,10 +761,10 @@ void BinaryExpr::analyze()
   {
     Entity *e = new Entity();
     if((isRealType(lhsType) && isRealType(rhsType)) || //§6.5.8.p2.pp1
-       (isPointerType(lhsType) && isPointerType(rhsType) &&//§6.5.8.p2.pp2 ?
-           isObjType(toPointerType(lhsType)->innerType) &&
-           isObjType(toPointerType(rhsType)->innerType) &&
-           lhsType == rhsType))
+        (isPointerType(lhsType) && isPointerType(rhsType) &&//§6.5.8.p2.pp2 ?
+         isObjType(toPointerType(lhsType)->innerType) &&
+         isObjType(toPointerType(rhsType)->innerType) &&
+         lhsType == rhsType))
     {
       e->type = TypeFactory::getInt();//§6.5.8.p6
     }
@@ -779,7 +779,7 @@ void BinaryExpr::analyze()
     Entity *e = new Entity();
     //§6.5.9.p2
     if(isAssignmentCompatible(lhsType, rhs) ||
-       isAssignmentCompatible(rhsType, lhs))
+        isAssignmentCompatible(rhsType, lhs))
     {
       //§6.5.9.p3
       e->type = TypeFactory::getInt();
@@ -816,8 +816,8 @@ void UnaryOperation::analyze()
   if((this->tok).kind == Lex::TK::And)
   {
     if(isFunctionType(childType) ||
-       (isUnaryOperation(expr) && expr->tok.kind == Lex::TK::Mul) ||
-       (expr->isLvalue && isObjType(childType))) //§6.5.3.2.p1
+        (isUnaryOperation(expr) && expr->tok.kind == Lex::TK::Mul) ||
+        (expr->isLvalue && isObjType(childType))) //§6.5.3.2.p1
     {//§6.5.3.2.p3
       e->type = TypeFactory::getPtr(childType);
     }
