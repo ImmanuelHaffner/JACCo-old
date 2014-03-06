@@ -69,7 +69,20 @@ void SwitchStmt::emit( CodeGenFunction &CGF ) const
 
 void WhileStmt::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  Value * condV = this->Cond->emit( CGF );
+  BasicBlock * bodyBlock = BasicBlock::Create( CGF.Context, "while.body" );
+  BasicBlock * condBlock = BasicBlock::Create( CGF.Context, "while.cond" );
+  BasicBlock * exitBlock = BasicBlock::Create( CGF.Context, "while.end" );
+
+  CGF.Builder.CreateBr( condBlock );
+  CGF.Builder.SetInsertPoint( condBlock );
+  CGF.Builder.CreateCondBr( condV, bodyBlock, exitBlock );
+
+  CGF.Builder.SetInsertPoint( bodyBlock );
+  this->Body->emit( CGF );
+  CGF.Builder.CreateBr( condBlock );
+
+  CGF.Builder.SetInsertPoint( exitBlock );
 }
 
 void DoStmt::emit( CodeGenFunction &CGF ) const
