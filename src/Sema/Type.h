@@ -6,8 +6,10 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_SEMA_TYPE_H
 #define C4_SEMA_TYPE_H
+
 
 #include <vector>
 #include <functional>
@@ -249,5 +251,6 @@ namespace C4
     }; // end struct BasicType
   } // end namespace Sema
 } // end namespace C4
+
 
 #endif
