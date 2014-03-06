@@ -40,6 +40,7 @@ bool isAssignmentCompatible(Type const *lhsType, Expr const *rhs)
   Type const *rhsType = rhs->getEntity()->type;
 
   return
+    ( lhsType == rhsType ) ||
     (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
 
     (isPointerType(lhsType) && isPointerType(rhsType) &&
