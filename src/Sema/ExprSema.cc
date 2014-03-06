@@ -245,6 +245,31 @@ void BinaryExpr::analyze()
     //? Assuming no lvalue
     this->isLvalue = false;
   }
+  else if((this->tok).kind == Lex::TK::Minus)
+  {
+    Entity *e = new Entity();
+    if(isArithmeticType(lhsType) && isArithmeticType(rhsType))
+    {//§6.5.6.p3.pp1 int?
+      e->type = TypeFactory::getInt();
+    }
+    else if(isPointerType(lhsType) &&
+            toPointerType(lhsType) == toPointerType(rhsType) &&
+            toPointerType(lhsType)->isPointerToCompleteObj())
+    {//§6.5.6.p3.pp2
+      e->type = TypeFactory::getInt();
+    }
+    else if(isPointerType(lhsType) &&
+            toPointerType(lhsType)->isPointerToCompleteObj() &&
+            isIntegerType(rhsType))
+    {//§6.5.6.p3.pp3
+      e->type = lhsType;
+    }
+    else
+    {
+      ERROR("Incompatible operands to minus.");
+    }
+    this->attachEntity(e);
+  }
 }
 
 void FunctionCall::analyze()
