@@ -31,11 +31,9 @@ using namespace Sema;
 #define returnIfEitherNull(e1, e2) if((e1) == NULL || (e2) == NULL) return;
 #define returnIfNull(e) if((e) == NULL) return;
 
-bool isAssignmentCompatible(Expr const *lhs, Expr const *rhs)
+bool isAssignmentCompatible(Type const *lhsType, Expr const *rhs)
 {
-  if(lhs->getEntity() == NULL || rhs->getEntity() == NULL) return false;
-
-  Type const *lhsType = lhs->getEntity()->type;
+  if(rhs->getEntity() == NULL) return false;
   Type const *rhsType = rhs->getEntity()->type;
 
   return
@@ -71,7 +69,7 @@ void AssignmentExpr::analyze()
   //§6.5.16.p3 - assignment expression cannot be lvalue.
   this->isLvalue = false;
 
-  if(!(isAssignmentCompatible(lhs, rhs)))
+  if(!(isAssignmentCompatible(lhsType, rhs)))
   {
     ERROR("Incompatible operands of assignment.");
   }
@@ -285,7 +283,8 @@ void BinaryExpr::analyze()
   {
     Entity *e = new Entity();
     //§6.5.9.p2
-    if(isAssignmentCompatible(lhs, rhs) || isAssignmentCompatible(rhs, lhs))
+    if(isAssignmentCompatible(lhsType, rhs) ||
+       isAssignmentCompatible(rhsType, lhs))
     {
       //§6.5.9.p3
       e->type = TypeFactory::getInt();
