@@ -24,6 +24,9 @@
 #define isScalarType(t) \
   (dynamic_cast<ScalarType const*>(t) != NULL)
 
+#define isFunctionType(t) \
+  (dynamic_cast<FuncType const*>(t) != NULL)
+
 // Integer + real floating. Same as integer in our case.
 #define isRealType(t) \
   (dynamic_cast<BasicType const*>(t) != NULL)
@@ -32,10 +35,16 @@
 #define toPointerType(t) \
   (dynamic_cast<PtrType const*>(t))
 
-//Note: this takes an Expr object
+#define toObjType(t) \
+  (dynamic_cast<ObjType const*>(t))
+
+//Note: these take an Expr object
 #define isNullPointerConstant(e) \
   (e->getEntity() != NULL && \
     e->getEntity()->type == TypeFactory::getInt() && \
     e->tok.sym == Symbol("0"))
+
+#define isUnaryOperation(e) \
+  (dynamic_cast<UnaryOperation const*>(e) != NULL)
 
 #endif

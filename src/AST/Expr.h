@@ -194,6 +194,7 @@ namespace C4
 
       void print( Printer const p ) const;
       llvm::Value * emit( CodeGen::CodeGenFunction &CGF ) const;
+      void analyze();
 
       Expr const * const expr;
     }; // end struct UnaryOperation
@@ -338,6 +339,7 @@ namespace C4
 
       void print( Printer const p ) const;
       llvm::Value * emit( CodeGen::CodeGenFunction &CGF ) const;
+      void analyze();
 
       Expr const * const expr;
     }; // end struct UnaryExpr
@@ -352,6 +354,7 @@ namespace C4
 
       void print( Printer const p ) const;
       llvm::Value * emit( CodeGen::CodeGenFunction &CGF ) const;
+      void analyze();
 
       TypeName const * const typeName;
     }; // end struct UnaryExpr
