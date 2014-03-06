@@ -33,13 +33,15 @@ static std::vector< std::pair< Entity *,
 { std::ostringstream actual; \
   errorf( ( TOK ).pos, "%s", ( MSG ) ); }
 
+Type const* toFuncPtrIfFunc(Type const *t);
 
 bool isAssignmentCompatible(Type const *lhsType, Expr const *rhs)
 {
   if(rhs->getEntity() == NULL) return false;
-  Type const *rhsType = rhs->getEntity()->type;
+  Type const *rhsType = toFuncPtrIfFunc(rhs->getEntity()->type);
 
   return
+    ( lhsType == rhsType ) ||
     (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
 
     (isPointerType(lhsType) && isPointerType(rhsType) &&
@@ -544,6 +546,18 @@ void ReturnStmt::analyze( Env &env ) const
 #define returnIfEitherNull(e1, e2) if((e1) == NULL || (e2) == NULL) return;
 #define returnIfNull(e) if((e) == NULL) return;
 
+Type const* toFuncPtrIfFunc(Type const *t)
+{
+  if(isFunctionType(t))
+  {
+    return TypeFactory::getPtr(t);
+  }
+  else
+  {
+    return t;
+  }
+}
+
 void AssignmentExpr::analyze()
 {
   returnIfEitherNull(lhs->getEntity(), rhs->getEntity());
@@ -552,8 +566,8 @@ void AssignmentExpr::analyze()
   {
     ERROR("Left hand side of assignment must be lvalue.");
   }
-  Type const * lhsType = lhs->getEntity()->type;
-  if(isCompleteObjType(lhsType))
+  Type const * lhsType = toFuncPtrIfFunc(lhs->getEntity()->type);
+  if( ! isCompleteObjType(lhsType))
   {
     ERROR("Left hand side of assignment must be a complete type.");
   }
@@ -584,8 +598,7 @@ void Variable::analyze(Env &env)
   {
     this->attachEntity(entity);
     //§6.5.1.2 - An identifier is lvalue if not a function designator.
-    Type const *objectType = dynamic_cast<ObjType const *>(entity->type);
-    if(objectType != NULL)
+    if(isObjType(entity->type))
     {
       this->isLvalue = true;
     }
@@ -617,10 +630,11 @@ void StringLiteral::analyze()
 void ConditionalExpr::analyze()
 {
   Entity *condEntity = cond->getEntity();
+  Type const *condType = toFuncPtrIfFunc(condEntity->type);
   returnIfNull(condEntity);
 
   //§6.5.15.p2 - The conditional expression shall have scalar type.
-  if(isScalarType(condEntity->type))
+  if(isScalarType(condType))
   {
     ERROR("Predicate of conditional expression must of scalar type");
   }
@@ -630,34 +644,36 @@ void ConditionalExpr::analyze()
   Entity const *lhsEntity = lhs->getEntity();
   Entity const *rhsEntity = rhs->getEntity();
   returnIfEitherNull(lhsEntity, rhsEntity);
+  Type const *lhsType = toFuncPtrIfFunc(lhsEntity->type);
+  Type const *rhsType = toFuncPtrIfFunc(rhsEntity->type);
   Entity *e = new Entity();
-  if(isArithmeticType(lhsEntity->type) && isArithmeticType(rhsEntity->type))
-  {//§6.5.15.p5 : Approximate it to int
-    e->type = TypeFactory::getInt();
+  if(isArithmeticType(lhsType) && isArithmeticType(lhsType))
+  {
+    e->type = TypeFactory::getInt(); //§6.5.15.p5 : Approximate it to int
   }
-  else if(isVoidType(lhsEntity->type) && isVoidType(rhsEntity->type))
-  {//§6.5.15.p5
+  else if(isVoidType(lhsType) && isVoidType(rhsType)) //§6.5.15.p5
+  {
     e->type = TypeFactory::getVoid();
   }
-  else if((isPointerType(lhsEntity->type) && isPointerType(rhsEntity->type) &&
-        lhsEntity->type == rhsEntity->type))
-  {//§6.5.15.p6
-    e->type = lhsEntity->type;
+  else if((isPointerType(lhsType) && isPointerType(rhsType) &&
+        lhsType == rhsType))  //§6.5.15.p6
+  {
+    e->type = lhsType;
   }
-  else if(isPointerType(lhsEntity->type) && isNullPointerConstant(rhs))
-  {//§6.5.15.p6
-    e->type = lhsEntity->type;
+  else if(isPointerType(lhsType) && isNullPointerConstant(rhs)) //§6.5.15.p6
+  {
+    e->type = lhsType;
   }
-  else if(isPointerType(rhsEntity->type) && isNullPointerConstant(lhs))
-  {//§6.5.15.p6
-    e->type = rhsEntity->type;
+  else if(isPointerType(rhsType) && isNullPointerConstant(lhs)) //§6.5.15.p6
+  {
+    e->type = rhsType;
   }
-  else if(isPointerType(lhsEntity->type) && isPointerType(rhsEntity->type) &&
-      ( (isObjType(toPointerType(lhsEntity->type)->innerType) &&
-         isVoidType(toPointerType(rhsEntity->type)->innerType)) ||
-        (isObjType(toPointerType(rhsEntity->type)->innerType) &&
-         isVoidType(toPointerType(lhsEntity->type)->innerType))))
-  {//§6.5.15.p6
+  else if(isPointerType(lhsType) && isPointerType(rhsType) &&
+      ( (isObjType(toPointerType(lhsType)->innerType) &&
+         isVoidType(toPointerType(rhsType)->innerType)) ||
+        (isObjType(toPointerType(rhsType)->innerType) &&
+         isVoidType(toPointerType(lhsType)->innerType))))  //§6.5.15.p6
+  {
     e->type = TypeFactory::getVoid();
   }
   else
@@ -673,8 +689,8 @@ void ConditionalExpr::analyze()
 void BinaryExpr::analyze()
 {
   returnIfEitherNull(lhs->getEntity(), rhs->getEntity());
-  Type const *lhsType = lhs->getEntity()->type;
-  Type const *rhsType = rhs->getEntity()->type;
+  Type const *lhsType = toFuncPtrIfFunc(lhs->getEntity()->type);
+  Type const *rhsType = toFuncPtrIfFunc(rhs->getEntity()->type);
   if((this->tok).kind == Lex::TK::Mul)
   {
     //§6.5.5.p2 - The operands shall have arithmetic type.
@@ -808,10 +824,10 @@ void UnaryOperation::analyze()
 {
   Entity *childEntity = this->expr->getEntity();
   returnIfNull(childEntity);
-  Type const *childType = childEntity->type;
   Entity *e = new Entity();
   if((this->tok).kind == Lex::TK::And)
   {
+    Type const *childType = childEntity->type;
     if(isFunctionType(childType) ||
         (isUnaryOperation(expr) && expr->tok.kind == Lex::TK::Mul) ||
         (expr->isLvalue && isObjType(childType))) //§6.5.3.2.p1
@@ -826,6 +842,7 @@ void UnaryOperation::analyze()
   }
   else if((this->tok).kind == Lex::TK::Mul)
   {
+    Type const *childType = toFuncPtrIfFunc(childEntity->type);
     if(isPointerType(childType)) //§6.5.3.2.p2
     {
       Type const *childInnerType = toPointerType(childType)->innerType;
@@ -851,6 +868,7 @@ void UnaryOperation::analyze()
   }
   else if((this->tok).kind == Lex::TK::Minus)
   {
+    Type const *childType = toFuncPtrIfFunc(childEntity->type);
     if(isArithmeticType(childType)) //§6.5.3.3.p1
     {
       e->type = TypeFactory::getInt(); //§6.5.3.3.p3
@@ -863,6 +881,7 @@ void UnaryOperation::analyze()
   }
   else if((this->tok).kind == Lex::TK::Not)
   {
+    Type const *childType = toFuncPtrIfFunc(childEntity->type);
     if(isScalarType(childType)) //§6.5.3.3.p1
     {
       e->type = TypeFactory::getInt(); //§6.5.3.3.p5
