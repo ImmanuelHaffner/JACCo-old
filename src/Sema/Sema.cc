@@ -372,7 +372,7 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
     structDecls->analyze( env );
     Scope * const structScope = env.popScope();
     for ( auto &it : structScope->getIdMap() )
-      innerTypes.insert( std::make_pair( it.first, it.second->type ) );
+      innerTypes.push_back( std::make_pair( it.first, it.second->type ) );
     t = TypeFactory::getStruct( innerTypes );
   }
   else
