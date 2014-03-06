@@ -101,19 +101,31 @@ namespace C4
       inline AssignmentExpr const * getAssignmentExpr( TOK,
           Expr const * const lhs, Expr const * const rhs )
       {
-        return new AssignmentExpr( tok, lhs, rhs );
+        AssignmentExpr const * assignmentExpr = new AssignmentExpr( tok, lhs, rhs );
+#ifndef NOSEMA
+        const_cast< AssignmentExpr * >( assignmentExpr )->analyze();
+#endif
+        return assignmentExpr;
       }
 
       inline UnaryOperation const * getUnaryOperation( TOK,
           Expr const * const expr )
       {
-        return new UnaryOperation( tok, expr );
+        UnaryOperation const * unaryOp = new UnaryOperation( tok, expr );
+#ifndef NOSEMA
+        const_cast< UnaryOperation * >( unaryOp )->analyze();
+#endif
+        return unaryOp;
       }
 
       inline SubscriptExpr const * getSubscriptExpr( TOK,
           Expr const * const expr, Expr const * const index )
       {
-        return new SubscriptExpr( tok, expr, index );
+        SubscriptExpr const * subscriptExpr = new SubscriptExpr( tok, expr, index );
+#ifndef NOSEMA
+        //const_cast< SubscriptExpr * >( subscriptExpr )->analyze();
+#endif
+        return subscriptExpr;
       }
 
       inline DotExpr const * getDotExpr( TOK, Expr const * const expr,
@@ -136,33 +148,57 @@ namespace C4
 
       inline PostIncExpr const * getPostIncExpr( TOK, Expr const * const expr )
       {
-        return new PostIncExpr( tok, expr );
+        PostIncExpr const * postIncExpr = new PostIncExpr( tok, expr );
+#ifndef NOSEMA
+        //const_cast< PostIncExpr * >( postIncExpr )->analyze();
+#endif
+        return postIncExpr;
       }
 
       inline PostDecExpr const * getPostDecExpr( TOK, Expr const * const expr )
       {
-        return new PostDecExpr( tok, expr );
+        PostDecExpr const * postDecExpr = new PostDecExpr( tok, expr );
+#ifndef NOSEMA
+        //const_cast< PostDecExpr * >( postDecExpr )->analyze();
+#endif
+        return postDecExpr;
       }
 
       inline PreIncExpr const * getPreIncExpr( TOK, Expr const * const expr )
       {
-        return new PreIncExpr( tok, expr );
+        PreIncExpr const * preIncExpr = new PreIncExpr( tok, expr );
+#ifndef NOSEMA
+        //const_cast< PreIncExpr * >( preIncExpr )->analyze();
+#endif
+        return preIncExpr;
       }
 
       inline PreDecExpr const * getPreDecExpr( TOK, Expr const * const expr )
       {
-        return new PreDecExpr( tok, expr );
+        PreDecExpr const * preDecExpr = new PreDecExpr( tok, expr );
+#ifndef NOSEMA
+        //const_cast< PreDecExpr * >( preDecExpr )->analyze();
+#endif
+        return preDecExpr;
       }
 
       inline SizeofExpr const * getSizeofExpr( TOK, Expr const * const expr )
       {
-        return new SizeofExpr( tok, expr );
+        SizeofExpr const * sizeofExpr = new SizeofExpr( tok, expr );
+#ifndef NOSEMA
+        const_cast< SizeofExpr * >( sizeofExpr )->analyze();
+#endif
+        return sizeofExpr;
       }
 
       inline SizeofTypeExpr const * getSizeofTypeExpr( TOK,
           TypeName const * const typeName )
       {
-        return new SizeofTypeExpr( tok, typeName );
+        SizeofTypeExpr const * expr = new SizeofTypeExpr( tok, typeName );
+#ifndef NOSEMA
+        const_cast< SizeofTypeExpr * >( expr )->analyze();
+#endif
+        return expr;
       }
 
 

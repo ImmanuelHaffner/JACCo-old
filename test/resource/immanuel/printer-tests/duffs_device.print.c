@@ -2,8 +2,8 @@ int (foo())
 {
 	int n;
 	int count;
-	int from;
-	int to;
+	int (*from);
+	int (*to);
 	(n = ((count + 7) / 8));
 	switch ((count % 8)) {
 		do {

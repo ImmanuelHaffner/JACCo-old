@@ -555,7 +555,7 @@ void AssignmentExpr::analyze()
     ERROR("Left hand side of assignment must be lvalue.");
   }
   Type const * lhsType = lhs->getEntity()->type;
-  if(isCompleteObjType(lhsType))
+  if( ! isCompleteObjType(lhsType))
   {
     ERROR("Left hand side of assignment must be a complete type.");
   }
