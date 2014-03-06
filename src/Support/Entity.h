@@ -16,6 +16,13 @@
 #include "../Sema/Type.h"
 
 
+/* Forward declarations */
+namespace llvm
+{
+  class Value;
+}
+
+
 namespace C4
 {
   // Forward declarations
@@ -42,6 +49,8 @@ namespace C4
     Sema::Type const *type = NULL;
     bool global = false;
     bool defined = false;
+    llvm::Value *value = NULL;
+
 
     private:
     EntityHolder const *parent;

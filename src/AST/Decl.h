@@ -132,7 +132,6 @@ namespace C4
 
 			void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
-      void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false ) const;
 		}; // end struct StructDecl
 
 
@@ -148,7 +147,6 @@ namespace C4
 
 			void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
-      void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false ) const;
 		}; // end struct ParamDecl
 
     /// Parameter List
