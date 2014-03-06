@@ -16,6 +16,7 @@
 #include "../diagnostic.h"
 #include "../Support/EntityHolder.h"
 #include "../AST/ASTFactory.h"
+#include "TypeHelper.h"
 
 using namespace C4;
 using namespace AST;
@@ -28,40 +29,41 @@ using namespace Sema;
 
 //TODO: Remove this macro
 #define returnIfEitherNull(e1, e2) if((e1) == NULL || (e2) == NULL) return;
+#define returnIfNull(e) if((e) == NULL) return;
 
-bool checkTypes(Type const  *lhs, Type const *rhs)
+bool isAssignmentCompatible(Expr const *lhs, Expr const *rhs)
 {
-  bool isCorrect = false;
-  if( lhs != rhs )
-  {
-    auto pointerType = dynamic_cast< PtrType const * >( lhs );
-    auto rhsExpr = dynamic_cast< Constant const * >( rhs );
-    if( pointerType != NULL && rhsExpr != NULL)
-    {
-      isCorrect = (strcmp(rhsExpr->tok.sym.str(), "0") == 0);
-    }
-    else
-    {
-      isCorrect = false;
-    }
-  }
-  else
-  {
-    isCorrect = true;
-  }
-  return isCorrect;
+  if(lhs->getEntity() == NULL || rhs->getEntity() == NULL) return false;
+
+  Type const *lhsType = lhs->getEntity()->type;
+  Type const *rhsType = rhs->getEntity()->type;
+
+  return
+  (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
+
+  (isPointerType(lhsType) && isPointerType(rhsType) &&
+      lhsType == rhsType) || //§6.5.16.1.p1.pp3
+
+  (isPointerType(lhsType) && isPointerType(rhsType) &&
+      ( (isObjType(toPointerType(lhsType)->innerType) &&
+          isVoidType(toPointerType(rhsType)->innerType)) ||
+        (isObjType(toPointerType(rhsType)->innerType) &&
+          isVoidType(toPointerType(lhsType)->innerType)))) || //§6.5.16.1.p1.pp4
+
+  (isPointerType(lhsType) && isNullPointerConstant(rhs)) //§6.5.16.1.p1.pp5
+  ;
 }
 
 void AssignmentExpr::analyze()
 {
+  returnIfEitherNull(lhs->getEntity(), rhs->getEntity());
   //§6.5.16.p2 - lhs must be modifiable lvalue.
   if( !lhs->isLvalue )
   {
     ERROR("Left hand side of assignment must be lvalue.");
   }
   Type const * lhsType = lhs->getEntity()->type;
-  auto ot = dynamic_cast< ObjType const * >( lhsType );
-  if( ot != NULL && !ot->isComplete() )
+  if(isCompleteObjType(lhsType))
   {
     ERROR("Left hand side of assignment must be a complete type.");
   }
@@ -69,13 +71,9 @@ void AssignmentExpr::analyze()
   //§6.5.16.p3 - assignment expression cannot be lvalue.
   this->isLvalue = false;
 
-  //§6.5.16.1.p1.pp5 - either assignment between same types ( 'char' and 'int'
-  //are same 'Basic Type') or assignment of constant 0 to pointer type.
-  Type const * rhsType = rhs->getEntity()->type;
-  if(!checkTypes(lhsType, rhsType))
+  if(!(isAssignmentCompatible(lhs, rhs)))
   {
-    ERROR("Incompatible operands of assignment. "
-          "Must be same or assignment of 0 to a pointer type");
+    ERROR("Incompatible operands of assignment.");
   }
 
   //§6.5.16.p3 - The type of assignment is type of lhs
@@ -129,43 +127,54 @@ void StringLiteral::analyze()
 void ConditionalExpr::analyze()
 {
   Entity *condEntity = cond->getEntity();
-  //TODO: Remove null check
+  returnIfNull(condEntity);
+
   //§6.5.15.p2 - The conditional expression shall have scalar type.
-  if(condEntity == NULL || 
-     dynamic_cast<ScalarType const *>(condEntity->type) == NULL)
+  if(isScalarType(condEntity->type))
   {
     ERROR("Predicate of conditional expression must of scalar type");
   }
   
-  //§6.5.15.p3 - For the restricted subset both lhs, rhs must have same type
-  // or one must be a pointer and other a null pointer constant.
-  Entity * const lhsEntity = lhs->getEntity();
-  Entity * const rhsEntity = rhs->getEntity();
-  //TODO:: Remove null check 
-  if(lhsEntity != NULL && rhsEntity != NULL)
-  {
-    if(!checkTypes(lhsEntity->type, rhsEntity->type) &&
-       !checkTypes(rhsEntity->type, lhsEntity->type))
-    {
-      ERROR("Ant and Cons of condition exp are incompatible.");
-    }
+  //§6.5.15.p3 - In restricted subset this amounts to the same checks
+  // as assignment and additional void type check (§6.5.15.p3.pp3)
+  Entity const *lhsEntity = lhs->getEntity();
+  Entity const *rhsEntity = rhs->getEntity();
+  returnIfEitherNull(lhsEntity, rhsEntity);
+  Entity *e = new Entity();
+  if(isArithmeticType(lhsEntity->type) && isArithmeticType(rhsEntity->type))
+  {//§6.5.15.p5 : Approximate it to int
+    e->type = TypeFactory::getInt();
+  }
+  else if(isVoidType(lhsEntity->type) && isVoidType(rhsEntity->type))
+  {//§6.5.15.p5
+    e->type = TypeFactory::getVoid();
+  }
+  else if((isPointerType(lhsEntity->type) && isPointerType(rhsEntity->type) &&
+      lhsEntity->type == rhsEntity->type))
+  {//§6.5.15.p6
+    e->type = lhsEntity->type;
+  }
+  else if(isPointerType(lhsEntity->type) && isNullPointerConstant(rhs))
+  {//§6.5.15.p6
+    e->type = lhsEntity->type;
+  }
+  else if(isPointerType(rhsEntity->type) && isNullPointerConstant(lhs))
+  {//§6.5.15.p6
+    e->type = rhsEntity->type;
+  }
+  else if(isPointerType(lhsEntity->type) && isPointerType(rhsEntity->type) &&
+      ( (isObjType(toPointerType(lhsEntity->type)->innerType) &&
+          isVoidType(toPointerType(rhsEntity->type)->innerType)) ||
+        (isObjType(toPointerType(rhsEntity->type)->innerType) &&
+          isVoidType(toPointerType(lhsEntity->type)->innerType))))
+  {//§6.5.15.p6
+    e->type = TypeFactory::getVoid();
   }
   else
   {
-    return;
+    ERROR("Invalid consequent and antecedent of conditional expression.");
   }
-
-  //§6.5.15.p6 - For the restricted subset, type of conditional expression
-  // is same as lhs and rhs. When one of them is null pointer constant then
-  // it is of other type.
-  if(dynamic_cast<Constant const *>(lhsEntity->type) != NULL)
-  {
-    this->attachEntity(lhsEntity);
-  }
-  else
-  {
-    this->attachEntity(rhsEntity);
-  }
+  this->attachEntity(e);
 
   //§6.5.15.p4 - A conditional expression does not yield an lvalue.
   this->isLvalue = false;
@@ -193,6 +202,120 @@ void BinaryExpr::analyze()
     //? Assuming no lvalue.
     this->isLvalue = false;
   }
+  else if((this->tok).kind == Lex::TK::Plus)
+  {
+    bool isPointer = false;
+    //§6.5.6.p2
+    if(!(isArithmeticType(lhsType) && isArithmeticType(rhsType)))
+    {
+      if(!( (isPointerType(lhsType)
+             && toPointerType(lhsType)->isPointerToCompleteObj()
+             && isIntegerType(rhsType)) ||
+            (isPointerType(rhsType)
+             && toPointerType(rhsType)->isPointerToCompleteObj()
+             && isIntegerType(lhsType)) ))
+      {
+        ERROR("Pointer + Integer expected or integer operands expected.");
+      }
+      else
+      {
+        isPointer = true;
+      }
+    }
+
+    //§6.5.6.p4
+    Entity * const resultEntity = new Entity();
+    if(isPointer)
+    {
+      if(isPointerType(lhsType))
+      {
+        resultEntity->type = lhsType;
+      }
+      else
+      {
+        resultEntity->type = rhsType;
+      }
+    }
+    else
+    {
+      resultEntity->type = TypeFactory::getInt();
+    }
+    this->attachEntity(resultEntity);
+
+    //? Assuming no lvalue
+    this->isLvalue = false;
+  }
+  else if((this->tok).kind == Lex::TK::Minus)
+  {
+    Entity *e = new Entity();
+    if(isArithmeticType(lhsType) && isArithmeticType(rhsType)) //§6.5.6.p3.pp1 int?
+    {
+      e->type = TypeFactory::getInt();
+    }
+    else if(isPointerType(lhsType) && //§6.5.6.p3.pp2
+            toPointerType(lhsType) == toPointerType(rhsType) &&
+            toPointerType(lhsType)->isPointerToCompleteObj())
+    {
+      e->type = TypeFactory::getInt();
+    }
+    else if(isPointerType(lhsType) && //§6.5.6.p3.pp3
+            toPointerType(lhsType)->isPointerToCompleteObj() &&
+            isIntegerType(rhsType))
+    {
+      e->type = lhsType;
+    }
+    else
+    {
+      ERROR("Incompatible operands to minus.");
+    }
+    this->attachEntity(e);
+  }
+  else if((this->tok).kind == Lex::TK::Le)
+  {
+    Entity *e = new Entity();
+    if((isRealType(lhsType) && isRealType(rhsType)) || //§6.5.8.p2.pp1
+       (isPointerType(lhsType) && isPointerType(rhsType) &&//§6.5.8.p2.pp2 ?
+           isObjType(toPointerType(lhsType)->innerType) &&
+           isObjType(toPointerType(rhsType)->innerType) &&
+           lhsType == rhsType))
+    {
+      e->type = TypeFactory::getInt();//§6.5.8.p6
+    }
+    else
+    {
+      ERROR("Expected real types or ponter to object types.")
+    }
+    this->attachEntity(e);
+  }
+  else if((this->tok).kind == Lex::TK::Eq || (this->tok).kind == Lex::TK::NE)
+  {
+    Entity *e = new Entity();
+    //§6.5.9.p2
+    if(isAssignmentCompatible(lhs, rhs) || isAssignmentCompatible(rhs, lhs))
+    {
+      //§6.5.9.p3
+      e->type = TypeFactory::getInt();
+    }
+    else
+    {
+      ERROR("Incompatible operands to == or !=.");
+    }
+    this->attachEntity(e);
+  }
+  else if((this->tok).kind == Lex::TK::LAnd || (this->tok).kind == Lex::TK::LOr)
+  {
+    Entity *e = new Entity();
+    //§6.5.13.p2
+    if(isScalarType(lhsType) && isScalarType(rhsType))
+    {//§6.5.13.p3
+      e->type = TypeFactory::getInt();
+    }
+    else
+    {
+      ERROR("Incompatible operands to == or !=.");
+    }
+  }
+
 }
 
 void FunctionCall::analyze()

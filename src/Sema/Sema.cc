@@ -136,6 +136,7 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
     {
       entity->type = t;
       entity->attachParent( this );
+      const_cast< Identifier * >( this )->attachEntity( entity );
       if ( parameterDepth == 0 )
         env.pushFunction( entity );
 
@@ -193,6 +194,7 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
           << other->tok.pos;
         ERROR( oss.str().c_str() );
       }
+      const_cast< Identifier * >( this )->attachEntity( entityOld );
       return entityOld;
     }
   } // end if FuncType
@@ -213,6 +215,7 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
     {
       e->type = t;
       e->attachParent( this );
+      const_cast< Identifier * >( this )->attachEntity( e );
       return e;
     }
     else
@@ -235,7 +238,8 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
           "' has already been declared at " << idOld->tok.pos;
         ERROR( oss.str().c_str() );
       }
-
+      
+      const_cast< Identifier * >( this )->attachEntity( origin );
       return origin;
     }
   } // end else ObjType
@@ -276,8 +280,7 @@ void FunctionDef::analyze( Env &env ) const
   if ( ! dynamic_cast< FuncType const * >( e->type ) )
   {
     std::ostringstream oss;
-    oss << "identifier '" << e->getParent() << "' is no function " <<
-      e->getParent();
+    oss << "identifier '" << e->getParent() << "' is no function ";
     ERROR_TOK( funDeclar->tok, oss.str().c_str() );
   }
 
@@ -473,4 +476,42 @@ void LabelStmt::analyze( Env &env ) const
     oss << "label '" << this->tok.sym << "' already defined at " << lt->pos;
     ERROR( oss.str().c_str() );
   }
+}
+
+void ReturnStmt::analyze( Env &env ) const
+{
+  // Check if returned expression has function return type
+  auto funcType = static_cast< FuncType const * >( env.topFunction()->type );
+
+  if ( funcType->retType == TypeFactory::getVoid() )
+  {
+    if ( expr )
+    {
+      std::ostringstream oss;
+      oss << "return may not have an expression";
+      ERROR( oss.str().c_str() );
+    }
+    return;
+  }
+
+  if ( ! expr )
+  {
+    std::ostringstream oss;
+    oss << "return needs an expression";
+    ERROR( oss.str().c_str() );
+    return;
+  }
+
+  //TODO remove after completing sema
+  if ( ! expr->getEntity() )
+    return;
+
+  //TODO uncomment after checkTypes is implemented properly
+  /*if ( checkTypes( funcType->retType, expr->getEntity()->type )
+    {
+    std::ostringstream oss;
+    oss << "return value of type '" << expr->getEntity()->type <<
+    "', should have type '" << env.topFunction()->type << "'"; 
+    ERROR( oss.str().c_str() );
+    }*/
 }

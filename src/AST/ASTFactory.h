@@ -370,7 +370,11 @@ namespace C4
       inline ReturnStmt const * getReturnStmt( TOK,
           Expr const * const expr = NULL )
       {
-        return new ReturnStmt( tok, expr );
+        ReturnStmt const * stmt = new ReturnStmt( tok, expr );
+#ifndef NOSEMA
+        stmt->analyze( env );
+#endif
+        return stmt; 
       }
 
       inline BlockItem const * getBlockItem( Stmt const * const stmt )

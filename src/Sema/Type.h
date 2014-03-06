@@ -16,6 +16,7 @@
 #include <unordered_map>
 #include <cassert>
 #include "../Support/Symbol.h"
+#include "TypeHelper.h"
 
 namespace C4
 {
@@ -172,6 +173,10 @@ namespace C4
       ~PtrType() {}
 
       inline bool isComplete() const { return true; }
+      inline bool isPointerToCompleteObj() const
+      {
+        return isCompleteObjType(innerType);
+      }
       inline size_t size() const { return 4; }
       inline size_t hashCode() const
       {
