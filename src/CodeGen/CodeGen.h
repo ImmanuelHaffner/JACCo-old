@@ -20,6 +20,7 @@
 #include "llvm/IR/LLVMContext.h"           /* LLVMContext */
 #include "llvm/IR/GlobalValue.h"           /* GlobaleVariable, LinkageTypes */
 #include "llvm/Analysis/Verifier.h"        /* verifyFunction, verifyModule */
+#include "../Sema/Type.h"
 
 
 namespace C4
@@ -78,7 +79,6 @@ namespace C4
       void EmitBlock( llvm::BasicBlock * const target );
 
 
-      private:
       /* The global context (only one needed) */
       llvm::LLVMContext &Context;
 
@@ -88,6 +88,7 @@ namespace C4
       /* An IR-Builder to output intermediate instructions or types. */
       llvm::IRBuilder<> Builder;
 
+      private:
       /* A stack of the break/continue targets for loops. */
       std::vector< JumpTarget > jumpTargets;
     };

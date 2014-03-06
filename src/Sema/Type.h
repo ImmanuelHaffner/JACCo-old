@@ -18,6 +18,21 @@
 #include "../Support/Symbol.h"
 #include "TypeHelper.h"
 
+
+/* Forward declarations */
+namespace C4
+{
+  namespace CodeGen
+  {
+    struct CodeGenFunction;
+  }
+}
+
+namespace llvm
+{
+  class Type;
+}
+
 namespace C4
 {
   namespace Sema
@@ -31,6 +46,11 @@ namespace C4
       virtual ~Type() {}
 
       virtual size_t hashCode() const = 0;
+      virtual llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const
+        = 0;
+
+      protected:
+      mutable llvm::Type * LLVMType = NULL;
     }; // end struct Type
 
 
@@ -52,6 +72,8 @@ namespace C4
           h = h * 23 + it->second->hashCode();
         return h;
       }
+
+      llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
 
       Type const * const retType;
       params_t const params;
@@ -87,6 +109,7 @@ namespace C4
                                                 // size is irrelevant
 
       inline size_t hashCode() const { return hashCode_; }
+      llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
 
       private:
       size_t const hashCode_;
@@ -151,6 +174,8 @@ namespace C4
         return (size_t) this;
       }
 
+      llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
+
       elements_t elements;
 
       private:
@@ -178,12 +203,15 @@ namespace C4
       {
         return isCompleteObjType(innerType);
       }
+
       inline size_t size() const { return 4; }
       inline size_t hashCode() const
       {
         size_t const h = innerType->hashCode();
         return ( h * 31 ) ^ h;
       }
+
+      llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
 
       Type const * const innerType;
     }; // end struct PtrType
@@ -213,6 +241,7 @@ namespace C4
       inline bool isComplete() const { return true; }
       inline size_t size() const { return size_; }
       inline size_t hashCode() const { return hashCode_; }
+      llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
 
       private:
       size_t const size_; // the size in bytes

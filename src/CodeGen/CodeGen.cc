@@ -11,10 +11,12 @@
 #include "CodeGen.h"
 
 #include "../AST/AST.h"
+#include "../Sema/TypeFactory.h"
 
 
 using namespace C4;
 using namespace AST;
+using namespace Sema;
 using namespace CodeGen;
 using namespace llvm;
 
