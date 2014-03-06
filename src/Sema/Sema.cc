@@ -533,7 +533,6 @@ void ReturnStmt::analyze( Env &env ) const
   if ( ! expr->getEntity() )
     return;
 
-  //TODO uncomment after checkTypes is implemented properly
   if ( ! isAssignmentCompatible( funcType->retType, expr ) )
   {
     std::ostringstream oss;
