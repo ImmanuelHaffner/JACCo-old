@@ -358,6 +358,29 @@ void UnaryOperation::analyze()
       ERROR("The operand of * must be pointer type.");
     }
   }
+  else if((this->tok).kind == Lex::TK::Minus)
+  {
+    if(isArithmeticType(childType)) //§6.5.3.3.p1
+    {
+      e->type = TypeFactory::getInt(); //§6.5.3.3.p3
+    }
+    else
+    {
+      ERROR("The operand of unary - must be arithmetic.");
+    }
+    this->isLvalue = false;
+  }
+  else if((this->tok).kind == Lex::TK::Not)
+  {
+    if(isScalarType(childType)) //§6.5.3.3.p1
+    {
+      e->type = TypeFactory::getInt(); //§6.5.3.3.p5
+    }
+    else
+    {
+      ERROR("The operand of unary ! must be scalar.")
+    }
+  }
   this->attachEntity(e);
 }
 
