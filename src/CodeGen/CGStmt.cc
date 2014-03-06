@@ -115,7 +115,13 @@ void GotoStmt::emit( CodeGenFunction &CGF ) const
 
 void ReturnStmt::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  if ( this->expr )
+  {
+    Value * exprV = this->expr->emit( CGF );
+    CGF.Builder.CreateRet( exprV );
+  }
+  else
+    CGF.Builder.CreateRetVoid();
 }
 
 void BlockItem::emit( CodeGenFunction &CGF ) const
