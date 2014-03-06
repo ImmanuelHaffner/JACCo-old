@@ -37,9 +37,10 @@ namespace C4
     /// \brief Represents function types.
     struct FuncType : Type
     {
-      FuncType( Type const * const retType,
-          std::vector< Type const * > argTypes ) :
-        retType(retType), argTypes(argTypes)
+      typedef std::vector< std::pair< Symbol, Type const * > > params_t;
+
+      FuncType( Type const * const retType, params_t params )
+        : retType(retType), params(params)
       {}
 
       ~FuncType() {}
@@ -47,13 +48,13 @@ namespace C4
       inline size_t hashCode() const
       {
         size_t h = retType->hashCode();
-        for ( Type const * t : argTypes )
-          h = h * 23 + t->hashCode();
+        for ( auto it = params.begin(); it != params.end(); ++it )
+          h = h * 23 + it->second->hashCode();
         return h;
       }
 
       Type const * const retType;
-      std::vector< Type const * > const argTypes;
+      params_t const params;
     }; // end struct FuncType
 
     /// \brief Represents pointer and scalar types.

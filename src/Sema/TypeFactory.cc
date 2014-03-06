@@ -25,16 +25,16 @@ bool FuncEqual::operator()( FuncType const * const t0,
   if ( t0->retType != t1->retType ) return false;
 
   // Compare the argument types.
-  std::vector< Type const * > const &args0 = t0->argTypes;
-  std::vector< Type const * > const &args1 = t1->argTypes;
+  FuncType::params_t const &params0 = t0->params;
+  FuncType::params_t const &params1 = t1->params;
 
-  if ( args0.size() != args1.size() ) return false;
+  if ( params0.size() != params1.size() ) return false;
 
   // Compare argument types.
-  for ( auto it0 = args0.begin(), it1 = args1.begin();
-      it0 != args0.end() && it1 != args1.end();
+  for ( auto it0 = params0.begin(), it1 = params1.begin();
+      it0 != params0.end() && it1 != params1.end();
       ++it0, ++it1 )
-    if ( *it0 != *it1 ) return false;
+    if ( it0->second != it1->second ) return false;
 
   return true;
 }
@@ -87,9 +87,9 @@ Sema::Type const * TypeFactory::getPtr( Type const * const innerType )
 }
 
 Sema::Type const * TypeFactory::getFunc( Type const * const retType,
-    std::vector< Type const * > &argTypes )
+    FuncType::params_t &params )
 {
-  FuncType const * const func = new FuncType( retType, argTypes );
+  FuncType const * const func = new FuncType( retType, params );
 
   // Internalize.
   auto it = funcTable.find( func );

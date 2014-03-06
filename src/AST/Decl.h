@@ -158,7 +158,8 @@ namespace C4
       ParamList( std::vector< ParamDecl const * > &params ) : List(params) {}
 			~ParamList() {}
 			void print( Printer const p ) const;
-      std::vector< Sema::Type const * >  analyze( Sema::Env &env ) const;
+      std::vector< std::pair< Symbol, Sema::Type const * > >
+        analyze( Sema::Env &env ) const;
 		}; // end struct ParamList
 
 		/// Declarator
@@ -279,5 +280,6 @@ namespace C4
     }; // end struct FunctionDef
   } // end namespace AST
 } // end namespace C4
+
 
 #endif
