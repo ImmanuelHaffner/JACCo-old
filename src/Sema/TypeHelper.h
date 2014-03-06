@@ -35,6 +35,9 @@
 #define toPointerType(t) \
   (dynamic_cast<PtrType const*>(t))
 
+#define toObjType(t) \
+  (dynamic_cast<ObjType const*>(t))
+
 //Note: these take an Expr object
 #define isNullPointerConstant(e) \
   (e->getEntity() != NULL && \

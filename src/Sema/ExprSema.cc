@@ -384,6 +384,33 @@ void UnaryOperation::analyze()
   this->attachEntity(e);
 }
 
+void SizeofExpr::analyze()
+{
+  Entity const *childEntity = expr->getEntity();
+  returnIfNull(childEntity);
+  Entity *e = new Entity();
+  if( isFunctionType(childEntity->type) || //§6.5.3.4.p1
+      (isObjType(childEntity->type) &&
+       ! toObjType(childEntity->type)->isComplete()) )
+  {
+    ERROR("The operand of size of cannot be function type or incomplete object.");
+  }
+  else
+  {
+    e->type = TypeFactory::getInt(); //§6.5.3.4.p2
+  }
+  this->attachEntity(e);
+  this->isLvalue = false;
+}
+
+void SizeofTypeExpr::analyze() //§6.5.3.4
+{
+  Entity *e = new Entity();
+  e->type = TypeFactory::getInt();
+  this->attachEntity(e);
+  this->isLvalue = false;
+}
+
 void FunctionCall::analyze()
 {
   //§6.5.2.2.5 - The function call expression has type of return type

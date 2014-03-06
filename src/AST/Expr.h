@@ -299,6 +299,7 @@ namespace C4
       ~SizeofExpr() {}
 
       void print( Printer const p ) const;
+      void analyze();
 
       Expr const * const expr;
     }; // end struct UnaryExpr
@@ -312,6 +313,7 @@ namespace C4
       ~SizeofTypeExpr() {}
 
       void print( Printer const p ) const;
+      void analyze();
 
       TypeName const * const typeName;
     }; // end struct UnaryExpr
