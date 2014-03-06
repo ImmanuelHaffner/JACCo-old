@@ -74,6 +74,8 @@ void WhileStmt::emit( CodeGenFunction &CGF ) const
   BasicBlock * condBlock = BasicBlock::Create( CGF.Context, "while.cond" );
   BasicBlock * exitBlock = BasicBlock::Create( CGF.Context, "while.end" );
 
+  CGF.pushJumpTarget( JumpTarget( exitBlock, condBlock ) ); 
+
   CGF.Builder.CreateBr( condBlock );
   CGF.Builder.SetInsertPoint( condBlock );
   CGF.Builder.CreateCondBr( condV, bodyBlock, exitBlock );
@@ -83,6 +85,7 @@ void WhileStmt::emit( CodeGenFunction &CGF ) const
   CGF.Builder.CreateBr( condBlock );
 
   CGF.Builder.SetInsertPoint( exitBlock );
+  CGF.popJumpTarget();
 }
 
 void DoStmt::emit( CodeGenFunction &CGF ) const
@@ -97,12 +100,12 @@ void ForStmt::emit( CodeGenFunction &CGF ) const
 
 void BreakStmt::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  CGF.Builder.CreateBr( CGF.getCurrentJumpTarget().breakTarget );
 }
 
 void ContinueStmt::emit( CodeGenFunction &CGF ) const
 {
-  assert( false && "not implemented yet" );
+  CGF.Builder.CreateBr( CGF.getCurrentJumpTarget().continueTarget );
 }
 
 void GotoStmt::emit( CodeGenFunction &CGF ) const
