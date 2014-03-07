@@ -125,6 +125,11 @@ namespace C4
        */
       llvm::Function *parent = NULL;
 
+      /* A stack of all parameter allocas in the order they have been created.
+       * Must be cleared after each function definition.
+       */
+      std::vector< llvm::Value * > params;
+
       private:
       /* A stack of the break/continue targets for loops. */
       std::vector< JumpTarget > jumpTargets;
@@ -134,7 +139,6 @@ namespace C4
 
       /* A stack of pairs of goto targets and corresponding insert points. */
       std::vector< std::pair< Symbol, llvm::BasicBlock * const > > gotoTargets;
-
     };
   } // end namespace CodeGen
 } // end namespace C4

@@ -23,7 +23,7 @@ using namespace Sema;
 
 static int parameterDepth = 0;
 static std::vector< std::pair< Entity *,
-  ParamDecl const * > > nameless_params;
+  ParamDecl const * > > current_params;
 
 #define ERROR( MSG ) \
 { std::ostringstream actual; \
@@ -108,7 +108,7 @@ Entity * FunctionDeclarator::analyze( Env &env,
     Sema::Type const * const t ) const
 {
   if ( parameterDepth == 0 )
-    nameless_params.clear();
+    current_params.clear();
 
   env.pushScope();
   FuncType::params_t params = this->params->analyze( env );
@@ -277,15 +277,15 @@ Entity * IllegalDeclarator::analyze( Env &env, Sema::Type const * ) const
 
 void FunctionDef::analyze( Env &env ) const
 {
-  auto funDeclar = static_cast< FunctionDeclarator const * >( decl->declarator
-      );
+  auto funDeclar =
+    static_cast< FunctionDeclarator const * >( decl->declarator );
 
   // Check for missing parameter names
   // When parsing parameter declarations, the function name is still unknown, so
   // we have to check for the function below
   Entity * fe = env.popFunction();
-  for ( std::pair< Entity *, ParamDecl const * > &it : nameless_params ) {
-    if ( it.first  == env.topFunction() )
+  for ( std::pair< Entity *, ParamDecl const * > &it : current_params ) {
+    if ( it.first == env.topFunction() )
     {
       std::ostringstream oss;
       oss << "function '" << funDeclar->tok.sym.str() <<
@@ -358,9 +358,9 @@ Sema::Type const * ParamDecl::analyze( Env &env ) const
     t = e->type;
   }
   size_t scopeSize2 = env.topScope()->getIdMap().size();
-  if ( t != TypeFactory::getVoid() && parameterDepth == 1 && scopeSize1
-      == scopeSize2 )
-    nameless_params.push_back( std::make_pair( env.topFunction(), this ) );
+  if ( t != TypeFactory::getVoid() && parameterDepth == 1 &&
+      scopeSize1 == scopeSize2 )
+    current_params.push_back( std::make_pair( env.topFunction(), this ) );
   return t;
 }
 

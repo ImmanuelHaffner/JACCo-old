@@ -9,6 +9,7 @@
 
 #include "CodeGen.h"
 
+#include <vector>
 #include "../Lex/Token.h"
 #include "../AST/Expr.h"
 #include "../AST/Type.h"
@@ -351,8 +352,27 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
   if ( asLValue )
     assert( false && "cannot take LValue of a function call" );
 
-  assert( false && "not implemented yet" );
-  return NULL;
+  /* Get the function. */
+  llvm::Value *fun = CGF.M.getFunction( this->fun->tok.sym.str() );
+
+  std::vector< llvm::Value * > args;
+
+  ExprList const * const argList =
+    static_cast< ExprList const * >( this->args );
+
+  /* Store the RValues of all arguments. */
+  for ( auto it = argList->begin(); it != argList->end(); ++it )
+  {
+    Value *argV = (*it)->emit( CGF );
+
+    /* Skip Void Types */
+    if ( argV->getType()->isVoidTy() )
+      continue;
+
+    args.push_back( argV );
+  }
+  
+  return CGF.Builder.CreateCall( fun, args );
 }
 
 llvm::Value * PostIncExpr::emit( CodeGenFunction &CGF,

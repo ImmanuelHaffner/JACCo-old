@@ -148,6 +148,7 @@ namespace C4
 
 			void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false ) const;
 		}; // end struct ParamDecl
 
     /// Parameter List
@@ -156,8 +157,10 @@ namespace C4
       ParamList() {}
       ParamList( std::vector< ParamDecl const * > &params ) : List(params) {}
 			~ParamList() {}
+
 			void print( Printer const p ) const;
       std::vector< Sema::Type const * > analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 		}; // end struct ParamList
 
 		/// Declarator
@@ -166,9 +169,9 @@ namespace C4
       Declarator( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Declarator() {}
 
-      virtual Entity * analyze( Sema::Env &env,
-					Sema::Type const * const t )
+      virtual Entity * analyze( Sema::Env &env, Sema::Type const * const t )
         const = 0;
+      inline virtual void emit( CodeGen::CodeGenFunction & ) const {}
     }; // end struct Declarator
 
     /// Identifier
@@ -196,6 +199,10 @@ namespace C4
 			void print( Printer const p ) const;
       Entity * analyze( Sema::Env &env,
 					Sema::Type const * const t ) const;
+      inline void emit( CodeGen::CodeGenFunction &CGF ) const
+      {
+        declarator->emit( CGF );
+      }
 
       Declarator const * const declarator;
     }; // end struct PointerDeclarator
@@ -215,6 +222,11 @@ namespace C4
       void print( Printer const p ) const;
       Entity * analyze( Sema::Env &env,
 					Sema::Type const * const t ) const;
+
+      inline void emit( CodeGen::CodeGenFunction &CGF ) const
+      {
+        params->emit( CGF );
+      }
 
       Declarator const * const declarator;
       ParamList const * const params;
