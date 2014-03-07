@@ -143,13 +143,21 @@ namespace C4
       inline DotExpr const * getDotExpr( TOK, Expr const * const expr,
           Lex::Token const &id )
       {
-        return new DotExpr( tok, expr, id );
+        DotExpr *dotExpr = new DotExpr( tok, expr, id );
+#ifndef NOSEMA
+        dotExpr->analyze();
+#endif
+        return dotExpr;
       }
 
       inline ArrowExpr const * getArrowExpr( TOK, Expr const * const expr,
           Lex::Token const &id )
       {
-        return new ArrowExpr( tok, expr, id );
+        ArrowExpr *arrowExpr = new ArrowExpr( tok, expr, id );
+#ifndef NOSEMA
+        arrowExpr->analyze();
+#endif
+        return arrowExpr;
       }
 
       inline FunctionCall const * getFunctionCall( TOK, Expr const * const fun,

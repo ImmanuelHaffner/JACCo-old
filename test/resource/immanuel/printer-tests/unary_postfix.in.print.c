@@ -8,7 +8,7 @@ int foo()
   struct { struct { int *z; } y; } *p;
 	++x--;
 	--x++;
-	++x->y;
+	++p->y->z;
 	++f(x,y);
 	f(x, y)--;
 	*p->y;

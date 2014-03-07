@@ -31,6 +31,9 @@
 #define isRealType(t) \
   (dynamic_cast<BasicType const*>(t) != NULL)
 
+#define isStructType(t) \
+  (dynamic_cast<StructType const*>(t) != NULL)
+
 //Cast functions
 #define toPointerType(t) \
   (dynamic_cast<PtrType const*>(t))
@@ -40,6 +43,9 @@
 
 #define toObjType(t) \
   (dynamic_cast<ObjType const*>(t))
+
+#define toStructType(t) \
+  (dynamic_cast<StructType const*>(t))
 
 //Note: these take an Expr object
 #define isNullPointerConstant(e) \

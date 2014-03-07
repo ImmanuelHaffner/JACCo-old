@@ -959,6 +959,59 @@ valid:
   this->isLvalue = false;
 }
 
+void DotExpr::analyze()
+{
+  Entity *exprEntity = expr->getEntity();
+  returnIfNull(exprEntity);
+
+  Type const *exprType = toFuncPtrIfFunc(exprEntity->type);
+  //Entity *e = new Entity();
+
+  //§6.5.2.3.p1
+  if(isStructType(exprType))
+  {
+    // Need member names from structtype
+    //if(toStructType(exprType)->elements)
+  }
+  else
+  {
+    ERROR("The left side of . must be struct type.");
+  }
+
+  //§6.5.2.3.p3
+  if(expr->isLvalue)
+  {
+    this->isLvalue = true;
+  }
+  else
+  {
+    this->isLvalue = false;
+  }
+}
+
+void ArrowExpr::analyze()
+{
+  Entity *exprEntity = expr->getEntity();
+  returnIfNull(exprEntity);
+  Type const *exprType = toFuncPtrIfFunc(exprEntity->type);
+  //Entity *e = new Entity();
+
+  //§6.5.2.3.p2
+  if(isPointerType(exprType) &&
+      isStructType(toPointerType(exprType)->innerType))
+  {
+    // To check if valid member need symbols in structtype from typefactory.
+    //if(toStructType(exprType)->elements)
+  }
+  else
+  {
+    ERROR("The left side of -> must be pointer to a struct.");
+  }
+
+  //§6.5.2.3.p4
+  this->isLvalue = true;
+}
+
 void ExprList::analyze()
 {
   auto lastElem = this->end() - 1;
@@ -966,4 +1019,22 @@ void ExprList::analyze()
   if ( ( *lastElem )->getEntity() )
     e->type = ( *lastElem )->getEntity()->type;
   this->attachEntity( e );
+}
+
+void TypeName::analyze( Env &env )
+{
+  Sema::Type const * const type = typeSpec->analyze( env );
+
+  if ( declarator )
+  {
+    Entity * const e = declarator->analyze( env, type );
+    attachEntity( e );
+  }
+  else
+  {
+    Entity * const e = new Entity();
+    e->type = type;
+    attachEntity( e );
+  }
+
 }
