@@ -916,12 +916,12 @@ void FunctionCall::analyze()
   Entity *exprEntity = fun->getEntity();
   returnIfNull(exprEntity);
   Type const *exprType = toFuncPtrIfFunc(exprEntity->type);
-  Entity *e = new Entity();
 
   //§6.5.2.2.p1
   if(isPointerType(exprType) &&
       isFunctionType(toPointerType(exprType)->innerType))
   {
+    Entity *e = new Entity();
     Type const *innerType = toPointerType(exprType)->innerType;
     FuncType const *funcType = toFunctionType(innerType);
     FuncType::params_t voidParams;
@@ -955,12 +955,12 @@ void FunctionCall::analyze()
 valid:
     e->type = funcType->retType;   //§6.5.2.2.5 - The function call
     //expression has type of return type
+    this->attachEntity(e);
   }
   else
   {
     ERROR("Expression denoting called function is not a pointer to a function")
   }
-  this->attachEntity(e);
 
   //§6.8.6.4 - It seems that it cannot be an lvalue.
   this->isLvalue = false;
