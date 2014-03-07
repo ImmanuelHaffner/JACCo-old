@@ -134,7 +134,7 @@ Entity * FunctionDeclarator::analyze( Env &env,
 
   if ( entity ) return entity;
 
-  Entity * entity2 = env.insert( "$" );
+  Entity * entity2 = new Entity();
   entity2->type = funType;
   if ( ! parameterDepth )
     env.pushFunction( entity2 );
@@ -1022,11 +1022,24 @@ void ArrowExpr::analyze()
   //Entity *e = new Entity();
 
   //§6.5.2.3.p2
-  if(isPointerType(exprType) &&
-      isStructType(toPointerType(exprType)->innerType))
+  if( isPointerType( exprType ) &&
+      isStructType( toPointerType( exprType )->innerType ) )
   {
-    // To check if valid member need symbols in structtype from typefactory.
-    //if(toStructType(exprType)->elements)
+    Type const * structType = toPointerType( exprType )->innerType; 
+    auto elements = toStructType( structType )->elements;
+    auto elem = elements.find( id.sym );
+    if ( elem != elements.end() )
+    {
+      Entity * e = new Entity();
+      e->type = elem->second; 
+      attachEntity( e );
+    }
+    else
+    {
+      std::ostringstream oss;
+      oss << "No member " << id.sym << " in struct with type " << structType;
+      ERROR( oss.str().c_str() );
+    }
   }
   else
   {
@@ -1052,7 +1065,9 @@ void TypeName::analyze( Env &env )
 
   if ( declarator )
   {
+    parameterDepth = 1;
     Entity * const e = declarator->analyze( env, type );
+    parameterDepth = 0;
     attachEntity( e );
   }
   else
