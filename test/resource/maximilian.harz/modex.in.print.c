@@ -4,7 +4,7 @@ int (f(int x, int y))
 	{
 		int x;
 	} s;
-	struct S p;
+	struct S (*p);
 	if (1)
 		return (-((*(&(s.x))) = ((sizeof (s.x)) * ((p->x) - y))));
 	else if ((1))
