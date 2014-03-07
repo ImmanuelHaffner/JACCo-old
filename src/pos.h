@@ -1,8 +1,10 @@
 #ifndef POS_H
 #define POS_H
 
+
 #include <iostream>
 #include "util.h"
+
 
 struct Pos
 {
@@ -22,5 +24,6 @@ struct Pos
 std::ostream & operator<<( std::ostream &out, Pos const &pos );
 std::ostream & operator<<( std::ostream &out, Pos const * const pos );
 bool operator==( Pos const &p0, Pos const &p1 );
+
 
 #endif

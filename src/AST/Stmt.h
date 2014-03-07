@@ -6,8 +6,10 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_STMT_H
 #define C4_STMT_H
+
 
 #include <iostream>
 #include <vector>
@@ -16,17 +18,31 @@
 #include "Locatable.h"
 
 
+/* Forward declarations */
 namespace C4
 {
-  /* Forward declarations */
   namespace Sema
   {
     struct Env;
   }
 
+  namespace CodeGen
+  {
+    struct CodeGenFunction;
+  }
+}
+
+namespace llvm
+{
+  class Value;
+}
+
+
+namespace C4
+{
   namespace AST
   {
-    // Forward declaration
+    /* Forward declarations */
     struct Expr;
     struct Decl;
     struct DeclList;
@@ -37,6 +53,8 @@ namespace C4
     {
       Stmt( Lex::Token const &tok ) : Locatable(tok) {}
       virtual ~Stmt() {}
+
+      virtual void emit( CodeGen::CodeGenFunction &CGF ) const = 0;
     }; // end struct Stmt
 
 
@@ -47,6 +65,7 @@ namespace C4
       ~IllegalStmt() {}
 
       void print ( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction & ) const;
     }; // end struct IllegalStmt
 
 
@@ -60,6 +79,7 @@ namespace C4
       ~ExprStmt() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Expr const * const expr;
     }; // end struct ExprStmt
@@ -74,6 +94,7 @@ namespace C4
       {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Expr const * const expr;
       Stmt const * const stmt;
@@ -94,6 +115,7 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Stmt const * const stmt;
     }; // end struct CaseStmt
@@ -110,6 +132,7 @@ namespace C4
       ~IfStmt() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Expr const * const Cond;
       Stmt const * const Then;
@@ -131,6 +154,7 @@ namespace C4
       ~SwitchStmt() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Expr const * const Cond;
       Stmt const * const Body;
@@ -160,6 +184,7 @@ namespace C4
       ~WhileStmt() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Expr const * const Cond;
     }; // end struct WhileStmt
@@ -176,6 +201,7 @@ namespace C4
       ~DoStmt() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Expr const * const Cond;
     }; // end struct DoStmt
@@ -201,6 +227,7 @@ namespace C4
       ~ForStmt() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Expr const * const Init;
       Decl const * const InitDecl;
@@ -221,6 +248,7 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze() const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
     }; // end struct BreakStmt
 
 
@@ -236,6 +264,7 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze() const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
     }; // end struct ContinueStmt
 
 
@@ -252,6 +281,7 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
     }; // end struct GotoStmt
 
 
@@ -268,6 +298,7 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Expr const * const expr;
     }; // end struct ReturnStmt
@@ -279,6 +310,8 @@ namespace C4
       BlockItem( Stmt const * const stmt ) : stmt(nonNull(stmt)), decl(NULL) {}
       BlockItem( Decl const * const decl ) : stmt(NULL), decl(nonNull(decl)) {}
       ~BlockItem() {}
+
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       Stmt const * const stmt;
       Decl const * const decl;
@@ -297,6 +330,9 @@ namespace C4
       ~CompoundStmt() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &CGF ) const;
+
+      // Resolve ambiguity of inherited method.
       inline void dump() const
       {
         Stmt::dump();
@@ -304,5 +340,6 @@ namespace C4
     }; // end struct CompoundStmt
   } // end namespace AST
 } // end namespace C4
+
 
 #endif

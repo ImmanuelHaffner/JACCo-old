@@ -8,6 +8,11 @@
 #include "Parse/Parser.h"
 #include "AST/Printable.h"
 #include "Sema/TypeFactory.h"
+#include "CodeGen/CodeGen.h"
+#include "llvm/Support/Signals.h"          /* Nice stacktrace output */
+#include "llvm/Support/SystemUtils.h"
+#include "llvm/Support/PrettyStackTrace.h"
+#include "llvm/IR/Module.h"                /* Module */
 
 
 using namespace C4;
@@ -15,6 +20,8 @@ using namespace Lex;
 using namespace Parse;
 using namespace AST;
 using namespace Sema;
+using namespace CodeGen;
+using namespace llvm;
 
 
 enum class Mode {
@@ -24,7 +31,7 @@ enum class Mode {
   COMPILE,
 };
 
-int main(int, char** const argv)
+int main(int argc, char** const argv)
 {
   char** i = argv + 1;
 
@@ -78,13 +85,7 @@ int main(int, char** const argv)
       if (hasNewErrors())
         continue;
 
-      Lexer * lexer;
-      if ( f == stdin )
-        lexer = new Lexer;
-      else
-        lexer = new Lexer( name );
-
-      Parser parser( *lexer );
+      Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
 
       switch (mode) {
         case Mode::TOKENIZE:
@@ -100,11 +101,18 @@ int main(int, char** const argv)
           break;
 
         case Mode::PARSE:
-          parser.parse();
+          {
+            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
+
+            Parser parser( *lexer );
+            parser.parse();
+          }
           break;
 
         case Mode::PRINT_AST:
           {
+            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
+            Parser parser( *lexer );
             TranslationUnit const * const unit = parser.parse();
             unit->print( Printer ( std::cout ) );
           }
@@ -112,9 +120,24 @@ int main(int, char** const argv)
 
         case Mode::COMPILE:
           {
-            PANIC("TODO implement");
+            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
+            Parser parser( *lexer );
+            TranslationUnit const * const unit = parser.parse();
+
+            llvm::sys::PrintStackTraceOnErrorSignal();
+            llvm::PrettyStackTraceProgram X(argc, argv);
+            CodeGenFunction CGF( name );
+
+            if ( hasNewErrors() )
+              break;
+
+            unit->emit( CGF );
+
+            CGF.M.dump();
+            verifyModule( CGF.M );
           }
-      }
+
+      } // end switch
       //fclose ( f );
       delete lexer;
     }

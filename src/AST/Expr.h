@@ -6,8 +6,10 @@
 //
 //===----------------------------------------------------------------------===//
 
+
 #ifndef C4_EXPR_H
 #define C4_EXPR_H
+
 
 #include <iostream>
 #include "List.h"
@@ -15,13 +17,32 @@
 #include "../Support/EntityHolder.h"
 
 
+/* Forward declarations */
+namespace C4
+{
+  namespace Sema
+  {
+    struct Env;
+  }
+
+  namespace CodeGen
+  {
+    struct CodeGenFunction;
+  }
+}
+
+namespace llvm
+{
+  class Value;
+}
+
+
 namespace C4
 {
   namespace AST
   {
-    // Forward declaration
+    /* Forward declarations */
     struct TypeName;
-
 
 
     /// Expression
@@ -31,6 +52,8 @@ namespace C4
       virtual ~Expr() {}
 
       bool isLvalue;
+      virtual llvm::Value * emit( CodeGen::CodeGenFunction &CGF,
+          bool asLValue = false ) const = 0;
     }; // end struct Expression
 
 
@@ -41,6 +64,8 @@ namespace C4
       virtual ~IllegalExpr() {}
 
       void print( Printer const p ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF,
+          bool asLValue = false ) const;
     }; // end struct IllegalExpression
 
 
@@ -55,6 +80,8 @@ namespace C4
       ~ExprList() {}
 
       void print( Printer const p ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
       void analyze();
     }; // end struct ExprList
 
@@ -71,6 +98,8 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze(Sema::Env &env);
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
     }; // end struct Variable
 
 
@@ -85,6 +114,8 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze();
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
     }; // end struct Constant
 
 
@@ -100,6 +131,8 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze();
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
     }; // end struct StringLiteral
 
 
@@ -115,6 +148,8 @@ namespace C4
 
       Expr const * const lhs;
       Expr const * const rhs;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
     }; // end struct BinaryExpr
 
 
@@ -128,6 +163,8 @@ namespace C4
 
       void print( Printer const ) const;
       void analyze();
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       Expr const * const cond;
       Expr const * const lhs;
@@ -145,6 +182,8 @@ namespace C4
 
       virtual void print( Printer const ) const;
       void analyze();
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
     }; // end struct AssignmentExpr
 
 
@@ -164,6 +203,8 @@ namespace C4
       ~UnaryOperation() {}
 
       void print( Printer const p ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
       void analyze();
 
       Expr const * const expr;
@@ -187,6 +228,8 @@ namespace C4
       ~SubscriptExpr() {}
 
       void print( Printer const p ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       Expr const * const expr;
       Expr const * const index;
@@ -206,6 +249,8 @@ namespace C4
       ~DotExpr() {}
 
       virtual void print( Printer const p ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       Expr const * const expr;
       Lex::Token const id;
@@ -221,6 +266,8 @@ namespace C4
       ~ArrowExpr() {}
 
       void print( Printer const p ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
     }; // end struct ArrowExpr
 
 
@@ -234,6 +281,8 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze();
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       Expr const * const fun;
       Expr const * const args;
@@ -248,6 +297,8 @@ namespace C4
       ~PostIncExpr() {}
 
       void print( Printer const ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       Expr const * const expr;
     }; // end struct PostIncExpr
@@ -261,6 +312,8 @@ namespace C4
       ~PostDecExpr() {}
 
       void print( Printer const ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       Expr const * const expr;
     }; // end struct PostDecExpr
@@ -274,6 +327,8 @@ namespace C4
       ~PreIncExpr() {}
 
       void print( Printer const ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       Expr const * const expr;
     }; // end struct PreIncExpr
@@ -287,6 +342,8 @@ namespace C4
       ~PreDecExpr() {}
 
       void print( Printer const ) const;
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       Expr const * const expr;
     }; // end struct PreDecExpr
@@ -301,6 +358,8 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze();
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       Expr const * const expr;
     }; // end struct UnaryExpr
@@ -315,6 +374,8 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze();
+      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+        const;
 
       TypeName const * const typeName;
     }; // end struct UnaryExpr

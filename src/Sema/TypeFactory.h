@@ -10,12 +10,12 @@
 #ifndef C4_SEMA_TYPE_FACTORY_H
 #define C4_SEMA_TYPE_FACTORY_H
 
-#include "Type.h"
 
 #include <functional>
 #include <unordered_set>
 #include "../AST/Decl.h"
 #include "../AST/Type.h"
+#include "Type.h"
 
 
 namespace C4

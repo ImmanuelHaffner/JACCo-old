@@ -12,10 +12,10 @@
 
 
 #include <iostream>
+#include <vector>
 #include "Locatable.h"
 #include "List.h"
 #include "../util.h"
-#include <vector>
 #include "../Support/EntityHolder.h"
 
 
@@ -25,7 +25,18 @@ namespace C4
   namespace Sema
   {
     struct Env;
+    struct Type;
   }
+
+  namespace CodeGen
+  {
+    struct CodeGenFunction;
+  }
+}
+
+namespace llvm
+{
+  class Value;
 }
 
 
@@ -33,7 +44,7 @@ namespace C4
 {
   namespace AST
   {
-    // Forward declarations
+    /* Forward declarations */
     struct TypeSpecifier;
     struct CompoundStmt;
 
@@ -43,6 +54,9 @@ namespace C4
     struct ExtDecl : Printable
     {
       virtual ~ExtDecl() {}
+
+      virtual void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false )
+        const = 0;
     }; // end struct ExtDecl
 
 
@@ -53,6 +67,7 @@ namespace C4
       ~IllegalExtDecl() {}
 
       void print( Printer const p ) const;
+      void emit( CodeGen::CodeGenFunction &, bool ) const;
     }; // end struct IllegalExtDecl
 
 
@@ -71,6 +86,8 @@ namespace C4
 
       /// \return always NULL
       virtual Sema::Type const * analyze( Sema::Env &env ) const;
+      virtual void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false )
+        const;
 
       TypeSpecifier const * const typeSpec;
       Declarator const * const declarator;
@@ -85,6 +102,7 @@ namespace C4
 
       void print( Printer const p ) const;
       Sema::Type const * analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &, bool ) const;
     }; // end IllegalDecl
 
 
@@ -99,7 +117,7 @@ namespace C4
         List(decls) {}
 
 			void print( Printer const p ) const;
-      void analyze( Sema::Env &env ) const;
+      void analyze( Sema::Env &env ) const; 
 		}; // end struct StructDeclList
 
     /// Struct Declaration
@@ -253,6 +271,7 @@ namespace C4
 
 			void print( Printer const p ) const;
       void analyze( Sema::Env &env ) const;
+      void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false ) const;
 
       Decl const * const decl;
       CompoundStmt const * const compStmt;

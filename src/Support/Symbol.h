@@ -9,6 +9,7 @@
 #ifndef C4_SYMBOL
 #define C4_SYMBOL
 
+
 #include <functional>
 #include <cstring>
 #include <string>
@@ -81,5 +82,6 @@ namespace std {
       }
     };
 } // end namespace std
+
 
 #endif

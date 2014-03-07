@@ -8,7 +8,9 @@
 
 
 #include "EntityHolder.h"
+
 #include <cassert>
+#include "Entity.h"
 
 
 using namespace C4;

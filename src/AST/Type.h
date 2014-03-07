@@ -14,17 +14,25 @@
 #include <iostream>
 #include "../util.h"
 #include "Locatable.h"
-#include "../Sema/Env.h"
 
+
+/* Forward declarations */
+namespace C4
+{
+  namespace Sema
+  {
+    struct Env;
+    struct Type;
+  }
+}
 
 namespace C4
 {
   namespace AST
   {
-    // Forward Declarations
+    /* Forward declarations */
     struct StructDeclList;
     struct Declarator;
-
 
 
     /// Type Name
