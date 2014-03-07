@@ -160,10 +160,10 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
       return CGF.Builder.CreateSub( lhsV, rhsV );
 
     case Lex::TK::RShift:
-      // TODO
+      return CGF.Builder.CreateAShr( lhsV, rhsV );
 
     case Lex::TK::LShift:
-      // TODO
+      return CGF.Builder.CreateShl( lhsV, rhsV );
 
     case Lex::TK::Le:
       return CGF.Builder.CreateICmpSLT( lhsV, rhsV );
