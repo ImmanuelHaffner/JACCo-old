@@ -27,7 +27,12 @@ llvm::Type * Sema::FuncType::getLLVMType( CodeGenFunction &CGF ) const
 
   /* Iterate over all parameters and compute and store the LLVM types. */
   for ( auto it = params.begin(); it != params.end(); ++it )
+  {
+    /* A void type is not used for funtion types in LLVM, skip it. */
+    if ( (*it) == TypeFactory::getVoid() )
+      continue;
     ParamTypes.push_back( (*it)->getLLVMType( CGF ) );
+  }
 
   /* Create the LLVM Function Type */
   LLVMType = FunctionType::get(
