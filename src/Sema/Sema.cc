@@ -550,13 +550,17 @@ void AssignmentExpr::analyze()
 {
   returnIfEitherNull(lhs->getEntity(), rhs->getEntity());
   //§6.5.16.p2 - lhs must be modifiable lvalue.
+
+  bool attachAllowed = true;
   if( !lhs->isLvalue )
   {
+    attachAllowed = false;
     ERROR("Left hand side of assignment must be lvalue.");
   }
   Type const * lhsType = toFuncPtrIfFunc(lhs->getEntity()->type);
   if( ! isCompleteObjType(lhsType))
   {
+    attachAllowed = false;
     ERROR("Left hand side of assignment must be a complete type.");
   }
 
@@ -565,13 +569,17 @@ void AssignmentExpr::analyze()
 
   if(!(isAssignmentCompatible(lhsType, rhs)))
   {
+    attachAllowed = false;
     ERROR("Incompatible operands of assignment.");
   }
 
   //§6.5.16.p3 - The type of assignment is type of lhs
   Entity *entity = new Entity();
   entity->type = lhs->getEntity()->type;
-  this->attachEntity(entity);
+  if(attachAllowed)
+  {
+    this->attachEntity(entity);
+  }
 }
 
 void Variable::analyze(Env &env)
@@ -635,6 +643,7 @@ void ConditionalExpr::analyze()
   Type const *lhsType = toFuncPtrIfFunc(lhsEntity->type);
   Type const *rhsType = toFuncPtrIfFunc(rhsEntity->type);
   Entity *e = new Entity();
+  bool isAttachAllowed = true;
   if(isArithmeticType(lhsType) && isArithmeticType(rhsType))
   {
     e->type = TypeFactory::getInt(); //§6.5.15.p5 : Approximate it to int
@@ -670,9 +679,13 @@ void ConditionalExpr::analyze()
   }
   else
   {
+    isAttachAllowed = false;
     ERROR("Invalid consequent and antecedent of conditional expression.");
   }
-  this->attachEntity(e);
+  if(isAttachAllowed)
+  {
+    this->attachEntity(e);
+  }
 
   //§6.5.15.p4 - A conditional expression does not yield an lvalue.
   this->isLvalue = false;
@@ -691,15 +704,18 @@ void BinaryExpr::analyze()
     {
       ERROR("The operands of * must be arithmetic.");
     }
-
-    //§6.5.5.p4 ? Make the resulting type as int our case.
-    Entity * const intEntity = new Entity();
-    intEntity->type = TypeFactory::getInt();
-    this->attachEntity(intEntity);
+    else
+    {
+      //§6.5.5.p4 ? Make the resulting type as int our case.
+      Entity * const intEntity = new Entity();
+      intEntity->type = TypeFactory::getInt();
+      this->attachEntity(intEntity);
+    }
   }
   else if((this->tok).kind == Lex::TK::Plus)
   {
     bool isPointer = false;
+    bool isAttachAllowed = true;
     //§6.5.6.p2
     if(!(isArithmeticType(lhsType) && isArithmeticType(rhsType)))
     {
@@ -710,6 +726,7 @@ void BinaryExpr::analyze()
              && toPointerType(rhsType)->isPointerToCompleteObj()
              && isIntegerType(lhsType)) ))
       {
+        isAttachAllowed = false;
         ERROR("Pointer + Integer expected or integer operands expected.");
       }
       else
@@ -735,11 +752,15 @@ void BinaryExpr::analyze()
     {
       resultEntity->type = TypeFactory::getInt();
     }
-    this->attachEntity(resultEntity);
+    if(isAttachAllowed)
+    {
+      this->attachEntity(resultEntity);
+    }
   }
   else if((this->tok).kind == Lex::TK::Minus)
   {
     Entity *e = new Entity();
+    bool isAttachAllowed = true;
     if(isArithmeticType(lhsType) && isArithmeticType(rhsType)) //§6.5.6.p3.pp1 int?
     {
       e->type = TypeFactory::getInt();
@@ -758,9 +779,13 @@ void BinaryExpr::analyze()
     }
     else
     {
+      isAttachAllowed = false;
       ERROR("Incompatible operands to minus.");
     }
-    this->attachEntity(e);
+    if(isAttachAllowed)
+    {
+      this->attachEntity(e);
+    }
   }
   else if((this->tok).kind == Lex::TK::Le)
   {
@@ -772,12 +797,12 @@ void BinaryExpr::analyze()
          lhsType == rhsType))
     {
       e->type = TypeFactory::getInt();//§6.5.8.p6
+      this->attachEntity(e);
     }
     else
     {
       ERROR("Expected real types or pointer to object types.")
     }
-    this->attachEntity(e);
   }
   else if((this->tok).kind == Lex::TK::Eq || (this->tok).kind == Lex::TK::NE)
   {
@@ -788,12 +813,12 @@ void BinaryExpr::analyze()
     {
       //§6.5.9.p3
       e->type = TypeFactory::getInt();
+      this->attachEntity(e);
     }
     else
     {
       ERROR("Incompatible operands to == or !=.");
     }
-    this->attachEntity(e);
   }
   else if((this->tok).kind == Lex::TK::LAnd || (this->tok).kind == Lex::TK::LOr)
   {
@@ -802,12 +827,12 @@ void BinaryExpr::analyze()
     if(isScalarType(lhsType) && isScalarType(rhsType))
     {//§6.5.13.p3
       e->type = TypeFactory::getInt();
+      this->attachEntity(e);
     }
     else
     {
       ERROR("Incompatible operands to == or !=.");
     }
-    this->attachEntity(e);
   }
   this->isLvalue = false;
 }
@@ -883,7 +908,10 @@ void UnaryOperation::analyze()
       ERROR("The operand of unary ! must be scalar.")
     }
   }
-  this->attachEntity(e);
+  if(e->type)
+  {
+    this->attachEntity(e);
+  }
 }
 
 void SizeofExpr::analyze()
@@ -897,9 +925,12 @@ void SizeofExpr::analyze()
   {
     ERROR("The operand of size of cannot be function type or incomplete object.");
   }
-  e->type = TypeFactory::getInt(); //§6.5.3.4.p2
-  this->attachEntity(e);
-  this->isLvalue = false;
+  else
+  {
+    e->type = TypeFactory::getInt(); //§6.5.3.4.p2
+    this->attachEntity(e);
+    this->isLvalue = false;
+  }
 }
 
 void SizeofTypeExpr::analyze() //§6.5.3.4
@@ -911,9 +942,12 @@ void SizeofTypeExpr::analyze() //§6.5.3.4
   {
     ERROR("The operand of size of cannot be function type or incomplete object.");
   }
-  e->type = TypeFactory::getInt(); //§6.5.3.4.p2
-  this->attachEntity(e);
-  this->isLvalue = false;
+  else
+  {
+    e->type = TypeFactory::getInt(); //§6.5.3.4.p2
+    this->attachEntity(e);
+    this->isLvalue = false;
+  }
 }
 
 void FunctionCall::analyze()
@@ -929,6 +963,7 @@ void FunctionCall::analyze()
     Entity *e = new Entity();
     Type const *innerType = toPointerType(exprType)->innerType;
     FuncType const *funcType = toFunctionType(innerType);
+    bool isAttachAllowed = true;
     FuncType::params_t voidParams;
     voidParams.push_back( TypeFactory::getVoid() );
     Type const *voidFuncType = TypeFactory::getFunc( funcType->retType,
@@ -945,6 +980,7 @@ void FunctionCall::analyze()
       {
         if(!isAssignmentCompatible(*iterExpected, *iterActual)) //§6.5.2.2.p2
         {
+          isAttachAllowed = false;
           std::ostringstream oss;
           oss << "Function call doesn't match the declared or inferred type"
             << " at " << iterExpected - (funcType->params).begin() + 1
@@ -955,12 +991,16 @@ void FunctionCall::analyze()
     }
     else
     {
+      isAttachAllowed = false;
       ERROR("The number of arguments of function call doesn't match with declared/inferred type");
     }
 valid:
-    e->type = funcType->retType;   //§6.5.2.2.5 - The function call
-    //expression has type of return type
-    this->attachEntity(e);
+    if(isAttachAllowed)
+    {
+      e->type = funcType->retType;   //§6.5.2.2.5 - The function call
+      //expression has type of return type
+      this->attachEntity(e);
+    }
   }
   else
   {
