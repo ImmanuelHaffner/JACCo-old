@@ -88,12 +88,24 @@ namespace C4
       //
       //===---------------------------------------------------------------------
 
+      /// If the current block is not terminated already, creates a branch from
+      /// it to the target block.  Sets the insert point of the builder to the
+      /// target block.
       void EmitBlock( llvm::BasicBlock * const target );
 
+      /// \return a new BasicBlock of given name, with the current function as
+      /// parent
       llvm::BasicBlock * getBasicBlock( llvm::Twine const &Name = "" );
 
+      /// Creates branches between goto-stmts and their associated labels.
+      /// Must be called after completing a function definition.
       void WireLabels();
 
+      /// Evaluates the given expression to a bool (i1) value.
+      /// A pointer expression will be compared to NULL, an integer expression
+      /// will be compared to 0 (zero).
+      ///
+      /// \return the bool value of the expression
       llvm::Value * EvaluateExprAsBool( llvm::Value *expr );
 
 

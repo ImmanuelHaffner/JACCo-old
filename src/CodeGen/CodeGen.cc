@@ -43,17 +43,22 @@ BasicBlock * CodeGenFunction::getBasicBlock( Twine const &Name /* = "" */ )
 
 void CodeGenFunction::WireLabels()
 {
+  /* Iterate over all goto's, and then lookup its corresponding label and create
+   * a branch.
+   */
   for ( auto &it : gotoTargets )
   {
+    /* Get the label for the goto. */
     auto elem = labels.find( it.first );
     if ( elem != labels.end() )
-    {
       assert( false && "unknown label, should be unreachable" );
-    }
+
+    /* Create a branch from the goto block to the label block. */
     Builder.SetInsertPoint( it.second );
-    Builder.CreateBr( (*elem).second );
+    Builder.CreateBr( elem->second );
   }
 
+  /* Clear the gotos and labels for the next function definition. */
   gotoTargets.clear();
   labels.clear();
 }
@@ -61,6 +66,11 @@ void CodeGenFunction::WireLabels()
 Value * CodeGenFunction::EvaluateExprAsBool( Value *expr )
 {
   llvm::Type *type = expr->getType();
+
+  /* If we already have a bool, stop here. */
+  if ( type == Builder.getInt1Ty() )
+    return expr;
+
   if ( type->isPointerTy() )
   {
     /* Check whether we have a NULL pointer. */
