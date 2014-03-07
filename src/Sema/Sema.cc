@@ -981,10 +981,22 @@ void DotExpr::analyze()
   //Entity *e = new Entity();
 
   //§6.5.2.3.p1
-  if(isStructType(exprType))
+  if ( isStructType( exprType ) )
   {
-    // Need member names from structtype
-    //if(toStructType(exprType)->elements)
+    auto elements = toStructType( exprType )->elements;
+    auto elem = elements.find( id.sym );
+    if ( elem != elements.end() )
+    {
+      Entity * e = new Entity();
+      e->type = elem->second; 
+      attachEntity( e );
+    }
+    else
+    {
+      std::ostringstream oss;
+      oss << "No member " << id.sym << " in struct with type " << exprType;
+      ERROR( oss.str().c_str() );
+    }
   }
   else
   {
@@ -1064,7 +1076,7 @@ void SubscriptExpr::analyze()
     std::ostringstream oss;
     oss << this->expr << " is not a pointer to a complete object type, but has "
       << "type " << arrayType;
-      
+
     ERROR_TOK( this->expr->tok, oss.str().c_str() );
   }
   else
