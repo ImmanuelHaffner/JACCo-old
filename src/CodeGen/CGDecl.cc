@@ -101,7 +101,7 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ )
   const
 {
   /* Get the LLVM type of the function. */
-  FunctionType * type = static_cast< FunctionType * >(
+  FunctionType *type = static_cast< FunctionType * >(
       this->decl->getEntity()->type->getLLVMType( CGF ) );
 
   /* Get the name of the function. */
@@ -132,11 +132,19 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ )
 
   this->compStmt->emit( CGF );
 
-  /* If there was no return (allowed if the return type is void), then emit a
-   * return here.
+  /* If there was no return, then emit a return here.
    */
-  if ( ! CGF.Builder.GetInsertPoint()->isTerminator() )
-    CGF.Builder.CreateRetVoid();
+  if ( ! CGF.Builder.GetInsertBlock()->getTerminator() )
+  {
+    if ( type->getReturnType()->isVoidTy() )
+      CGF.Builder.CreateRetVoid();
+    else
+      CGF.Builder.CreateRet(
+          ConstantInt::get(
+            type->getReturnType(),
+            0 )
+          );
+  }
 
   // Connect goto stmts with their labels.
   CGF.WireLabels();
