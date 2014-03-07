@@ -1262,8 +1262,24 @@ ExtDecl const * Parser::parseExtDecl()
               }
               Decl * const decl = factory.getDecl( tok, typeSpec,
                   declarator);
-              CompoundStmt const * const cStmt = parseCompoundStmt();
-              FunctionDef const * const funDef = factory.getFunctionDef( decl, cStmt );
+              CompoundStmt const * cStmt;
+#ifndef NOSEMA
+              // only parse Compound Statement if a function was declared 
+              Entity * e = decl->getEntity();
+              if ( ! dynamic_cast< Sema::FuncType const * >( e->type ) )
+              {
+                ERROR( "';'");
+
+                // create empty Compound Statement
+                std::vector< BlockItem const * > items;
+                Token tok( *current );
+                cStmt = factory.getCompoundStmt( tok, items );
+              }
+              else
+#endif
+                cStmt = parseCompoundStmt();
+              FunctionDef const * const funDef = factory.getFunctionDef( decl,
+                  cStmt );
               //pop parameter scope
 #ifndef NOSEMA
               env.popScope();
