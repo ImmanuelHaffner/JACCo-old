@@ -965,7 +965,7 @@ void DotExpr::analyze()
   returnIfNull(exprEntity);
 
   Type const *exprType = toFuncPtrIfFunc(exprEntity->type);
-  Entity *e = new Entity();
+  //Entity *e = new Entity();
 
   //§6.5.2.3.p1
   if(isStructType(exprType))
@@ -994,7 +994,7 @@ void ArrowExpr::analyze()
   Entity *exprEntity = expr->getEntity();
   returnIfNull(exprEntity);
   Type const *exprType = toFuncPtrIfFunc(exprEntity->type);
-  Entity *e = new Entity();
+  //Entity *e = new Entity();
 
   //§6.5.2.3.p2
   if(isPointerType(exprType) && isStructType(toPointerType(exprType)))
