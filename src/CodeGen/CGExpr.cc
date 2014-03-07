@@ -201,7 +201,30 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false *
 llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
   const
 {
-  assert( false && "not implemented yet" );
+  /* Create the BasicBlocks for the true, false, and end successor. */
+  BasicBlock *trueBlock = CGF.getBasicBlock( "cond.true" );
+  BasicBlock *falseBlock = CGF.getBasicBlock( "cond.false" );
+  BasicBlock *endBlock = CGF.getBasicBlock( "cond.end" );
+
+  /* Create the PHINode for the result. */
+  llvm::Type *resType = this->lhs->getEntity()->type->getLLVMType( CGF );
+  PHINode *phi = PHINode::Create( resType, 2, "cond.result" );
+
+  Value *condV = CGF.EvaluateExprAsBool( this->cond->emit( CGF ) );
+
+  CGF.Builder.CreateCondBr( condV, trueBlock, falseBlock );
+
+  /* Emit the LHS. */
+  CGF.Builder.SetInsertPoint( trueBlock );
+  phi->addIncoming( this->lhs->emit( CGF ), CGF.Builder.GetInsertBlock() );
+
+  /* Emit the RHS. */
+  CGF.Builder.SetInsertPoint( falseBlock );
+  phi->addIncoming( this->rhs->emit( CGF ), CGF.Builder.GetInsertBlock() );
+
+  /* Emit the end block. */
+  CGF.Builder.SetInsertPoint( endBlock );
+  CGF.Builder.Insert( phi );
 }
 
 llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
