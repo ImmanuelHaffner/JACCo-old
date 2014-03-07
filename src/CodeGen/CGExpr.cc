@@ -72,7 +72,7 @@ llvm::Value * StringLiteral::emit( CodeGenFunction &CGF,
 }
 
 llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
-    bool asLValue /* = false */ ) const
+    bool /* = false */ ) const
 {
   /* Emit code for the RHS and LHS, then compute the result, except for short
    * circuit evaluation.
@@ -201,7 +201,7 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
 }
 
 llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF,
-    bool asLValue /* = false */ ) const
+    bool /* = false */ ) const
 {
   /* Create the BasicBlocks for the true, false, and end successor. */
   BasicBlock *trueBlock = CGF.getBasicBlock( "cond.true" );
@@ -232,7 +232,7 @@ llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF,
 }
 
 llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
-    bool asLValue /* = false */ ) const
+    bool /* = false */ ) const
 {
   /* The RHS must be evaluated first. */
   Value *rhsV = this->rhs->emit( CGF );
@@ -240,15 +240,12 @@ llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
   /* Evaluate the LHS. */
   Value *lhsV = this->lhs->emit( CGF, /* asLValue = */ true );
 
-  /* Cast the RHS value to the LHS type. */
+  /* Get the type of the LHS. */
   llvm::Type *type = this->lhs->getEntity()->type->getLLVMType( CGF );
 
-  if ( type->isIntegerTy() )
-  {
-    rhsV = CGF.Builder.CreateSExtOrTrunc( rhsV, type );
-  }
+  CGF.CastAndStore( rhsV, lhsV, type );
 
-  return CGF.Builder.CreateStore( rhsV, lhsV );
+  return rhsV;
 }
 
 llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,

@@ -30,7 +30,7 @@ void ExprStmt::emit( CodeGenFunction &CGF ) const
   this->expr->emit( CGF );
 }
 
-void CaseStmt::emit( CodeGenFunction &CGF ) const
+void CaseStmt::emit( CodeGenFunction & ) const
 {
   assert( false && "not implemented yet" );
 }

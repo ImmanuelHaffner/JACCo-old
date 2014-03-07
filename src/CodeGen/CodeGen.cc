@@ -82,3 +82,21 @@ Value * CodeGenFunction::EvaluateExprAsBool( Value *expr )
     return Builder.CreateICmpNE( expr, ConstantInt::get( type, 0 ) );
   }
 }
+
+void CodeGenFunction::CastAndStore( llvm::Value *val, llvm::Value *ptr,
+    llvm::Type *type )
+{
+  llvm::Type *valT = val->getType();
+
+  if ( valT == type )
+  {
+    Builder.CreateStore( val, ptr );
+    return;
+  }
+
+  if ( type->isPointerTy() )
+    Builder.CreateStore( Builder.CreateIntToPtr( val, type ), ptr );
+  else
+    /* Arithmetic Type */
+    Builder.CreateStore( Builder.CreateSExtOrTrunc( val, type ), ptr );
+}
