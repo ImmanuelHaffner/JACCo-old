@@ -353,7 +353,9 @@ Sema::Type const * ParamDecl::analyze( Env &env ) const
   size_t scopeSize1 = env.topScope()->getIdMap().size();
   if ( declarator )
   {
-    t = declarator->analyze( env, t )->type;
+    Entity * e = declarator->analyze( env, t );
+    const_cast< ParamDecl * >( this )->attachEntity( e );
+    t = e->type;
   }
   size_t scopeSize2 = env.topScope()->getIdMap().size();
   if ( t != TypeFactory::getVoid() && parameterDepth == 1 && scopeSize1
