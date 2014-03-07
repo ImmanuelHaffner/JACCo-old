@@ -911,9 +911,53 @@ void SizeofTypeExpr::analyze() //§6.5.3.4
 
 void FunctionCall::analyze()
 {
-  //§6.5.2.2.5 - The function call expression has type of return type
+  Entity *exprEntity = fun->getEntity();
+  returnIfNull(exprEntity);
+  Type const *exprType = toFuncPtrIfFunc(exprEntity->type);
+  Entity *e = new Entity();
+
+  //§6.5.2.2.p1
+  if(isPointerType(exprType) &&
+      isFunctionType(toPointerType(exprType)->innerType))
+  {
+    Type const *innerType = toPointerType(exprType)->innerType;
+    FuncType const *funcType = toFunctionType(innerType);
+    if((funcType->params).size() ==
+        (toExprList(this->args))->size())
+    {
+      bool isValid = true;
+      auto iterActual = (toExprList(this->args))->begin();
+      for(auto iterExpected = (funcType->params).begin();
+          iterExpected != (funcType->params).end(); iterExpected++, iterActual++)
+      {
+        if(!isAssignmentCompatible(*iterExpected, *iterActual)) //§6.5.2.2.p2
+        {
+          std::ostringstream oss;
+          oss << "Function call doesn't match the declared or inferred type"
+              << " at " << iterExpected - (funcType->params).begin() + 1
+              << " position starting 1.";
+          ERROR( oss.str().c_str() );
+          isValid = false;
+        }
+      }
+      if(isValid)
+      {
+        e->type = funcType->retType;   //§6.5.2.2.5 - The function call expression has type of return type
+      }
+    }
+    else
+    {
+      ERROR("The number of arguments of function call doesn't match with declared/inferred type");
+    }
+  }
+  else
+  {
+    ERROR("Expression denoting called function is not a pointer to a function")
+  }
+  this->attachEntity(e);
 
   //§6.8.6.4 - It seems that it cannot be an lvalue.
+  this->isLvalue = false;
 }
 
 void ExprList::analyze()

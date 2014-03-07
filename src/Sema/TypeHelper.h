@@ -35,6 +35,9 @@
 #define toPointerType(t) \
   (dynamic_cast<PtrType const*>(t))
 
+#define toFunctionType(t) \
+  (dynamic_cast<FuncType const*>(t))
+
 #define toObjType(t) \
   (dynamic_cast<ObjType const*>(t))
 
@@ -47,4 +50,6 @@
 #define isUnaryOperation(e) \
   (dynamic_cast<UnaryOperation const*>(e) != NULL)
 
+#define toExprList(e) \
+  (dynamic_cast<ExprList const*>(e))
 #endif
