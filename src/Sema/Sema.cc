@@ -126,7 +126,7 @@ Entity * FunctionDeclarator::analyze( Env &env,
   if ( declarator )
     entity = declarator->analyze( env, funType );
 
-  if ( parameterDepth == 0 )
+  if ( ! parameterDepth )
   {
     //we don't need this scope otherwise
     env.pushScope( paramScope );
@@ -136,6 +136,8 @@ Entity * FunctionDeclarator::analyze( Env &env,
 
   Entity * entity2 = env.insert( "$" );
   entity2->type = funType;
+  if ( ! parameterDepth )
+    env.pushFunction( entity2 );
   return entity2;
 }
 
