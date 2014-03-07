@@ -249,9 +249,42 @@ llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
 }
 
 llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
-    bool asLValue /* = false */ ) const
+    bool /* = false */ ) const
 {
-  assert( false && "not implemented yet" );
+  switch ( this->tok.kind )
+  {
+    case TK::And:
+      return this->expr->emit( CGF, true );
+
+    case TK::Mul:
+      return CGF.Builder.CreateLoad(
+          this->expr->emit( CGF )
+          );
+
+    case TK::Plus:
+      return this->expr->emit( CGF );
+
+    case TK::Minus:
+      {
+        /* -x == neg(x) + 1 */
+        llvm::Type *type = this->expr->getEntity()->type->getLLVMType( CGF );
+        return CGF.Builder.CreateAdd(
+            CGF.Builder.CreateNeg(
+              this->expr->emit( CGF ) ),
+            ConstantInt::get( type, 0 ) );
+      }
+
+    case TK::Neg:
+      return CGF.Builder.CreateNeg( this->expr->emit( CGF ) );
+
+    case TK::Not:
+      return CGF.Builder.CreateNot(
+          CGF.EvaluateExprAsBool( this->expr->emit( CGF ) ) );
+
+    default:
+      break;
+  }
+  assert( false && "unknown unary operation, should be unreachable" );
   return NULL;
 }
 

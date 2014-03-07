@@ -69,7 +69,7 @@ void IfStmt::emit( CodeGenFunction &CGF ) const
   CGF.Builder.SetInsertPoint( endBlock );
 }
 
-void SwitchStmt::emit( CodeGenFunction &CGF ) const
+void SwitchStmt::emit( CodeGenFunction & ) const
 {
   assert( false && "not implemented yet" );
 }
@@ -96,12 +96,12 @@ void WhileStmt::emit( CodeGenFunction &CGF ) const
   CGF.popJumpTarget();
 }
 
-void DoStmt::emit( CodeGenFunction &CGF ) const
+void DoStmt::emit( CodeGenFunction & ) const
 {
   assert( false && "not implemented yet" );
 }
 
-void ForStmt::emit( CodeGenFunction &CGF ) const
+void ForStmt::emit( CodeGenFunction & ) const
 {
   assert( false && "not implemented yet" );
 }

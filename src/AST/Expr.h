@@ -203,9 +203,9 @@ namespace C4
       ~UnaryOperation() {}
 
       void print( Printer const p ) const;
+      void analyze();
       llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
         const;
-      void analyze();
 
       Expr const * const expr;
     }; // end struct UnaryOperation
