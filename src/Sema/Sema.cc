@@ -41,7 +41,7 @@ bool isAssignmentCompatible(Type const *lhsType, Expr const *rhs)
   Type const *rhsType = toFuncPtrIfFunc(rhs->getEntity()->type);
 
   return
-    ( lhsType == rhsType ) ||
+    ( isStructType( lhsType ) && lhsType == rhsType ) ||
     (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
 
     (isPointerType(lhsType) && isPointerType(rhsType) &&
@@ -384,8 +384,11 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
     env.pushScope();
     structDecls->analyze( env );
     Scope * const structScope = env.popScope();
-    for ( auto &it : structScope->getIdMap() )
-      innerTypes.push_back( it.second->type );
+
+    IdMap const &idMap = structScope->getIdMap();
+    for ( auto it : idMap )
+      innerTypes.insert( std::make_pair( it.first, it.second->type ) );
+
     t = TypeFactory::getStruct( innerTypes );
   }
   else
@@ -633,9 +636,13 @@ void ConditionalExpr::analyze()
   Type const *lhsType = toFuncPtrIfFunc(lhsEntity->type);
   Type const *rhsType = toFuncPtrIfFunc(rhsEntity->type);
   Entity *e = new Entity();
-  if(isArithmeticType(lhsType) && isArithmeticType(lhsType))
+  if(isArithmeticType(lhsType) && isArithmeticType(rhsType))
   {
     e->type = TypeFactory::getInt(); //§6.5.15.p5 : Approximate it to int
+  }
+  else if(isStructType(lhsType) && lhsType == rhsType)
+  {
+    e->type = lhsType;
   }
   else if(isVoidType(lhsType) && isVoidType(rhsType)) //§6.5.15.p5
   {
@@ -769,7 +776,7 @@ void BinaryExpr::analyze()
     }
     else
     {
-      ERROR("Expected real types or ponter to object types.")
+      ERROR("Expected real types or pointer to object types.")
     }
     this->attachEntity(e);
   }

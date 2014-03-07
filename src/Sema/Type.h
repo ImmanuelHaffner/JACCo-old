@@ -125,7 +125,7 @@ namespace C4
     struct StructType : ObjType
     {
       // The data structure holding the elements of a structure type.
-      typedef std::vector< Type const * > elements_t;
+      typedef std::unordered_map< Symbol, Type const * > elements_t;
 
       StructType() : size_(-1u) {}
 
@@ -151,8 +151,8 @@ namespace C4
         size_ = 0;
         for ( auto it = elements.begin(); it != elements.end(); ++it )
         {
-          this->elements.push_back( *it );
-          ObjType const *elem = static_cast< ObjType const * >( *it );
+          this->elements.insert( *it );
+          ObjType const *elem = static_cast< ObjType const * >( it->second );
           size_ += elem->size();
         }
       }
