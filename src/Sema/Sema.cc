@@ -997,7 +997,8 @@ void ArrowExpr::analyze()
   //Entity *e = new Entity();
 
   //§6.5.2.3.p2
-  if(isPointerType(exprType) && isStructType(toPointerType(exprType)))
+  if(isPointerType(exprType) &&
+      isStructType(toPointerType(exprType)->innerType))
   {
     // To check if valid member need symbols in structtype from typefactory.
     //if(toStructType(exprType)->elements)
