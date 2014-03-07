@@ -1054,8 +1054,10 @@ void ExprList::analyze()
   auto lastElem = this->end() - 1;
   Entity *e = new Entity();
   if ( ( *lastElem )->getEntity() )
+  {
     e->type = ( *lastElem )->getEntity()->type;
-  this->attachEntity( e );
+    this->attachEntity( e );
+  }
 }
 
 void TypeName::analyze( Env &env )
