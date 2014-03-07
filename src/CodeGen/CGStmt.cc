@@ -124,7 +124,7 @@ void ReturnStmt::emit( CodeGenFunction &CGF ) const
 {
   if ( this->expr )
   {
-    Value * exprV = this->expr->emit( CGF );
+    Value *exprV = this->expr->emit( CGF );
     CGF.Builder.CreateRet( exprV );
   }
   else

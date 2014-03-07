@@ -22,14 +22,13 @@ using namespace CodeGen;
 using namespace llvm;
 
 
-llvm::Value * IllegalExpr::emit( CodeGenFunction &CGF,
-    bool asLValue /* = false */ ) const
+llvm::Value * IllegalExpr::emit( CodeGenFunction &, bool /* = false */ ) const
 {
   assert( false && "cannot emit code for illegal AST node" );
 }
 
-llvm::Value * ExprList::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * ExprList::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   if ( asLValue )
     assert( false && "cannot take LValue of an expression list" );
@@ -46,24 +45,24 @@ llvm::Value * ExprList::emit( CodeGenFunction &CGF, bool asLValue /* = false */ 
   return result;
 }
 
-llvm::Value * Variable::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * Variable::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   if ( asLValue )
     return getEntity()->value;  // returns the alloca of the variable
   return CGF.Builder.CreateLoad( getEntity()->value );  // returns the value
 }
 
-llvm::Value * AST::Constant::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * AST::Constant::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   if ( asLValue )
     assert( false && "cannot take LValue of a constant" );
   return CGF.Builder.getInt32( atoi( this->tok.sym.str() ) );
 }
 
-llvm::Value * StringLiteral::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * StringLiteral::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   if ( asLValue )
     assert( false && "cannot take LValue of a string literal" );
@@ -71,8 +70,8 @@ llvm::Value * StringLiteral::emit( CodeGenFunction &CGF, bool asLValue /* = fals
   return CGF.Builder.CreateGlobalStringPtr( this->tok.sym.str() );
 }
 
-llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   /* Emit code for the RHS and LHS, then compute the result, except for short
    * circuit evaluation.
@@ -198,8 +197,8 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false *
   } // end switch token kind
 }
 
-llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   /* Create the BasicBlocks for the true, false, and end successor. */
   BasicBlock *trueBlock = CGF.getBasicBlock( "cond.true" );
@@ -227,8 +226,8 @@ llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF, bool asLValue /* = fa
   CGF.Builder.Insert( phi );
 }
 
-llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   /* The RHS must be evaluated first. */
   Value *rhsV = this->rhs->emit( CGF );
@@ -247,14 +246,14 @@ llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF, bool asLValue /* = fal
   return CGF.Builder.CreateStore( rhsV, lhsV );
 }
 
-llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
 }
 
-llvm::Value * SubscriptExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * SubscriptExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
 }
@@ -265,20 +264,20 @@ llvm::Value * DotExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
   assert( false && "not implemented yet" );
 }
 
-llvm::Value * ArrowExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * ArrowExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
 }
 
-llvm::Value * FunctionCall::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
 }
 
-llvm::Value * PostIncExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * PostIncExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   /* Get the LValue of the sub-expression. */
   Value *subV = this->expr->emit( CGF, true );
@@ -296,14 +295,14 @@ llvm::Value * PostIncExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false 
   return val;
 }
 
-llvm::Value * PostDecExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * PostDecExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
 }
 
-llvm::Value * PreIncExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * PreIncExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   /* Get the LValue of the sub-expression. */
   Value *subV = this->expr->emit( CGF, true );
@@ -321,20 +320,37 @@ llvm::Value * PreIncExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false *
   return val;
 }
 
-llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
 }
 
-llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
-  assert( false && "not implemented yet" );
+  /* Emit code for the sub-expression.  This is necessary, since it may have
+   * side effects.
+   */
+  this->expr->emit( CGF );
+
+  /* Compute the type of the sub-expression. */
+  Sema::Type const * const type = this->expr->getEntity()->type;
+
+  if ( dynamic_cast< Sema::FuncType const * >( type ) )
+    return CGF.Builder.getInt32( 4 );
+
+  if ( auto ot = dynamic_cast< Sema::ObjType const * >( type ) )
+    return CGF.Builder.getInt32( ot->size() );
+
+  assert( false && "unknown type, should be unreachable" );
 }
 
-llvm::Value * SizeofTypeExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
-  const
+llvm::Value * SizeofTypeExpr::emit( CodeGenFunction &CGF,
+    bool asLValue /* = false */ ) const
 {
+  /* Get the type of sub-node. */
+  // TODO impl (Sema not ready yet)
+  //this->typeName->getEntity()->type->size()
   assert( false && "not implemented yet" );
 }
