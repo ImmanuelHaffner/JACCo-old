@@ -25,6 +25,7 @@ using namespace llvm;
 llvm::Value * IllegalExpr::emit( CodeGenFunction &, bool /* = false */ ) const
 {
   assert( false && "cannot emit code for illegal AST node" );
+  return NULL;
 }
 
 llvm::Value * ExprList::emit( CodeGenFunction &CGF,
@@ -195,6 +196,8 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
     default:
       assert( false && "unknown token kind" );
   } // end switch token kind
+
+  return NULL;
 }
 
 llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF,
@@ -224,6 +227,8 @@ llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF,
   /* Emit the end block. */
   CGF.Builder.SetInsertPoint( endBlock );
   CGF.Builder.Insert( phi );
+
+  return phi;
 }
 
 llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
@@ -250,30 +255,35 @@ llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
+  return NULL;
 }
 
 llvm::Value * SubscriptExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
+  return NULL;
 }
 
 llvm::Value * DotExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
   const
 {
   assert( false && "not implemented yet" );
+  return NULL;
 }
 
 llvm::Value * ArrowExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
+  return NULL;
 }
 
 llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
+  return NULL;
 }
 
 llvm::Value * PostIncExpr::emit( CodeGenFunction &CGF,
@@ -299,6 +309,7 @@ llvm::Value * PostDecExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
+  return NULL;
 }
 
 llvm::Value * PreIncExpr::emit( CodeGenFunction &CGF,
@@ -324,6 +335,7 @@ llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
   assert( false && "not implemented yet" );
+  return NULL;
 }
 
 llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
@@ -344,6 +356,7 @@ llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
     return CGF.Builder.getInt32( ot->size() );
 
   assert( false && "unknown type, should be unreachable" );
+  return NULL;
 }
 
 llvm::Value * SizeofTypeExpr::emit( CodeGenFunction &CGF,
@@ -353,4 +366,5 @@ llvm::Value * SizeofTypeExpr::emit( CodeGenFunction &CGF,
   // TODO impl (Sema not ready yet)
   //this->typeName->getEntity()->type->size()
   assert( false && "not implemented yet" );
+  return NULL;
 }
