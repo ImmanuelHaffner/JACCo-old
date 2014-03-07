@@ -518,7 +518,6 @@ void ReturnStmt::analyze( Env &env ) const
     return;
   }
 
-  //TODO remove after completing sema
   if ( ! expr->getEntity() )
     return;
 
@@ -526,7 +525,7 @@ void ReturnStmt::analyze( Env &env ) const
   {
     std::ostringstream oss;
     oss << "return value of type '" << expr->getEntity()->type <<
-      "', should have type '" << env.topFunction()->type << "'";
+      "', should have type '" << funcType->retType << "'";
     ERROR( oss.str().c_str() );
   }
 }
