@@ -144,6 +144,13 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
   Value *lhsV = this->lhs->emit( CGF );
   Value *rhsV = this->rhs->emit( CGF );
 
+  /* cast if necessary */
+  if ( lhsV->getType() != rhsV->getType() )
+  {
+    lhsV = CGF.GetAs( lhsV, CGF.Builder.getInt32Ty() );
+    rhsV = CGF.GetAs( rhsV, CGF.Builder.getInt32Ty() );
+  }
+
   switch ( this->tok.kind )
   {
     case Lex::TK::Mul:
@@ -241,10 +248,13 @@ llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
   /* Evaluate the LHS. */
   Value *lhsV = this->lhs->emit( CGF, /* asLValue = */ true );
 
-  /* Get the type of the LHS. */
+  /* Get the type of the LHS (without ptr type). */
   llvm::Type *type = this->lhs->getEntity()->type->getLLVMType( CGF );
 
-  CGF.CastAndStore( rhsV, lhsV, type );
+  CGF.Builder.CreateStore(
+      CGF.GetAs( rhsV, type ),
+      lhsV
+      );
 
   return rhsV;
 }
@@ -292,8 +302,17 @@ llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
 llvm::Value * SubscriptExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  assert( false && "not implemented yet" );
-  return NULL;
+  /* Evaluate the LHS.  Must be of pointer type. */
+  Value *arr = this->expr->emit( CGF );
+  /* Evaluate the RHS.  Must be of integer type. */
+  Value *pos = this->index->emit( CGF );
+
+  Value *addr = CGF.Builder.CreateIntToPtr(
+      CGF.Builder.CreateAdd(
+        CGF.Builder.CreatePtrToInt( arr, pos->getType() ),
+        pos ), arr->getType() );
+
+  return CGF.Builder.CreateLoad( addr );
 }
 
 llvm::Value * DotExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )

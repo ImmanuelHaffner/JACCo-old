@@ -83,20 +83,19 @@ Value * CodeGenFunction::EvaluateExprAsBool( Value *expr )
   }
 }
 
-void CodeGenFunction::CastAndStore( llvm::Value *val, llvm::Value *ptr,
-    llvm::Type *type )
+llvm::Value * CodeGenFunction::GetAs( llvm::Value *val, llvm::Type *type )
 {
-  llvm::Type *valT = val->getType();
+  if ( val->getType() == type )
+    return val;
 
-  if ( valT == type )
-  {
-    Builder.CreateStore( val, ptr );
-    return;
-  }
-
+  /* val is integer type and we want pointer type */
   if ( type->isPointerTy() )
-    Builder.CreateStore( Builder.CreateIntToPtr( val, type ), ptr );
-  else
-    /* Arithmetic Type */
-    Builder.CreateStore( Builder.CreateSExtOrTrunc( val, type ), ptr );
+    return Builder.CreateIntToPtr( val, type );
+
+  /* val is pointer type, and we want integer type */
+  if ( val->getType()->isPointerTy() )
+    return Builder.CreatePtrToInt( val, type );
+
+  /* both val and type are of integer type */
+  return Builder.CreateSExtOrTrunc( val, type );
 }

@@ -108,7 +108,7 @@ namespace C4
       /// \return the bool value of the expression
       llvm::Value * EvaluateExprAsBool( llvm::Value *expr );
 
-      void CastAndStore( llvm::Value *val, llvm::Value *ptr, llvm::Type *type );
+      llvm::Value * GetAs( llvm::Value *val, llvm::Type *type );
 
 
       /* The global context (only one needed) */

@@ -127,7 +127,9 @@ void ReturnStmt::emit( CodeGenFunction &CGF ) const
   if ( this->expr )
   {
     Value *exprV = this->expr->emit( CGF );
-    CGF.Builder.CreateRet( exprV );
+
+    /* cast and return */
+    CGF.Builder.CreateRet( CGF.GetAs( exprV, CGF.parent->getReturnType() ) );
   }
   else
     CGF.Builder.CreateRetVoid();
