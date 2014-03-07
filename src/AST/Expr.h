@@ -249,7 +249,8 @@ namespace C4
       ~DotExpr() {}
 
       virtual void print( Printer const p ) const;
-      llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
+      void analyze();
+     llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
         const;
 
       Expr const * const expr;
@@ -266,6 +267,7 @@ namespace C4
       ~ArrowExpr() {}
 
       void print( Printer const p ) const;
+      void analyze();
       llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
         const;
     }; // end struct ArrowExpr

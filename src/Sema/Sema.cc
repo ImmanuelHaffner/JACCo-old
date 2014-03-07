@@ -959,6 +959,50 @@ valid:
   this->isLvalue = false;
 }
 
+void DotExpr::analyze()
+{
+  Entity *exprEntity = expr->getEntity();
+  returnIfNull(exprEntity);
+  /*
+  Type const *exprType = toFuncPtrIfFunc(exprEntity->type);
+  Entity *e = new Entity();
+
+  //§6.5.2.3.p1
+  // Need member names from structtype
+  if(isStructType(exprType))
+  {
+    if(toStructType(exprType)->elements)
+  }*/
+
+  //§6.5.2.3.p3
+  if(expr->isLvalue)
+  {
+    this->isLvalue = true;
+  }
+  else
+  {
+    this->isLvalue = false;
+  }
+}
+
+void ArrowExpr::analyze()
+{
+  Entity *exprEntity = expr->getEntity();
+  returnIfNull(exprEntity);
+  /*Type const *exprType = toFuncPtrIfFunc(exprEntity->type);
+  Entity *e = new Entity();
+
+  //§6.5.2.3.p2
+  // To check if valid member need symbols in structtype from typefactory.
+  if(isStructType(exprType))
+  {
+    if(toStructType(exprType)->elements)
+  }
+  */
+  //§6.5.2.3.p4
+  this->isLvalue = true;
+}
+
 void ExprList::analyze()
 {
   auto lastElem = this->end() - 1;
