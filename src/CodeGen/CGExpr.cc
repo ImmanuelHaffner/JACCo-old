@@ -38,7 +38,7 @@ llvm::Value * ExprList::emit( CodeGenFunction &CGF,
   /* Emit code for all expressions in the list, and return the value of the last
    * expression.
    */
-  Value * result = NULL;
+  Value *result = NULL;
   for ( auto it = begin(); it != end(); ++it )
   {
     /* An expression list cannot be an LValue */
@@ -60,6 +60,7 @@ llvm::Value * AST::Constant::emit( CodeGenFunction &CGF,
 {
   if ( asLValue )
     assert( false && "cannot take LValue of a constant" );
+
   return CGF.Builder.getInt32( atoi( this->tok.sym.str() ) );
 }
 
@@ -68,13 +69,17 @@ llvm::Value * StringLiteral::emit( CodeGenFunction &CGF,
 {
   if ( asLValue )
     assert( false && "cannot take LValue of a string literal" );
+
   /* Always build a string in a 'global' context. */
   return CGF.Builder.CreateGlobalStringPtr( this->tok.sym.str() );
 }
 
 llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
-    bool /* = false */ ) const
+    bool asLValue /* = false */ ) const
 {
+  if ( asLValue )
+    assert( false && "cannot take LValue of a binary expression" );
+
   /* Emit code for the RHS and LHS, then compute the result, except for short
    * circuit evaluation.
    */
@@ -209,8 +214,11 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
 }
 
 llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF,
-    bool /* = false */ ) const
+    bool asLValue /* = false */ ) const
 {
+  if ( asLValue )
+    assert( false && "cannot take LValue of a conditional expression" );
+
   /* Create the BasicBlocks for the true, false, and end successor. */
   BasicBlock *trueBlock = CGF.getBasicBlock( "cond.true" );
   BasicBlock *falseBlock = CGF.getBasicBlock( "cond.false" );
@@ -240,8 +248,11 @@ llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF,
 }
 
 llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
-    bool /* = false */ ) const
+    bool asLValue /* = false */ ) const
 {
+  if ( asLValue )
+    assert( false && "cannot take LValue of an assignment expression" );
+
   /* The RHS must be evaluated first. */
   Value *rhsV = this->rhs->emit( CGF );
 
@@ -260,17 +271,18 @@ llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
 }
 
 llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
-    bool /* = false */ ) const
+    bool asLValue /* = false */ ) const
 {
+  if ( asLValue )
+    assert( false && "cannot take LValue of an unary operation" );
+
   switch ( this->tok.kind )
   {
     case TK::And:
       return this->expr->emit( CGF, true );
 
     case TK::Mul:
-      return CGF.Builder.CreateLoad(
-          this->expr->emit( CGF )
-          );
+      return CGF.Builder.CreateLoad( this->expr->emit( CGF ) );
 
     case TK::Plus:
       return this->expr->emit( CGF );
@@ -295,6 +307,7 @@ llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
     default:
       break;
   }
+
   assert( false && "unknown unary operation, should be unreachable" );
   return NULL;
 }
@@ -302,6 +315,9 @@ llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
 llvm::Value * SubscriptExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
+  if ( asLValue )
+    assert( false && "cannot take LValue of a subscript expression" );
+
   /* Evaluate the LHS.  Must be of pointer type. */
   Value *arr = this->expr->emit( CGF );
   /* Evaluate the RHS.  Must be of integer type. */
@@ -332,6 +348,9 @@ llvm::Value * ArrowExpr::emit( CodeGenFunction &CGF,
 llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
+  if ( asLValue )
+    assert( false && "cannot take LValue of a function call" );
+
   assert( false && "not implemented yet" );
   return NULL;
 }
@@ -342,13 +361,13 @@ llvm::Value * PostIncExpr::emit( CodeGenFunction &CGF,
   /* Get the LValue of the sub-expression. */
   Value *subV = this->expr->emit( CGF, true );
 
-  /* Increment the value of the sub-expression by 1. */
-  Value *val = CGF.Builder.CreateAdd(
-      CGF.Builder.CreateLoad( subV ),
-      CGF.Builder.getInt32( 1 ) );
-
-  /* Store the incremented value back to the LValue of the sub-expression. */
-  Value *store = CGF.Builder.CreateStore( val, subV );
+  /* Increment the value of the sub-expression by 1 and store the result. */
+  Value *val = CGF.Builder.CreateLoad( subV );
+  CGF.Builder.CreateStore( 
+      CGF.Builder.CreateAdd(
+        val,
+        ConstantInt::get( subV->getType(), 1 ) ),
+      subV );
 
   if ( asLValue )
     return subV;
@@ -358,8 +377,20 @@ llvm::Value * PostIncExpr::emit( CodeGenFunction &CGF,
 llvm::Value * PostDecExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  assert( false && "not implemented yet" );
-  return NULL;
+  /* Get the LValue of the sub-expression. */
+  Value *subV = this->expr->emit( CGF, true );
+
+  /* Decrement the value of the sub-expression by 1 and store the result. */
+  Value *val = CGF.Builder.CreateLoad( subV );
+  CGF.Builder.CreateStore( 
+      CGF.Builder.CreateAdd(
+        val,
+        ConstantInt::get( subV->getType(), -1 ) ),
+      subV );
+
+  if ( asLValue )
+    return subV;
+  return val;
 }
 
 llvm::Value * PreIncExpr::emit( CodeGenFunction &CGF,
@@ -368,24 +399,30 @@ llvm::Value * PreIncExpr::emit( CodeGenFunction &CGF,
   /* Get the LValue of the sub-expression. */
   Value *subV = this->expr->emit( CGF, true );
 
-  /* Increment the value of the sub-expression by 1. */
-  Value *val = CGF.Builder.CreateAdd(
-      CGF.Builder.CreateLoad( subV ),
-      CGF.Builder.getInt32( 1 ) );
-
-  /* Store the incremented value back to the LValue of the sub-expression. */
-  Value *store = CGF.Builder.CreateStore( val, subV );
+  /* Increment the value of the sub-expression by 1 and store the result. */
+  Value *val = CGF.Builder.CreateAdd( val,
+      ConstantInt::get( subV->getType(), 1 ) );
+  CGF.Builder.CreateStore( val, subV );
 
   if ( asLValue )
-    return store;
+    return subV;
   return val;
 }
 
 llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  assert( false && "not implemented yet" );
-  return NULL;
+  /* Get the LValue of the sub-expression. */
+  Value *subV = this->expr->emit( CGF, true );
+
+  /* Decrement the value of the sub-expression by 1 and store the result. */
+  Value *val = CGF.Builder.CreateAdd( val,
+      ConstantInt::get( subV->getType(), -1 ) );
+  CGF.Builder.CreateStore( val, subV );
+
+  if ( asLValue )
+    return subV;
+  return val;
 }
 
 llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
