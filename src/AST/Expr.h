@@ -55,6 +55,7 @@ namespace C4
       ~ExprList() {}
 
       void print( Printer const p ) const;
+      void analyze();
     }; // end struct ExprList
 
 
