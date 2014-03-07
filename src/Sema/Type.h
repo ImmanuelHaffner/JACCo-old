@@ -17,6 +17,7 @@
 #include <string>
 #include <unordered_map>
 #include <cassert>
+#include <iostream>
 #include "../Support/Symbol.h"
 #include "TypeHelper.h"
 
@@ -51,8 +52,15 @@ namespace C4
       virtual llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const
         = 0;
 
+      friend std::ostream & operator<<( std::ostream &out, Type const &type );
+      friend std::ostream & operator<<( std::ostream &out,
+          Type const * const type );
+
+      virtual void print( std::ostream &out ) const = 0;
+      void dump() const;
+
       protected:
-      mutable llvm::Type * LLVMType = NULL;
+      mutable llvm::Type *LLVMType = NULL;
     }; // end struct Type
 
 
@@ -76,6 +84,8 @@ namespace C4
       }
 
       llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
+
+      void print( std::ostream &out ) const;
 
       Type const * const retType;
       params_t const params;
@@ -112,6 +122,8 @@ namespace C4
 
       inline size_t hashCode() const { return hashCode_; }
       llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
+
+      void print( std::ostream &out ) const;
 
       private:
       size_t const hashCode_;
@@ -178,6 +190,8 @@ namespace C4
 
       llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
 
+      void print( std::ostream &out ) const;
+
       elements_t elements;
 
       private:
@@ -215,6 +229,8 @@ namespace C4
 
       llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
 
+      void print( std::ostream &out ) const;
+
       Type const * const innerType;
     }; // end struct PtrType
 
@@ -234,8 +250,8 @@ namespace C4
     /// same representation, they are nevertheless different types.
     struct BasicType : ArithmeticType
     {
-      BasicType( size_t const size, size_t const hashCode ) :
-        size_(size), hashCode_(hashCode)
+      BasicType( size_t const size, size_t const hashCode, Symbol const name )
+        : size_(size), hashCode_(hashCode), name(name)
       {}
 
       ~BasicType() {}
@@ -245,9 +261,12 @@ namespace C4
       inline size_t hashCode() const { return hashCode_; }
       llvm::Type * getLLVMType( CodeGen::CodeGenFunction &CGF ) const;
 
+      void print( std::ostream &out ) const;
+
       private:
       size_t const size_; // the size in bytes
       size_t const hashCode_; // the default hash for that type (MUST BE UNIQUE!)
+      Symbol const name;
     }; // end struct BasicType
   } // end namespace Sema
 } // end namespace C4

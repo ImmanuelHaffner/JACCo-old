@@ -230,6 +230,7 @@ namespace C4
       void print( Printer const p ) const;
       llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
         const;
+      void analyze();
 
       Expr const * const expr;
       Expr const * const index;

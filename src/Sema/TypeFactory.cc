@@ -60,16 +60,31 @@ TypeFactory::PtrTable TypeFactory::ptrTable(255);
 
 
 // Initialize simple types.
-VoidType const TypeFactory::VOID(HASH_Void);
-BasicType const TypeFactory::CHAR(1 /* size */, HASH_Char);
-BasicType const TypeFactory::INT(4 /* size */, HASH_Int);
+VoidType const * TypeFactory::VOID = NULL;
+BasicType const * TypeFactory::CHAR = NULL;
+BasicType const * TypeFactory::INT = NULL;
 
 
-Sema::Type const * TypeFactory::getVoid() { return &VOID; }
+Sema::Type const * TypeFactory::getVoid()
+{
+  if ( ! VOID )
+    VOID = new VoidType( HASH_Void );
+  return VOID;
+}
 
-Sema::Type const * TypeFactory::getChar() { return &CHAR; }
+Sema::Type const * TypeFactory::getChar()
+{
+  if ( ! CHAR )
+    CHAR = new BasicType( /* size = */ 1, HASH_Char, /* name = */ "char" );
+  return CHAR;
+}
 
-Sema::Type const * TypeFactory::getInt() { return &INT; }
+Sema::Type const * TypeFactory::getInt()
+{
+  if ( ! INT )
+    INT = new BasicType( /* size = */ 4, HASH_Int, /* name = */ "int" );
+  return INT;
+}
 
 Sema::Type const * TypeFactory::getPtr( Type const * const innerType )
 {

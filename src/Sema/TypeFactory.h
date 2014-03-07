@@ -127,10 +127,10 @@ namespace C4
       static Type * getStruct( StructType::elements_t const &paramTypes );
 
       private:
-      // Constant object types.
-      static VoidType const VOID;
-      static BasicType const CHAR;
-      static BasicType const INT;
+      // Constant object types. (Singletons)
+      static VoidType const * VOID;
+      static BasicType const * CHAR;
+      static BasicType const * INT;
 
       // The hash sets to internalize and function types and pointer types.
       typedef std::unordered_set< FuncType const *, FuncHash, FuncEqual >

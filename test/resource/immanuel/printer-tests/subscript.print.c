@@ -1,6 +1,6 @@
 int (foo())
 {
-	char (*a);
+	char (*(*a));
 	int x;
 	int y;
 	((a[x])[y]);

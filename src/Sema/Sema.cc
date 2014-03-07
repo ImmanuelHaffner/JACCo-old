@@ -906,7 +906,13 @@ void SizeofExpr::analyze()
 void SizeofTypeExpr::analyze() //§6.5.3.4
 {
   Entity *e = new Entity();
-  e->type = TypeFactory::getInt();
+  if( isFunctionType( typeName ) || //§6.5.3.4.p1
+      ( isObjType( typeName ) &&
+       ! toObjType( typeName )->isComplete() ) )
+  {
+    ERROR("The operand of size of cannot be function type or incomplete object.");
+  }
+  e->type = TypeFactory::getInt(); //§6.5.3.4.p2
   this->attachEntity(e);
   this->isLvalue = false;
 }
@@ -916,12 +922,12 @@ void FunctionCall::analyze()
   Entity *exprEntity = fun->getEntity();
   returnIfNull(exprEntity);
   Type const *exprType = toFuncPtrIfFunc(exprEntity->type);
-  Entity *e = new Entity();
 
   //§6.5.2.2.p1
   if(isPointerType(exprType) &&
       isFunctionType(toPointerType(exprType)->innerType))
   {
+    Entity *e = new Entity();
     Type const *innerType = toPointerType(exprType)->innerType;
     FuncType const *funcType = toFunctionType(innerType);
     FuncType::params_t voidParams;
@@ -955,12 +961,12 @@ void FunctionCall::analyze()
 valid:
     e->type = funcType->retType;   //§6.5.2.2.5 - The function call
     //expression has type of return type
+    this->attachEntity(e);
   }
   else
   {
     ERROR("Expression denoting called function is not a pointer to a function")
   }
-  this->attachEntity(e);
 
   //§6.8.6.4 - It seems that it cannot be an lvalue.
   this->isLvalue = false;
@@ -1043,5 +1049,37 @@ void TypeName::analyze( Env &env )
     e->type = type;
     attachEntity( e );
   }
+}
 
+void SubscriptExpr::analyze()
+{
+  returnIfEitherNull( this->expr->getEntity(), this->index->getEntity() );
+
+  Type const * arrayType = this->expr->getEntity()->type;
+  Type const * indexType = this->index->getEntity()->type;
+
+  if ( ! isPointerType( arrayType ) ||
+      ! isCompleteObjType( toPointerType( arrayType )->innerType ) )
+  {
+    std::ostringstream oss;
+    oss << this->expr << " is not a pointer to a complete object type, but has "
+      << "type " << arrayType;
+      
+    ERROR_TOK( this->expr->tok, oss.str().c_str() );
+  }
+  else
+  {
+    Entity * e = new Entity();
+    e->type = toPointerType( arrayType )->innerType;
+    attachEntity( e );
+  }
+
+  if ( ! isIntegerType( indexType ) )
+  {
+    std::ostringstream oss;
+    oss << this->index << " is not of integer type, but of type " << indexType;
+    ERROR_TOK( this->index->tok, oss.str().c_str() );
+  }
+
+  isLvalue = true;
 }

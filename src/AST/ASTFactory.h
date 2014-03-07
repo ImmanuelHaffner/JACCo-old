@@ -135,7 +135,7 @@ namespace C4
       {
         SubscriptExpr const * subscriptExpr = new SubscriptExpr( tok, expr, index );
 #ifndef NOSEMA
-        //const_cast< SubscriptExpr * >( subscriptExpr )->analyze();
+        const_cast< SubscriptExpr * >( subscriptExpr )->analyze();
 #endif
         return subscriptExpr;
       }
