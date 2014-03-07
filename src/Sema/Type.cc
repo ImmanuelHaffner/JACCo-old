@@ -17,7 +17,6 @@ using namespace Sema;
 std::ostream & Sema::operator<<( std::ostream &out, Type const &type )
 {
   type.print( out );
-  out << std::endl; // flush the out stream
   return out;
 }
 
@@ -31,6 +30,7 @@ std::ostream & Sema::operator<<( std::ostream &out,
 void Type::dump() const
 {
   this->print( std::cout );
+  std::cout << std::endl;
 }
 
 void FuncType::print( std::ostream &out ) const
