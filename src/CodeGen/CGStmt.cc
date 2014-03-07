@@ -48,10 +48,11 @@ void LabelStmt::emit( CodeGenFunction &CGF ) const
 
 void IfStmt::emit( CodeGenFunction &CGF ) const
 {
-  Value * condV = this->Cond->emit( CGF );
   BasicBlock * thenBlock = BasicBlock::Create( CGF.Context, "if.then" );
   BasicBlock * elseBlock = BasicBlock::Create( CGF.Context, "if.else" );
   BasicBlock * endBlock = BasicBlock::Create( CGF.Context, "if.end" );
+
+  Value *condV = CGF.EvaluateExprAsBool( this->Cond->emit( CGF ) );
   CGF.Builder.CreateCondBr( condV, thenBlock, elseBlock );
  
   CGF.Builder.SetInsertPoint( thenBlock );
@@ -75,17 +76,18 @@ void SwitchStmt::emit( CodeGenFunction &CGF ) const
 
 void WhileStmt::emit( CodeGenFunction &CGF ) const
 {
-  Value * condV = this->Cond->emit( CGF );
-  BasicBlock * bodyBlock = BasicBlock::Create( CGF.Context, "while.body" );
   BasicBlock * condBlock = BasicBlock::Create( CGF.Context, "while.cond" );
+  BasicBlock * bodyBlock = BasicBlock::Create( CGF.Context, "while.body" );
   BasicBlock * exitBlock = BasicBlock::Create( CGF.Context, "while.end" );
 
   CGF.pushJumpTarget( JumpTarget( exitBlock, condBlock ) ); 
 
-  CGF.Builder.CreateBr( condBlock );
-  CGF.Builder.SetInsertPoint( condBlock );
+  /* Emit the condition block. */
+  CGF.EmitBlock( condBlock );
+  Value *condV = CGF.EvaluateExprAsBool( this->Cond->emit( CGF ) );
   CGF.Builder.CreateCondBr( condV, bodyBlock, exitBlock );
 
+  /* Emit the body block. */
   CGF.Builder.SetInsertPoint( bodyBlock );
   this->Body->emit( CGF );
   CGF.Builder.CreateBr( condBlock );
