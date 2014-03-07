@@ -41,7 +41,7 @@ bool isAssignmentCompatible(Type const *lhsType, Expr const *rhs)
   Type const *rhsType = toFuncPtrIfFunc(rhs->getEntity()->type);
 
   return
-    ( lhsType == rhsType ) ||
+    ( isStructType( lhsType ) && lhsType == rhsType ) ||
     (isArithmeticType(lhsType) && isArithmeticType(rhsType)) || //§6.5.16.1.p1.pp1
 
     (isPointerType(lhsType) && isPointerType(rhsType) &&
@@ -769,7 +769,7 @@ void BinaryExpr::analyze()
     }
     else
     {
-      ERROR("Expected real types or ponter to object types.")
+      ERROR("Expected real types or pointer to object types.")
     }
     this->attachEntity(e);
   }
