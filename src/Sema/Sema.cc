@@ -969,32 +969,41 @@ void FunctionCall::analyze()
     Type const *voidFuncType = TypeFactory::getFunc( funcType->retType,
         voidParams );
 
-    if ( funcType->params.size() == 0 || ( funcType == voidFuncType &&
-          ! this->args ) )
-    { goto valid; }
-    else if ( funcType->params.size() == toExprList(this->args)->size() )
+    ExprList const * const args = static_cast< ExprList const * >( this->args );
+
+    /* If the function either has no specified paremeters or the function has
+     * parameter 'void', and the function call has no arguments, the function
+     * call is valid, and we will skip this.
+     * Otherwise, perform advanced type checks.
+     */
+    if ( funcType->params.size() != 0 &&
+        ( funcType != voidFuncType || args->size() != 0 ) )
     {
-      auto iterActual = (toExprList(this->args))->begin();
-      for(auto iterExpected = (funcType->params).begin();
-          iterExpected != (funcType->params).end(); iterExpected++, iterActual++)
+      if ( funcType->params.size() == args->size() )
       {
-        if(!isAssignmentCompatible(*iterExpected, *iterActual)) //§6.5.2.2.p2
+        auto iterActual = (toExprList(this->args))->begin();
+        for(auto iterExpected = (funcType->params).begin();
+            iterExpected != (funcType->params).end(); iterExpected++, iterActual++)
         {
-          isAttachAllowed = false;
-          std::ostringstream oss;
-          oss << "Function call doesn't match the declared or inferred type"
-            << " at " << iterExpected - (funcType->params).begin() + 1
-            << " position starting 1.";
-          ERROR( oss.str().c_str() );
+          if(!isAssignmentCompatible(*iterExpected, *iterActual)) //§6.5.2.2.p2
+          {
+            isAttachAllowed = false;
+            std::ostringstream oss;
+            oss << "Function call doesn't match the declared or inferred type"
+              << " at " << iterExpected - (funcType->params).begin() + 1
+              << " position starting 1.";
+            ERROR( oss.str().c_str() );
+          }
         }
       }
+      else
+      {
+        isAttachAllowed = false;
+        ERROR("The number of arguments of function call doesn't match with "
+            "declared/inferred type");
+      }
     }
-    else
-    {
-      isAttachAllowed = false;
-      ERROR("The number of arguments of function call doesn't match with declared/inferred type");
-    }
-valid:
+
     if(isAttachAllowed)
     {
       e->type = funcType->retType;   //§6.5.2.2.5 - The function call
@@ -1004,7 +1013,7 @@ valid:
   }
   else
   {
-    ERROR("Expression denoting called function is not a pointer to a function")
+    ERROR("Expression denoting called function is not a pointer to a function");
   }
 
   //§6.8.6.4 - It seems that it cannot be an lvalue.
