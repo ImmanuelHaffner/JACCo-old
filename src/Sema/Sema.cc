@@ -633,9 +633,13 @@ void ConditionalExpr::analyze()
   Type const *lhsType = toFuncPtrIfFunc(lhsEntity->type);
   Type const *rhsType = toFuncPtrIfFunc(rhsEntity->type);
   Entity *e = new Entity();
-  if(isArithmeticType(lhsType) && isArithmeticType(lhsType))
+  if(isArithmeticType(lhsType) && isArithmeticType(rhsType))
   {
     e->type = TypeFactory::getInt(); //§6.5.15.p5 : Approximate it to int
+  }
+  else if(isStructType(lhsType) && lhsType == rhsType)
+  {
+    e->type = lhsType;
   }
   else if(isVoidType(lhsType) && isVoidType(rhsType)) //§6.5.15.p5
   {
