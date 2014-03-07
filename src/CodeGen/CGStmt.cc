@@ -39,7 +39,7 @@ void LabelStmt::emit( CodeGenFunction &CGF ) const
 {
   Twine name( "label." );
   name.concat( this->tok.sym.str() );
-  BasicBlock * labelBlock = BasicBlock::Create( CGF.Context, name );
+  BasicBlock * labelBlock = CGF.getBasicBlock( name );
   CGF.EmitBlock( labelBlock );
 
   // Add entry to label/block map of current function
@@ -48,9 +48,9 @@ void LabelStmt::emit( CodeGenFunction &CGF ) const
 
 void IfStmt::emit( CodeGenFunction &CGF ) const
 {
-  BasicBlock * thenBlock = BasicBlock::Create( CGF.Context, "if.then" );
-  BasicBlock * elseBlock = BasicBlock::Create( CGF.Context, "if.else" );
-  BasicBlock * endBlock = BasicBlock::Create( CGF.Context, "if.end" );
+  BasicBlock * thenBlock = CGF.getBasicBlock( "if.then" );
+  BasicBlock * elseBlock = CGF.getBasicBlock( "if.else" );
+  BasicBlock * endBlock = CGF.getBasicBlock( "if.end" );
 
   Value *condV = CGF.EvaluateExprAsBool( this->Cond->emit( CGF ) );
   CGF.Builder.CreateCondBr( condV, thenBlock, elseBlock );
@@ -76,9 +76,9 @@ void SwitchStmt::emit( CodeGenFunction &CGF ) const
 
 void WhileStmt::emit( CodeGenFunction &CGF ) const
 {
-  BasicBlock * condBlock = BasicBlock::Create( CGF.Context, "while.cond" );
-  BasicBlock * bodyBlock = BasicBlock::Create( CGF.Context, "while.body" );
-  BasicBlock * exitBlock = BasicBlock::Create( CGF.Context, "while.end" );
+  BasicBlock * condBlock = CGF.getBasicBlock( "while.cond" );
+  BasicBlock * bodyBlock = CGF.getBasicBlock( "while.body" );
+  BasicBlock * exitBlock = CGF.getBasicBlock( "while.end" );
 
   CGF.pushJumpTarget( JumpTarget( exitBlock, condBlock ) ); 
 
@@ -119,7 +119,7 @@ void ContinueStmt::emit( CodeGenFunction &CGF ) const
 void GotoStmt::emit( CodeGenFunction &CGF ) const
 {
   CGF.addGoto( this->tok.sym, CGF.Builder.GetInsertBlock() );
-  CGF.Builder.SetInsertPoint( BasicBlock::Create( CGF.Context ) );
+  CGF.Builder.SetInsertPoint( CGF.getBasicBlock() );
 }
 
 void ReturnStmt::emit( CodeGenFunction &CGF ) const
