@@ -11,6 +11,7 @@
 
 #include "../Lex/Token.h"
 #include "../AST/Expr.h"
+#include "../AST/Type.h"
 #include "../Support/Entity.h"
 
 
@@ -382,19 +383,15 @@ llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
   if ( dynamic_cast< Sema::FuncType const * >( type ) )
     return CGF.Builder.getInt32( 4 );
 
-  if ( auto ot = dynamic_cast< Sema::ObjType const * >( type ) )
-    return CGF.Builder.getInt32( ot->size() );
-
-  assert( false && "unknown type, should be unreachable" );
-  return NULL;
+  auto ot = static_cast< Sema::ObjType const * >( type );
+  return CGF.Builder.getInt32( ot->size() );
 }
 
 llvm::Value * SizeofTypeExpr::emit( CodeGenFunction &CGF,
-    bool asLValue /* = false */ ) const
+    bool /* = false */ ) const
 {
   /* Get the type of sub-node. */
-  // TODO impl (Sema not ready yet)
-  //this->typeName->getEntity()->type->size()
-  assert( false && "not implemented yet" );
-  return NULL;
+  Sema::ObjType const * const type =
+    static_cast< Sema::ObjType const * >( this->typeName->getEntity()->type );
+  return CGF.Builder.getInt32( type->size() );
 }
