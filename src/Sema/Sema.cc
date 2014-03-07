@@ -906,7 +906,13 @@ void SizeofExpr::analyze()
 void SizeofTypeExpr::analyze() //§6.5.3.4
 {
   Entity *e = new Entity();
-  e->type = TypeFactory::getInt();
+  if( isFunctionType( typeName ) || //§6.5.3.4.p1
+      ( isObjType( typeName ) &&
+       ! toObjType( typeName )->isComplete() ) )
+  {
+    ERROR("The operand of size of cannot be function type or incomplete object.");
+  }
+  e->type = TypeFactory::getInt(); //§6.5.3.4.p2
   this->attachEntity(e);
   this->isLvalue = false;
 }
@@ -1043,5 +1049,37 @@ void TypeName::analyze( Env &env )
     e->type = type;
     attachEntity( e );
   }
+}
 
+void SubscriptExpr::analyze()
+{
+  returnIfEitherNull( this->expr->getEntity(), this->index->getEntity() );
+
+  Type const * arrayType = this->expr->getEntity()->type;
+  Type const * indexType = this->index->getEntity()->type;
+
+  if ( ! isPointerType( arrayType ) ||
+      ! isCompleteObjType( toPointerType( arrayType )->innerType ) )
+  {
+    std::ostringstream oss;
+    oss << this->expr << " is not a pointer to a complete object type, but has "
+      << "type " << arrayType;
+      
+    ERROR_TOK( this->expr->tok, oss.str().c_str() );
+  }
+  else
+  {
+    Entity * e = new Entity();
+    e->type = toPointerType( arrayType )->innerType;
+    attachEntity( e );
+  }
+
+  if ( ! isIntegerType( indexType ) )
+  {
+    std::ostringstream oss;
+    oss << this->index << " is not of integer type, but of type " << indexType;
+    ERROR_TOK( this->index->tok, oss.str().c_str() );
+  }
+
+  isLvalue = true;
 }
