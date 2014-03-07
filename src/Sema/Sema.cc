@@ -913,3 +913,12 @@ void FunctionCall::analyze()
 
   //§6.8.6.4 - It seems that it cannot be an lvalue.
 }
+
+void ExprList::analyze()
+{
+  auto lastElem = this->end() - 1;
+  Entity *e = new Entity();
+  if ( ( *lastElem )->getEntity() )
+  e->type = ( *lastElem )->getEntity()->type;
+  this->attachEntity( e );
+}

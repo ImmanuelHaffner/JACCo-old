@@ -55,7 +55,11 @@ namespace C4
       inline ExprList const * getExprList( TOK,
           std::vector< Expr const * > &list )
       {
-        return new ExprList( tok, list );
+        ExprList const * exprList = new ExprList( tok, list );
+#ifndef NOSEMA
+        const_cast< ExprList * >( exprList )->analyze();
+#endif
+        return exprList;
       }
 
       inline Variable const * getVariable( TOK )
@@ -88,14 +92,22 @@ namespace C4
       inline BinaryExpr const * getBinaryExpr( TOK, Expr const * const lhs,
           Expr const * const rhs )
       {
-        return new BinaryExpr( tok, lhs, rhs );
+        BinaryExpr const * expr = new BinaryExpr( tok, lhs, rhs );
+#ifndef NOSEMA
+        const_cast< BinaryExpr * >( expr )->analyze();
+#endif
+        return expr; 
       }
 
       inline ConditionalExpr const * getConditionalExpr( TOK,
           Expr const * const cond, Expr const * const lhs,
           Expr const * const rhs )
       {
-        return new ConditionalExpr( tok, cond, lhs, rhs );
+        ConditionalExpr const * expr = new ConditionalExpr( tok, cond, lhs, rhs );
+#ifndef NOSEMA
+        //const_cast< ConditionalExpr * >( expr )->analyze();
+#endif
+        return expr; 
       }
 
       inline AssignmentExpr const * getAssignmentExpr( TOK,

@@ -82,6 +82,7 @@ namespace C4
       void print( Printer const p ) const;
       llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
         const;
+      void analyze();
     }; // end struct ExprList
 
 
