@@ -253,9 +253,7 @@ Expr const * Parser::parsePostfixExpr()
         {
           Token const tok( *current );
           readNextToken(); // eat '('
-          Expr const * args = NULL;
-          if ( current->kind != TK::RPar )
-            args = parseArgumentExprList();
+          Expr const * args = parseArgumentExprList();
           accept( TK::RPar ); // eat ')'
           expr = factory.getFunctionCall( tok, expr, args );
         }
@@ -308,12 +306,16 @@ ExprList const * Parser::parseArgumentExprList()
   std::vector< Expr const * > exprs;
   Token const tok(*current);
 
-  exprs.push_back( parseAssignmentExpr() );
-  while ( current->kind == TK::Comma )
+  if ( current->kind != TK::RPar )
   {
-    readNextToken(); // eat ','
     exprs.push_back( parseAssignmentExpr() );
+    while ( current->kind == TK::Comma )
+    {
+      readNextToken(); // eat ','
+      exprs.push_back( parseAssignmentExpr() );
+    }
   }
+
   return factory.getExprList( tok, exprs );
 } // end parseArgumentExprList
 
