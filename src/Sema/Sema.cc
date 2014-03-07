@@ -523,7 +523,7 @@ void ReturnStmt::analyze( Env &env ) const
   {
     std::ostringstream oss;
     oss << "return value of type '" << expr->getEntity()->type <<
-      "', should have type '" << env.topFunction()->type << "'"; 
+      "', should have type '" << env.topFunction()->type << "'";
     ERROR( oss.str().c_str() );
   }
 }
@@ -920,10 +920,16 @@ void FunctionCall::analyze()
   {
     Type const *innerType = toPointerType(exprType)->innerType;
     FuncType const *funcType = toFunctionType(innerType);
-    if( funcType->params.size() == 0 || (funcType->params).size() ==
-        (toExprList(this->args))->size())
+    FuncType::params_t voidParams;
+    voidParams.push_back( TypeFactory::getVoid() );
+    Type const *voidFuncType = TypeFactory::getFunc( funcType->retType,
+        voidParams );
+
+    if ( funcType->params.size() == 0 || ( funcType == voidFuncType &&
+          ! this->args ) )
+    { goto valid; }
+    else if ( funcType->params.size() == toExprList(this->args)->size() )
     {
-      bool isValid = true;
       auto iterActual = (toExprList(this->args))->begin();
       for(auto iterExpected = (funcType->params).begin();
           iterExpected != (funcType->params).end(); iterExpected++, iterActual++)
@@ -932,22 +938,19 @@ void FunctionCall::analyze()
         {
           std::ostringstream oss;
           oss << "Function call doesn't match the declared or inferred type"
-              << " at " << iterExpected - (funcType->params).begin() + 1
-              << " position starting 1.";
+            << " at " << iterExpected - (funcType->params).begin() + 1
+            << " position starting 1.";
           ERROR( oss.str().c_str() );
-          isValid = false;
         }
-      }
-      if(isValid)
-      {
-        e->type = funcType->retType;   //§6.5.2.2.5 - The function call
-                                      //expression has type of return type
       }
     }
     else
     {
       ERROR("The number of arguments of function call doesn't match with declared/inferred type");
     }
+valid:
+    e->type = funcType->retType;   //§6.5.2.2.5 - The function call
+    //expression has type of return type
   }
   else
   {
@@ -964,6 +967,6 @@ void ExprList::analyze()
   auto lastElem = this->end() - 1;
   Entity *e = new Entity();
   if ( ( *lastElem )->getEntity() )
-  e->type = ( *lastElem )->getEntity()->type;
+    e->type = ( *lastElem )->getEntity()->type;
   this->attachEntity( e );
 }
