@@ -1091,12 +1091,16 @@ void ArrowExpr::analyze()
 
 void ExprList::analyze()
 {
-  auto lastElem = this->end() - 1;
-  Entity *e = new Entity();
-  if ( ( *lastElem )->getEntity() )
+  if ( this->size() )
   {
-    e->type = ( *lastElem )->getEntity()->type;
-    this->attachEntity( e );
+    // list non empty
+    auto lastElem = this->end() - 1;
+    Entity *e = new Entity();
+    if ( ( *lastElem )->getEntity() )
+    {
+      e->type = ( *lastElem )->getEntity()->type;
+      this->attachEntity( e );
+    }
   }
 }
 
