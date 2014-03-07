@@ -54,7 +54,7 @@ bool Scope::insert( Symbol const id, Type const * const type )
   return true;
 }
 
-IdMap Scope::getIdMap()
+IdMap const & Scope::getIdMap()
 {
   return idMap;
 }

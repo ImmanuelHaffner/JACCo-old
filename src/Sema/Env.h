@@ -36,10 +36,10 @@ namespace C4
     /// Maps symbols to entities
     typedef std::unordered_map< Symbol, Entity * > IdMap;
 
-    /// Labels 
+    /// Labels
     typedef std::unordered_map< Symbol, Lex::Token const * > Labels;
 
-    /// Goto targets 
+    /// Goto targets
     typedef std::vector< Lex::Token const * > Targets;
 
     /// \brief Defines a scope.
@@ -67,7 +67,7 @@ namespace C4
       bool insert( Symbol const id, Type const * const type );
 
       /// \return the identifier map
-      IdMap getIdMap();
+      IdMap const & getIdMap();
 
       private:
       TypeTable typeTable;
@@ -138,7 +138,7 @@ namespace C4
       Labels * getLabelSymbols();
 
       /// \return set of goto targets in the current function
-      Targets * getGotoTokens(); 
+      Targets * getGotoTokens();
 
       void insertGoto( Lex::Token const * tok );
       Lex::Token const * insertLabel( Lex::Token const * tok );

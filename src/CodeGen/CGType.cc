@@ -51,7 +51,7 @@ llvm::Type * Sema::StructType::getLLVMType( CodeGenFunction &CGF ) const
 
   for ( auto it = elements.begin(); it != elements.end(); ++it )
   {
-    StructMemberTypes.push_back( (*it)->getLLVMType( CGF ) );
+    StructMemberTypes.push_back( it->second->getLLVMType( CGF ) );
   }
 
   structType->setBody( StructMemberTypes );
