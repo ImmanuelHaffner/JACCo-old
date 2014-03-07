@@ -155,7 +155,11 @@ namespace C4
       inline FunctionCall const * getFunctionCall( TOK, Expr const * const fun,
           Expr const * const args = NULL )
       {
-        return new FunctionCall( tok, fun, args );
+        FunctionCall const * call = new FunctionCall( tok, fun, args );
+#ifndef NOSEMA
+        const_cast< FunctionCall * >( call )->analyze();
+#endif
+        return call;
       }
 
       inline PostIncExpr const * getPostIncExpr( TOK, Expr const * const expr )

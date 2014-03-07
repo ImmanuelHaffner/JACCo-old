@@ -920,7 +920,7 @@ void FunctionCall::analyze()
   {
     Type const *innerType = toPointerType(exprType)->innerType;
     FuncType const *funcType = toFunctionType(innerType);
-    if((funcType->params).size() ==
+    if( funcType->params.size() == 0 || (funcType->params).size() ==
         (toExprList(this->args))->size())
     {
       bool isValid = true;
@@ -940,7 +940,8 @@ void FunctionCall::analyze()
       }
       if(isValid)
       {
-        e->type = funcType->retType;   //§6.5.2.2.5 - The function call expression has type of return type
+        e->type = funcType->retType;   //§6.5.2.2.5 - The function call
+                                      //expression has type of return type
       }
     }
     else
