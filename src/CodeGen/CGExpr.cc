@@ -366,7 +366,7 @@ llvm::Value * PostIncExpr::emit( CodeGenFunction &CGF,
   CGF.Builder.CreateStore( 
       CGF.Builder.CreateAdd(
         val,
-        ConstantInt::get( subV->getType(), 1 ) ),
+        ConstantInt::get( val->getType(), 1 ) ),
       subV );
 
   if ( asLValue )
@@ -385,7 +385,7 @@ llvm::Value * PostDecExpr::emit( CodeGenFunction &CGF,
   CGF.Builder.CreateStore( 
       CGF.Builder.CreateAdd(
         val,
-        ConstantInt::get( subV->getType(), -1 ) ),
+        ConstantInt::get( val->getType(), -1 ) ),
       subV );
 
   if ( asLValue )
@@ -400,8 +400,9 @@ llvm::Value * PreIncExpr::emit( CodeGenFunction &CGF,
   Value *subV = this->expr->emit( CGF, true );
 
   /* Increment the value of the sub-expression by 1 and store the result. */
-  Value *val = CGF.Builder.CreateAdd( val,
-      ConstantInt::get( subV->getType(), 1 ) );
+  Value *val = CGF.Builder.CreateLoad( subV );
+  val = CGF.Builder.CreateAdd( val,
+      ConstantInt::get( val->getType(), 1 ) );
   CGF.Builder.CreateStore( val, subV );
 
   if ( asLValue )
@@ -416,8 +417,9 @@ llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF,
   Value *subV = this->expr->emit( CGF, true );
 
   /* Decrement the value of the sub-expression by 1 and store the result. */
-  Value *val = CGF.Builder.CreateAdd( val,
-      ConstantInt::get( subV->getType(), -1 ) );
+  Value *val = CGF.Builder.CreateLoad( subV );
+  val = CGF.Builder.CreateAdd( val,
+      ConstantInt::get( val->getType(), -1 ) );
   CGF.Builder.CreateStore( val, subV );
 
   if ( asLValue )
