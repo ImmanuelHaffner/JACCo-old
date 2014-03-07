@@ -468,7 +468,11 @@ namespace C4
           TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
       {
-        return new TypeName( tok, typeSpec, declarator );
+        TypeName const * typeName = new TypeName( tok, typeSpec, declarator );
+#ifndef NOSEMA
+        const_cast< TypeName * >( typeName )->analyze( env );
+#endif
+        return typeName;
       }
 
       inline IllegalTypeSpecifier const * getIllegalTypeSpecifier( TOK )
