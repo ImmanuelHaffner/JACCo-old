@@ -105,7 +105,7 @@ namespace C4
       {
         ConditionalExpr const * expr = new ConditionalExpr( tok, cond, lhs, rhs );
 #ifndef NOSEMA
-        //const_cast< ConditionalExpr * >( expr )->analyze();
+        const_cast< ConditionalExpr * >( expr )->analyze();
 #endif
         return expr; 
       }

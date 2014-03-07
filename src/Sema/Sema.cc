@@ -620,7 +620,7 @@ void ConditionalExpr::analyze()
   returnIfNull(condEntity);
 
   //§6.5.15.p2 - The conditional expression shall have scalar type.
-  if(isScalarType(condType))
+  if( ! isScalarType(condType))
   {
     ERROR("Predicate of conditional expression must of scalar type");
   }
@@ -891,10 +891,7 @@ void SizeofExpr::analyze()
   {
     ERROR("The operand of size of cannot be function type or incomplete object.");
   }
-  else
-  {
-    e->type = TypeFactory::getInt(); //§6.5.3.4.p2
-  }
+  e->type = TypeFactory::getInt(); //§6.5.3.4.p2
   this->attachEntity(e);
   this->isLvalue = false;
 }
