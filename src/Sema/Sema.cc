@@ -1019,3 +1019,21 @@ void ExprList::analyze()
     e->type = ( *lastElem )->getEntity()->type;
   this->attachEntity( e );
 }
+
+void TypeName::analyze( Env &env )
+{
+  Sema::Type const * const type = typeSpec->analyze( env );
+
+  if ( declarator )
+  {
+    Entity * const e = declarator->analyze( env, type );
+    attachEntity( e );
+  }
+  else
+  {
+    Entity * const e = new Entity();
+    e->type = type;
+    attachEntity( e );
+  }
+
+}

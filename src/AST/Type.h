@@ -14,6 +14,7 @@
 #include <iostream>
 #include "../util.h"
 #include "Locatable.h"
+#include "../Support/EntityHolder.h"
 
 
 /* Forward declarations */
@@ -37,7 +38,7 @@ namespace C4
 
     /// Type Name
     struct TypeSpecifier;
-    struct TypeName : Locatable
+    struct TypeName : Locatable, EntityHolder
     {
       TypeName( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
@@ -47,6 +48,7 @@ namespace C4
       ~TypeName() {}
 
       void print( Printer const p ) const;
+      void analyze( Sema::Env &env );
 
       TypeSpecifier const * const typeSpec;
       Declarator const * const declarator;
