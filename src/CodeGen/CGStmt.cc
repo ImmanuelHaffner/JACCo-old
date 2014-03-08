@@ -55,18 +55,17 @@ void IfStmt::emit( CodeGenFunction &CGF ) const
   Value *condV = CGF.EvaluateExprAsBool( this->Cond->emit( CGF ) );
   CGF.Builder.CreateCondBr( condV, thenBlock, elseBlock );
  
+  /* Emit code for the then block. */
   CGF.Builder.SetInsertPoint( thenBlock );
   this->Then->emit( CGF );
   CGF.Builder.CreateBr( endBlock );
 
+  CGF.Builder.SetInsertPoint( elseBlock );
+  /* If available, emit code for the else block. */
   if ( Else )
-  {
-    CGF.Builder.SetInsertPoint( elseBlock );
     this->Else->emit( CGF );
-    CGF.Builder.CreateBr( endBlock );
-  }
 
-  CGF.Builder.SetInsertPoint( endBlock );
+  CGF.EmitBlock( endBlock );
 }
 
 void SwitchStmt::emit( CodeGenFunction & ) const
