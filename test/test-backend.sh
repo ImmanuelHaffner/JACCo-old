@@ -37,8 +37,6 @@ do
       # get a file for the LLVM output
       TESTLL=$(mktemp "/tmp/${TESTNAME}.XXXX.ll")
 
-      echo -n "==> compiling '${TESTDIR}/${TESTFILE}' -> '${TESTLL}'   "
-
       # compile the file
       $("${C4}" "${TESTFILE}" > "${TESTLL}" 2>&1)
 
@@ -46,7 +44,7 @@ do
       if [ $? -ne 0 ]
       then
         # print ERROR result
-        echo "ERROR"
+        echo "==> ERROR: compiling '${TESTDIR}/${TESTFILE}' -> '${TESTLL}'"
 
         # remove the current ll file
         rm "${TESTLL}"
@@ -64,9 +62,6 @@ do
         break
       fi
 
-      # print SUCCESS
-      echo "SUCCESS"
-
       # add the new ll file
       TOLINK="${TOLINK} ${TESTLL}"
     done
@@ -80,8 +75,6 @@ do
       continue
     fi
 
-    echo -n "==> ld${TOLINK}    "
-
     # let clang link the targets
     clang ${TOLINK}
 
@@ -94,20 +87,16 @@ do
     # if files could not be linked, print error message and skip this directory
     if [ $? -ne 0 ]
     then
-      echo "ERROR"
-      echo "==> linking failed, ABORT"
+      echo "==> ERROR: 'ld${TOLINK}' failed"
       # insert newline after each test
       echo ""
       cd "${OLDPWD}"
       continue
     fi
 
-    echo "SUCCESS"
-
     if [ ! -e "result" ]
     then
-      echo "==> no result specified, ABORT"
-      echo "==> FAIL"
+      echo "==> ERROR: no result specified"
       echo ""
       cd "${OLDPWD}"
       continue
@@ -128,18 +117,13 @@ do
     # verify the return value
     if [ ${RES} -ne ${RESULT} ]
     then
-      echo "==> expected ${RESULT}, was ${RES}"
-      echo "==> FAIL"
+      echo "==> FAIL: expected ${RESULT}, was ${RES}"
     else
-      echo "==> PASS"
       PASSES=$(echo ${PASSES} +1 | bc)
     fi
 
     # remove the binary
     rm "a.out"
-
-    # insert newline after each test
-    echo ""
   else
     # regular directory, compile and link each file seperately
     for TESTFILE in $(find . -maxdepth 1 -iname "*${SUFFIX}.c" -type f)
@@ -162,8 +146,6 @@ do
       # fill the source file
       tail -n +4 "${TESTFILE}" > "${TESTSRC}"
 
-      echo -n "==> compiling '${TESTDIR}/${TESTFILE}' -> '${TESTLL}'   "
-
       # compile the file
       $("${C4}" "${TESTSRC}" > "${TESTLL}" 2>&1)
 
@@ -171,8 +153,7 @@ do
       if [ $? -ne 0 ]
       then
         # print ERROR result
-        echo "ERROR"
-        echo "==> FAIL"
+        echo "==> ERROR: compiling '${TESTDIR}/${TESTFILE}' -> '${TESTLL}'"
 
         # remove the c and ll file
         rm "${TESTSRC}"
@@ -182,11 +163,6 @@ do
         echo ""
         continue
       fi
-
-      # print SUCCESS
-      echo "SUCCESS"
-
-      echo -n "==> ld ${TESTFILE}    "
 
       # let clang link the targets
       clang "${TESTLL}"
@@ -199,15 +175,12 @@ do
       # directory
       if [ $? -ne 0 ]
       then
-        echo "ERROR"
-        echo "==> FAIL"
+        echo "==> ERROR: ld '${TESTFILE}' failed"
         # insert newline after each test
         echo ""
         cd "${OLDPWD}"
         continue
       fi
-
-      echo "SUCCESS"
 
       RESULT=$(head -n 1 "${TESTFILE}")
 
@@ -223,15 +196,11 @@ do
         echo "==> expected ${RESULT}, was ${RES}"
         echo "==> FAIL"
       else
-        echo "==> PASS"
         PASSES=$(echo ${PASSES} +1 | bc)
       fi
 
       # remove the binary
       rm "a.out"
-
-      # insert newline after each test
-      echo ""
     done
   fi
 
