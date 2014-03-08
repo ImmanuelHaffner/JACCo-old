@@ -4,8 +4,6 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <cstdio>
-
 class EntityHolderTest : public CPPUNIT_NS::TestFixture
 {
   CPPUNIT_TEST_SUITE ( EntityHolderTest );

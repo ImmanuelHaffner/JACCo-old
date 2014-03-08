@@ -13,13 +13,18 @@
 #define C4_ENTITY_H
 
 
-#include "../Sema/Type.h"
+#include <cassert>
 
 
 /* Forward declarations */
 namespace C4
 {
   struct EntityHolder;
+	
+	namespace Sema
+	{
+		struct Type;
+	}
 }
 
 namespace llvm
