@@ -9,6 +9,7 @@
 
 #include "CodeGen.h"
 
+#include <cstring>
 #include <vector>
 #include "../Lex/Token.h"
 #include "../AST/Expr.h"
@@ -450,6 +451,11 @@ llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF,
 llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
+  /* if we have a string literal, compute its length */
+  if ( dynamic_cast< StringLiteral const * >( this->expr ) )
+    return CGF.Builder.getInt32(
+        strlen( this->expr->tok.sym.str() ) - 2 /* the quotes */ );
+
   /* Emit code for the sub-expression.  This is necessary, since it may have
    * side effects.
    */
