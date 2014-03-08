@@ -30,7 +30,7 @@ void TranslationUnit::emit( CodeGenFunction &CGF ) const
 
 void CodeGenFunction::EmitBlock( BasicBlock * const target )
 {
-  if ( ! Builder.GetInsertPoint()->isTerminator() )
+  if ( ! Builder.GetInsertBlock()->getTerminator() )
     Builder.CreateBr( target );
   Builder.SetInsertPoint( target );
 }

@@ -48,17 +48,17 @@ void LabelStmt::emit( CodeGenFunction &CGF ) const
 
 void IfStmt::emit( CodeGenFunction &CGF ) const
 {
-  BasicBlock * thenBlock = CGF.getBasicBlock( "if.then" );
-  BasicBlock * elseBlock = CGF.getBasicBlock( "if.else" );
-  BasicBlock * endBlock = CGF.getBasicBlock( "if.end" );
+  BasicBlock *thenBlock = CGF.getBasicBlock( "if.then" );
+  BasicBlock *elseBlock = CGF.getBasicBlock( "if.else" );
+  BasicBlock *endBlock = CGF.getBasicBlock( "if.end" );
 
   Value *condV = CGF.EvaluateExprAsBool( this->Cond->emit( CGF ) );
   CGF.Builder.CreateCondBr( condV, thenBlock, elseBlock );
- 
+
   /* Emit code for the then block. */
   CGF.Builder.SetInsertPoint( thenBlock );
   this->Then->emit( CGF );
-  CGF.Builder.CreateBr( endBlock );
+  CGF.EmitBlock( endBlock );
 
   CGF.Builder.SetInsertPoint( elseBlock );
   /* If available, emit code for the else block. */
@@ -89,7 +89,7 @@ void WhileStmt::emit( CodeGenFunction &CGF ) const
   /* Emit the body block. */
   CGF.Builder.SetInsertPoint( bodyBlock );
   this->Body->emit( CGF );
-  CGF.Builder.CreateBr( condBlock );
+  CGF.EmitBlock( condBlock );
 
   CGF.Builder.SetInsertPoint( exitBlock );
   CGF.popJumpTarget();
@@ -103,33 +103,35 @@ void DoStmt::emit( CodeGenFunction & ) const
 void ForStmt::emit( CodeGenFunction & CGF) const
 {
   if(this->Init)
-  {
     this->Init->emit(CGF);
-  }
-  if(this->InitDecl)
-  {
+  else if(this->InitDecl)
     this->InitDecl->emit(CGF);
-  }
 
   BasicBlock *condBlock = CGF.getBasicBlock("for.cond");
   BasicBlock *bodyBlock = CGF.getBasicBlock("for.body");
   BasicBlock *stepBlock = CGF.getBasicBlock("for.step");
   BasicBlock *exitBlock = CGF.getBasicBlock("for.exit");
 
+  /* push new jump targets */
   CGF.pushJumpTarget( JumpTarget( exitBlock, condBlock ) );
-  //CGF.Builder.CreateBr(condBlock);
-  CGF.EmitBlock(condBlock);
-  CGF.Builder.CreateCondBr(
-      CGF.EvaluateExprAsBool(this->Cond->emit(CGF)),
-      bodyBlock,
-      exitBlock);
 
+  CGF.EmitBlock( condBlock );
+  if ( this->Cond )
+    CGF.Builder.CreateCondBr(
+        CGF.EvaluateExprAsBool( this->Cond->emit( CGF ) ),
+        bodyBlock, exitBlock);
+  else
+    CGF.EmitBlock( bodyBlock );
+
+  /* Create code for the body block */
   CGF.Builder.SetInsertPoint(bodyBlock);
-  this->Body->emit(CGF);
+  this->Body->emit( CGF );
+  CGF.EmitBlock( stepBlock );
 
-  CGF.EmitBlock(stepBlock);
-  this->Step->emit(CGF);
-  CGF.Builder.CreateBr(condBlock);
+  /* Create code for the step block */
+  if ( this->Step )
+    this->Step->emit(CGF);
+  CGF.EmitBlock( condBlock );
 
   CGF.Builder.SetInsertPoint(exitBlock);
   CGF.popJumpTarget();
