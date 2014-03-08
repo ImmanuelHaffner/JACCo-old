@@ -1,11 +1,9 @@
-25
+1
 
 
-struct S { int x; };
-
-void swapArray(struct S * array1, int element1, struct S * array2, int element2)
+void swapArray(char *array1, int element1, char *array2, int element2)
 {
-  struct S temp;
+  char *temp;
   temp = array1[element1];
   array1[element1] = array2[element2];
   array2[element2] = temp;
@@ -13,12 +11,12 @@ void swapArray(struct S * array1, int element1, struct S * array2, int element2)
 
 int main()
 {
-  struct S *array1;
-  struct S *array2;
+  char *string1;
+  char *string2;
 
-  array1[3].x = 23;
-  array2[7].x = 5;
-  
-  swapArray (array1,3,array2,7);
-  return array2[7].x + 2;
+  string1 = "doof";
+  string2 = "dumm";
+
+  swapArray (string1,3,string2,3);
+  return string1[1] == string2[0];
 }
