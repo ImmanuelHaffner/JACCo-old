@@ -43,7 +43,7 @@ BasicBlock * CodeGenFunction::getBasicBlock( Twine const &Name /* = "" */ )
 
 void CodeGenFunction::WireLabels()
 {
-  /* Iterate over all goto's, and then lookup its corresponding label and create
+  /* Iterate over all gotos, and then lookup its corresponding label and create
    * a branch.
    */
   for ( auto &it : gotoTargets )
