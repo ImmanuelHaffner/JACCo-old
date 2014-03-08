@@ -118,6 +118,7 @@ do
     if [ ${RES} -ne ${RESULT} ]
     then
       echo "==> FAIL: expected ${RESULT}, was ${RES}"
+      echo "          for '${TESTDIR}/'"
     else
       PASSES=$(echo ${PASSES} +1 | bc)
     fi
@@ -193,8 +194,9 @@ do
       # verify the return value
       if [ ${RES} -ne ${RESULT} ]
       then
-        echo "==> expected ${RESULT}, was ${RES}"
-        echo "==> FAIL"
+        echo "==> FAIL: expected ${RESULT}, was ${RES}"
+        echo "          for '${TESTDIR}/${TESTFILE}'"
+        echo ""
       else
         PASSES=$(echo ${PASSES} +1 | bc)
       fi
