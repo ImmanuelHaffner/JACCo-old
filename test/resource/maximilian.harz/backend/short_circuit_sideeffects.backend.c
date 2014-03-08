@@ -15,5 +15,5 @@ int main()
 int illuminate()
 {
   global = 23;
-  return 0;
+  return 1;
 }
