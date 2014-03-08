@@ -203,7 +203,7 @@ do
 
       RESULT=$(head -n 1 "${TESTFILE}")
 
-      ARGS=
+      ARGS=$(sed -n 2p "${TESTFILE}")
 
       # execute the binary
       ./a.out ${ARGS}
