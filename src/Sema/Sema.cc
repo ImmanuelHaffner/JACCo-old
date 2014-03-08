@@ -22,8 +22,7 @@ using namespace Sema;
 
 
 static int parameterDepth = 0;
-static std::vector< std::pair< Entity *,
-  ParamDecl const * > > current_params;
+static std::vector< std::pair< Entity *, ParamDecl const * > > current_params;
 
 #define ERROR( MSG ) \
 { std::ostringstream actual; \
@@ -349,18 +348,28 @@ void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 
 Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
-  Sema::Type const * t = typeSpec->analyze( env );
+  Sema::Type const *t = typeSpec->analyze( env );
   size_t scopeSize1 = env.topScope()->getIdMap().size();
+
   if ( declarator )
   {
-    Entity * e = declarator->analyze( env, t );
-    const_cast< ParamDecl * >( this )->attachEntity( e );
+    Entity * const e = declarator->analyze( env, t );
     t = e->type;
+    const_cast< ParamDecl * >( this )->attachEntity( e );
   }
+  else
+  {
+    /* attach the type, even if we dont have a declarator */
+    Entity * const e = new Entity();
+    e->type = t;
+    const_cast< ParamDecl * >( this )->attachEntity( e );
+  }
+
   size_t scopeSize2 = env.topScope()->getIdMap().size();
   if ( t != TypeFactory::getVoid() && parameterDepth == 1 &&
       scopeSize1 == scopeSize2 )
     current_params.push_back( std::make_pair( env.topFunction(), this ) );
+
   return t;
 }
 

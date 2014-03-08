@@ -12,6 +12,7 @@
 #include "../Support/Symbol.h"
 #include "../AST/Decl.h"
 #include "../AST/Stmt.h"
+#include "../Sema/TypeFactory.h"
 #include "../Support/Entity.h"
 #include "../Support/EntityHolder.h"
 
@@ -198,6 +199,10 @@ void ParamDecl::emit( CodeGenFunction &CGF, bool /* = false */ ) const
 {
   /* Get the entity of this param decl. */
   Entity * const entity = this->getEntity();
+
+  /* if the type of this parameter is void, skip. */
+  if ( TypeFactory::getVoid() == entity->type )
+    return;
 
   /* Compute the type of this param. */
   llvm::Type *type = entity->type->getLLVMType( CGF );
