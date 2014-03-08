@@ -96,6 +96,8 @@ llvm::Value * CodeGenFunction::GetAs( llvm::Value *val, llvm::Type *type )
   if ( val->getType()->isPointerTy() )
     return Builder.CreatePtrToInt( val, type );
 
-  /* both val and type are of integer type */
+  /* both val and type are of integer type, now check if val is a bool */
+  if ( Builder.getInt1Ty() == val->getType() )
+    return Builder.CreateZExtOrTrunc( val, type );
   return Builder.CreateSExtOrTrunc( val, type );
 }
