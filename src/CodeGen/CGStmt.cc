@@ -101,9 +101,39 @@ void DoStmt::emit( CodeGenFunction & ) const
   assert( false && "not implemented yet" );
 }
 
-void ForStmt::emit( CodeGenFunction & ) const
+void ForStmt::emit( CodeGenFunction & CGF) const
 {
-  assert( false && "not implemented yet" );
+  if(this->Init)
+  {
+    this->Init->emit(CGF);
+  }
+  if(this->InitDecl)
+  {
+    this->InitDecl->emit(CGF);
+  }
+
+  BasicBlock *condBlock = CGF.getBasicBlock("for.cond");
+  BasicBlock *bodyBlock = CGF.getBasicBlock("for.body");
+  BasicBlock *stepBlock = CGF.getBasicBlock("for.step");
+  BasicBlock *exitBlock = CGF.getBasicBlock("for.exit");
+
+  CGF.pushJumpTarget( JumpTarget( exitBlock, condBlock ) );
+  //CGF.Builder.CreateBr(condBlock);
+  CGF.EmitBlock(condBlock);
+  CGF.Builder.CreateCondBr(
+      CGF.EvaluateExprAsBool(this->Cond->emit(CGF)),
+      bodyBlock,
+      exitBlock);
+
+  CGF.Builder.SetInsertPoint(bodyBlock);
+  this->Body->emit(CGF);
+
+  CGF.EmitBlock(stepBlock);
+  this->Step->emit(CGF);
+  CGF.Builder.CreateBr(condBlock);
+
+  CGF.Builder.SetInsertPoint(exitBlock);
+  CGF.popJumpTarget();
 }
 
 void BreakStmt::emit( CodeGenFunction &CGF ) const
