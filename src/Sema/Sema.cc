@@ -991,10 +991,9 @@ void FunctionCall::analyze()
           {
             isAttachAllowed = false;
             std::ostringstream oss;
-            oss << "Function call doesn't match the declared or inferred type"
-              << " at " << iterExpected - (funcType->params).begin() + 1
-              << " position starting 1.";
-            ERROR( oss.str().c_str() );
+            oss << "Expected argument of type " << (*iterExpected)
+              << " but got " << (*iterActual)->getEntity()->type; 
+            ERROR_TOK( (*iterActual)->tok, oss.str().c_str() );
           }
         }
       }
