@@ -152,7 +152,8 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
   Value *rhsV = this->rhs->emit( CGF );
 
   /* cast if necessary */
-  if ( lhsV->getType() != rhsV->getType() )
+  if ( lhsV->getType() != rhsV->getType() ||
+      lhsV->getType()->isPointerTy() || rhsV->getType()->isPointerTy() )
   {
     lhsV = CGF.GetAs( lhsV, CGF.Builder.getInt32Ty() );
     rhsV = CGF.GetAs( rhsV, CGF.Builder.getInt32Ty() );
