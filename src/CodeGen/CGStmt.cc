@@ -140,11 +140,13 @@ void ForStmt::emit( CodeGenFunction & CGF) const
 void BreakStmt::emit( CodeGenFunction &CGF ) const
 {
   CGF.Builder.CreateBr( CGF.getCurrentJumpTarget().breakTarget );
+  CGF.Builder.SetInsertPoint( CGF.getBasicBlock() );
 }
 
 void ContinueStmt::emit( CodeGenFunction &CGF ) const
 {
   CGF.Builder.CreateBr( CGF.getCurrentJumpTarget().continueTarget );
+  CGF.Builder.SetInsertPoint( CGF.getBasicBlock() );
 }
 
 void GotoStmt::emit( CodeGenFunction &CGF ) const
