@@ -275,15 +275,15 @@ llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
 llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  if ( asLValue )
-    assert( false && "cannot take LValue of an unary operation" );
-
   switch ( this->tok.kind )
   {
     case TK::And:
+      assert( ! asLValue && "cannot take LValue of address operation" );
       return this->expr->emit( CGF, true );
 
     case TK::Mul:
+      if ( asLValue )
+        return this->expr->emit( CGF );
       return CGF.Builder.CreateLoad( this->expr->emit( CGF ) );
 
     case TK::Plus:
