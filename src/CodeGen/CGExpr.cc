@@ -376,76 +376,83 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
   return CGF.Builder.CreateCall( fun, args );
 }
 
+static llvm::Value * EmitPreArithmExpr( CodeGenFunction &CGF,
+    llvm::Value *ptr, bool asLValue, int step )
+{
+  /* Get the RValue of ptr. */
+  Value *val = CGF.Builder.CreateLoad( ptr );
+  /* Get the type of the RValue. */
+  llvm::Type *type = val->getType();
+
+  /* If of pointer type, cast to int. */
+  if ( type->isPointerTy() )
+    val = CGF.GetAs( val, CGF.Builder.getInt32Ty() );
+
+  /* Change the value by 'step' */
+  val = CGF.Builder.CreateAdd( val, ConstantInt::get( val->getType(), step ) );
+
+  /* If was pointer type before, cast back. */
+  if ( type->isPointerTy() )
+    val = CGF.GetAs( val, type );
+
+  CGF.Builder.CreateStore( val, ptr );
+
+  if ( asLValue )
+    return ptr;
+  return val;
+}
+
+static llvm::Value * EmitPostArithmExpr( CodeGenFunction &CGF,
+    Value *ptr, bool asLValue, int step )
+{
+  /* Get the RValue of ptr.  This is the value we will return. */
+  Value *ret = CGF.Builder.CreateLoad( ptr );
+  /* Create a copy of the value, so that we can modify and store it. */
+  Value *val = ret;
+  /* Get the type of the RValue. */
+  llvm::Type *type = ret->getType();
+
+  /* If of pointer type, cast to int. */
+  if ( type->isPointerTy() )
+    val = CGF.GetAs( val, CGF.Builder.getInt32Ty() );
+
+  /* Change the value by 'step' */
+  val = CGF.Builder.CreateAdd( val, ConstantInt::get( val->getType(), step ) );
+
+  /* If was pointer type before, cast back. */
+  if ( type->isPointerTy() )
+    val = CGF.GetAs( val, type );
+
+  /* Store the computed value. */
+  CGF.Builder.CreateStore( val, ptr );
+
+  if ( asLValue )
+    return ptr;
+  return ret;
+}
+
 llvm::Value * PostIncExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  /* Get the LValue of the sub-expression. */
-  Value *subV = this->expr->emit( CGF, true );
-
-  /* Increment the value of the sub-expression by 1 and store the result. */
-  Value *val = CGF.Builder.CreateLoad( subV );
-  CGF.Builder.CreateStore( 
-      CGF.Builder.CreateAdd(
-        val,
-        ConstantInt::get( val->getType(), 1 ) ),
-      subV );
-
-  if ( asLValue )
-    return subV;
-  return val;
+  return EmitPostArithmExpr( CGF, this->expr->emit( CGF, true ), asLValue, 1 );
 }
 
 llvm::Value * PostDecExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  /* Get the LValue of the sub-expression. */
-  Value *subV = this->expr->emit( CGF, true );
-
-  /* Decrement the value of the sub-expression by 1 and store the result. */
-  Value *val = CGF.Builder.CreateLoad( subV );
-  CGF.Builder.CreateStore( 
-      CGF.Builder.CreateAdd(
-        val,
-        ConstantInt::get( val->getType(), -1 ) ),
-      subV );
-
-  if ( asLValue )
-    return subV;
-  return val;
+  return EmitPostArithmExpr( CGF, this->expr->emit( CGF, true ), asLValue, -1 );
 }
 
 llvm::Value * PreIncExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  /* Get the LValue of the sub-expression. */
-  Value *subV = this->expr->emit( CGF, true );
-
-  /* Increment the value of the sub-expression by 1 and store the result. */
-  Value *val = CGF.Builder.CreateLoad( subV );
-  val = CGF.Builder.CreateAdd( val,
-      ConstantInt::get( val->getType(), 1 ) );
-  CGF.Builder.CreateStore( val, subV );
-
-  if ( asLValue )
-    return subV;
-  return val;
+  return EmitPreArithmExpr( CGF, this->expr->emit( CGF, true ), asLValue, 1 );
 }
 
 llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  /* Get the LValue of the sub-expression. */
-  Value *subV = this->expr->emit( CGF, true );
-
-  /* Decrement the value of the sub-expression by 1 and store the result. */
-  Value *val = CGF.Builder.CreateLoad( subV );
-  val = CGF.Builder.CreateAdd( val,
-      ConstantInt::get( val->getType(), -1 ) );
-  CGF.Builder.CreateStore( val, subV );
-
-  if ( asLValue )
-    return subV;
-  return val;
+  return EmitPreArithmExpr( CGF, this->expr->emit( CGF, true ), asLValue, -1 );
 }
 
 llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
