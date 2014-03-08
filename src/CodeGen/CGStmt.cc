@@ -44,6 +44,9 @@ void LabelStmt::emit( CodeGenFunction &CGF ) const
 
   // Add entry to label/block map of current function
   CGF.addLabel( this->tok.sym, labelBlock );
+
+  // Emit code for inner statement
+  this->stmt->emit( CGF );
 }
 
 void IfStmt::emit( CodeGenFunction &CGF ) const
