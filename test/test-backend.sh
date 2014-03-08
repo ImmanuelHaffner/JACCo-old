@@ -174,7 +174,6 @@ do
 
         # skip this file and insert newline after test
         echo ""
-        cd "${OLDPWD}"
         continue
       fi
 
