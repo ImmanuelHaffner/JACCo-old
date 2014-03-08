@@ -80,7 +80,7 @@ do
       continue
     fi
 
-    echo "==> ld ${TOLINK}"
+    echo -n "==> ld${TOLINK}    "
 
     # let clang link the targets
     clang ${TOLINK}
@@ -94,6 +94,7 @@ do
     # if files could not be linked, print error message and skip this directory
     if [ $? -ne 0 ]
     then
+      echo "ERROR"
       echo "==> linking failed, ABORT"
       # insert newline after each test
       echo ""
@@ -101,9 +102,12 @@ do
       continue
     fi
 
+    echo "SUCCESS"
+
     if [ ! -e "result" ]
     then
       echo "==> no result specified, ABORT"
+      echo "==> FAIL"
       echo ""
       cd "${OLDPWD}"
       continue
@@ -125,6 +129,7 @@ do
     if [ ${RES} -ne ${RESULT} ]
     then
       echo "==> expected ${RESULT}, was ${RES}"
+      echo "==> FAIL"
     else
       echo "==> PASS"
       PASSES=$(echo ${PASSES} +1 | bc)
@@ -167,6 +172,7 @@ do
       then
         # print ERROR result
         echo "ERROR"
+        echo "==> FAIL"
 
         # remove the c and ll file
         rm "${TESTSRC}"
@@ -180,7 +186,7 @@ do
       # print SUCCESS
       echo "SUCCESS"
 
-      echo "==> ld ${TESTFILE}"
+      echo -n "==> ld ${TESTFILE}    "
 
       # let clang link the targets
       clang "${TESTLL}"
@@ -193,12 +199,15 @@ do
       # directory
       if [ $? -ne 0 ]
       then
-        echo "==> linking failed, ABORT"
+        echo "ERROR"
+        echo "==> FAIL"
         # insert newline after each test
         echo ""
         cd "${OLDPWD}"
         continue
       fi
+
+      echo "SUCCESS"
 
       RESULT=$(head -n 1 "${TESTFILE}")
 
@@ -212,6 +221,7 @@ do
       if [ ${RES} -ne ${RESULT} ]
       then
         echo "==> expected ${RESULT}, was ${RES}"
+        echo "FAIL"
       else
         echo "==> PASS"
         PASSES=$(echo ${PASSES} +1 | bc)
