@@ -325,12 +325,12 @@ llvm::Value * SubscriptExpr::emit( CodeGenFunction &CGF,
   Value *arr = this->expr->emit( CGF );
   /* Evaluate the RHS.  Must be of integer type. */
   Value *pos = this->index->emit( CGF );
+  
+  /* Compute the address to load. */
+  Instruction *addr = GetElementPtrInst::Create( arr, pos );
+  CGF.Builder.Insert( addr );
 
-  Value *addr = CGF.Builder.CreateIntToPtr(
-      CGF.Builder.CreateAdd(
-        CGF.Builder.CreatePtrToInt( arr, pos->getType() ),
-        pos ), arr->getType() );
-
+  /* Load the value from that address. */
   return CGF.Builder.CreateLoad( addr );
 }
 
