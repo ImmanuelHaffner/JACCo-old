@@ -1,16 +1,19 @@
 0
 
+
 int global;
 
-void illuminate();
+int illuminate();
 
 int main()
 {
-  if ( 0 || illuminate() )
+  global = 0;
+  if ( 1 || illuminate() )
     return global;
 }
 
-void illuminate()
+int illuminate()
 {
   global = 23;
+  return 1;
 }
