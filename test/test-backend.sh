@@ -119,11 +119,12 @@ do
 
     # execute the binary
     ./a.out ${ARGS}
+    RES=$?
 
     # verify the return value
-    if [ $? -ne ${RESULT} ]
+    if [ ${RES} -ne ${RESULT} ]
     then
-      echo "==> expected ${RESULT}, was $?"
+      echo "==> expected ${RESULT}, was ${RES}"
     else
       echo "==> PASS"
       PASSES=$(echo ${PASSES} +1 | bc)
@@ -202,13 +203,16 @@ do
 
       RESULT=$(head -n 1 "${TESTFILE}")
 
+      ARGS=
+
       # execute the binary
-      ./a.out
+      ./a.out ${ARGS}
+      RES=$?
 
       # verify the return value
-      if [ $? -ne ${RESULT} ]
+      if [ ${RES} -ne ${RESULT} ]
       then
-        echo "==> expected ${RESULT}, was $?"
+        echo "==> expected ${RESULT}, was ${RES}"
       else
         echo "==> PASS"
         PASSES=$(echo ${PASSES} +1 | bc)
