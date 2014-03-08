@@ -237,15 +237,15 @@ llvm::Value * ConditionalExpr::emit( CodeGenFunction &CGF,
   /* Emit the LHS. */
   CGF.Builder.SetInsertPoint( trueBlock );
   phi->addIncoming( this->lhs->emit( CGF ), CGF.Builder.GetInsertBlock() );
+  CGF.EmitBlock( endBlock );
 
   /* Emit the RHS. */
   CGF.Builder.SetInsertPoint( falseBlock );
   phi->addIncoming( this->rhs->emit( CGF ), CGF.Builder.GetInsertBlock() );
+  CGF.EmitBlock( endBlock );
 
-  /* Emit the end block. */
-  CGF.Builder.SetInsertPoint( endBlock );
+  /* Emit the phi. */
   CGF.Builder.Insert( phi );
-
   return phi;
 }
 
