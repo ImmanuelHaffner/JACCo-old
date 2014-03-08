@@ -9,6 +9,7 @@
 
 #include "CodeGen.h"
 
+#include <algorithm>
 #include <cstring>
 #include <vector>
 #include "../Lex/Token.h"
@@ -148,69 +149,114 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
       break;
   } // end switch token kind
 
+
+  /* Emit both the LHS and the RHS. */
   Value *lhsV = this->lhs->emit( CGF );
   Value *rhsV = this->rhs->emit( CGF );
 
-  /* cast if necessary */
-  if ( lhsV->getType() != rhsV->getType() ||
-      lhsV->getType()->isPointerTy() || rhsV->getType()->isPointerTy() )
-  {
-    lhsV = CGF.GetAs( lhsV, CGF.Builder.getInt32Ty() );
-    rhsV = CGF.GetAs( rhsV, CGF.Builder.getInt32Ty() );
-  }
+  /* Get the type of both the LHS and the RHS, and also for the return type. */
+  llvm::Type *lhsTy = lhsV->getType();
+  llvm::Type *rhsTy = rhsV->getType();
+
+  /* Get the default return type. */
+  llvm::Type *resTy = CGF.Builder.getInt32Ty();
+  if ( lhsTy->isPointerTy() )
+    resTy = lhsTy;
+  else if ( rhsTy->isPointerTy() )
+    resTy = rhsTy;
+  else if ( lhsTy == rhsTy )
+    resTy = lhsTy;
 
   switch ( this->tok.kind )
   {
-    case Lex::TK::Mul:
-      return CGF.Builder.CreateMul( lhsV, rhsV );
-
-    case Lex::TK::Div:
-      return CGF.Builder.CreateSDiv( lhsV, rhsV );
-
-    case Lex::TK::Mod:
-      return CGF.Builder.CreateSRem( lhsV, rhsV );
-
-    case Lex::TK::Plus:
-      return CGF.Builder.CreateAdd( lhsV, rhsV );
-
-    case Lex::TK::Minus:
-      return CGF.Builder.CreateSub( lhsV, rhsV );
-
-    case Lex::TK::RShift:
-      return CGF.Builder.CreateAShr( lhsV, rhsV );
-
-    case Lex::TK::LShift:
-      return CGF.Builder.CreateShl( lhsV, rhsV );
-
-    case Lex::TK::Le:
-      return CGF.Builder.CreateICmpSLT( lhsV, rhsV );
-
-    case Lex::TK::Gr:
-      return CGF.Builder.CreateICmpSGT( lhsV, rhsV );
-
-    case Lex::TK::LEq:
-      return CGF.Builder.CreateICmpSLE( lhsV, rhsV );
-
-    case Lex::TK::GEq:
-      return CGF.Builder.CreateICmpSGE( lhsV, rhsV );
-
-    case Lex::TK::Eq:
-      return CGF.Builder.CreateICmpEQ( lhsV, rhsV );
-
-    case Lex::TK::NE:
-      return CGF.Builder.CreateICmpNE( lhsV, rhsV );
-
-    case Lex::TK::And:
-      return CGF.Builder.CreateAnd( lhsV, rhsV );
-
-    case Lex::TK::Xor:
-      return CGF.Builder.CreateXor( lhsV, rhsV );
-
-    case Lex::TK::Or:
-      return CGF.Builder.CreateOr( lhsV, rhsV );
-
     default:
       assert( false && "unknown token kind" );
+
+    case Lex::TK::Mul:
+      return CGF.Builder.CreateMul(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::Div:
+      return CGF.Builder.CreateSDiv(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::Mod:
+      return CGF.Builder.CreateSRem(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::Plus:
+      if ( lhsTy->isPointerTy() )
+        return CGF.Builder.CreateGEP( lhsV, rhsV );
+      if ( rhsTy->isPointerTy() )
+        return CGF.Builder.CreateGEP( rhsV, lhsV );
+      return CGF.Builder.CreateAdd(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::Minus:
+      if ( lhsTy->isPointerTy() )
+        return CGF.Builder.CreateGEP( lhsV, CGF.Builder.CreateNeg( rhsV ) );
+      return CGF.Builder.CreateSub(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::RShift:
+      return CGF.Builder.CreateAShr(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::LShift:
+      return CGF.Builder.CreateShl(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::Le:
+      return CGF.Builder.CreateICmpSLT(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::Gr:
+      return CGF.Builder.CreateICmpSGT(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::LEq:
+      return CGF.Builder.CreateICmpSLE(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::GEq:
+      return CGF.Builder.CreateICmpSGE(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::Eq:
+      return CGF.Builder.CreateICmpEQ(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::NE:
+      return CGF.Builder.CreateICmpNE(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::And:
+      return CGF.Builder.CreateAnd(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::Xor:
+      return CGF.Builder.CreateXor(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
+
+    case Lex::TK::Or:
+      return CGF.Builder.CreateOr(
+          CGF.GetAs( lhsV, resTy ),
+          CGF.GetAs( rhsV, resTy ) );
   } // end switch token kind
 
   return NULL;
@@ -283,22 +329,25 @@ llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
       return this->expr->emit( CGF, true );
 
     case TK::Mul:
-      if ( asLValue )
-        return this->expr->emit( CGF );
-      return CGF.Builder.CreateLoad( this->expr->emit( CGF ) );
+      {
+        Value *ptr = this->expr->emit( CGF );
+        if ( asLValue )
+          return ptr;
+
+        /* If ptr is not of pointer type, cast it to a pointer with the type of
+         * the sub-expr.
+         */
+        if ( ! ptr->getType()->isPointerTy() )
+          ptr = CGF.GetAs( ptr,
+              this->expr->getEntity()->type->getLLVMType( CGF ) );
+        return CGF.Builder.CreateLoad( ptr );
+      }
 
     case TK::Plus:
       return this->expr->emit( CGF );
 
     case TK::Minus:
-      {
-        /* -x == neg(x) + 1 */
-        llvm::Type *type = this->expr->getEntity()->type->getLLVMType( CGF );
-        return CGF.Builder.CreateAdd(
-            CGF.Builder.CreateNeg(
-              this->expr->emit( CGF ) ),
-            ConstantInt::get( type, 0 ) );
-      }
+        return CGF.Builder.CreateNeg( this->expr->emit( CGF ) );
 
     case TK::Neg:
       return CGF.Builder.CreateNeg( this->expr->emit( CGF ) );
@@ -325,7 +374,7 @@ llvm::Value * SubscriptExpr::emit( CodeGenFunction &CGF,
   Value *arr = this->expr->emit( CGF );
   /* Evaluate the RHS.  Must be of integer type. */
   Value *pos = this->index->emit( CGF );
-  
+
   /* Compute the address to load. */
   Instruction *addr = GetElementPtrInst::Create( arr, pos );
   CGF.Builder.Insert( addr );
@@ -373,7 +422,7 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
 
     args.push_back( argV );
   }
-  
+
   return CGF.Builder.CreateCall( fun, args );
 }
 
@@ -382,19 +431,12 @@ static llvm::Value * EmitPreArithmExpr( CodeGenFunction &CGF,
 {
   /* Get the RValue of ptr. */
   Value *val = CGF.Builder.CreateLoad( ptr );
-  /* Get the type of the RValue. */
-  llvm::Type *type = val->getType();
 
-  /* If of pointer type, cast to int. */
-  if ( type->isPointerTy() )
-    val = CGF.GetAs( val, CGF.Builder.getInt32Ty() );
-
-  /* Change the value by 'step' */
-  val = CGF.Builder.CreateAdd( val, ConstantInt::get( val->getType(), step ) );
-
-  /* If was pointer type before, cast back. */
-  if ( type->isPointerTy() )
-    val = CGF.GetAs( val, type );
+  if ( val->getType()->isPointerTy() )
+    val = CGF.Builder.CreateGEP( val, CGF.Builder.getInt32( step ) );
+  else
+    val = CGF.Builder.CreateAdd( val,
+        ConstantInt::get( val->getType(), step ) );
 
   CGF.Builder.CreateStore( val, ptr );
 
@@ -410,19 +452,12 @@ static llvm::Value * EmitPostArithmExpr( CodeGenFunction &CGF,
   Value *ret = CGF.Builder.CreateLoad( ptr );
   /* Create a copy of the value, so that we can modify and store it. */
   Value *val = ret;
-  /* Get the type of the RValue. */
-  llvm::Type *type = ret->getType();
 
-  /* If of pointer type, cast to int. */
-  if ( type->isPointerTy() )
-    val = CGF.GetAs( val, CGF.Builder.getInt32Ty() );
-
-  /* Change the value by 'step' */
-  val = CGF.Builder.CreateAdd( val, ConstantInt::get( val->getType(), step ) );
-
-  /* If was pointer type before, cast back. */
-  if ( type->isPointerTy() )
-    val = CGF.GetAs( val, type );
+  if ( ret->getType()->isPointerTy() )
+    val = CGF.Builder.CreateGEP( val, CGF.Builder.getInt32( step ) );
+  else
+    val = CGF.Builder.CreateAdd( val,
+        ConstantInt::get( val->getType(), step ) );
 
   /* Store the computed value. */
   CGF.Builder.CreateStore( val, ptr );
