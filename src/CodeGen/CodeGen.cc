@@ -50,7 +50,7 @@ void CodeGenFunction::WireLabels()
   {
     /* Get the label for the goto. */
     auto elem = labels.find( it.first );
-    if ( elem != labels.end() )
+    if ( elem == labels.end() )
       assert( false && "unknown label, should be unreachable" );
 
     /* Create a branch from the goto block to the label block. */
