@@ -3,5 +3,5 @@
 
 int main()
 {
-  return 14 == 14 : 23 : 0;
+  return 14 == 14 ? 23 : 0;
 }
