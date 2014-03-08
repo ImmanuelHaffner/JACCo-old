@@ -1,11 +1,13 @@
 0
 
+
 int global;
 
 int foo();
 
 int main()
 {
+  global = 0;
   return global + foo();
 }
 

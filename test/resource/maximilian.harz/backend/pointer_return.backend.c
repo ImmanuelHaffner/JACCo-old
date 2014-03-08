@@ -2,7 +2,9 @@
 
 
 int * foo(){
-  int * p;
+  int x;
+  int *p;
+  p = &x;
   *p = 5;
   return p;
 }
