@@ -221,7 +221,7 @@ do
       if [ ${RES} -ne ${RESULT} ]
       then
         echo "==> expected ${RESULT}, was ${RES}"
-        echo "FAIL"
+        echo "==> FAIL"
       else
         echo "==> PASS"
         PASSES=$(echo ${PASSES} +1 | bc)
