@@ -53,9 +53,19 @@ llvm::Value * ExprList::emit( CodeGenFunction &CGF,
 llvm::Value * Variable::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
+  /* Get the entitiy. */
+  Entity * const entity = this->getEntity();
+
+  /* Get its value. */
+  Value *val = entity->value;
+
+  /* If we have a function, cast it to a i8* function pointer. */
+  if ( dynamic_cast< Sema::FuncType const * >( entity->type ) )
+    return CGF.Builder.CreateBitCast( val, CGF.Builder.getInt8PtrTy() );
+
   if ( asLValue )
-    return getEntity()->value;  // returns the alloca of the variable
-  return CGF.Builder.CreateLoad( getEntity()->value );  // returns the value
+    return val;  // returns the alloca of the variable
+  return CGF.Builder.CreateLoad( val );  // returns the value
 }
 
 llvm::Value * AST::Constant::emit( CodeGenFunction &CGF,
