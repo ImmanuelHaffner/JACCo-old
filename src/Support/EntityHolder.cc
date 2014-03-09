@@ -11,6 +11,7 @@
 
 #include <cassert>
 #include "Entity.h"
+#include "../AST/Printable.h"
 
 
 using namespace C4;
@@ -33,4 +34,12 @@ void EntityHolder::attachEntity( Entity * const entity )
 Entity * EntityHolder::getEntity() const
 {
   return entity;
+}
+
+void EntityHolder::dump() const
+{
+  if ( auto me = dynamic_cast< AST::Printable const * >( this ) )
+    me->dump();
+  else
+    assert( false && "dynamic_cast failed" );
 }

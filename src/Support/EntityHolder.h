@@ -40,6 +40,8 @@ namespace C4
     /// \return the attached entity, or NULL if no entity was attached yet
     Entity * getEntity() const;
 
+    void dump() const;
+
     private:
     Entity *entity;
   };
