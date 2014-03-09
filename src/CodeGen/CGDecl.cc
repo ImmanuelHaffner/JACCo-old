@@ -42,7 +42,7 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
   /* Create the LLVM type. */
   llvm::Type * type = entity->type->getLLVMType( CGF );
 
-  /* If thisis just a type specifier, stop here. */
+  /* If this is just a type specifier, stop here. */
   if ( ! declarator ) return;
 
   /* Get the name of the identifier.  The declaration has an declarator,
@@ -73,6 +73,9 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
           id->tok.sym.str(),            /* Function name */
           &(CGF.M)                      /* Module = 0 */
           );
+
+      /* Store the function value in the entity. */
+      entity->value = func;
     }
 
     if ( ! isGlobal ) // function definition
@@ -110,7 +113,7 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
       CGF.params.clear();
     }
     return;
-  }
+  } // end function type
 
   if ( isGlobal )
   {
