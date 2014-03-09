@@ -70,8 +70,7 @@ llvm::Type * Sema::PtrType::getLLVMType( CodeGenFunction &CGF ) const
 {
   if ( LLVMType ) return LLVMType;
 
-  LLVMType = PointerType::getUnqual( innerType->getLLVMType( CGF ) );
-
+  LLVMType = innerType->getLLVMType( CGF )->getPointerTo();
   return LLVMType;
 }
 
