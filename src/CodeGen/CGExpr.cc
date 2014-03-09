@@ -329,7 +329,7 @@ llvm::Value * AssignmentExpr::emit( CodeGenFunction &CGF,
   /* Evaluate the LHS. */
   Value *lhsV = this->lhs->emit( CGF, /* asLValue = */ true );
 
-  /* Get the type of the LHS (without ptr type). */
+  /* Get the type of the LHS (without ptr type since its an LValue). */
   llvm::Type *type = this->lhs->getEntity()->type->getLLVMType( CGF );
 
   CGF.Builder.CreateStore(

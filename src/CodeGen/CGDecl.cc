@@ -144,9 +144,9 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
     else
     {
       /* Create the alloca instruction. */
-      Instruction * alloca = new AllocaInst(
+      Instruction *alloca = new AllocaInst(
           type,             /* Type */
-          0,                /* Array Size = 0 */
+          0,                /* ArraySize = 0 */
           id->tok.sym.str() /* Name */
           );
 
