@@ -425,10 +425,16 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
     assert( false && "cannot take LValue of a function call" );
 
   /* Get the function. */
-  llvm::Value *fun = CGF.M.getFunction( this->fun->tok.sym.str() );
+  llvm::Value *fun = this->fun->getEntity()->value;
 
+  /* If we have a function pointer, and not a function itself, we need to emit a
+   * load first.
+   */
+  if ( auto ptr = dyn_cast< llvm::AllocaInst >( fun ) )
+    fun = CGF.Builder.CreateLoad( fun );
+
+  /* Collect the arguments for the function call. */
   std::vector< llvm::Value * > args;
-
   ExprList const * const argList =
     static_cast< ExprList const * >( this->args );
 
