@@ -3,7 +3,7 @@
 
 void swapArray(char *array1, int element1, char *array2, int element2)
 {
-  char *temp;
+  char temp;
   temp = array1[element1];
   array1[element1] = array2[element2];
   array2[element2] = temp;
