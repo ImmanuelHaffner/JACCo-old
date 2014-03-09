@@ -85,19 +85,49 @@ Value * CodeGenFunction::EvaluateExprAsBool( Value *expr )
 
 llvm::Value * CodeGenFunction::GetAs( llvm::Value *val, llvm::Type *type )
 {
+  /* If the types are equal, don't do anything and return val. */
   if ( val->getType() == type )
     return val;
 
-  /* val is integer type and we want pointer type */
   if ( type->isPointerTy() )
-    return Builder.CreateIntToPtr( val, type );
+  {
+    /* If val is a function, and type is a pointer type, return a bit-casted
+     * function pointer.
+     */
+    if ( auto fun = dyn_cast< Function >( val ) )
+      return ConstantExpr::getBitCast( fun, type );
 
-  /* val is pointer type, and we want integer type */
-  if ( val->getType()->isPointerTy() )
-    return Builder.CreatePtrToInt( val, type );
+    /* If we have a pointer, bit-cast it to the target pointer type. */
+    if ( val->getType()->isPointerTy() )
+      return Builder.CreateBitCast( val, type );
 
-  /* both val and type are of integer type, now check if val is a bool */
-  if ( Builder.getInt1Ty() == val->getType() )
-    return Builder.CreateZExtOrTrunc( val, type );
-  return Builder.CreateSExtOrTrunc( val, type );
+    /* If we have an integer and want a pointer, create a IntToPtr cast. */
+    if ( val->getType()->isIntegerTy() )
+      return Builder.CreateIntToPtr( val, type );
+  } // end type->isPointerTy()
+  else if ( type->isIntegerTy() )
+  {
+    /* If we have a pointer and want an integer, create a IntToPtr cast. */
+    if ( val->getType()->isPointerTy() )
+      return Builder.CreatePtrToInt( val, type );
+
+    /* both val and type are of integer type, now check if val is a bool */
+    /* If we have an integer, and want a integer of different size, we have to
+     * extend or trunc.
+     */
+    if ( val->getType()->isIntegerTy() )
+    {
+      /* Bool (i1) values have to be zero extended. */
+      if ( val->getType() == Builder.getInt1Ty() )
+        return Builder.CreateZExt( val, type );
+
+      /* Regular integer types will be sign extended or truncated. */
+      return Builder.CreateSExtOrTrunc( val, type );
+    }
+  } // end type->isIntegerTy()
+
+  val->dump();
+  type->dump();
+  assert( false && "GetAs not supported for this case" );
+  return NULL;
 }
