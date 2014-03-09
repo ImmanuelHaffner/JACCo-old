@@ -54,6 +54,8 @@ namespace C4
       bool isLvalue;
       virtual llvm::Value * emit( CodeGen::CodeGenFunction &CGF,
           bool asLValue = false ) const = 0;
+
+      inline void dump() const { Locatable::dump(); }
     }; // end struct Expression
 
 
@@ -83,6 +85,8 @@ namespace C4
       llvm::Value * emit( CodeGen::CodeGenFunction &CGF, bool asLValue = false )
         const;
       void analyze();
+
+      inline void dump() const { Expr::dump(); }
     }; // end struct ExprList
 
 

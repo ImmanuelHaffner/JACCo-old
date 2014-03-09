@@ -49,6 +49,7 @@ namespace C4
 
       void print( Printer const p ) const;
       void analyze( Sema::Env &env );
+      inline void dump() const { Locatable::dump(); }
 
       TypeSpecifier const * const typeSpec;
       Declarator const * const declarator;

@@ -333,10 +333,7 @@ namespace C4
       void emit( CodeGen::CodeGenFunction &CGF ) const;
 
       // Resolve ambiguity of inherited method.
-      inline void dump() const
-      {
-        Stmt::dump();
-      }
+      inline void dump() const { Stmt::dump(); }
     }; // end struct CompoundStmt
   } // end namespace AST
 } // end namespace C4

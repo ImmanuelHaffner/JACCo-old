@@ -57,6 +57,8 @@ namespace C4
 
       virtual void emit( CodeGen::CodeGenFunction &CGF, bool isGlobal = false )
         const = 0;
+
+      inline void dump() const { Printable::dump(); }
     }; // end struct ExtDecl
 
 
@@ -68,12 +70,14 @@ namespace C4
 
       void print( Printer const p ) const;
       void emit( CodeGen::CodeGenFunction &, bool ) const;
+
+      inline void dump() const { ExtDecl::dump(); }
     }; // end struct IllegalExtDecl
 
 
     /// Declaration
     struct Declarator;
-    struct Decl : ExtDecl, Locatable, EntityHolder
+    struct Decl : Locatable, ExtDecl, EntityHolder
     {
       Decl( Lex::Token const &tok, TypeSpecifier const * const typeSpec,
           Declarator const * const declarator = NULL )
@@ -91,6 +95,8 @@ namespace C4
 
       TypeSpecifier const * const typeSpec;
       Declarator const * const declarator;
+
+      inline void dump() const { ExtDecl::dump(); }
     }; // end struct Declaration
 
 
@@ -118,6 +124,8 @@ namespace C4
 
 			void print( Printer const p ) const;
       void analyze( Sema::Env &env ) const; 
+
+      inline void dump() const { Printable::dump(); }
 		}; // end struct StructDeclList
 
     /// Struct Declaration
@@ -183,6 +191,8 @@ namespace C4
       void print( Printer const p ) const;
       Entity * analyze( Sema::Env &env, Sema::Type const * const t )
         const;
+
+      inline void dump() const { Declarator::dump(); }
     }; // end struct Identifier
 
 
