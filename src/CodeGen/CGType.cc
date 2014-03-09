@@ -73,7 +73,11 @@ llvm::Type * Sema::PtrType::getLLVMType( CodeGenFunction &CGF ) const
 {
   if ( LLVMType ) return LLVMType;
 
-  LLVMType = innerType->getLLVMType( CGF )->getPointerTo();
+  llvm::Type *innerTy = innerType->getLLVMType( CGF );
+  if ( innerTy->isVoidTy() )
+    LLVMType = CGF.Builder.getInt8PtrTy();
+  else
+    LLVMType = innerType->getLLVMType( CGF )->getPointerTo();
   return LLVMType;
 }
 
