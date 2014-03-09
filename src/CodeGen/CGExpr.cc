@@ -469,13 +469,26 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
     assert( false && "cannot take LValue of a function call" );
 
   /* Get the function. */
-  llvm::Value *fun = this->fun->getEntity()->value;
+  llvm::Value *funcPtr = this->fun->getEntity()->value;
 
-  /* If we have a function pointer, and not a function itself, we need to emit a
-   * load first.
+  /* If we have an alloca of a function pointer, and not a function pointer
+   * itself, we need to emit a load first.
    */
-  if ( dyn_cast< llvm::AllocaInst >( fun ) )
-    fun = CGF.Builder.CreateLoad( fun );
+  if ( dyn_cast< llvm::AllocaInst >( funcPtr ) )
+    funcPtr = CGF.Builder.CreateLoad( funcPtr );
+
+  /* Get the type of the function (without the pointer). */
+  llvm::FunctionType *funcTy = NULL;
+  if ( ( funcTy = dyn_cast< FunctionType >(
+        funcPtr->getType()->getPointerElementType() ) ) );
+  else if ( ( funcTy = dyn_cast< FunctionType >( funcPtr->getType() ) ) );
+  else
+  {
+    funcPtr->dump();
+    funcPtr->getType()->dump();
+    std::cout << std::endl;
+    assert( false && "not a function type" );
+  }
 
   /* Collect the arguments for the function call. */
   std::vector< llvm::Value * > args;
@@ -483,18 +496,23 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
     static_cast< ExprList const * >( this->args );
 
   /* Store the RValues of all arguments. */
-  for ( auto it = argList->begin(); it != argList->end(); ++it )
   {
-    Value *argV = (*it)->emit( CGF );
+    auto argIt = argList->begin();
+    auto paramN = 0;
+    for ( ; argIt != argList->end(); ++argIt, ++paramN )
+    {
+      Value *argV = (*argIt)->emit( CGF );
 
-    /* Skip Void Types */
-    if ( argV->getType()->isVoidTy() )
-      continue;
+      /* Skip Void Types */
+      if ( argV->getType()->isVoidTy() )
+        continue;
 
-    args.push_back( argV );
+      args.push_back( CGF.GetAs( argV, funcTy->getParamType( paramN ) ) );
+      //args.push_back( argV );
+    }
   }
 
-  return CGF.Builder.CreateCall( fun, args );
+  return CGF.Builder.CreateCall( funcPtr, args );
 }
 
 static llvm::Value * EmitPreArithmExpr( CodeGenFunction &CGF,
