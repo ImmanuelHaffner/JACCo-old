@@ -78,8 +78,8 @@ void StructType::print( std::ostream &out ) const
 
 void PtrType::print( std::ostream &out ) const
 {
-  out << "*";
   this->innerType->print( out );
+  out << "*";
 }
 
 void BasicType::print( std::ostream &out ) const

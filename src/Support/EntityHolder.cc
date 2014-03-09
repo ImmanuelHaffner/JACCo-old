@@ -10,6 +10,7 @@
 #include "EntityHolder.h"
 
 #include <cassert>
+#include <iostream>
 #include "Entity.h"
 #include "../AST/Printable.h"
 
@@ -41,5 +42,5 @@ void EntityHolder::dump() const
   if ( auto me = dynamic_cast< AST::Printable const * >( this ) )
     me->dump();
   else
-    assert( false && "dynamic_cast failed" );
+    std::cout << "ERROR: not a printable object" << std::endl;
 }
