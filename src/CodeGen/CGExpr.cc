@@ -73,8 +73,13 @@ llvm::Value * StringLiteral::emit( CodeGenFunction &CGF,
   if ( asLValue )
     assert( false && "cannot take LValue of a string literal" );
 
-  /* Always build a string in a 'global' context. */
-  return CGF.Builder.CreateGlobalStringPtr( this->tok.sym.str() );
+  /* Get the string without the quotes. */
+  std::string s( this->tok.sym.str() );
+
+  /* Always build a string in a 'global' context.  Take the substring without
+   * the quotes.
+   */
+  return CGF.Builder.CreateGlobalStringPtr( s.substr( 1, s.size() - 2 ) );
 }
 
 llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
