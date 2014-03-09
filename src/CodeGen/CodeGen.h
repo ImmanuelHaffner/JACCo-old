@@ -13,16 +13,17 @@
 
 #include <utility>
 #include <vector>
-#include "llvm/IR/Module.h"                /* Module */
-#include "llvm/IR/Function.h"              /* Function */
-#include "llvm/IR/Constant.h"              /* Constant::getNullValue */
-#include "llvm/IR/IRBuilder.h"             /* IRBuilder */
-#include "llvm/IR/LLVMContext.h"           /* LLVMContext */
-#include "llvm/IR/GlobalValue.h"           /* GlobaleVariable, LinkageTypes */
-#include "llvm/Analysis/Verifier.h"        /* verifyFunction, verifyModule */
-#include "llvm/Support/Host.h"
+#include <llvm/IR/Module.h>               /* Module */
+#include <llvm/IR/Function.h>             /* Function */
+#include <llvm/IR/Constant.h>             /* Constant::getNullValue */
+#include <llvm/IR/IRBuilder.h>            /* IRBuilder */
+#include <llvm/IR/LLVMContext.h>          /* LLVMContext */
+#include <llvm/IR/GlobalValue.h>          /* GlobaleVariable, LinkageTypes */
+#include <llvm/Analysis/Verifier.h>       /* verifyFunction, verifyModule */
+#include <llvm/Support/Host.h>            /* Target Triple */
 #include "../Support/Symbol.h"
 #include "../Sema/Type.h"
+
 
 
 namespace C4
@@ -50,7 +51,9 @@ namespace C4
       CodeGenFunction( char const * const fileName )
         : Context( llvm::getGlobalContext() ), M( fileName, Context ),
         Builder( llvm::getGlobalContext() )
-      { M.setTargetTriple(llvm::sys::getDefaultTargetTriple()); }
+      {
+        M.setTargetTriple( llvm::sys::getDefaultTargetTriple() );
+      }
 
       ~CodeGenFunction() {}
 
