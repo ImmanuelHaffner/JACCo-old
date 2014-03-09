@@ -474,7 +474,7 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
   /* If we have a function pointer, and not a function itself, we need to emit a
    * load first.
    */
-  if ( auto ptr = dyn_cast< llvm::AllocaInst >( fun ) )
+  if ( dyn_cast< llvm::AllocaInst >( fun ) )
     fun = CGF.Builder.CreateLoad( fun );
 
   /* Collect the arguments for the function call. */
@@ -565,6 +565,8 @@ llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF,
 llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
+  assert( ! asLValue && "cannot take LValue of sizeof expression" );
+
   /* if we have a string literal, compute its length */
   if ( dynamic_cast< StringLiteral const * >( this->expr ) )
     return CGF.Builder.getInt32(
@@ -586,8 +588,10 @@ llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
 }
 
 llvm::Value * SizeofTypeExpr::emit( CodeGenFunction &CGF,
-    bool /* = false */ ) const
+    bool asLValue /* = false */ ) const
 {
+  assert( ! asLValue && "cannot take LValue of sizeof expression" );
+
   /* Get the type of sub-node. */
   Sema::ObjType const * const type =
     static_cast< Sema::ObjType const * >( this->typeName->getEntity()->type );
