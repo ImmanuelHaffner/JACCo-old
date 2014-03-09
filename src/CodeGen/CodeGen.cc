@@ -111,14 +111,14 @@ llvm::Value * CodeGenFunction::GetAs( llvm::Value *val, llvm::Type *type )
     if ( val->getType()->isPointerTy() )
       return Builder.CreatePtrToInt( val, type );
 
-    /* both val and type are of integer type, now check if val is a bool */
     /* If we have an integer, and want a integer of different size, we have to
      * extend or trunc.
      */
     if ( val->getType()->isIntegerTy() )
     {
-      /* Bool (i1) values have to be zero extended. */
-      if ( val->getType() == Builder.getInt1Ty() )
+      /* Bool (i1) and char (i8) values have to be zero extended. */
+      if ( val->getType() == Builder.getInt1Ty() ||
+          val->getType() == Builder.getInt8Ty() )
         return Builder.CreateZExt( val, type );
 
       /* Regular integer types will be sign extended or truncated. */
