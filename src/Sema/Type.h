@@ -139,6 +139,9 @@ namespace C4
       // The data structure holding the elements of a structure type.
       typedef std::unordered_map< Symbol, Type const * > elements_t;
 
+      // This map holds the indices of elements as given to llvm.
+      typedef std::unordered_map< Symbol, int > indices_t;
+
       StructType() : size_(-1u) {}
 
       StructType( elements_t const &elements ) : size_(-1u)
@@ -193,6 +196,7 @@ namespace C4
       void print( std::ostream &out ) const;
 
       elements_t elements;
+      mutable indices_t indices;
 
       private:
       size_t size_;

@@ -407,15 +407,59 @@ llvm::Value * SubscriptExpr::emit( CodeGenFunction &CGF,
 llvm::Value * DotExpr::emit( CodeGenFunction &CGF, bool asLValue /* = false */ )
   const
 {
-  assert( false && "not implemented yet" );
-  return NULL;
+  //Find index of member in structure.
+  Sema::StructType const *structType =
+      dynamic_cast<Sema::StructType const*>(this->expr->getEntity()->type);
+  auto elem = structType->indices.find(this->id.sym);
+  if(elem == structType->indices.end())
+  {
+    assert(false && "Invalid member of struct.");
+    return NULL;
+  }
+  int elemIndex = elem->second;
+
+  //Store the address of this member in entity.
+  Value *baseAddress = this->expr->emit(CGF, true);
+  std::vector<Value *> gepParams;
+  gepParams.push_back(CGF.Builder.getInt32(0));
+  gepParams.push_back(CGF.Builder.getInt32(elemIndex));
+  Value *addr =
+      CGF.Builder.CreateInBoundsGEP(baseAddress, gepParams);
+
+  this->getEntity()->value= addr;
+  if(asLValue)
+    return addr;
+  return CGF.Builder.CreateLoad( addr );
 }
 
 llvm::Value * ArrowExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  assert( false && "not implemented yet" );
-  return NULL;
+  //Find index of member in structure.
+  Sema::PtrType const *ptrType =
+      dynamic_cast<Sema::PtrType const *>(this->expr->getEntity()->type);
+  Sema::StructType const *structType =
+      dynamic_cast<Sema::StructType const *>(ptrType->innerType);
+  auto elem = structType->indices.find(this->id.sym);
+  if(elem == structType->indices.end())
+  {
+    assert(false && "Invalid member of struct.");
+    return NULL;
+  }
+  int elemIndex = elem->second;
+
+  //Store the address of this member in entity.
+  Value *baseAddress = this->expr->emit(CGF, false);
+  std::vector<Value *> gepParams;
+  gepParams.push_back(CGF.Builder.getInt32(0));
+  gepParams.push_back(CGF.Builder.getInt32(elemIndex));
+  Value *addr =
+      CGF.Builder.CreateInBoundsGEP(baseAddress, gepParams);
+
+  this->getEntity()->value= addr;
+  if(asLValue)
+    return addr;
+  return CGF.Builder.CreateLoad( addr );
 }
 
 llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,

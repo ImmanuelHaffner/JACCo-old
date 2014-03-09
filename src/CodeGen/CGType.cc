@@ -54,9 +54,12 @@ llvm::Type * Sema::StructType::getLLVMType( CodeGenFunction &CGF ) const
   /* Create a vector of types for the types of the struct members */
   std::vector< llvm::Type * > StructMemberTypes;
 
+  int index = 0;
   for ( auto it = elements.begin(); it != elements.end(); ++it )
   {
+    indices.insert( std::make_pair( it->first, index ) );
     StructMemberTypes.push_back( it->second->getLLVMType( CGF ) );
+    index++;
   }
 
   structType->setBody( StructMemberTypes );
