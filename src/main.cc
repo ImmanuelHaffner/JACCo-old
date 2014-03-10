@@ -1,3 +1,4 @@
+#include <string>
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -9,10 +10,11 @@
 #include "AST/Printable.h"
 #include "Sema/TypeFactory.h"
 #include "CodeGen/CodeGen.h"
-#include "llvm/Support/Signals.h"          /* Nice stacktrace output */
+#include "llvm/Support/Signals.h"           /* Nice stacktrace output */
 #include "llvm/Support/SystemUtils.h"
 #include "llvm/Support/PrettyStackTrace.h"
-#include "llvm/IR/Module.h"                /* Module */
+#include "llvm/IR/Module.h"                 /* Module */
+#include "llvm/Support/raw_ostream.h"       /* Print LLVM IR output */
 
 
 using namespace C4;
@@ -124,17 +126,29 @@ int main(int argc, char** const argv)
             Parser parser( *lexer );
             TranslationUnit const * const unit = parser.parse();
 
+            if ( hasNewErrors() )
+              break;
+
             llvm::sys::PrintStackTraceOnErrorSignal();
             llvm::PrettyStackTraceProgram X(argc, argv);
             CodeGenFunction CGF( name );
 
-            if ( hasNewErrors() )
-              break;
-
             unit->emit( CGF );
-
-            CGF.M.dump();
             verifyModule( CGF.M );
+
+            /* Get the name of the output file */
+            std::string outname( name );
+            {
+              size_t pos = outname.rfind( "." );
+              if ( pos == std::string::npos )
+                outname += ".ll";
+              else
+                outname.replace( pos, outname.length(), ".ll" );
+            }
+
+            std::string errorStr;
+            raw_fd_ostream stream( outname.c_str(), errorStr );
+            CGF.M.print( stream, NULL );
           }
 
       } // end switch
