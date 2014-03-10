@@ -13,6 +13,7 @@
 #include "llvm/Support/SystemUtils.h"
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/IR/Module.h"                /* Module */
+#include "Optimization/Optimization.h"
 
 
 using namespace C4;
@@ -22,6 +23,7 @@ using namespace AST;
 using namespace Sema;
 using namespace CodeGen;
 using namespace llvm;
+using namespace Optimize;
 
 
 enum class Mode {
@@ -29,6 +31,7 @@ enum class Mode {
   PARSE,
   PRINT_AST,
   COMPILE,
+  OPTIMIZE
 };
 
 int main(int argc, char** const argv)
@@ -49,6 +52,8 @@ int main(int argc, char** const argv)
       mode = Mode::PRINT_AST;
     } else if (strEq(arg, "--compile")) {
       mode = Mode::COMPILE;
+    } else if (strEq(arg, "--optimize")) {
+      mode = Mode::OPTIMIZE;
     } else if (strEq(arg, "--symbols")) {
       symbols = true;
     } else if (strEq(arg, "-")) {
@@ -119,6 +124,7 @@ int main(int argc, char** const argv)
           break;
 
         case Mode::COMPILE:
+        case Mode::OPTIMIZE:
           {
             Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
             Parser parser( *lexer );
@@ -132,6 +138,11 @@ int main(int argc, char** const argv)
               break;
 
             unit->emit( CGF );
+
+            if ( mode == Mode::OPTIMIZE )
+            {
+              Optimizer::optimize( &CGF.M );
+            }
 
             CGF.M.dump();
             verifyModule( CGF.M );
