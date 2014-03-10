@@ -328,7 +328,7 @@ void FunctionDef::analyze( Env &env ) const
 
 void StructDeclList::analyze( Env &env ) const
 {
-  for ( auto it : * this )
+  for ( auto it : *this )
     it->analyze( env );
 }
 
