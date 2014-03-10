@@ -69,7 +69,8 @@ int main(int argc, char** const argv)
 
   if (!hasNewErrors()) {
     Token::INIT_KEYWORDS_TABLE(); // initialize the symbol table for keywords
-    for (; char const *name = *i; ++i) {
+    for (; char const *name = *i; ++i)
+    {
       FILE* f;
       if (strEq(name, "-")) {
         f    = stdin;
@@ -89,70 +90,54 @@ int main(int argc, char** const argv)
 
       Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
 
-      switch (mode) {
-        case Mode::TOKENIZE:
-          {
-            while ( true )
-            {
-              Token const tok = lexer->getToken();
-              if ( tok.kind == TK::END_OF_FILE )
-                break;
-              std::cout << tok.pos << " " << tok << "\n";
-            }
-          }
-          break;
+      if ( Mode::TOKENIZE == mode )
+      {
+        while ( true )
+        {
+          Token const tok = lexer->getToken();
+          if ( TK::END_OF_FILE == tok.kind )
+            break;
+          std::cout << tok.pos << " " << tok << "\n";
+        }
+        continue;
+      }
 
-        case Mode::PARSE:
-          {
-            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
+      Parser parser( *lexer );
+      TranslationUnit const * const unit = parser.parse();
 
-            Parser parser( *lexer );
-            parser.parse();
-          }
-          break;
+      if ( Mode::PARSE == mode ) continue;
 
-        case Mode::PRINT_AST:
-          {
-            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
-            Parser parser( *lexer );
-            TranslationUnit const * const unit = parser.parse();
-            unit->print( Printer ( std::cout ) );
-          }
-          break;
+      if ( Mode::PRINT_AST == mode )
+      {
+        unit->print( Printer( std::cout ) );
+        continue;
+      }
 
-        case Mode::COMPILE:
-          {
-            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
-            Parser parser( *lexer );
-            TranslationUnit const * const unit = parser.parse();
+      if ( hasNewErrors() ) continue;
 
-            if ( hasNewErrors() )
-              break;
+      /* Compile. */
 
-            llvm::sys::PrintStackTraceOnErrorSignal();
-            llvm::PrettyStackTraceProgram X(argc, argv);
-            CodeGenFunction CGF( name );
+      llvm::sys::PrintStackTraceOnErrorSignal();
+      llvm::PrettyStackTraceProgram X(argc, argv);
+      CodeGenFunction CGF( name );
 
-            unit->emit( CGF );
-            verifyModule( CGF.M );
+      unit->emit( CGF );
+      verifyModule( CGF.M );
 
-            /* Get the name of the output file */
-            std::string outname( name );
-            {
-              size_t pos = outname.rfind( "." );
-              if ( pos == std::string::npos )
-                outname += ".ll";
-              else
-                outname.replace( pos, outname.length(), ".ll" );
-            }
+      /* Get the name of the output file */
+      std::string outname( name );
+      {
+        size_t pos = outname.rfind( "." );
+        if ( pos == std::string::npos )
+          outname += ".ll";
+        else
+          outname.replace( pos, outname.length(), ".ll" );
+      }
 
-            std::string errorStr;
-            raw_fd_ostream stream( outname.c_str(), errorStr );
-            CGF.M.print( stream, NULL );
-          }
+      std::string errorStr;
+      raw_fd_ostream stream( outname.c_str(), errorStr );
+      CGF.M.print( stream, NULL );
 
-      } // end switch
-      //fclose ( f );
       delete lexer;
     }
 
