@@ -11,7 +11,7 @@ namespace C4
   {
     struct LatticeValue
     {
-      LatticeValue() : type(BOTTOM) {}
+      LatticeValue() : type(VT::BOTTOM) {}
 
       /* Return true if status changes */
       bool setTop();
