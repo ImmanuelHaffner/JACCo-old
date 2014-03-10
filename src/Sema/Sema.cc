@@ -22,8 +22,7 @@ using namespace Sema;
 
 
 static int parameterDepth = 0;
-static std::vector< std::pair< Entity *,
-  ParamDecl const * > > nameless_params;
+static std::vector< std::pair< Entity *, ParamDecl const * > > current_params;
 
 #define ERROR( MSG ) \
 { std::ostringstream actual; \
@@ -108,7 +107,7 @@ Entity * FunctionDeclarator::analyze( Env &env,
     Sema::Type const * const t ) const
 {
   if ( parameterDepth == 0 )
-    nameless_params.clear();
+    current_params.clear();
 
   env.pushScope();
   FuncType::params_t params = this->params->analyze( env );
@@ -277,15 +276,15 @@ Entity * IllegalDeclarator::analyze( Env &env, Sema::Type const * ) const
 
 void FunctionDef::analyze( Env &env ) const
 {
-  auto funDeclar = static_cast< FunctionDeclarator const * >( decl->declarator
-      );
+  auto funDeclar =
+    static_cast< FunctionDeclarator const * >( decl->declarator );
 
   // Check for missing parameter names
   // When parsing parameter declarations, the function name is still unknown, so
   // we have to check for the function below
   Entity * fe = env.popFunction();
-  for ( std::pair< Entity *, ParamDecl const * > &it : nameless_params ) {
-    if ( it.first  == env.topFunction() )
+  for ( std::pair< Entity *, ParamDecl const * > &it : current_params ) {
+    if ( it.first == env.topFunction() )
     {
       std::ostringstream oss;
       oss << "function '" << funDeclar->tok.sym.str() <<
@@ -349,18 +348,28 @@ void StructDeclaratorList::analyze( Env &env, Sema::Type const * const t ) const
 
 Sema::Type const * ParamDecl::analyze( Env &env ) const
 {
-  Sema::Type const * t = typeSpec->analyze( env );
+  Sema::Type const *t = typeSpec->analyze( env );
   size_t scopeSize1 = env.topScope()->getIdMap().size();
+
   if ( declarator )
   {
-    Entity * e = declarator->analyze( env, t );
-    const_cast< ParamDecl * >( this )->attachEntity( e );
+    Entity * const e = declarator->analyze( env, t );
     t = e->type;
+    const_cast< ParamDecl * >( this )->attachEntity( e );
   }
+  else
+  {
+    /* attach the type, even if we dont have a declarator */
+    Entity * const e = new Entity();
+    e->type = t;
+    const_cast< ParamDecl * >( this )->attachEntity( e );
+  }
+
   size_t scopeSize2 = env.topScope()->getIdMap().size();
-  if ( t != TypeFactory::getVoid() && parameterDepth == 1 && scopeSize1
-      == scopeSize2 )
-    nameless_params.push_back( std::make_pair( env.topFunction(), this ) );
+  if ( t != TypeFactory::getVoid() && parameterDepth == 1 &&
+      scopeSize1 == scopeSize2 )
+    current_params.push_back( std::make_pair( env.topFunction(), this ) );
+
   return t;
 }
 
@@ -1140,28 +1149,50 @@ void SubscriptExpr::analyze()
   Type const * arrayType = this->expr->getEntity()->type;
   Type const * indexType = this->index->getEntity()->type;
 
-  if ( ! isPointerType( arrayType ) ||
-      ! isCompleteObjType( toPointerType( arrayType )->innerType ) )
+  if ( ( ! isPointerType( arrayType ) ||
+        ! isCompleteObjType( toPointerType( arrayType )->innerType ) )
+      && ! isIntegerType( arrayType ) )
   {
     std::ostringstream oss;
-    oss << this->expr << " is not a pointer to a complete object type, but has "
-      << "type " << arrayType;
+    oss << this->expr << " is not a pointer to a complete object type or "
+      "of integer type , but has " << "type " << arrayType;
 
     ERROR_TOK( this->expr->tok, oss.str().c_str() );
   }
   else
   {
-    Entity * e = new Entity();
-    e->type = toPointerType( arrayType )->innerType;
-    attachEntity( e );
+    if ( isPointerType( arrayType ) )
+    {
+      if ( ! isIntegerType( indexType ) )
+      {
+        std::ostringstream oss;
+        oss << this->index << " is not of integer type, but of type " <<
+          indexType;
+        ERROR_TOK( this->index->tok, oss.str().c_str() );
+      }
+      else {
+        Entity * e = new Entity();
+        e->type = toPointerType( arrayType )->innerType;
+        attachEntity( e );
+      }
+    }
+    else
+    {
+      if ( ! isPointerType( indexType ) ||
+          ! isCompleteObjType( toPointerType( indexType )->innerType ) )
+      {
+        std::ostringstream oss;
+        oss << this->expr << " is not a pointer to a complete object type, "
+          "but has type " << indexType;
+        ERROR_TOK( this->expr->tok, oss.str().c_str() );
+      }   
+      else
+      {
+        Entity * e = new Entity();
+        e->type = toPointerType( indexType )->innerType;
+        attachEntity( e );
+      }
+    }
   }
-
-  if ( ! isIntegerType( indexType ) )
-  {
-    std::ostringstream oss;
-    oss << this->index << " is not of integer type, but of type " << indexType;
-    ERROR_TOK( this->index->tok, oss.str().c_str() );
-  }
-
   isLvalue = true;
 }
