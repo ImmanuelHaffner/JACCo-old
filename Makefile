@@ -113,6 +113,12 @@ check-backend: all
 		./test-backend.sh;\
 		cd ..
 
+check-optimize: all
+	@echo ""
+	@cd test/;\
+		./test-optimize.sh;\
+		cd ..
+
 check-nosema: check check-lexer check-parser check-printer
 
 check-all:
@@ -120,7 +126,7 @@ check-all:
 	@make clean
 	@make check-nosema SEMA=0 -j4
 	@make clean
-	@make check-sema check-backend SEMA=1 -j4
+	@make check-sema check-backend check-optimize SEMA=1 -j4
 
 clean:
 	@echo "===> CLEAN"
