@@ -183,6 +183,9 @@ void ReturnStmt::emit( CodeGenFunction &CGF ) const
   }
   else
     CGF.Builder.CreateRetVoid();
+
+  /* Get a new BasicBlock and make it the new entry point. */
+  CGF.Builder.SetInsertPoint( CGF.getBasicBlock() );
 }
 
 void BlockItem::emit( CodeGenFunction &CGF ) const
