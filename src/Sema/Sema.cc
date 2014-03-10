@@ -1149,28 +1149,50 @@ void SubscriptExpr::analyze()
   Type const * arrayType = this->expr->getEntity()->type;
   Type const * indexType = this->index->getEntity()->type;
 
-  if ( ! isPointerType( arrayType ) ||
-      ! isCompleteObjType( toPointerType( arrayType )->innerType ) )
+  if ( ( ! isPointerType( arrayType ) ||
+        ! isCompleteObjType( toPointerType( arrayType )->innerType ) )
+      && ! isIntegerType( arrayType ) )
   {
     std::ostringstream oss;
-    oss << this->expr << " is not a pointer to a complete object type, but has "
-      << "type " << arrayType;
+    oss << this->expr << " is not a pointer to a complete object type or "
+      "of integer type , but has " << "type " << arrayType;
 
     ERROR_TOK( this->expr->tok, oss.str().c_str() );
   }
   else
   {
-    Entity * e = new Entity();
-    e->type = toPointerType( arrayType )->innerType;
-    attachEntity( e );
+    if ( isPointerType( arrayType ) )
+    {
+      if ( ! isIntegerType( indexType ) )
+      {
+        std::ostringstream oss;
+        oss << this->index << " is not of integer type, but of type " <<
+          indexType;
+        ERROR_TOK( this->index->tok, oss.str().c_str() );
+      }
+      else {
+        Entity * e = new Entity();
+        e->type = toPointerType( arrayType )->innerType;
+        attachEntity( e );
+      }
+    }
+    else
+    {
+      if ( ! isPointerType( indexType ) ||
+          ! isCompleteObjType( toPointerType( indexType )->innerType ) )
+      {
+        std::ostringstream oss;
+        oss << this->expr << " is not a pointer to a complete object type, "
+          "but has type " << indexType;
+        ERROR_TOK( this->expr->tok, oss.str().c_str() );
+      }   
+      else
+      {
+        Entity * e = new Entity();
+        e->type = toPointerType( indexType )->innerType;
+        attachEntity( e );
+      }
+    }
   }
-
-  if ( ! isIntegerType( indexType ) )
-  {
-    std::ostringstream oss;
-    oss << this->index << " is not of integer type, but of type " << indexType;
-    ERROR_TOK( this->index->tok, oss.str().c_str() );
-  }
-
   isLvalue = true;
 }
