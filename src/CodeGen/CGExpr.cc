@@ -388,17 +388,16 @@ llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
 llvm::Value * SubscriptExpr::emit( CodeGenFunction &CGF,
     bool asLValue /* = false */ ) const
 {
-  if ( asLValue )
-    assert( false && "cannot take LValue of a subscript expression" );
-
   /* Evaluate the LHS.  Must be of pointer type. */
   Value *arr = this->expr->emit( CGF );
   /* Evaluate the RHS.  Must be of integer type. */
   Value *pos = this->index->emit( CGF );
 
   /* Compute the address to load. */
-  Instruction *addr = GetElementPtrInst::Create( arr, pos );
-  CGF.Builder.Insert( addr );
+  llvm::Value *addr = CGF.Builder.CreateGEP( arr, pos );
+
+  if ( asLValue )
+    return addr;
 
   /* Load the value from that address. */
   return CGF.Builder.CreateLoad( addr );
