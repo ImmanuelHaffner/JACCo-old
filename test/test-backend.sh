@@ -155,7 +155,6 @@ do
 
         # remove the c and ll file
         rm "${TESTSRC}"
-        rm "${TESTLL}"
 
         # skip this file and insert newline after test
         echo ""
