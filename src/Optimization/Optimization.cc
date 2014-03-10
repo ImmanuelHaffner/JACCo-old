@@ -1,5 +1,5 @@
 #include "Optimization.h"
-#include "SCCPVisitor.h"
+#include "SCCPSolver.h"
 
 using namespace C4;
 using namespace Optimize;
@@ -14,19 +14,15 @@ void Optimizer::runMem2Reg( Module &module )
 }
 
 
-void Optimizer::optimize( Module &M )
+void Optimizer::runSCCP( Module &M )
 {
-  runMem2Reg( M );
-
-  SCCPVisitor sccpVisitor;
+  SCCPSolver SCCPSolver;
   for ( Module::iterator F = M.begin(); F != M.end(); ++F )
   {
     /* Check whether we have a definition */
     if ( ! F->isDeclaration() )
     {
-      sccpVisitor.runOnFunction( F );
+      SCCPSolver.solve( F );
     }
   }
-
-  runMem2Reg( M );
 }

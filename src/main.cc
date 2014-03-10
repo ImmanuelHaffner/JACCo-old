@@ -121,7 +121,6 @@ int main(int argc, char** const argv)
       if ( hasNewErrors() ) continue;
 
       /* Compile. */
-
       llvm::sys::PrintStackTraceOnErrorSignal();
       llvm::PrettyStackTraceProgram X(argc, argv);
       CodeGenFunction CGF( name );
@@ -129,12 +128,17 @@ int main(int argc, char** const argv)
       unit->emit( CGF );
       verifyModule( CGF.M );
 
-      if ( mode == Mode::OPTIMIZE )
+      /* Optimize. */
+      if ( Mode::OPTIMIZE == mode )
       {
-        Optimizer::optimize( CGF.M );
+        Optimizer::runMem2Reg( CGF.M );
+        Optimizer::runSCCP( CGF.M );
+        Optimizer::runMem2Reg( CGF.M );
+
         verifyModule( CGF.M );
       }
-      /* Get the name of the output file */
+
+      /* Get the name of the output file. */
       std::string outname( name );
       {
         size_t pos = outname.rfind( "." );
@@ -144,6 +148,7 @@ int main(int argc, char** const argv)
           outname.replace( pos, outname.length(), ".ll" );
       }
 
+      /* Write the module to the output file. */
       std::string errorStr;
       raw_fd_ostream stream( outname.c_str(), errorStr );
       CGF.M.print( stream, NULL );

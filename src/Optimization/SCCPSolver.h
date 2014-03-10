@@ -1,11 +1,13 @@
 #ifndef SCCPVISITOR_H
 #define SCCPVISITOR_H
 
-#include <llvm/InstVisitor.h>
-#include <llvm/ADT/DenseMap.h>
-#include <llvm/ADT/SmallVector.h>
-#include <llvm/ADT/SmallPtrSet.h>
+
+#include "llvm/InstVisitor.h"
+#include "llvm/ADT/DenseMap.h"
+#include "llvm/ADT/SmallVector.h"
+#include "llvm/ADT/SmallPtrSet.h"
 #include "LatticeValue.h"
+
 
 namespace C4
 {
@@ -13,16 +15,24 @@ namespace C4
   {
     typedef llvm::DenseMap< llvm::Value *, LatticeValue > ValueMap;
 
-    struct SCCPVisitor : llvm::InstVisitor< SCCPVisitor >
+    struct SCCPSolver : llvm::InstVisitor< SCCPSolver >
     {
-      SCCPVisitor() {}
+      SCCPSolver() {}
 
-      void runOnFunction( llvm::Function *F );
-      void markTop( llvm::Value * );
+      /// Apply SCCP to the given function.
+      ///
+      /// \param F the function SCCP shall be applied to
+      void solve( llvm::Function *F );
+
+      /// Marks the given value as TOP.
+      ///
+      /// \param V the value to mark as TOP
+      void markTop( llvm::Value *V );
+
       void markBlockVisitable ( llvm::BasicBlock * );
 
       private:
-      friend class llvm::InstVisitor< SCCPVisitor >;
+      friend class llvm::InstVisitor< SCCPSolver >;
 
       void visitBinaryOperator( llvm::BinaryOperator &I );
       void visitCallInst( llvm::CallInst &I );
@@ -42,4 +52,6 @@ namespace C4
     };
   }
 }
+
+
 #endif

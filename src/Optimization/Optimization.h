@@ -29,7 +29,7 @@ namespace C4
     struct Optimizer
     {
       static void runMem2Reg( llvm::Module & );
-      static void optimize( llvm::Module & );
+      static void runSCCP( llvm::Module & );
     };
   }
 }
