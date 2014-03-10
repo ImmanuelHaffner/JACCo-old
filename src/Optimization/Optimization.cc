@@ -14,8 +14,19 @@ void Optimizer::runMem2Reg( Module &module )
 }
 
 
-void Optimizer::optimize( Module &module )
+void Optimizer::optimize( Module &M )
 {
-  runMem2Reg( module );
+  runMem2Reg( M );
+
   SCCPVisitor sccpVisitor;
+  for ( Module::iterator F = M.begin(); F != M.end(); ++F )
+  {
+    /* Check whether we have a definition */
+    if ( ! F->isDeclaration() )
+    {
+      sccpVisitor.runOnFunction( F );
+    }
+  }
+
+  runMem2Reg( M );
 }

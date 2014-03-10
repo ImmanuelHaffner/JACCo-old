@@ -31,14 +31,11 @@ do
       # prune name
       TESTFILE=$(basename "${TESTFILE}")
 
-      # get the name of the test file
-      TESTNAME=$(basename "${TESTFILE}" "${SUFFIX}.c")
-
-      # get a file for the LLVM output
-      TESTLL=$(mktemp "/tmp/${TESTNAME}.XXXX.ll")
+      # Get the name of the output LL file
+      TESTLL="$(basename "${TESTFILE}" ".c").ll"
 
       # compile the file
-      $("${C4}" "${TESTFILE}" > "${TESTLL}" 2>&1)
+      $("${C4}" "${TESTFILE}")
 
       # verify compiling was successful
       if [ $? -ne 0 ]
@@ -141,24 +138,23 @@ do
       # get a file for the source
       TESTSRC=$(mktemp "/tmp/${TESTNAME}.XXXX.c")
 
-      # get a file for the LLVM output
-      TESTLL=$(mktemp "/tmp/${TESTNAME}.XXXX.ll")
-
       # fill the source file
       tail -n +4 "${TESTFILE}" > "${TESTSRC}"
 
+      # Get the name of the output LL file
+      TESTLL="/tmp/$(basename "${TESTSRC}" ".c").ll"
+
       # compile the file
-      $("${C4}" "${TESTSRC}" > "${TESTLL}" 2>&1)
+      $("${C4}" "${TESTSRC}" > /dev/null 2>&1)
 
       # verify compiling was successful
       if [ $? -ne 0 ]
       then
         # print ERROR result
-        echo "==> ERROR: compiling '${TESTDIR}/${TESTFILE}' -> '${TESTLL}'"
+        echo "==> ERROR: compiling '${TESTDIR}/${TESTFILE}' -> '${TESTDIR}/${TESTLL}'"
 
         # remove the c and ll file
         rm "${TESTSRC}"
-        rm "${TESTLL}"
 
         # skip this file and insert newline after test
         echo ""
@@ -172,14 +168,12 @@ do
       rm "${TESTSRC}"
       rm "${TESTLL}"
 
-      # if files could not be linked, print error message and skip this
-      # directory
+      # if files could not be linked, print error message
       if [ $? -ne 0 ]
       then
         echo "==> ERROR: ld '${TESTFILE}' failed"
         # insert newline after each test
         echo ""
-        cd "${OLDPWD}"
         continue
       fi
 

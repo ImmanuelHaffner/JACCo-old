@@ -1,3 +1,4 @@
+#include <string>
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -9,11 +10,12 @@
 #include "AST/Printable.h"
 #include "Sema/TypeFactory.h"
 #include "CodeGen/CodeGen.h"
-#include "llvm/Support/Signals.h"          /* Nice stacktrace output */
+#include "llvm/Support/Signals.h"           /* Nice stacktrace output */
 #include "llvm/Support/SystemUtils.h"
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/IR/Module.h"                /* Module */
 #include "Optimization/Optimization.h"
+#include "llvm/Support/raw_ostream.h"       /* Print LLVM IR output */
 
 
 using namespace C4;
@@ -72,7 +74,8 @@ int main(int argc, char** const argv)
 
   if (!hasNewErrors()) {
     Token::INIT_KEYWORDS_TABLE(); // initialize the symbol table for keywords
-    for (; char const *name = *i; ++i) {
+    for (; char const *name = *i; ++i)
+    {
       FILE* f;
       if (strEq(name, "-")) {
         f    = stdin;
@@ -92,64 +95,59 @@ int main(int argc, char** const argv)
 
       Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
 
-      switch (mode) {
-        case Mode::TOKENIZE:
-          {
-            while ( true )
-            {
-              Token const tok = lexer->getToken();
-              if ( tok.kind == TK::END_OF_FILE )
-                break;
-              std::cout << tok.pos << " " << tok << "\n";
-            }
-          }
-          break;
+      if ( Mode::TOKENIZE == mode )
+      {
+        while ( true )
+        {
+          Token const tok = lexer->getToken();
+          if ( TK::END_OF_FILE == tok.kind )
+            break;
+          std::cout << tok.pos << " " << tok << "\n";
+        }
+        continue;
+      }
 
-        case Mode::PARSE:
-          {
-            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
+      Parser parser( *lexer );
+      TranslationUnit const * const unit = parser.parse();
 
-            Parser parser( *lexer );
-            parser.parse();
-          }
-          break;
+      if ( Mode::PARSE == mode ) continue;
 
-        case Mode::PRINT_AST:
-          {
-            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
-            Parser parser( *lexer );
-            TranslationUnit const * const unit = parser.parse();
-            unit->print( Printer ( std::cout ) );
-          }
-          break;
+      if ( Mode::PRINT_AST == mode )
+      {
+        unit->print( Printer( std::cout ) );
+        continue;
+      }
 
-        case Mode::COMPILE:
-        case Mode::OPTIMIZE:
-          {
-            Lexer * const lexer = f == stdin ? new Lexer : new Lexer( name );
-            Parser parser( *lexer );
-            TranslationUnit const * const unit = parser.parse();
+      if ( hasNewErrors() ) continue;
 
-            llvm::sys::PrintStackTraceOnErrorSignal();
-            llvm::PrettyStackTraceProgram X(argc, argv);
-            CodeGenFunction CGF( name );
+      /* Compile. */
 
-            if ( hasNewErrors() )
-              break;
+      llvm::sys::PrintStackTraceOnErrorSignal();
+      llvm::PrettyStackTraceProgram X(argc, argv);
+      CodeGenFunction CGF( name );
 
-            unit->emit( CGF );
+      unit->emit( CGF );
+      verifyModule( CGF.M );
 
-            if ( mode == Mode::OPTIMIZE )
-            {
-              Optimizer::optimize( CGF.M );
-            }
+      if ( mode == Mode::OPTIMIZE )
+      {
+        Optimizer::optimize( CGF.M );
+        verifyModule( CGF.M );
+      }
+      /* Get the name of the output file */
+      std::string outname( name );
+      {
+        size_t pos = outname.rfind( "." );
+        if ( pos == std::string::npos )
+          outname += ".ll";
+        else
+          outname.replace( pos, outname.length(), ".ll" );
+      }
 
-            CGF.M.dump();
-            verifyModule( CGF.M );
-          }
+      std::string errorStr;
+      raw_fd_ostream stream( outname.c_str(), errorStr );
+      CGF.M.print( stream, NULL );
 
-      } // end switch
-      //fclose ( f );
       delete lexer;
     }
 
