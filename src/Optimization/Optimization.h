@@ -2,7 +2,7 @@
 //
 //  ~~~ The C4 Compiler ~~~
 //
-//  This file defines the Parser interface.
+//  This file defines the optimization interface. 
 //
 //===----------------------------------------------------------------------===//
 
@@ -14,19 +14,22 @@
 #include <cstring>
 #include "../util.h"
 #include "../diagnostic.h"
-#include "llvm/PassManager.h"
-#include "llvm/Transforms/Scalar.h"
+#include <llvm/PassManager.h>
+#include <llvm/Transforms/Scalar.h>
+#include <llvm/InstVisitor.h>
+#include <llvm/IR/Instructions.h>
+#include "LatticeValue.h"
 
 
 namespace C4
 {
-  namespace Optimize 
+  namespace Optimize
   {
-    /// \brief The optimizer 
-    struct Optimizer 
+    /// \brief The optimizer
+    struct Optimizer
     {
-      static void runMem2Reg( llvm::Module * const );
-      static void optimize( llvm::Module * const );
+      static void runMem2Reg( llvm::Module & );
+      static void optimize( llvm::Module & );
     };
   }
 }

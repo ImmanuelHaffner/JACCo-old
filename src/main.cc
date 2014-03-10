@@ -141,7 +141,7 @@ int main(int argc, char** const argv)
 
             if ( mode == Mode::OPTIMIZE )
             {
-              Optimizer::optimize( &CGF.M );
+              Optimizer::optimize( CGF.M );
             }
 
             CGF.M.dump();
