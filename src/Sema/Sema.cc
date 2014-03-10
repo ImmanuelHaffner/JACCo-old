@@ -393,7 +393,11 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   {
     // Construct type according to struct declarations
     env.pushScope();
+    // We don't need inner parameter scopes
+    parameterDepth++;
     structDecls->analyze( env );
+    parameterDepth--;
+    
     Scope * const structScope = env.popScope();
 
     IdMap const &idMap = structScope->getIdMap();
