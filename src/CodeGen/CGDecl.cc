@@ -177,10 +177,7 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ ) const
       CGF.Builder.CreateRetVoid();
     else
       CGF.Builder.CreateRet(
-          ConstantInt::get(
-            type->getReturnType(),
-            0 )
-          );
+          CGF.GetAs( CGF.Builder.getInt32( 0 ), type->getReturnType() ) );
   }
 
   // Connect goto stmts with their labels.

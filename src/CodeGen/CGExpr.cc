@@ -580,7 +580,11 @@ llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF,
 }
 
 llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
-    bool asLValue /* = false */ ) const
+    bool
+#ifdef DEBUG
+    asLValue
+#endif
+    /* = false */ ) const
 {
   assert( ! asLValue && "cannot take LValue of sizeof expression" );
 
@@ -592,20 +596,20 @@ llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
   /* Emit code for the sub-expression.  This is necessary, since it may have
    * side effects.
    */
-  this->expr->emit( CGF );
+  Value *val = this->expr->emit( CGF );
 
-  /* Compute the type of the sub-expression. */
-  Sema::Type const * const type = this->expr->getEntity()->type;
+  if ( val->getType()->isFunctionTy() )
+    return ConstantExpr::getSizeOf( CGF.Builder.getInt8PtrTy() );
 
-  if ( dynamic_cast< Sema::FuncType const * >( type ) )
-    return CGF.Builder.getInt32( 4 );
-
-  auto ot = static_cast< Sema::ObjType const * >( type );
-  return CGF.Builder.getInt32( ot->size() );
+  return ConstantExpr::getSizeOf( val->getType() );
 }
 
 llvm::Value * SizeofTypeExpr::emit( CodeGenFunction &CGF,
-    bool asLValue /* = false */ ) const
+    bool
+#ifdef DEBUG
+    asLValue
+#endif
+    /* = false */ ) const
 {
   assert( ! asLValue && "cannot take LValue of sizeof expression" );
 

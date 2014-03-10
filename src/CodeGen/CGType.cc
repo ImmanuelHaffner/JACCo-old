@@ -59,7 +59,7 @@ llvm::Type * Sema::StructType::getLLVMType( CodeGenFunction &CGF ) const
   {
     indices.insert( std::make_pair( it->first, index ) );
     StructMemberTypes.push_back( it->second->getLLVMType( CGF ) );
-    index++;
+    ++index;
   }
 
   structType->setBody( StructMemberTypes );
