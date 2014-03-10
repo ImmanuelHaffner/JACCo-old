@@ -1,6 +1,6 @@
 #include "SCCPSolver.h"
 
-#include "llvm/Value.h"
+#include "llvm/IR/Value.h"
 
 
 using namespace C4;
@@ -24,21 +24,25 @@ void SCCPSolver::solve( Function *F )
     /* Process the elements of the top work list first, to propagate TOP faster.
      * This will speed up finding a fixed point.
      */
-    if ( ! InstrTopWorklist.empty() )
+    while ( ! InstrTopWorklist.empty() )
     {
       Value *I = InstrTopWorklist.pop_back_val();
 
+      /* Visit every instruction using the value I. */
       for ( auto U = I->use_begin(); U != I->use_end(); ++U )
-        if ( Instruction *UI = dyn_cast< Instruction >( U )
-            /* OperandChangeState( UI ) */;
+        if ( Instruction *UI = dyn_cast< Instruction >( *U ) )
+          if ( BBExecutable.count( UI->getParent() ) )
+              visit( *UI );
     }
-    else if ( ! InstrWorklist.empty() )
+    if ( ! InstrWorklist.empty() )
     {
       Value *I = InstrWorklist.pop_back_val();
 
+      /* Visit every instruction using the value I. */
       for ( auto U = I->use_begin(); U != I->use_end(); ++U )
-        if ( Instruction *UI = dyn_cast< Instruction >( U )
-            /* OperandChangeState( UI ) */;
+        if ( Instruction *UI = dyn_cast< Instruction >( *U ) )
+          if ( BBExecutable.count( UI->getParent() ) )
+              visit( *UI );
     }
     else
     {
