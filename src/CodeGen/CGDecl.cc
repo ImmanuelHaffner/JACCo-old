@@ -46,7 +46,7 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
   if ( ! declarator ) return;
 
   /* Get the name of the identifier.  The declaration has an declarator,
-   * and thus the parent of the attached entity bust be an identifier.
+   * and thus the parent of the attached entity must be an identifier.
    */
   Identifier const * const id =
     static_cast< Identifier const * >( getEntity()->getParent() );
@@ -191,6 +191,9 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ ) const
 
 void ParamList::emit( CodeGenFunction &CGF ) const
 {
+  /* Only use the last seen param list, otherwise we get in trouble with
+   * functions returning function pointers */
+  CGF.params.clear();
   for ( auto it : *this )
     it->emit( CGF );
 }

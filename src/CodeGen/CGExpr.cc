@@ -475,13 +475,17 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
   /* If we have an alloca of a function pointer, and not a function pointer
    * itself, we need to emit a load first.
    */
-  if ( dyn_cast< llvm::AllocaInst >( funcPtr ) )
-    funcPtr = CGF.Builder.CreateLoad( funcPtr );
+  if ( funcPtr == NULL )
+  {
+    funcPtr = this->fun->emit( CGF );
+    if ( dyn_cast< llvm::AllocaInst >( funcPtr ) )
+      funcPtr = CGF.Builder.CreateLoad( funcPtr );
+  }
 
   /* Get the type of the function (without the pointer). */
   llvm::FunctionType *funcTy = NULL;
   if ( ( funcTy = dyn_cast< FunctionType >(
-        funcPtr->getType()->getPointerElementType() ) ) );
+          funcPtr->getType()->getPointerElementType() ) ) );
   else if ( ( funcTy = dyn_cast< FunctionType >( funcPtr->getType() ) ) );
   else
   {
