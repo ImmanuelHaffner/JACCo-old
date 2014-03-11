@@ -166,8 +166,10 @@ void SCCPSolver::visitLoadInst( llvm::LoadInst &I )
 
 void SCCPSolver::visitStoreInst( llvm::StoreInst &I )
 {
-  /* TODO: Implement */
-  assert( false && "not implemented yet" );
+  /* Always assume top */
+  LatticeValue lv = getLatticeValue( &I );
+  lv.setTop();
+  /* TODO notify users */
 }
 
 void SCCPSolver::visitPHINode( llvm::PHINode &I )
