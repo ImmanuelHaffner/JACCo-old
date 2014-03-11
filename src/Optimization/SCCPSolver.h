@@ -13,7 +13,7 @@ namespace C4
 {
   namespace Optimize
   {
-    typedef llvm::DenseMap< llvm::Value *, LatticeValue > ValueMap;
+    typedef llvm::DenseMap< llvm::Value *, LatticeValue > ValueMap_t;
 
     struct SCCPSolver : llvm::InstVisitor< SCCPSolver >
     {
@@ -68,7 +68,7 @@ namespace C4
       llvm::SmallVector< llvm::Value *, 64 > InstrTopWorklist;
       llvm::SmallVector< llvm::Value *, 64 > InstrWorklist;
       llvm::SmallPtrSet< llvm::BasicBlock *, 8 > BBExecutable;
-      ValueMap ValueMap;
+      ValueMap_t ValueMap;
     };
   }
 }
