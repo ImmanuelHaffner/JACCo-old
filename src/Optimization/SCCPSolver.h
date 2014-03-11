@@ -24,6 +24,10 @@ namespace C4
       /// \param F the function SCCP shall be applied to
       void solve( llvm::Function *F );
 
+
+      private:
+      friend class llvm::InstVisitor< SCCPSolver >;
+
       /// Marks the given value as TOP.
       ///
       /// \param V the value to mark as TOP
@@ -36,10 +40,8 @@ namespace C4
       /// \returns the lattice value of V
       LatticeValue & getLatticeValue( llvm::Value *V );
 
+      /// Inserts the given BasicBlock in the set of all reachable BasicBlocks.
       void markBlockVisitable ( llvm::BasicBlock * );
-
-      private:
-      friend class llvm::InstVisitor< SCCPSolver >;
 
 
       //===----------------------------------------------------------------===//
