@@ -105,19 +105,20 @@ void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
 
 void SCCPSolver::visitCallInst( llvm::CallInst &I )
 {
-  /* TODO: Implement */
-  assert( false && "not implemented yet" );
+  /* Always assume top */
+  LatticeValue lv = getLatticeValue( &I );
+  lv.setTop();
+  /* TODO: Notify users */
 }
+
 void SCCPSolver::visitCastInst( llvm::CastInst &I )
 {
   /* TODO: Implement */
   assert( false && "not implemented yet" );
 }
+
 void SCCPSolver::visitICmpInst( llvm::ICmpInst &I )
 {
-  /* TODO: Implement */
-  assert( false && "not implemented yet" );
-
   LatticeValue lvI = getLatticeValue ( &I );
 
   if ( lvI.isTop() )
@@ -139,16 +140,21 @@ void SCCPSolver::visitICmpInst( llvm::ICmpInst &I )
     /* TODO notify users */
   }
 }
+
 void SCCPSolver::visitLoadInst( llvm::LoadInst &I )
 {
-  /* TODO: Implement */
-  assert( false && "not implemented yet" );
+  /* Always assume top */
+  LatticeValue lv = getLatticeValue( &I );
+  lv.setTop();
+  /* TODO notify users */
 }
+
 void SCCPSolver::visitStoreInst( llvm::StoreInst &I )
 {
   /* TODO: Implement */
   assert( false && "not implemented yet" );
 }
+
 void SCCPSolver::visitPHINode( llvm::PHINode &I )
 {
   /* TODO: Implement */
@@ -187,11 +193,13 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
     getLatticeValue( &I ).setConstant( C );
 
 }
+
 void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
 {
   /* TODO: Implement */
   assert( false && "not implemented yet" );
 }
+
 void SCCPSolver::visitReturnInst( llvm::ReturnInst &I )
 {
   /* TODO: Implement */
