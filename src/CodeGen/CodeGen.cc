@@ -127,8 +127,11 @@ llvm::Value * CodeGenFunction::GetAs( llvm::Value *val, llvm::Type *type )
     }
   } // end type->isIntegerTy()
 
-  val->dump();
+
+  val->getType()->dump();
+  std::cerr << " ==> ";
   type->dump();
+  std::cerr << std::endl;
   assert( false && "GetAs not supported for this case" );
   return NULL;
 }
