@@ -15,11 +15,17 @@ static void ClearBlock( BasicBlock * const BB )
   if ( BB->begin()->isTerminator() )
     return;
 
-  for ( auto Inst = BB->getTerminator(); Inst != BB->begin(); --Inst )
+  SmallVector< Instruction *, 8 > ToRemove;
+
+  BasicBlock::iterator I = BB->getTerminator();
+  while ( I != BB->begin() )
   {
-    /* Erase the instruction from the basic block. */
-    BB->getInstList().erase( Inst );
+    Instruction *Inst = --I;
+    ToRemove.push_back( Inst );
   }
+
+  while ( ! ToRemove.empty() )
+    BB->getInstList().erase( ToRemove.pop_back_val() );
 }
 
 void SCCPSolver::runOnFunction( Function &F )
