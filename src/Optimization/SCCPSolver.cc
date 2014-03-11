@@ -165,41 +165,29 @@ void SCCPSolver::visitStoreInst( llvm::StoreInst &I )
 
 void SCCPSolver::visitPHINode( llvm::PHINode &I )
 {
-  /* TODO: Implement */
-  assert( false && "not implemented yet" );
-  if ( getLatticeValue( &I ).isTop() )
+  /* Get the current lattice value. */
+  LatticeValue &OldLV = getLatticeValue( &I );
+
+  /* If we already reached top, it can't get better.  Skip! */
+  if ( OldLV.isTop() ) 
     return;
-
-  /* Iterate over incoming edges and try to infer a common constant */
-  Constant *C = NULL;
-  for ( unsigned i = 0; i < I.getNumIncomingValues(); ++i )
+  
+  /* Iterate over all incoming edges and try to infer a common constant.  As
+   * soon as we hit TOP, we stop.
+   */
+  LatticeValue LV;
+  for ( auto itBB = I.block_begin(); ! LV.isTop() && itBB != I.block_end();
+      ++itBB )
   {
-    LatticeValue lv = getLatticeValue( I.getIncomingValue( i ) );
-
-    if ( lv.isBottom() )
-      /* Skip as it doesn't affect the result */
+    /* If a block is not reachable, ignore it. */
+    if ( BBExecutable.count( *itBB ) )
       continue;
 
-    /* TODO: Check if edge is feasible */
-
-    if ( lv.isTop() )
-      /* PHINode will be top as well */
-      return markTop( &I );
-
-    /* We have a constant */
-    if ( C == NULL )
-      /* First constant we see, use it */
-      C = lv.getConstant();
-
-    if ( C != lv.getConstant() )
-      /* Constants on at least two edges aren't the same, so we go to top */
-      return markTop( &I );
+    /* Join the LatticeValue from the incoming edge with our loop-LV. */
+    LV.join( getLatticeValue( I.getIncomingValueForBlock( *itBB ) ) );
   }
 
-  /* PHINode is either constant or still undefined */
-  if ( C )
-    getLatticeValue( &I ).setConstant( C );
-
+  return OldLV.join( LV );
 }
 
 void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
