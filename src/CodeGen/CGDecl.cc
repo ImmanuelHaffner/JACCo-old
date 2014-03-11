@@ -9,6 +9,7 @@
 
 #include "CodeGen.h"
 
+#include <cstring>
 #include "../Support/Symbol.h"
 #include "../AST/Decl.h"
 #include "../AST/Stmt.h"
@@ -46,7 +47,7 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
   if ( ! declarator ) return;
 
   /* Get the name of the identifier.  The declaration has an declarator,
-   * and thus the parent of the attached entity bust be an identifier.
+   * and thus the parent of the attached entity must be an identifier.
    */
   Identifier const * const id =
     static_cast< Identifier const * >( getEntity()->getParent() );
@@ -87,8 +88,8 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
        * for the function.  This will automatically convert the function from a
        * declaration to a definition.
        */
-      Twine name( id->tok.sym.str() );
-      name.concat( ".entry" );
+      std::string name( id->tok.sym.str() );
+      name += ".entry";
       BasicBlock *funcEntry = CGF.getBasicBlock( name );
 
       /* Set the insert point for the builder to the entry of the function. */
@@ -167,30 +168,53 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ ) const
   FunctionType *type = static_cast< FunctionType * >(
       this->decl->getEntity()->type->getLLVMType( CGF ) );
 
+  /* Create an alloca for the return value. */
+  if ( ! type->getReturnType()->isVoidTy() )
+  {
+      CGF.retV = CGF.Builder.CreateAlloca(
+          type->getReturnType(),
+          0,                      /* ArraySize = 0 */
+          "ret" );
+      CGF.Builder.CreateStore(
+          Constant::getNullValue( type->getReturnType() ), CGF.retV );
+  }
+
+  /* Get a basic block for the return. */
+  {
+    std::string name( func->getName().str() );
+    name += ".exit";
+    CGF.retBB = CGF.getBasicBlock( name );
+  }
+
   this->compStmt->emit( CGF );
 
-  /* If there was no return, then emit a return here.
-   */
-  if ( ! CGF.Builder.GetInsertBlock()->getTerminator() )
-  {
-    if ( type->getReturnType()->isVoidTy() )
-      CGF.Builder.CreateRetVoid();
-    else
-      CGF.Builder.CreateRet(
-          CGF.GetAs( CGF.Builder.getInt32( 0 ), type->getReturnType() ) );
-  }
+  BasicBlock *curBB = CGF.Builder.GetInsertBlock();
 
   // Connect goto stmts with their labels.
   CGF.WireLabels();
+  CGF.Builder.SetInsertPoint( curBB );
 
-  /* Remove the function as current parent from CGF. */
+  /* Emit the exit block for the function. */
+  CGF.EmitBlock( CGF.retBB );
+
+  /* Return the return value, or void. */
+  if ( CGF.retV )
+    CGF.Builder.CreateRet( CGF.Builder.CreateLoad( CGF.retV ) );
+  else
+    CGF.Builder.CreateRetVoid();
+
+  /* Remove the function as current parent and its return value from CGF. */
   CGF.parent = NULL;
+  CGF.retV = NULL;
 
   verifyFunction( *func );
 }
 
 void ParamList::emit( CodeGenFunction &CGF ) const
 {
+  /* Only use the last seen param list, otherwise we get in trouble with
+   * functions returning function pointers */
+  CGF.params.clear();
   for ( auto it : *this )
     it->emit( CGF );
 }

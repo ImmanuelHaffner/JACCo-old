@@ -46,16 +46,17 @@ void CodeGenFunction::WireLabels()
   /* Iterate over all gotos, and then lookup its corresponding label and create
    * a branch.
    */
-  for ( auto &it : gotoTargets )
+  for ( auto &Goto : gotoTargets )
   {
     /* Get the label for the goto. */
-    auto elem = labels.find( it.first );
-    if ( elem == labels.end() )
+    auto Label = labels.find( Goto.first );
+    if ( Label == labels.end() )
       assert( false && "unknown label, should be unreachable" );
 
-    /* Create a branch from the goto block to the label block. */
-    Builder.SetInsertPoint( it.second );
-    Builder.CreateBr( elem->second );
+    /* Go to the basic block of the goto stmt. */
+    Builder.SetInsertPoint( Goto.second );
+    /* Emit a branch from the goto BB to the label's BB. */
+    Builder.CreateBr( Label->second );
   }
 
   /* Clear the gotos and labels for the next function definition. */
@@ -126,8 +127,11 @@ llvm::Value * CodeGenFunction::GetAs( llvm::Value *val, llvm::Type *type )
     }
   } // end type->isIntegerTy()
 
-  val->dump();
+
+  val->getType()->dump();
+  std::cerr << " ==> ";
   type->dump();
+  std::cerr << std::endl;
   assert( false && "GetAs not supported for this case" );
   return NULL;
 }

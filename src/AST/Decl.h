@@ -236,6 +236,7 @@ namespace C4
       inline void emit( CodeGen::CodeGenFunction &CGF ) const
       {
         params->emit( CGF );
+        declarator->emit( CGF );
       }
 
       Declarator const * const declarator;

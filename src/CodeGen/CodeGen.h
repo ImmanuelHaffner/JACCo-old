@@ -57,9 +57,10 @@ namespace C4
 
       ~CodeGenFunction() {}
 
-      inline void pushJumpTarget( JumpTarget const target )
+      inline void pushJumpTarget( llvm::BasicBlock * const breakTarget,
+          llvm::BasicBlock * const continueTarget )
       {
-        jumpTargets.push_back( target );
+        jumpTargets.push_back( JumpTarget( breakTarget, continueTarget ) );
       }
 
       inline JumpTarget getCurrentJumpTarget() const
@@ -123,10 +124,15 @@ namespace C4
       /* An IR-Builder to output intermediate instructions or types. */
       llvm::IRBuilder<> Builder;
 
-      /* Points to the current function.
-       * May be NULL.
-       */
+      /* Points to the current function.  May be NULL. */
       llvm::Function *parent = NULL;
+
+      llvm::BasicBlock *retBB = NULL;
+
+      /* Points to the alloca for the current functions return value.  May be
+       * NULL.
+       */
+      llvm::Value *retV = NULL;
 
       /* A stack of all parameter allocas in the order they have been created.
        * Must be cleared after each function definition.

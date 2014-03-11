@@ -15,6 +15,7 @@
 
 
 using namespace C4;
+using namespace Lex;
 using namespace AST;
 using namespace CodeGen;
 using namespace llvm;
@@ -37,16 +38,34 @@ void CaseStmt::emit( CodeGenFunction & ) const
 
 void LabelStmt::emit( CodeGenFunction &CGF ) const
 {
-  Twine name( "label." );
-  name.concat( this->tok.sym.str() );
-  BasicBlock * labelBlock = CGF.getBasicBlock( name );
-  CGF.EmitBlock( labelBlock );
+  /* Check whether we have a goto label or a switch's default label. */
+  if ( TK::IDENTIFIER == this->tok.kind )
+  {
+    /* Get the name for the label's BB. */
+    std::string name( "label." );
+    name += this->tok.sym.str();
 
-  // Add entry to label/block map of current function
-  CGF.addLabel( this->tok.sym, labelBlock );
+    /* Get a BB for the label. */
+    BasicBlock *labelBlock = CGF.Builder.GetInsertBlock();
+    if ( labelBlock->empty() )
+      labelBlock->setName( name );
+    else
+    {
+      labelBlock = CGF.getBasicBlock( name );
+      CGF.EmitBlock( labelBlock );
+    }
 
-  // Emit code for inner statement
-  this->stmt->emit( CGF );
+    /* Mark the new BB as the target of the label. */
+    CGF.addLabel( this->tok.sym, labelBlock );
+
+    // Emit code for inner statement
+    this->stmt->emit( CGF );
+  }
+  else
+  {
+    assert( TK::Default == this->tok.kind && "unkown label kind" );
+    assert( false && "not implemented yet" );
+  }
 }
 
 void IfStmt::emit( CodeGenFunction &CGF ) const
@@ -80,9 +99,9 @@ void WhileStmt::emit( CodeGenFunction &CGF ) const
 {
   BasicBlock * condBlock = CGF.getBasicBlock( "while.cond" );
   BasicBlock * bodyBlock = CGF.getBasicBlock( "while.body" );
-  BasicBlock * exitBlock = CGF.getBasicBlock( "while.end" );
+  BasicBlock * exitBlock = CGF.getBasicBlock( "while.exit" );
 
-  CGF.pushJumpTarget( JumpTarget( exitBlock, condBlock ) ); 
+  CGF.pushJumpTarget( exitBlock, condBlock ); 
 
   /* Emit the condition block. */
   CGF.EmitBlock( condBlock );
@@ -102,9 +121,9 @@ void DoStmt::emit( CodeGenFunction & CGF) const
 {
   BasicBlock * bodyBlock = CGF.getBasicBlock( "while.body" );
   BasicBlock * condBlock = CGF.getBasicBlock( "while.cond" );
-  BasicBlock * exitBlock = CGF.getBasicBlock( "while.end" );
+  BasicBlock * exitBlock = CGF.getBasicBlock( "while.exit" );
 
-  CGF.pushJumpTarget( JumpTarget( exitBlock, condBlock ) );
+  CGF.pushJumpTarget( exitBlock, condBlock );
 
   CGF.EmitBlock(bodyBlock);
   this->Body->emit(CGF);
@@ -130,7 +149,7 @@ void ForStmt::emit( CodeGenFunction & CGF) const
   BasicBlock *exitBlock = CGF.getBasicBlock("for.exit");
 
   /* push new jump targets */
-  CGF.pushJumpTarget( JumpTarget( exitBlock, condBlock ) );
+  CGF.pushJumpTarget( exitBlock, condBlock );
 
   CGF.EmitBlock( condBlock );
   if ( this->Cond )
@@ -168,7 +187,12 @@ void ContinueStmt::emit( CodeGenFunction &CGF ) const
 
 void GotoStmt::emit( CodeGenFunction &CGF ) const
 {
+  /* Mark this goto stmt to be wired after we finished code gen for it's parent
+   * function.
+   */
   CGF.addGoto( this->tok.sym, CGF.Builder.GetInsertBlock() );
+
+  /* Create a new basic block, and set it as insert point. */
   CGF.Builder.SetInsertPoint( CGF.getBasicBlock() );
 }
 
@@ -176,16 +200,14 @@ void ReturnStmt::emit( CodeGenFunction &CGF ) const
 {
   if ( this->expr )
   {
-    Value *exprV = this->expr->emit( CGF );
-
-    /* cast and return */
-    CGF.Builder.CreateRet( CGF.GetAs( exprV, CGF.parent->getReturnType() ) );
+    /* Emit code for the expression, cast the result to the return type, and
+     * store it in the alloca for the return value.
+     */
+    CGF.Builder.CreateStore(
+        CGF.GetAs( this->expr->emit( CGF ), CGF.parent->getReturnType() ),
+        CGF.retV );
   }
-  else
-    CGF.Builder.CreateRetVoid();
-
-  /* Get a new BasicBlock and make it the new entry point. */
-  CGF.Builder.SetInsertPoint( CGF.getBasicBlock() );
+  CGF.Builder.CreateBr( CGF.retBB );
 }
 
 void BlockItem::emit( CodeGenFunction &CGF ) const
