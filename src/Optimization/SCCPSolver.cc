@@ -26,25 +26,9 @@ void SCCPSolver::solve( Function *F )
      * This will speed up finding a fixed point.
      */
     while ( ! InstrTopWorklist.empty() )
-    {
-      Value *I = InstrTopWorklist.pop_back_val();
-
-      /* Visit every instruction using the value I. */
-      for ( auto U = I->use_begin(); U != I->use_end(); ++U )
-        if ( Instruction *UI = dyn_cast< Instruction >( *U ) )
-          if ( BBExecutable.count( UI->getParent() ) )
-              visit( *UI );
-    }
+      notifyUses( InstrTopWorklist.pop_back_val() );
     if ( ! InstrWorklist.empty() )
-    {
-      Value *I = InstrWorklist.pop_back_val();
-
-      /* Visit every instruction using the value I. */
-      for ( auto U = I->use_begin(); U != I->use_end(); ++U )
-        if ( Instruction *UI = dyn_cast< Instruction >( *U ) )
-          if ( BBExecutable.count( UI->getParent() ) )
-              visit( *UI );
-    }
+      notifyUses( InstrWorklist.pop_back_val() );
     else
     {
       BasicBlock *elem = BBWorklist.pop_back_val();
@@ -57,8 +41,14 @@ void SCCPSolver::solve( Function *F )
   }
 
   /* At this point we reached a fixed point. */
-
 }
+
+
+//===----------------------------------------------------------------------===//
+//
+//  Helper Methods
+//
+//===----------------------------------------------------------------------===//
 
 void SCCPSolver::markTop( llvm::Value *V )
 {
@@ -96,6 +86,14 @@ LatticeValue & SCCPSolver::getLatticeValue( Value * const V )
   }
 
   return lv;
+}
+
+void SCCPSolver::notifyUses( Value * const V )
+{
+  for ( auto U = V->use_begin(); U != V->use_end(); ++U )
+    if ( Instruction *UI = dyn_cast< Instruction >( *U ) )
+      if ( BBExecutable.count( UI->getParent() ) )
+        visit( *UI );
 }
 
 

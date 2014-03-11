@@ -28,6 +28,15 @@ namespace C4
       private:
       friend class llvm::InstVisitor< SCCPSolver >;
 
+
+      //===----------------------------------------------------------------===//
+      //
+      //  Helper Methods
+      //
+      //  These methods provide some routines for SCCP.
+      //
+      //===----------------------------------------------------------------===//
+
       /// Marks the given value as TOP.
       ///
       /// \param V the value to mark as TOP
@@ -41,7 +50,12 @@ namespace C4
       LatticeValue & getLatticeValue( llvm::Value *V );
 
       /// Inserts the given BasicBlock in the set of all reachable BasicBlocks.
-      void markBlockVisitable ( llvm::BasicBlock * );
+      void markBlockVisitable( llvm::BasicBlock * );
+
+      /// Notifies all uses of V the value, that it's LatticeValue has changed.
+      ///
+      /// \param V the Value whos uses you want to notify
+      void notifyUses( llvm::Value * const V );
 
 
       //===----------------------------------------------------------------===//
