@@ -250,14 +250,43 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
     LV.join( getLatticeValue( I.getIncomingValueForBlock( *itBB ) ) );
   }
 
+  /* If the LatticeValue changed, add this value to the work list. */
   if ( OldLV.join( LV ) )
     addToWorkList( &I );
 }
 
 void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
 {
-  /* TODO: Implement */
-  assert( false && "not implemented yet" );
+  /* If we have an unconditional branch, the BB it's pointing to will be
+   * reachable iff the BB containing this branch instruction is reachable.
+   */
+  if ( I.isUnconditional() )
+  {
+    if ( BBExecutable.count( I.getParent() ) )
+      addToWorkList( I.getSuccessor( 0 ) );
+    return;
+  }
+
+  /* If we have a conditional branch, we have to check the LatticeValue of it's
+   * condition.
+   */
+  LatticeValue &CondLV = getLatticeValue( I.getCondition() );
+
+  /* If the LV of the condition is BOTTOM, we assume the branch is never taken.
+   */
+  if ( CondLV.isBottom() )
+    return;
+
+  /* If CondLV is TOP, we assume both sides of the branch will be taken. */
+  if ( CondLV.isTop() )
+  {
+    addToWorkList( I.getSuccessor( 0 ) );
+    addToWorkList( I.getSuccessor( 1 ) );
+    return;
+  }
+
+  /* If the condition is a constant, only one side of the branch is taken. */
+  addToWorkList( I.getSuccessor( CondLV.getConstant()->isZeroValue() ) );
 }
 
 void SCCPSolver::visitReturnInst( llvm::ReturnInst &I )
