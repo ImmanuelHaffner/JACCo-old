@@ -125,7 +125,8 @@ void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
   LatticeValue latticeValOp2 = getLatticeValue(op1);
 
   LatticeValue &currentResult = getLatticeValue(&I);
-  if(I.getOpcode() == Instruction::Add || I.getOpcode() == Instruction::Sub)
+  if(I.getOpcode() == Instruction::Add || I.getOpcode() == Instruction::Sub ||
+      I.getOpcode() == Instruction::Mul )
   {
     LatticeValue newResult;
     if(latticeValOp1.isBottom() || latticeValOp2.isBottom())
@@ -138,8 +139,9 @@ void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
     }
     else
     {
+      /*
         newResult = ConstantExpr::get(I.getOpcode(), latticeValOp1.getConstant(),
-            latticeValOp2.getConstant());
+            latticeValOp2.getConstant());*/
     }
     if(currentResult.join(newResult))
     {
