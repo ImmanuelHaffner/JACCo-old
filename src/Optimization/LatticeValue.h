@@ -16,7 +16,7 @@ namespace C4
 
       /// Sets this LatticeValue to TOP.
       ///
-      /// \return true iff the LatticeValue was not TOP before, false otherwise
+      /// \return true iff the LatticeValue was not TOP already, false otherwise
       bool setTop();
 
       bool join( llvm::Constant * const constant );

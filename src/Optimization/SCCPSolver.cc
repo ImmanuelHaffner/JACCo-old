@@ -208,7 +208,8 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
     LV.join( getLatticeValue( I.getIncomingValueForBlock( *itBB ) ) );
   }
 
-  OldLV.join( LV );
+  if ( OldLV.join( LV ) )
+    addToWorkList( &I );
 }
 
 void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
