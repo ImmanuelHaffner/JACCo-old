@@ -125,6 +125,39 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
 {
   /* TODO: Implement */
   assert( false && "not implemented yet" );
+  if ( getLatticeValue( &I ).isTop() ) 
+    return;
+  
+  /* Iterate over incoming edges and try to infer a common constant */
+  Constant *C = NULL;
+  for ( unsigned i = 0; i < I.getNumIncomingValues(); ++i )
+  {
+    LatticeValue lv = getLatticeValue( I.getIncomingValue( i ) );
+
+    if ( lv.isBottom() )
+      /* Skip as it doesn't affect the result */
+      continue;
+
+    /* TODO: Check if edge is feasible */
+
+    if ( lv.isTop() )
+      /* PHINode will be top as well */ 
+      return markTop( &I );
+
+    /* We have a constant */
+    if ( C == NULL )
+      /* First constant we see, use it */
+      C = lv.getConstant();
+
+    if ( C != lv.getConstant() )
+      /* Constants on at least two edges aren't the same, so we go to top */
+      return markTop( &I );
+  }
+
+  /* PHINode is either constant or still undefined */
+  if ( C )
+    getLatticeValue( &I ).setConstant( C ); 
+  
 }
 void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
 {
