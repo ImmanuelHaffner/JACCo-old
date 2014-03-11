@@ -157,10 +157,13 @@ void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
 
 void SCCPSolver::visitCallInst( llvm::CallInst &I )
 {
+  LatticeValue &LV = getLatticeValue( &I );
+  if ( LV.isTop() )
+    return;
+
   /* Always assume top */
-  LatticeValue lv = getLatticeValue( &I );
-  lv.setTop();
-  /* TODO: Notify users */
+  LV.setTop();
+  addToWorkList( &I );
 }
 
 void SCCPSolver::visitCastInst( llvm::CastInst &I )
