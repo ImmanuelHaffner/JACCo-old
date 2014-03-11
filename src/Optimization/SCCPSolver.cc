@@ -181,26 +181,35 @@ void SCCPSolver::visitCastInst( llvm::CastInst &I )
 
 void SCCPSolver::visitICmpInst( llvm::ICmpInst &I )
 {
-  LatticeValue lvI = getLatticeValue ( &I );
+  LatticeValue &LV = getLatticeValue ( &I );
 
-  if ( lvI.isTop() )
-    /* We can leave here as nothing will change */
+  if ( LV.isTop() )
     return;
 
-  LatticeValue lvOp1 = getLatticeValue( I.getOperand( 0 ) );
-  LatticeValue lvOp2 = getLatticeValue( I.getOperand( 1 ) );
+  LatticeValue &LVOp0 = getLatticeValue( I.getOperand( 0 ) );
+  LatticeValue &LVOp1 = getLatticeValue( I.getOperand( 1 ) );
 
-  if ( lvOp1.isTop() || lvOp2.isTop() )
-    /* TODO set to top and notify users */
-    ;
+  /* If at least one of the LV is BOTTOM, we can't make any assumption, so stop.
+   * here.
+   */
+  if ( LVOp0.isBottom() || LVOp1.isBottom() )
+    return;
 
-  if ( lvOp1.isConstant() && lvOp2.isConstant() )
+  /* If at least one of the operands is top, the result will be top.
+   * NOTE: We could make special cases for max-int and min-int values.
+   */
+  if ( LVOp0.isTop() || LVOp1.isTop() )
   {
-    /* Set result to constant */
-    lvI.join( ConstantExpr::getCompare( I.getPredicate(),
-        lvOp1.getConstant(), lvOp2.getConstant() ) );
-    /* TODO notify users */
+    LV.setTop();
+    addToWorkList( &I );
   }
+
+  /* Compute the new value for this LV.  If the LV changed, add it to the work
+   * list.
+   */
+  if ( LV.join( ConstantExpr::getCompare( I.getPredicate(),
+          LVOp0.getConstant(), LVOp1.getConstant() ) ) )
+    addToWorkList( &I );
 }
 
 void SCCPSolver::visitLoadInst( llvm::LoadInst &I )
