@@ -12,7 +12,7 @@ using namespace Optimize;
 void SCCPSolver::solve( Function *F )
 {
   /* Add first basic block to worklist. */
-  markBlockVisitable( F->begin() );
+  addToWorkList( F->begin() );
 
   /* Consider all arguments as top. */
   for ( Function::arg_iterator AI = F->arg_begin(); AI != F->arg_end(); ++AI )
@@ -53,11 +53,6 @@ void SCCPSolver::solve( Function *F )
 void SCCPSolver::markTop( llvm::Value *V )
 {
   ValueMap[ V ].setTop();
-}
-
-void SCCPSolver::markBlockVisitable ( llvm::BasicBlock *BB )
-{
-  BBExecutable.insert( BB );
 }
 
 LatticeValue & SCCPSolver::getLatticeValue( Value * const V )

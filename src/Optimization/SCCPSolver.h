@@ -49,9 +49,6 @@ namespace C4
       /// \returns the lattice value of V
       LatticeValue & getLatticeValue( llvm::Value *V );
 
-      /// Inserts the given BasicBlock in the set of all reachable BasicBlocks.
-      void markBlockVisitable( llvm::BasicBlock * );
-
       /// Notifies all uses of V the value, that it's LatticeValue has changed.
       ///
       /// \param V the Value whos uses you want to notify
