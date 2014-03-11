@@ -135,32 +135,23 @@ void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
   LatticeValue latticeValOp2 = getLatticeValue(op1);
 
   LatticeValue &currentResult = getLatticeValue(&I);
-  if(I.getOpcode() == Instruction::Add || I.getOpcode() == Instruction::Sub ||
-      I.getOpcode() == Instruction::Mul )
+  LatticeValue newResult;
+  if(latticeValOp1.isBottom() || latticeValOp2.isBottom())
   {
-    LatticeValue newResult;
-    if(latticeValOp1.isBottom() || latticeValOp2.isBottom())
-    {
-      newResult; //Bottom by default;
-    }
-    else if(latticeValOp1.isTop() || latticeValOp2.isTop())
-    {
-        newResult.setTop();
-    }
-    else
-    {
-        newResult.join(ConstantExpr::get(I.getOpcode(), latticeValOp1.getConstant(),
-            latticeValOp2.getConstant()));
-    }
-    if(currentResult.join(newResult))
-    {
-      addToWorkList(&I);
-    }
+    newResult; //Bottom by default;
+  }
+  else if(latticeValOp1.isTop() || latticeValOp2.isTop())
+  {
+      newResult.setTop();
   }
   else
   {
-    /* TODO: Implement */
-    assert( false && "not implemented yet" );
+      newResult.join(ConstantExpr::get(I.getOpcode(), latticeValOp1.getConstant(),
+          latticeValOp2.getConstant()));
+  }
+  if(currentResult.join(newResult))
+  {
+    addToWorkList(&I);
   }
 }
 
