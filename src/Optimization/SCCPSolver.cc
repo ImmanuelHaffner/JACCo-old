@@ -96,6 +96,20 @@ void SCCPSolver::notifyUses( Value * const V )
         visit( *UI );
 }
 
+void SCCPSolver::addToWorkList( Value * const V )
+{
+  /* Get the LatticeValue for V. */
+  LatticeValue &LV = getLatticeValue( V );
+
+  /* If the LV is TOP, add V to the priorized work list, otherwise add it to the
+   * regular work list.
+   */
+  if ( LV.isTop() )
+    InstrTopWorklist.push_back( V );
+  else
+    InstrWorklist.push_back( V );
+}
+
 
 //===----------------------------------------------------------------------===//
 //

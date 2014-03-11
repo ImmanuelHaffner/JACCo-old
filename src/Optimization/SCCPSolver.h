@@ -57,6 +57,8 @@ namespace C4
       /// \param V the Value whos uses you want to notify
       void notifyUses( llvm::Value * const V );
 
+      void addToWorkList( llvm::Value * const V );
+
 
       //===----------------------------------------------------------------===//
       //
