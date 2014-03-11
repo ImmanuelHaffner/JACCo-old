@@ -11,17 +11,21 @@ namespace C4
   {
     struct LatticeValue
     {
-      LatticeValue() : type(VT::BOTTOM) {}
+      LatticeValue() : type( VT::BOTTOM ) {}
+      ~LatticeValue() {}
 
-      /* Return true if status changes */
+      /// Sets this LatticeValue to TOP.
+      ///
+      /// \return true iff the LatticeValue was not TOP before, false otherwise
       bool setTop();
-      bool setConstant( llvm::Constant * const constant );
-      bool join( llvm::Constant * const constant );
 
-      inline bool isConstant() { return type == VT::CONSTANT; }
-      inline bool isTop() { return type == VT::TOP; }
-      inline bool isBottom() { return type == VT::BOTTOM; }
-      inline llvm::Constant * getConstant() { return constant; }
+      bool join( llvm::Constant * const constant );
+      bool join( LatticeValue const &Other );
+
+      inline bool isTop() const { return type == VT::TOP; }
+      inline bool isConstant() const { return type == VT::CONSTANT; }
+      inline bool isBottom() const { return type == VT::BOTTOM; }
+      inline llvm::Constant * getConstant() const { return constant; }
 
       private:
       enum class VT

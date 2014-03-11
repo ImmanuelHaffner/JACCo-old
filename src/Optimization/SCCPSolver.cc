@@ -70,23 +70,31 @@ void SCCPSolver::markBlockVisitable ( llvm::BasicBlock *BB )
   BBExecutable.insert( BB );
 }
 
-LatticeValue & SCCPSolver::getLatticeValue( Value *V )
+LatticeValue & SCCPSolver::getLatticeValue( Value * const V )
 {
   assert ( V->getType()->isIntegerTy() && "only track values of integer type" );
-  /* Insert V into the Value map if not there;
-   * if it already exists, get its position */
-  std::pair< ValueMap::iterator, bool > it =
-    ValueMap.insert( std::make_pair( V, LatticeValue() ) );
+
+  /* Get the LatticeValue for V.  If V was not already a key for the map, it
+   * will immediately be inserted and mapped to BOTTOM.
+   */
+  auto it = ValueMap.insert( std::make_pair( V, LatticeValue() ) );
   LatticeValue &lv = it.first->second;
 
+  /* If the key has not been mapped so far, we now check whether we have a real
+   * constant.  If we have a contant, we raise the LatticeValue from BOTTOM to
+   * CONSTANT, otherwise we leave it BOTTOM.
+   */
   if ( it.second )
   {
-    /* Value wasn't in the map before */
-    if ( Constant *C = dyn_cast< Constant >( V ) )
+    /* V wasn't a key in the map before.  Now check whether V is a defined
+     * constant.
+     */
+    if ( Constant * const C = dyn_cast< Constant >( V ) )
       if ( ! isa< UndefValue >( C ) )
-        /* Mark it as constant */
-        lv.setConstant( C );
+        /* Lift the LatticeValue from BOTTOM to CONSTANT. */
+        lv.join( C );
   }
+
   return lv;
 }
 

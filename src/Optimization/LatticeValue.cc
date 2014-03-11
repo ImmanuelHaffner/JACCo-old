@@ -8,48 +8,61 @@ using namespace Optimize;
 
 bool LatticeValue::setTop()
 {
-  if ( type == VT::TOP )
+  if ( isTop() )
     return false;
+  this->constant = NULL;
   type = VT::TOP;
-  return true;
-}
-
-bool LatticeValue::setConstant( Constant * const constant )
-{
-  if ( type == VT::TOP )
-    return false;
-
-  if ( type == VT::CONSTANT )
-  {
-    assert( getConstant() == constant &&
-        "Value already set to another constant");
-    return false;
-  }
-
-  type = VT::CONSTANT;
-  this->constant = constant;
   return true;
 }
 
 bool LatticeValue::join( llvm::Constant * const constant )
 {
   /* TOP stays TOP. */
-  if ( VT::TOP == type )
+  if ( isTop() )
     return false;
 
-  /* If we join two constants.  If the values differ, we get TOP, otherwise
-   * nothing changes.
-   */
-  if ( VT::CONSTANT == type )
+  if ( isBottom() )
   {
-    if ( this->constant == constant )
-      return false;
-
-    this->type = VT::TOP;
+    this->type = VT::CONSTANT;
+    this->constant = constant;
     return true;
   }
 
-  this->type = VT::CONSTANT;
-  this->constant = constant;
+  /* We now have to join two constants. */
+  if ( this->constant == constant )
+    return false;
+
+  /* The constants are not equal, therefore this will become TOP. */
+  setTop();
   return true;
+}
+
+bool LatticeValue::join( LatticeValue const &Other )
+{
+  /* TOP stays TOP. */
+  if ( isTop() )
+    return false;
+
+  /* Join with TOP yields TOP. */
+  if ( Other.isTop() )
+    return setTop();
+
+  /* If this is BOTTOM, it will become Other. */
+  if ( isBottom() )
+  {
+    this->type = VT::CONSTANT;
+    this->constant = Other.constant;
+    return true;
+  }
+
+  /* Join with BOTTOM is a NOP. */
+  if ( Other.isBottom() )
+    return false;
+
+  /* We now have to join two constants. */
+  if ( Other.getConstant() == this->constant )
+    return false;
+
+  /* The constants are not equal, therefore this will become TOP. */
+  return setTop();
 }
