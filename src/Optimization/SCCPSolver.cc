@@ -228,6 +228,7 @@ void SCCPSolver::visitICmpInst( llvm::ICmpInst &I )
   {
     LV.setTop();
     addToWorkList( &I );
+    return;
   }
 
   /* Compute the new value for this LV.  If the LV changed, add it to the work
