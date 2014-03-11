@@ -242,7 +242,7 @@ namespace C4
     {
       BreakStmt( Lex::Token const &tok ) : Stmt(tok)
       {
-        assert( tok.kind == Lex::TK::Break && "must be 'continue'" );
+        assert( tok.kind == Lex::TK::Break && "must be 'break'" );
       }
 
       ~BreakStmt() {}

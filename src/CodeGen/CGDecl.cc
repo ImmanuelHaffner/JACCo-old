@@ -168,24 +168,44 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ ) const
   FunctionType *type = static_cast< FunctionType * >(
       this->decl->getEntity()->type->getLLVMType( CGF ) );
 
+  /* Create an alloca for the return value. */
+  if ( ! type->getReturnType()->isVoidTy() )
+  {
+      CGF.retV = CGF.Builder.CreateAlloca(
+          type->getReturnType(),
+          0,                      /* ArraySize = 0 */
+          "ret" );
+      CGF.Builder.CreateStore(
+          Constant::getNullValue( type->getReturnType() ), CGF.retV );
+  }
+
+  /* Get a basic block for the return. */
+  {
+    std::string name( func->getName().str() );
+    name += ".exit";
+    CGF.retBB = CGF.getBasicBlock( name );
+  }
+
   this->compStmt->emit( CGF );
 
-  /* If there was no return, then emit a return here.
-   */
-  if ( ! CGF.Builder.GetInsertBlock()->getTerminator() )
-  {
-    if ( type->getReturnType()->isVoidTy() )
-      CGF.Builder.CreateRetVoid();
-    else
-      CGF.Builder.CreateRet(
-          CGF.GetAs( CGF.Builder.getInt32( 0 ), type->getReturnType() ) );
-  }
+  BasicBlock *curBB = CGF.Builder.GetInsertBlock();
 
   // Connect goto stmts with their labels.
   CGF.WireLabels();
+  CGF.Builder.SetInsertPoint( curBB );
 
-  /* Remove the function as current parent from CGF. */
+  /* Emit the exit block for the function. */
+  CGF.EmitBlock( CGF.retBB );
+
+  /* Return the return value, or void. */
+  if ( CGF.retV )
+    CGF.Builder.CreateRet( CGF.Builder.CreateLoad( CGF.retV ) );
+  else
+    CGF.Builder.CreateRetVoid();
+
+  /* Remove the function as current parent and its return value from CGF. */
   CGF.parent = NULL;
+  CGF.retV = NULL;
 
   verifyFunction( *func );
 }
