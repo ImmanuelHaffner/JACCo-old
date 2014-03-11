@@ -9,6 +9,19 @@ using namespace llvm;
 using namespace Optimize;
 
 
+/// Removes all instructions from this basic block except for the terminator.
+static void ClearBlock( BasicBlock * const BB )
+{
+  if ( BB->begin()->isTerminator() )
+    return;
+
+  for ( auto Inst = BB->getTerminator(); Inst != BB->begin(); --Inst )
+  {
+    /* Erase the instruction from the basic block. */
+    BB->getInstList().erase( Inst );
+  }
+}
+
 void SCCPSolver::runOnFunction( Function &F )
 {
   SCCPSolver Solver;
@@ -21,6 +34,96 @@ void SCCPSolver::runOnFunction( Function &F )
     Solver.markTop(AI);
 
   Solver.solve();
+
+  /* Vectors to collect the things to remove or replace.  We need this, since
+   * iterators would be invalidated when removing instructions while iterating
+   * through their basic blocks.
+   */
+  SmallVector< Instruction *, 64 > InstsToRemove;
+  SmallVector< BranchInst *, 64 > BranchInstToReplace;
+  SmallVector< BasicBlock *, 8 > BBsToEmpty;
+
+  /* Now that we have solved SCCP, remove unreachable blocks and replace
+   * instructions with their constants.
+   * First, collect all unreachable BBs and all replacable instructions.
+   */
+  for ( auto BB = F.begin(); BB != F.end(); ++BB )
+  {
+    /* If the BB is unreachable, add it to the stack of BBs to clear. */
+    if ( ! Solver.BBExecutable.count( BB ) )
+    {
+      BBsToEmpty.push_back( BB );
+      continue;
+    }
+
+    /* Iterate over all instructions of the BB. */
+    for ( auto Inst = BB->begin(); Inst != BB->end(); ++Inst )
+    {
+      if ( isa< TerminatorInst >( Inst ) )
+        continue;
+
+      LatticeValue &LV = Solver.getLatticeValue( Inst );
+
+      /* Check whether we can replace a conditional branch with an unconditional
+       * branch.
+       */
+      if ( auto *BInst = dyn_cast< BranchInst >( Inst ) )
+      {
+        /* Skip unconditional branches. */
+        if ( BInst->isUnconditional() )
+          continue;
+
+        LatticeValue &LVCond = Solver.getLatticeValue( BInst->getCondition() );
+        if ( LVCond.isTop() )
+          continue;
+
+        BranchInstToReplace.push_back( BInst );
+      }
+
+      if ( LV.isTop() )
+        continue;
+
+      InstsToRemove.push_back( Inst );
+    }
+  }
+
+  /* Replace instructions by constants. */
+  while ( ! InstsToRemove.empty() )
+  {
+    Instruction *Inst = InstsToRemove.pop_back_val();
+    LatticeValue &LV = Solver.getLatticeValue( Inst );
+
+    Constant *Const = LV.isConstant() ?
+      LV.getConstant() : UndefValue::get( Inst->getType() );
+
+    /* Replace all uses of the instruction. */
+    Inst->replaceAllUsesWith( Const );
+
+    /* Remove the instruction. */
+    Inst->removeFromParent();
+  }
+
+  /* Replace conditional branches by unconditional branches. */
+  while ( ! BranchInstToReplace.empty() )
+  {
+    BranchInst *BInst = BranchInstToReplace.pop_back_val();
+    LatticeValue &LVCond = Solver.getLatticeValue( BInst->getCondition() );
+
+    /* Create an unconditional branch. */
+    auto BInstNew = BranchInst::Create(
+        BInst->getSuccessor( LVCond.getConstant()->isZeroValue() ) );
+
+    /* Replace all uses of the conditional branch by the unconditional
+     * branch. */
+    BInst->replaceAllUsesWith( BInstNew );
+
+    /* Remove the conditional branch instruction. */
+    BInst->removeFromParent();
+  }
+
+  /* Clear unreachable basic blocks. */
+  while ( ! BBsToEmpty.empty() )
+    ClearBlock( BBsToEmpty.pop_back_val() );
 }
 
 void SCCPSolver::solve()
