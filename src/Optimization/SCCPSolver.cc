@@ -29,7 +29,7 @@ void SCCPSolver::solve( Function *F )
       notifyUses( InstrTopWorklist.pop_back_val() );
     if ( ! InstrWorklist.empty() )
       notifyUses( InstrWorklist.pop_back_val() );
-    else
+    else if ( ! BBWorklist.empty() )
     {
       BasicBlock *elem = BBWorklist.pop_back_val();
 
