@@ -69,6 +69,7 @@ namespace C4
       //
       //===----------------------------------------------------------------===//
 
+      void visitBasicBlock( llvm::BasicBlock &BB );
       void visitBinaryOperator( llvm::BinaryOperator &I );
       void visitCallInst( llvm::CallInst &I );
       void visitCastInst( llvm::CastInst &I );

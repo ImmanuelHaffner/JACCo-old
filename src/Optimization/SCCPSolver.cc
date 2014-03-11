@@ -127,6 +127,13 @@ void SCCPSolver::addToWorkList( BasicBlock * const BB )
 //
 //===----------------------------------------------------------------------===//
 
+void SCCPSolver::visitBasicBlock( llvm::BasicBlock &BB )
+{
+  /* Add all instructions in this BB to the worklist */
+  for ( auto Inst = BB.begin(); Inst != BB.end(); ++Inst )
+    addToWorkList( Inst );
+}
+
 void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
 {
   LatticeValue &LV = getLatticeValue( &I );
