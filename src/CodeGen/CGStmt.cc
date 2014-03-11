@@ -37,16 +37,28 @@ void CaseStmt::emit( CodeGenFunction & ) const
 
 void LabelStmt::emit( CodeGenFunction &CGF ) const
 {
-  Twine name( "label." );
-  name.concat( this->tok.sym.str() );
-  BasicBlock * labelBlock = CGF.getBasicBlock( name );
-  CGF.EmitBlock( labelBlock );
+  /* Check whether we have a goto label or a switch's default label. */
+  if ( TK::IDENTIFIER == this->tok.kind )
+  {
+    /* Get the name for the label's BB. */
+    std::string name( "label." );
+    name += this->tok.sym.str();
 
-  // Add entry to label/block map of current function
-  CGF.addLabel( this->tok.sym, labelBlock );
+    /* Get a new BB for the label. */
+    BasicBlock * const labelBlock = CGF.getBasicBlock( name );
+    CGF.EmitBlock( labelBlock );
 
-  // Emit code for inner statement
-  this->stmt->emit( CGF );
+    /* Mark the new BB as the target of the label. */
+    CGF.addLabel( this->tok.sym, labelBlock );
+
+    // Emit code for inner statement
+    this->stmt->emit( CGF );
+  }
+  else
+  {
+    assert( TK::Default == this->tok.kind && "unkown label kind" );
+    assert( false && "not implemented yet" );
+  }
 }
 
 void IfStmt::emit( CodeGenFunction &CGF ) const

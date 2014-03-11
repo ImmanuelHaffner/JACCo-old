@@ -11,6 +11,7 @@
 #define C4_STMT_H
 
 
+#include <cstring>
 #include <iostream>
 #include <vector>
 #include "../util.h"

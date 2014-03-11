@@ -9,6 +9,7 @@
 
 #include "CodeGen.h"
 
+#include <cstring>
 #include "../Support/Symbol.h"
 #include "../AST/Decl.h"
 #include "../AST/Stmt.h"
@@ -87,8 +88,8 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
        * for the function.  This will automatically convert the function from a
        * declaration to a definition.
        */
-      Twine name( id->tok.sym.str() );
-      name.concat( ".entry" );
+      std::string name( id->tok.sym.str() );
+      name += ".entry";
       BasicBlock *funcEntry = CGF.getBasicBlock( name );
 
       /* Set the insert point for the builder to the entry of the function. */
