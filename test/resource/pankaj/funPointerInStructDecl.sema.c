@@ -3,13 +3,13 @@
 struct S
 {
   char d;
-  int (*f)(int);
   struct T
   {
     char b;
     int (*g)(int);
     int c;
   } *pt;
+  int (*f)(int);
   struct T t;
   int a;
 };
@@ -30,7 +30,7 @@ int main()
   int (*h)(int);
   h(0);
   s.f = &f;
-  //s.pt = &s.t;
+  s.pt = &s.t;
 
-  //return s.a + (s.f)(0) + (s.pt->g)(1);
+  return s.a + (s.f)(0) + (s.pt->g)(1);
 }

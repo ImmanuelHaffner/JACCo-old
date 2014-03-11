@@ -22,6 +22,7 @@ using namespace Sema;
 
 
 static int parameterDepth = 0;
+static int analyzingStruct = 0;
 static std::vector< std::pair< Entity *, ParamDecl const * > > current_params;
 
 #define ERROR( MSG ) \
@@ -114,12 +115,6 @@ Entity * FunctionDeclarator::analyze( Env &env,
   Scope * const paramScope = env.popScope();
 
   Sema::Type const * funType = TypeFactory::getFunc( t, params );
-  if ( parameterDepth > 0 )
-  {
-    //functions are interpreted as function pointers
-    funType = TypeFactory::getPtr( funType );
-  }
-
   Entity * entity = NULL;
 
   if ( declarator )
@@ -134,13 +129,19 @@ Entity * FunctionDeclarator::analyze( Env &env,
   if ( entity ) return entity;
 
   Entity * entity2 = new Entity();
+  if ( parameterDepth > 0 && ! analyzingStruct )
+  {
+    //functions in paramters are interpreted as function pointers
+    funType = TypeFactory::getPtr( funType );
+  }
+
   entity2->type = funType;
   if ( ! parameterDepth )
     env.pushFunction( entity2 );
   return entity2;
 }
 
-Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
+Entity * Identifier::analyze( Env &env, Sema::Type const * t )
   const
 {
   if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
@@ -151,6 +152,12 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
       std::ostringstream oss;
       oss << this << "\nfunction must not return a function";
       ERROR( oss.str().c_str() );
+    }
+
+    if ( parameterDepth > 0 && ! analyzingStruct )
+    {
+      //functions in paramters are interpreted as function pointers
+      t = TypeFactory::getPtr( t );
     }
 
     // Try to map the identifier. Returns NULL, if the identifier is already
@@ -393,13 +400,16 @@ Sema::Type const * StructSpecifier::analyze( Env &env ) const
   {
     // Construct type according to struct declarations
     env.pushScope();
-    // We don't need inner parameter scopes
+    // We don't need inner parameter scopes, but function pointers
+    // shouldn't get additional *s
     parameterDepth++;
+    analyzingStruct++;
     structDecls->analyze( env );
+    analyzingStruct--;
     parameterDepth--;
-    
-    Scope * const structScope = env.popScope();
 
+    /* Extract the element types from the scope we constructed */ 
+    Scope * const structScope = env.popScope();
     IdMap const &idMap = structScope->getIdMap();
     for ( auto it : idMap )
       innerTypes.insert( std::make_pair( it.first, it.second->type ) );
@@ -540,7 +550,7 @@ void ReturnStmt::analyze( Env &env ) const
   {
     std::ostringstream oss;
     oss << "return value of type '" << toFuncPtrIfFunc( expr->getEntity()->type )
-    << "', should have type '" << funcType->retType << "'";
+      << "', should have type '" << funcType->retType << "'";
     ERROR( oss.str().c_str() );
   }
 }
@@ -585,7 +595,10 @@ void AssignmentExpr::analyze()
   if(!(isAssignmentCompatible(lhsType, rhs)))
   {
     attachAllowed = false;
-    ERROR("Incompatible operands of assignment.");
+    std::ostringstream oss;
+    oss << "Incompatible operands of assignment: " << lhsType << " vs. "
+      << toFuncPtrIfFunc( rhs->getEntity()->type );
+    ERROR( oss.str().c_str() );
   }
 
   //§6.5.16.p3 - The type of assignment is type of lhs
@@ -953,7 +966,7 @@ void SizeofTypeExpr::analyze() //§6.5.3.4
   Entity *e = new Entity();
   if( isFunctionType( typeName ) || //§6.5.3.4.p1
       ( isObjType( typeName ) &&
-       ! toObjType( typeName )->isComplete() ) )
+        ! toObjType( typeName )->isComplete() ) )
   {
     ERROR("The operand of size of cannot be function type or incomplete object.");
   }
@@ -1005,7 +1018,7 @@ void FunctionCall::analyze()
             isAttachAllowed = false;
             std::ostringstream oss;
             oss << "Expected argument of type " << (*iterExpected)
-              << " but got " << (*iterActual)->getEntity()->type; 
+              << " but got " << (*iterActual)->getEntity()->type;
             ERROR_TOK( (*iterActual)->tok, oss.str().c_str() );
           }
         }
@@ -1050,7 +1063,7 @@ void DotExpr::analyze()
     if ( elem != elements.end() )
     {
       Entity * e = new Entity();
-      e->type = toFuncPtrIfFunc(elem->second);
+      e->type = elem->second;
       attachEntity( e );
     }
     else
@@ -1087,13 +1100,13 @@ void ArrowExpr::analyze()
   if( isPointerType( exprType ) &&
       isStructType( toPointerType( exprType )->innerType ) )
   {
-    Type const * structType = toPointerType( exprType )->innerType; 
+    Type const * structType = toPointerType( exprType )->innerType;
     auto elements = toStructType( structType )->elements;
     auto elem = elements.find( id.sym );
     if ( elem != elements.end() )
     {
       Entity * e = new Entity();
-      e->type = toFuncPtrIfFunc(elem->second);
+      e->type = elem->second;
       attachEntity( e );
     }
     else
@@ -1189,7 +1202,7 @@ void SubscriptExpr::analyze()
         oss << this->expr << " is not a pointer to a complete object type, "
           "but has type " << indexType;
         ERROR_TOK( this->expr->tok, oss.str().c_str() );
-      }   
+      }
       else
       {
         Entity * e = new Entity();
