@@ -470,6 +470,8 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
   /* Get the function. */
   llvm::Value *funcPtr = this->fun->getEntity()->value;
 
+  assert( funcPtr && "funcPtr must not be null" );
+
   /* If we have an alloca of a function pointer, and not a function pointer
    * itself, we need to emit a load first.
    */
