@@ -470,7 +470,7 @@ llvm::Value * FunctionCall::emit( CodeGenFunction &CGF,
   /* Get the function. */
   llvm::Value *funcPtr = this->fun->getEntity()->value;
 
-  if ( funcPtr == NULL )
+  if ( ! this->fun->getEntity()->type->getLLVMType( CGF )->isFunctionTy() )
     funcPtr = this->fun->emit( CGF );
 
   /* If we have an alloca of a function pointer, and not a function pointer
