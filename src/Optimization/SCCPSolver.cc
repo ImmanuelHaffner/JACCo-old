@@ -90,6 +90,10 @@ LatticeValue & SCCPSolver::getLatticeValue( Value * const V )
 
 void SCCPSolver::notifyUses( Value * const V )
 {
+  /* NOTE: To only notify the reachable instructions, we can compute the
+   * intersection of the keys of the ValueMap and the uses of the value V.
+   */
+
   for ( auto U = V->use_begin(); U != V->use_end(); ++U )
     if ( Instruction *UI = dyn_cast< Instruction >( *U ) )
       if ( BBExecutable.count( UI->getParent() ) )
@@ -108,6 +112,12 @@ void SCCPSolver::addToWorkList( Value * const V )
     InstrTopWorklist.push_back( V );
   else
     InstrWorklist.push_back( V );
+}
+
+void SCCPSolver::addToWorkList( BasicBlock * const BB )
+{
+  BBWorklist.push_back( BB );
+  BBExecutable.insert( BB );
 }
 
 
@@ -222,9 +232,9 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
   LatticeValue &OldLV = getLatticeValue( &I );
 
   /* If we already reached top, it can't get better.  Skip! */
-  if ( OldLV.isTop() ) 
+  if ( OldLV.isTop() )
     return;
-  
+
   /* Iterate over all incoming edges and try to infer a common constant.  As
    * soon as we hit TOP, we stop.
    */

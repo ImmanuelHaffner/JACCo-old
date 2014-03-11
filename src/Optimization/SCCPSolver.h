@@ -59,6 +59,8 @@ namespace C4
 
       void addToWorkList( llvm::Value * const V );
 
+      void addToWorkList( llvm::BasicBlock * const BB );
+
 
       //===----------------------------------------------------------------===//
       //
