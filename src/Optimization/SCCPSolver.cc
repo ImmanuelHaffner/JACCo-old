@@ -57,13 +57,18 @@ void SCCPSolver::markTop( llvm::Value *V )
 
 LatticeValue & SCCPSolver::getLatticeValue( Value * const V )
 {
-  assert ( V->getType()->isIntegerTy() && "only track values of integer type" );
-
   /* Get the LatticeValue for V.  If V was not already a key for the map, it
    * will immediately be inserted and mapped to BOTTOM.
    */
   auto it = ValueMap.insert( std::make_pair( V, LatticeValue() ) );
-  LatticeValue &lv = it.first->second;
+  LatticeValue &LV = it.first->second;
+
+  /* For everything that is not supported, return TOP. */
+  if ( ! V->getType()->isIntegerTy() )
+  {
+    LV.setTop();
+    return LV;
+  }
 
   /* If the key has not been mapped so far, we now check whether we have a real
    * constant.  If we have a contant, we raise the LatticeValue from BOTTOM to
@@ -77,10 +82,10 @@ LatticeValue & SCCPSolver::getLatticeValue( Value * const V )
     if ( Constant * const C = dyn_cast< Constant >( V ) )
       if ( ! isa< UndefValue >( C ) )
         /* Lift the LatticeValue from BOTTOM to CONSTANT. */
-        lv.join( C );
+        LV.join( C );
   }
 
-  return lv;
+  return LV;
 }
 
 void SCCPSolver::notifyUses( Value * const V )
