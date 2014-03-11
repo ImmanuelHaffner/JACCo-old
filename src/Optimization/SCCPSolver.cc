@@ -9,15 +9,22 @@ using namespace llvm;
 using namespace Optimize;
 
 
-void SCCPSolver::solve( Function *F )
+void SCCPSolver::runOnFunction( Function &F )
 {
+  SCCPSolver Solver;
+
   /* Add first basic block to worklist. */
-  addToWorkList( F->begin() );
+  Solver.addToWorkList( F.begin() );
 
   /* Consider all arguments as top. */
-  for ( Function::arg_iterator AI = F->arg_begin(); AI != F->arg_end(); ++AI )
-    markTop(AI);
+  for ( Function::arg_iterator AI = F.arg_begin(); AI != F.arg_end(); ++AI )
+    Solver.markTop(AI);
 
+  Solver.solve();
+}
+
+void SCCPSolver::solve()
+{
   /* Process elements until all work lists are empty. */
   while ( ! BBWorklist.empty() || ! InstrTopWorklist.empty() ||
       ! InstrWorklist.empty() )
@@ -39,8 +46,7 @@ void SCCPSolver::solve( Function *F )
       visit( elem );
     }
   }
-
-  /* At this point we reached a fixed point. */
+  /* At this point we reached a fixed point and are done. */
 }
 
 

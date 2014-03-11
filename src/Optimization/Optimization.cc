@@ -6,23 +6,22 @@ using namespace Optimize;
 using namespace llvm;
 
 
-void Optimizer::runMem2Reg( Module &module )
+void Optimizer::runMem2Reg( Module &M )
 {
   llvm::PassManager pm;
   pm.add( llvm::createPromoteMemoryToRegisterPass() );
-  pm.run( module );
+  pm.run( M );
 }
 
 
 void Optimizer::runSCCP( Module &M )
 {
-  SCCPSolver SCCPSolver;
-  for ( Module::iterator F = M.begin(); F != M.end(); ++F )
+  for ( auto funcIt = M.begin(); funcIt != M.end(); ++funcIt )
   {
-    /* Check whether we have a definition */
-    if ( ! F->isDeclaration() )
-    {
-      SCCPSolver.solve( F );
-    }
+    /* Skip declarations. */
+    if ( funcIt->isDeclaration() )
+      continue;
+
+    SCCPSolver::runOnFunction( *funcIt );
   }
 }

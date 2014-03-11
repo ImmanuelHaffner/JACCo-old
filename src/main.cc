@@ -3,6 +3,11 @@
 #include <iostream>
 #include <sstream>
 
+#include "llvm/Support/Signals.h"           /* Nice stacktrace output */
+#include "llvm/Support/SystemUtils.h"
+#include "llvm/Support/PrettyStackTrace.h"
+#include "llvm/Support/raw_ostream.h"       /* Print LLVM IR output */
+#include "llvm/IR/Module.h"                 /* Module */
 #include "diagnostic.h"
 #include "util.h"
 #include "Lex/Lexer.h"
@@ -10,12 +15,7 @@
 #include "AST/Printable.h"
 #include "Sema/TypeFactory.h"
 #include "CodeGen/CodeGen.h"
-#include "llvm/Support/Signals.h"           /* Nice stacktrace output */
-#include "llvm/Support/SystemUtils.h"
-#include "llvm/Support/PrettyStackTrace.h"
-#include "llvm/IR/Module.h"                /* Module */
 #include "Optimization/Optimization.h"
-#include "llvm/Support/raw_ostream.h"       /* Print LLVM IR output */
 
 
 using namespace C4;

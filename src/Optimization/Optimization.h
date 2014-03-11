@@ -28,8 +28,8 @@ namespace C4
     /// \brief The optimizer
     struct Optimizer
     {
-      static void runMem2Reg( llvm::Module & );
-      static void runSCCP( llvm::Module & );
+      static void runMem2Reg( llvm::Module &M );
+      static void runSCCP( llvm::Module &M );
     };
   }
 }

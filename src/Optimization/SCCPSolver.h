@@ -2,6 +2,7 @@
 #define SCCPVISITOR_H
 
 
+#include "llvm/IR/Module.h"                 /* Module */
 #include "llvm/InstVisitor.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/SmallVector.h"
@@ -19,10 +20,12 @@ namespace C4
     {
       SCCPSolver() {}
 
-      /// Apply SCCP to the given function.
+      static void runOnFunction( llvm::Function &F );
+
+      /// Finad a fixed point for SCCP and the given function.
       ///
-      /// \param F the function SCCP shall be applied to
-      void solve( llvm::Function *F );
+      /// \param F the function a SCCP fixed point should be computed for
+      void solve();
 
 
       private:
