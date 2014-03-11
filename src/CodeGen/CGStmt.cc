@@ -208,6 +208,8 @@ void ReturnStmt::emit( CodeGenFunction &CGF ) const
         CGF.retV );
   }
   CGF.Builder.CreateBr( CGF.retBB );
+
+  CGF.EmitBlock( CGF.getBasicBlock() );
 }
 
 void BlockItem::emit( CodeGenFunction &CGF ) const
