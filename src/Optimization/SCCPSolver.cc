@@ -281,6 +281,5 @@ void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
 
 void SCCPSolver::visitReturnInst( llvm::ReturnInst &I )
 {
-  /* TODO: Implement */
-  assert( false && "not implemented yet" );
+  /* nothing to do here... */
 }
