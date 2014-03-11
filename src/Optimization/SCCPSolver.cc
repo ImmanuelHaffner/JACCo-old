@@ -124,29 +124,33 @@ void SCCPSolver::addToWorkList( BasicBlock * const BB )
 
 void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
 {
-  Value * const op1 = I.getOperand(0);
-  Value * const op2 = I.getOperand(1);
-  LatticeValue latticeValOp1 = getLatticeValue(op1);
-  LatticeValue latticeValOp2 = getLatticeValue(op1);
+  LatticeValue &LV = getLatticeValue( &I );
+  if ( LV.isTop() )
+    return;
 
-  LatticeValue &currentResult = getLatticeValue(&I);
-  LatticeValue newResult;
-  if(latticeValOp1.isBottom() || latticeValOp2.isBottom())
+  LatticeValue &LVOp0 = getLatticeValue( I.getOperand( 0 ) );
+  LatticeValue &LVOp1 = getLatticeValue( I.getOperand( 1 ) );
+
+  /* If at least one of the LV is BOTTOM, we can't make any assumption, so stop.
+   * here.
+   */
+  if ( LVOp0.isBottom() || LVOp1.isBottom() )
+    return;
+
+  /* If at least one of the operands is top, the result will be top. */
+  if ( LVOp0.isTop() || LVOp1.isTop() )
   {
-    newResult; //Bottom by default;
+    LV.setTop();
+    addToWorkList( &I );
   }
-  else if(latticeValOp1.isTop() || latticeValOp2.isTop())
+
+  /* Compute the new value for this LV.  If the LV changed, add it to the work
+   * list.
+   */
+  if ( LV.join( ConstantExpr::get( I.getOpcode(),
+          LVOp0.getConstant(), LVOp1.getConstant() ) ) )
   {
-      newResult.setTop();
-  }
-  else
-  {
-      newResult.join(ConstantExpr::get(I.getOpcode(), latticeValOp1.getConstant(),
-          latticeValOp2.getConstant()));
-  }
-  if(currentResult.join(newResult))
-  {
-    addToWorkList(&I);
+    addToWorkList( &I );
   }
 }
 
