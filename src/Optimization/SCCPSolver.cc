@@ -119,8 +119,37 @@ void SCCPSolver::addToWorkList( Value * const V )
 
 void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
 {
-  /* TODO: Implement */
-  assert( false && "not implemented yet" );
+  Value * const op1 = I.getOperand(0);
+  Value * const op2 = I.getOperand(1);
+  LatticeValue latticeValOp1 = getLatticeValue(op1);
+  LatticeValue latticeValOp2 = getLatticeValue(op1);
+
+  LatticeValue &currentResult = getLatticeValue(&I);
+  if(I.getOpcode() == Instruction::Add || I.getOpcode() == Instruction::Sub)
+  {
+    LatticeValue newResult;
+    if(latticeValOp1.isBottom() || latticeValOp2.isBottom())
+    {
+      newResult; //Bottom by default;
+    }
+    else if(latticeValOp1.isTop() || latticeValOp2.isTop())
+    {
+        newResult.setTop();
+    }
+    else
+    {
+        newResult.join(latticeValOp1.getConstant());
+    }
+    if(currentResult.join(newResult))
+    {
+      addToWorkList(&I);
+    }
+  }
+  else
+  {
+    /* TODO: Implement */
+    assert( false && "not implemented yet" );
+  }
 }
 
 void SCCPSolver::visitCallInst( llvm::CallInst &I )
