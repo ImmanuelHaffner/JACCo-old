@@ -41,6 +41,17 @@ namespace C4
       private:
       friend class llvm::InstVisitor< SCCPSolver >;
 
+
+      //===----------------------------------------------------------------===//
+      //
+      //  Visit Methods
+      //
+      //  The visit methods implement the transfer function for the LLVM
+      //  instructions and basiv blocks.  If the LatticeValue of an instruction
+      //  changed, adds the instruction or basic block to a work list.
+      //
+      //===----------------------------------------------------------------===//
+
       void visitBinaryOperator( llvm::BinaryOperator &I );
       void visitCallInst( llvm::CallInst &I );
       void visitCastInst( llvm::CastInst &I );

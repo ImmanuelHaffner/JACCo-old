@@ -90,6 +90,13 @@ LatticeValue & SCCPSolver::getLatticeValue( Value *V )
   return lv;
 }
 
+
+//===----------------------------------------------------------------------===//
+//
+//  Visit Methods
+//
+//===----------------------------------------------------------------------===//
+
 void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
 {
   /* TODO: Implement */
