@@ -1,7 +1,7 @@
 #include "SCCPSolver.h"
 
 #include "llvm/IR/Value.h"
-#include "llvm/IR/Constants.h" 
+#include "llvm/IR/Constants.h"
 
 
 using namespace C4;
@@ -117,6 +117,27 @@ void SCCPSolver::visitICmpInst( llvm::ICmpInst &I )
 {
   /* TODO: Implement */
   assert( false && "not implemented yet" );
+
+  LatticeValue lvI = getLatticeValue ( &I );
+
+  if ( lvI.isTop() )
+    /* We can leave here as nothing will change */
+    return;
+
+  LatticeValue lvOp1 = getLatticeValue( I.getOperand( 0 ) );
+  LatticeValue lvOp2 = getLatticeValue( I.getOperand( 1 ) );
+
+  if ( lvOp1.isTop() || lvOp2.isTop() )
+    /* TODO set to top and notify users */
+    ;
+
+  if ( lvOp1.isConstant() && lvOp2.isConstant() )
+  {
+    /* Set result to constant */
+    lvI.setConstant( ConstantExpr::getCompare( I.getPredicate(),
+        lvOp1.getConstant(), lvOp2.getConstant() ) );
+    /* TODO notify users */
+  }
 }
 void SCCPSolver::visitLoadInst( llvm::LoadInst &I )
 {
@@ -132,9 +153,9 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
 {
   /* TODO: Implement */
   assert( false && "not implemented yet" );
-  if ( getLatticeValue( &I ).isTop() ) 
+  if ( getLatticeValue( &I ).isTop() )
     return;
-  
+
   /* Iterate over incoming edges and try to infer a common constant */
   Constant *C = NULL;
   for ( unsigned i = 0; i < I.getNumIncomingValues(); ++i )
@@ -148,7 +169,7 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
     /* TODO: Check if edge is feasible */
 
     if ( lv.isTop() )
-      /* PHINode will be top as well */ 
+      /* PHINode will be top as well */
       return markTop( &I );
 
     /* We have a constant */
@@ -163,8 +184,8 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
 
   /* PHINode is either constant or still undefined */
   if ( C )
-    getLatticeValue( &I ).setConstant( C ); 
-  
+    getLatticeValue( &I ).setConstant( C );
+
 }
 void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
 {
