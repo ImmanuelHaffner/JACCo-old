@@ -121,8 +121,15 @@ void SCCPSolver::visitCallInst( llvm::CallInst &I )
 
 void SCCPSolver::visitCastInst( llvm::CastInst &I )
 {
-  /* TODO: Implement */
-  assert( false && "not implemented yet" );
+  LatticeValue lvI = getLatticeValue( &I );
+
+  if ( lvI.isTop() )
+    return;
+
+  LatticeValue lvOp = getLatticeValue( I.getOperand( 0 ) );
+
+  /* Propagate child information */
+  lvI.join( lvOp );
 }
 
 void SCCPSolver::visitICmpInst( llvm::ICmpInst &I )
