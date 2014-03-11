@@ -29,6 +29,13 @@ namespace C4
       /// \param V the value to mark as TOP
       void markTop( llvm::Value *V );
 
+      /// Returns the lattice value of the corresponding value. Inserts it
+      /// into the ValueMap if not already there.
+      ///
+      /// \param V the value for which we want to get the lattice value
+      /// \returns the lattice value of V
+      LatticeValue & getLatticeValue( llvm::Value *V );
+
       void markBlockVisitable ( llvm::BasicBlock * );
 
       private:

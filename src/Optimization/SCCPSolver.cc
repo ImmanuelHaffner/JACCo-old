@@ -1,6 +1,7 @@
 #include "SCCPSolver.h"
 
 #include "llvm/IR/Value.h"
+#include "llvm/IR/Constants.h" 
 
 
 using namespace C4;
@@ -67,6 +68,26 @@ void SCCPSolver::markTop( llvm::Value *V )
 void SCCPSolver::markBlockVisitable ( llvm::BasicBlock *BB )
 {
   BBExecutable.insert( BB );
+}
+
+LatticeValue & SCCPSolver::getLatticeValue( Value *V )
+{
+  assert ( V->getType()->isIntegerTy() && "only track values of integer type" );
+  /* Insert V into the Value map if not there;
+   * if it already exists, get its position */
+  std::pair< ValueMap::iterator, bool > it =
+    ValueMap.insert( std::make_pair( V, LatticeValue() ) );
+  LatticeValue &lv = it.first->second;
+
+  if ( it.second )
+  {
+    /* Value wasn't in the map before */
+    if ( Constant *C = dyn_cast< Constant >( V ) )
+      if ( ! isa< UndefValue >( C ) )
+        /* Mark it as constant */
+        lv.setConstant( C );
+  }
+  return lv;
 }
 
 void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
