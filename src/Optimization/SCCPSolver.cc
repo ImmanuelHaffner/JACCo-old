@@ -149,9 +149,8 @@ void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
     }
     else
     {
-      /*
-        newResult = ConstantExpr::get(I.getOpcode(), latticeValOp1.getConstant(),
-            latticeValOp2.getConstant());*/
+        newResult.join(ConstantExpr::get(I.getOpcode(), latticeValOp1.getConstant(),
+            latticeValOp2.getConstant()));
     }
     if(currentResult.join(newResult))
     {
