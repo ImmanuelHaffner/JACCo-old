@@ -301,7 +301,7 @@ void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
   addToWorkList( I.getSuccessor( CondLV.getConstant()->isZeroValue() ) );
 }
 
-void SCCPSolver::visitReturnInst( llvm::ReturnInst &I )
+void SCCPSolver::visitReturnInst( llvm::ReturnInst & )
 {
   /* nothing to do here... */
 }
