@@ -47,17 +47,17 @@ bool LatticeValue::join( LatticeValue const &Other )
   if ( Other.isTop() )
     return setTop();
 
-  /* If this is BOTTOM, it will become Other. */
-  if ( isBottom() )
-  {
-    this->type = VT::CONSTANT;
-    this->constant = Other.constant;
-    return true;
-  }
-
   /* Join with BOTTOM is a NOP. */
   if ( Other.isBottom() )
     return false;
+
+  /* If this is BOTTOM, it will become Other. */
+  if ( isBottom() )
+  {
+    this->type = Other.type;
+    this->constant = Other.constant;
+    return true;
+  }
 
   /* We now have to join two constants. */
   if ( Other.getConstant() == this->constant )

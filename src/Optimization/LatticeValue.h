@@ -25,6 +25,7 @@ namespace C4
       inline bool isTop() const { return type == VT::TOP; }
       inline bool isConstant() const { return type == VT::CONSTANT; }
       inline bool isBottom() const { return type == VT::BOTTOM; }
+
       inline llvm::Constant * getConstant() const { return constant; }
 
       private:
