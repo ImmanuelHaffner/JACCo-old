@@ -68,15 +68,15 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
 
       /* Create the LLVM function. */
       func = Function::Create(
-          funcType,                         /* Function type */
+          funcType,                     /* Function type */
           GlobalValue::ExternalLinkage, /* Linkage type */
           id->tok.sym.str(),            /* Function name */
           &(CGF.M)                      /* Module = 0 */
           );
-
-      /* Store the function value in the entity. */
-      entity->value = func;
     }
+
+    /* Store the function value in the entity. */
+    entity->value = func;
 
     if ( ! isGlobal ) // function definition
     {
@@ -130,7 +130,7 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
   else
   {
     /* Get the current basic block. */
-    BasicBlock * curBB = CGF.Builder.GetInsertBlock();
+    BasicBlock * const curBB = CGF.Builder.GetInsertBlock();
 
     /* Create an alloca at the beginning of the current basic block. */
     if ( curBB->empty() )
@@ -144,7 +144,7 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
     else
     {
       /* Create the alloca instruction. */
-      Instruction *alloca = new AllocaInst(
+      Instruction * const alloca = new AllocaInst(
           type,             /* Type */
           0,                /* ArraySize = 0 */
           id->tok.sym.str() /* Name */
