@@ -61,7 +61,7 @@ llvm::Value * Variable::emit( CodeGenFunction &CGF,
 
   /* If we have a function, cast it to a i8* function pointer. */
   if ( dynamic_cast< Sema::FuncType const * >( entity->type ) )
-    return CGF.Builder.CreateBitCast( val, CGF.Builder.getInt8PtrTy() );
+    return val;
 
   if ( asLValue )
     return val;  // returns the alloca of the variable
@@ -352,16 +352,24 @@ llvm::Value * UnaryOperation::emit( CodeGenFunction &CGF,
     case TK::Mul:
       {
         Value *ptr = this->expr->emit( CGF );
-        if ( asLValue )
-          return ptr;
 
-        /* If ptr is not of pointer type, cast it to a pointer with the type of
-         * the sub-expr.
-         */
-        if ( ! ptr->getType()->isPointerTy() )
-          ptr = CGF.GetAs( ptr,
-              this->expr->getEntity()->type->getLLVMType( CGF ) );
-        return CGF.Builder.CreateLoad( ptr );
+        /* Verify that we have a pointer here. */
+        if ( auto ptrTy = dyn_cast< PointerType >( ptr->getType() ) )
+        {
+          /* If we want an LValue, return immediately. */
+          if ( asLValue )
+            return ptr;
+
+          /* If we hafe a function pointer, return it. */
+          if ( ptrTy->getElementType()->isFunctionTy() )
+            return ptr;
+
+          /* Load the value the pointer is pointing to, and return it. */
+          return CGF.Builder.CreateLoad( ptr );
+        }
+
+        assert( false && "not of pointer type" );
+        return NULL;
       }
 
     case TK::Plus:
