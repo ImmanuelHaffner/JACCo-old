@@ -1050,7 +1050,7 @@ void DotExpr::analyze()
     if ( elem != elements.end() )
     {
       Entity * e = new Entity();
-      e->type = elem->second; 
+      e->type = toFuncPtrIfFunc(elem->second);
       attachEntity( e );
     }
     else
@@ -1093,7 +1093,7 @@ void ArrowExpr::analyze()
     if ( elem != elements.end() )
     {
       Entity * e = new Entity();
-      e->type = elem->second; 
+      e->type = toFuncPtrIfFunc(elem->second);
       attachEntity( e );
     }
     else
