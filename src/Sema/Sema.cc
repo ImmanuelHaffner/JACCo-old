@@ -141,7 +141,7 @@ Entity * FunctionDeclarator::analyze( Env &env,
   return entity2;
 }
 
-Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
+Entity * Identifier::analyze( Env &env, Sema::Type const * t )
   const
 {
   if ( auto funcType = dynamic_cast< FuncType const * >( t ) )
@@ -152,6 +152,12 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * const t )
       std::ostringstream oss;
       oss << this << "\nfunction must not return a function";
       ERROR( oss.str().c_str() );
+    }
+
+    if ( parameterDepth > 0 && ! analyzingStruct )
+    {
+      //functions in paramters are interpreted as function pointers
+      t = TypeFactory::getPtr( t );
     }
 
     // Try to map the identifier. Returns NULL, if the identifier is already
