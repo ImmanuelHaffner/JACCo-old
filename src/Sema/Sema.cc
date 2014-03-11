@@ -857,7 +857,7 @@ void BinaryExpr::analyze()
     }
     else
     {
-      ERROR("Incompatible operands to == or !=.");
+      ERROR("Incompatible operands to == or !=");
     }
   }
   else if((this->tok).kind == Lex::TK::LAnd || (this->tok).kind == Lex::TK::LOr)
@@ -871,7 +871,7 @@ void BinaryExpr::analyze()
     }
     else
     {
-      ERROR("Incompatible operands to == or !=.");
+      ERROR("Incompatible operands to && or ||");
     }
   }
   this->isLvalue = false;
