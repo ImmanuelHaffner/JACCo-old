@@ -150,7 +150,7 @@ void SCCPSolver::visitICmpInst( llvm::ICmpInst &I )
   if ( lvOp1.isConstant() && lvOp2.isConstant() )
   {
     /* Set result to constant */
-    lvI.setConstant( ConstantExpr::getCompare( I.getPredicate(),
+    lvI.join( ConstantExpr::getCompare( I.getPredicate(),
         lvOp1.getConstant(), lvOp2.getConstant() ) );
     /* TODO notify users */
   }
@@ -194,7 +194,7 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
     LV.join( getLatticeValue( I.getIncomingValueForBlock( *itBB ) ) );
   }
 
-  return OldLV.join( LV );
+  OldLV.join( LV );
 }
 
 void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
