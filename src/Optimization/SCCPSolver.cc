@@ -179,15 +179,24 @@ void SCCPSolver::visitCallInst( llvm::CallInst &I )
 
 void SCCPSolver::visitCastInst( llvm::CastInst &I )
 {
-  LatticeValue lvI = getLatticeValue( &I );
-
-  if ( lvI.isTop() )
+  LatticeValue &LV = getLatticeValue( &I );
+  if ( LV.isTop() )
     return;
 
-  LatticeValue lvOp = getLatticeValue( I.getOperand( 0 ) );
+  LatticeValue &LVOp = getLatticeValue( I.getOperand( 0 ) );
 
-  /* Propagate child information */
-  lvI.join( lvOp );
+  if ( LVOp.isBottom() )
+    return;
+
+  if ( LVOp.isTop() )
+  {
+    LV.setTop();
+    return;
+  }
+
+  if ( LV.join( ConstantExpr::getCast(
+          I.getOpcode(), LVOp.getConstant(), I.getType() ) ) )
+    addToWorkList( &I );
 }
 
 void SCCPSolver::visitICmpInst( llvm::ICmpInst &I )
