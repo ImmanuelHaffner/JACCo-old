@@ -106,7 +106,7 @@ Entity * PointerDeclarator::analyze( Env &env,
 Entity * FunctionDeclarator::analyze( Env &env,
     Sema::Type const * const t ) const
 {
-  if ( parameterDepth == 0 )
+  if ( ! parameterDepth )
     current_params.clear();
 
   env.pushScope();
@@ -539,8 +539,8 @@ void ReturnStmt::analyze( Env &env ) const
   if ( ! isAssignmentCompatible( funcType->retType, expr ) )
   {
     std::ostringstream oss;
-    oss << "return value of type '" << expr->getEntity()->type <<
-      "', should have type '" << funcType->retType << "'";
+    oss << "return value of type '" << toFuncPtrIfFunc( expr->getEntity()->type )
+    << "', should have type '" << funcType->retType << "'";
     ERROR( oss.str().c_str() );
   }
 }
@@ -551,9 +551,9 @@ void ReturnStmt::analyze( Env &env ) const
 
 Type const* toFuncPtrIfFunc(Type const *t)
 {
-  if(isFunctionType(t))
+  if( isFunctionType( t ) )
   {
-    return TypeFactory::getPtr(t);
+    return TypeFactory::getPtr( t );
   }
   else
   {
