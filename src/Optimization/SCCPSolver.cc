@@ -166,10 +166,7 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
     Call->eraseFromParent();
   }
 
-  /* Clear unreachable basic blocks. */
-  while ( ! BBsToEmpty.empty() )
-    ClearBlock( BBsToEmpty.pop_back_val() );
-
+  /* Compute the LV for thr return of the funtion. */
   LatticeValue RV;
   for ( auto I = Solver.ReturnValues.begin(); I != Solver.ReturnValues.end();
       ++I )
@@ -318,9 +315,7 @@ void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
    */
   if ( LV.join( ConstantExpr::get( I.getOpcode(),
           LVOp0.getConstant(), LVOp1.getConstant() ) ) )
-  {
     addToWorkList( &I );
-  }
 }
 
 void SCCPSolver::visitCallInst( llvm::CallInst &I )
@@ -330,9 +325,12 @@ void SCCPSolver::visitCallInst( llvm::CallInst &I )
     return;
 
   Function *F = I.getCalledFunction();
+
+  /* If the function is not a definition, skip it. */
   if ( F->isDeclaration() )
     return;
 
+  /* Collect the arguments for the function call. */
   SmallVector< LatticeValue, 2 > Args;
   for ( unsigned i = 0; i < I.getNumArgOperands(); ++i )
     Args.push_back( getLatticeValue( I.getArgOperand( i ) ) );
