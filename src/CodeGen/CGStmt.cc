@@ -201,15 +201,15 @@ void ReturnStmt::emit( CodeGenFunction &CGF ) const
   if ( this->expr )
   {
     /* Emit code for the expression, cast the result to the return type, and
-     * store it in the alloca for the return value.
+     * return it.
      */
-    CGF.Builder.CreateStore(
-        CGF.GetAs( this->expr->emit( CGF ), CGF.parent->getReturnType() ),
-        CGF.retV );
+    CGF.Builder.CreateRet(
+        CGF.GetAs( this->expr->emit( CGF ), CGF.parent->getReturnType() ) );
   }
-  CGF.Builder.CreateBr( CGF.retBB );
+  else
+    CGF.Builder.CreateRetVoid();
 
-  CGF.EmitBlock( CGF.getBasicBlock() );
+  CGF.Builder.SetInsertPoint( CGF.getBasicBlock() );
 }
 
 void BlockItem::emit( CodeGenFunction &CGF ) const
