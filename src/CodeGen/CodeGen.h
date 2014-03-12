@@ -127,13 +127,6 @@ namespace C4
       /* Points to the current function.  May be NULL. */
       llvm::Function *parent = NULL;
 
-      llvm::BasicBlock *retBB = NULL;
-
-      /* Points to the alloca for the current functions return value.  May be
-       * NULL.
-       */
-      llvm::Value *retV = NULL;
-
       /* A stack of all parameter allocas in the order they have been created.
        * Must be cleared after each function definition.
        */
