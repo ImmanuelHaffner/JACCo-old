@@ -25,7 +25,16 @@ static void ClearBlock( BasicBlock * const BB )
 
   /* Remove instructions in reversed order. */
   while ( ! ToRemove.empty() )
-    BB->getInstList().erase( ToRemove.pop_back_val() );
+  {
+    auto I = ToRemove.pop_back_val();
+
+    /* Before removing the instructions, replace its uses with 'undef'. */
+    if ( ! I->use_empty() )
+      I->replaceAllUsesWith( UndefValue::get( I->getType() ) );
+
+    /* Remove the instruction from its parent. */
+    BB->getInstList().erase( I );
+  }
 }
 
 LatticeValue SCCPSolver::runOnFunction( Function &F,
@@ -57,9 +66,7 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
    * iterators would be invalidated when removing instructions while iterating
    * through their basic blocks.
    */
-  SmallVector< Instruction *, 64 > ReplaceInstWithConst;
-  SmallVector< CallInst *, 64 > ReplaceCallWithConst;
-  SmallVector< BranchInst *, 64 > ReplaceCondBranch;
+  SmallVector< Instruction *, 64 > ToReplace;
   SmallVector< BasicBlock *, 8 > BBsToEmpty;
 
   /* Now that we have solved SCCP, remove unreachable blocks and replace
@@ -79,37 +86,10 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
     for ( auto Inst = BB->begin(); Inst != BB->end(); ++Inst )
     {
       LatticeValue &LV = Solver.getLatticeValue( Inst );
+      if ( LV.isTop() )
+        continue;
 
-      /* Check whether we can replace a conditional branch with an unconditional
-       * branch.
-       */
-      if ( auto *BInst = dyn_cast< BranchInst >( Inst ) )
-      {
-        /* Skip unconditional branches. */
-        if ( BInst->isUnconditional() )
-          continue;
-
-        LatticeValue &LVCond = Solver.getLatticeValue( BInst->getCondition() );
-        if ( LVCond.isTop() )
-          continue;
-
-        ReplaceCondBranch.push_back( BInst );
-      }
-      /* Check whether we can replace a function call with a constant value. */
-      else if ( auto *Call = dyn_cast< CallInst >( Inst ) )
-      {
-        if ( LV.isTop() )
-          continue;
-
-        ReplaceCallWithConst.push_back( Call );
-      }
-      else
-      {
-        if ( LV.isTop() )
-          continue;
-
-        ReplaceInstWithConst.push_back( Inst );
-      }
+      ToReplace.push_back( Inst );
     }
   }
 
@@ -117,25 +97,15 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
   while ( ! BBsToEmpty.empty() )
     ClearBlock( BBsToEmpty.pop_back_val() );
 
-  /* Replace conditional branches by unconditional branches. */
-  while ( ! ReplaceCondBranch.empty() )
-  {
-    BranchInst *BInst = ReplaceCondBranch.pop_back_val();
-    LatticeValue &LVCond = Solver.getLatticeValue( BInst->getCondition() );
-
-    /* Create an unconditional branch. */
-    auto BInstNew = BranchInst::Create(
-        BInst->getSuccessor( LVCond.getConstant()->isZeroValue() ) );
-
-    /* Replace the conditional branch by it's unconditional equivalent. */
-    ReplaceInstWithInst( BInst, BInstNew );
-  }
-
   /* Replace instructions by constants. */
-  while ( ! ReplaceInstWithConst.empty() )
+  while ( ! ToReplace.empty() )
   {
-    Instruction *Inst = ReplaceInstWithConst.pop_back_val();
+    Instruction *Inst = ToReplace.pop_back_val();
     LatticeValue &LV = Solver.getLatticeValue( Inst );
+
+    /* Skip calls with LV BOTTOM. */
+    if ( ! LV.isConstant() && isa< CallInst >( Inst ) )
+      continue;
 
     Constant *Const = LV.isConstant() ?
       LV.getConstant() : UndefValue::get( Inst->getType() );
@@ -147,20 +117,7 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
     Inst->eraseFromParent();
   }
 
-  /* Replace CallInsts if possible. */
-  while ( ! ReplaceCallWithConst.empty() )
-  {
-    CallInst *Call = ReplaceCallWithConst.pop_back_val();
-    LatticeValue &LV = Solver.getLatticeValue( Call );
-
-    if ( ! LV.isConstant() )
-      continue;
-
-    Call->replaceAllUsesWith( LV.getConstant() );
-    Call->eraseFromParent();
-  }
-
-  /* Compute the LV for thr return of the funtion. */
+  /* Compute the LV for the return of the funtion. */
   LatticeValue RV;
   for ( auto I = Solver.ReturnValues.begin(); I != Solver.ReturnValues.end();
       ++I )
