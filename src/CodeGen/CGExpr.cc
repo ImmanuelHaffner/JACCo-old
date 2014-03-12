@@ -215,9 +215,7 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
       if ( lhsTy->isPointerTy() )
       {
         if ( rhsTy->isPointerTy() )
-          return CGF.Builder.CreateSub(
-                CGF.GetAs( lhsV, CGF.Builder.getInt32Ty() ),
-                CGF.GetAs( rhsV, CGF.Builder.getInt32Ty() ) );
+          return CGF.Builder.CreatePtrDiff(lhsV, rhsV);
         return CGF.Builder.CreateGEP( lhsV, CGF.Builder.CreateNeg( rhsV ) );
       }
       return CGF.Builder.CreateSub(
