@@ -128,6 +128,8 @@ int main(int argc, char** const argv)
       unit->emit( CGF );
       verifyModule( CGF.M );
 
+      Optimizer::runMem2Reg( CGF.M );
+
       /* Optimize. */
       if ( Mode::OPTIMIZE == mode )
       {
