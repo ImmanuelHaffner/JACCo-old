@@ -19,6 +19,8 @@ do
     # increment TOTAL
     TOTAL=$(echo ${TOTAL} +1 | bc)
 
+    echo "==> testing ${TESTDIR}"
+
     # run the test for a bunch of files, that should be linked together
 
     # create a variable that holds the names of all files that shall be linked
@@ -36,9 +38,10 @@ do
 
       # compile the file
       $("${C4}" --optimize "${TESTFILE}")
+      RES=$?
 
       # verify compiling was successful
-      if [ $? -ne 0 ]
+      if [ ${RES} -ne 0 ]
       then
         # print ERROR result
         echo "==> ERROR: compiling '${TESTDIR}/${TESTFILE}' -> '${TESTLL}'"
@@ -73,7 +76,8 @@ do
     fi
 
     # let clang link the targets
-    clang ${TOLINK}
+    $(clang ${TOLINK})
+    RES=$?
 
     # remove ll files
     for TESTLL in ${TOLINK}
@@ -82,7 +86,7 @@ do
     done
 
     # if files could not be linked, print error message and skip this directory
-    if [ $? -ne 0 ]
+    if [ ${RES} -ne 0 ]
     then
       echo "==> ERROR: 'ld${TOLINK}' failed"
       # insert newline after each test
@@ -108,7 +112,7 @@ do
     fi
 
     # execute the binary
-    ./a.out ${ARGS}
+    $(./a.out ${ARGS})
     RES=$?
 
     # verify the return value
@@ -132,6 +136,8 @@ do
       # prune name
       TESTFILE=$(basename "${TESTFILE}")
 
+      echo "==> testing ${TESTDIR}/${TESTFILE}"
+
       # get the name of the test file
       TESTNAME=$(basename "${TESTFILE}" "${SUFFIX}.c")
 
@@ -145,10 +151,11 @@ do
       TESTLL="/tmp/$(basename "${TESTSRC}" ".c").ll"
 
       # compile the file
-      $("${C4}" "${TESTSRC}" > /dev/null 2>&1)
+      $("${C4}" --optimize "${TESTSRC}")
+      RES=$?
 
       # verify compiling was successful
-      if [ $? -ne 0 ]
+      if [ ${RES} -ne 0 ]
       then
         # print ERROR result
         echo "==> ERROR: compiling '${TESTDIR}/${TESTFILE}' -> '${TESTDIR}/${TESTLL}'"
@@ -162,14 +169,15 @@ do
       fi
 
       # let clang link the targets
-      clang "${TESTLL}"
+      $(clang "${TESTLL}")
+      RES=$?
 
       # remove the c and ll file
       rm "${TESTSRC}"
       rm "${TESTLL}"
 
       # if files could not be linked, print error message
-      if [ $? -ne 0 ]
+      if [ ${RES} -ne 0 ]
       then
         echo "==> ERROR: ld '${TESTFILE}' failed"
         # insert newline after each test
@@ -182,7 +190,7 @@ do
       ARGS=$(sed -n 2p "${TESTFILE}")
 
       # execute the binary
-      ./a.out ${ARGS}
+      $(./a.out ${ARGS})
       RES=$?
 
       # verify the return value
