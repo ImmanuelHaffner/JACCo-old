@@ -410,24 +410,26 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
       continue;
 
     /* Check if incoming edge comes from a conditional branch */
-    BranchInst * const BI =
-      dyn_cast< BranchInst >( ( *itBB )->getTerminator() );
-    if ( BI->isConditional() )
+    if ( BranchInst * const BI =
+      dyn_cast< BranchInst >( ( *itBB )->getTerminator() ) )
     {
-      /* If the LV of the condition is BOTTOM, assume the branch is not taken
-       * and skip.
-       */
-      LatticeValue &LVCond = getLatticeValue( BI->getCondition() );
-      if ( LVCond.isBottom() )
-        continue;
+      if ( BI->isConditional() )
+      {
+        /* If the LV of the condition is BOTTOM, assume the branch is not taken
+         * and skip.
+         */
+        LatticeValue &LVCond = getLatticeValue( BI->getCondition() );
+        if ( LVCond.isBottom() )
+          continue;
 
-      /* Check whether the conditional branch never takes the edge to the
-       * current basic block.  If so, skip it.
-       */
-      if ( LVCond.isConstant() &&
-          BI->getSuccessor( LVCond.getConstant()->isZeroValue() ) !=
-          I.getParent() )
-        continue;
+        /* Check whether the conditional branch never takes the edge to the
+         * current basic block.  If so, skip it.
+         */
+        if ( LVCond.isConstant() &&
+            BI->getSuccessor( LVCond.getConstant()->isZeroValue() ) !=
+            I.getParent() )
+          continue;
+      }
     }
 
     /* Join the LatticeValue from the incoming edge with our loop-LV. */
