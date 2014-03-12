@@ -231,7 +231,7 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * t )
   {
     // If the type is not a function type, it must be a object type.
     ObjType const * const objType = static_cast< ObjType const * >( t );
-    if ( t == NULL || ! objType->isComplete() )
+    if ( ! objType->isComplete() )
     {
       std::ostringstream oss;
       oss << "cannot instantiate '" << this << "' with incomplete type";
@@ -254,16 +254,28 @@ Entity * Identifier::analyze( Env &env, Sema::Type const * t )
       auto idOld = static_cast< Identifier const * >( origin->getParent() );
       std::ostringstream oss;
 
-      if ( dynamic_cast< FuncType const * >( origin->type ) )
+      /* Ok if we are in the global scope (tentiative definition)... */
+      if ( env.topFunction() != NULL || parameterDepth > 0 )
       {
-        oss << "identifier '" << this->tok.sym.str() <<
-          "' has already been declared as function at " << idOld->tok.pos;
-        ERROR( oss.str().c_str() );
+
+        if ( dynamic_cast< FuncType const * >( origin->type ) )
+        {
+          oss << "identifier '" << this->tok.sym.str() <<
+            "' has already been declared as function at " << idOld->tok.pos;
+          ERROR( oss.str().c_str() );
+        }
+        else
+        {
+          oss << "identifier '" << this->tok.sym.str() <<
+            "' has already been declared at " << idOld->tok.pos;
+          ERROR( oss.str().c_str() );
+        }
       }
-      else
+      else if ( origin->type != t )
       {
+        /* ...but must have same type than! */
         oss << "identifier '" << this->tok.sym.str() <<
-          "' has already been declared at " << idOld->tok.pos;
+          "' has already been declared with different type at " << idOld->tok.pos;
         ERROR( oss.str().c_str() );
       }
 
