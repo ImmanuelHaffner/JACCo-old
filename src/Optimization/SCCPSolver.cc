@@ -178,19 +178,17 @@ void SCCPSolver::solve()
     /* Process the elements of the top work list first, to propagate TOP faster.
      * This will speed up finding a fixed point.
      */
-    while ( ! InstrTopWorklist.empty() )
-      notifyUses( InstrTopWorklist.pop_back_val() );
-    if ( ! InstrWorklist.empty() )
+    if ( ! InstrTopWorklist.empty() )
+      do
+        notifyUses( InstrTopWorklist.pop_back_val() );
+      while ( ! InstrTopWorklist.empty() );
+    else if ( ! InstrWorklist.empty() )
       notifyUses( InstrWorklist.pop_back_val() );
     else if ( ! BBWorklist.empty() )
-    {
-      BasicBlock *elem = BBWorklist.pop_back_val();
-
       /* Notify all instructions in this basic block that they are newly
        * executable.
        */
-      visit( elem );
-    }
+      visit( BBWorklist.pop_back_val() );
   }
   /* At this point we reached a fixed point and are done. */
 }
@@ -263,8 +261,8 @@ void SCCPSolver::addToWorkList( Value * const V )
 
 void SCCPSolver::addToWorkList( BasicBlock * const BB )
 {
-  BBWorklist.push_back( BB );
-  BBExecutable.insert( BB );
+  if ( BBExecutable.insert( BB ) )
+    BBWorklist.push_back( BB );
 }
 
 
