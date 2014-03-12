@@ -2,6 +2,7 @@
 
 #include "llvm/IR/Value.h"
 #include "llvm/IR/Constants.h"
+#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 
 
 using namespace C4;
@@ -57,9 +58,9 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
    * iterators would be invalidated when removing instructions while iterating
    * through their basic blocks.
    */
-  SmallVector< Instruction *, 64 > InstsToRemove;
-  SmallVector< CallInst *, 64 > CallInsts;
-  SmallVector< BranchInst *, 64 > BranchInstToReplace;
+  SmallVector< Instruction *, 64 > ReplaceInstWithConst;
+  SmallVector< CallInst *, 64 > ReplaceCallWithConst;
+  SmallVector< BranchInst *, 64 > ReplaceCondBranch;
   SmallVector< BasicBlock *, 8 > BBsToEmpty;
 
   /* Now that we have solved SCCP, remove unreachable blocks and replace
@@ -78,9 +79,6 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
     /* Iterate over all instructions of the BB. */
     for ( auto Inst = BB->begin(); Inst != BB->end(); ++Inst )
     {
-      if ( isa< TerminatorInst >( Inst ) )
-        continue;
-
       LatticeValue &LV = Solver.getLatticeValue( Inst );
 
       /* Check whether we can replace a conditional branch with an unconditional
@@ -96,21 +94,22 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
         if ( LVCond.isTop() )
           continue;
 
-        BranchInstToReplace.push_back( BInst );
+        ReplaceCondBranch.push_back( BInst );
       }
+      /* Check whether we can replace a function call with a constant value. */
       else if ( auto *Call = dyn_cast< CallInst >( Inst ) )
       {
         if ( LV.isTop() )
           continue;
 
-        CallInsts.push_back( Call );
+        ReplaceCallWithConst.push_back( Call );
       }
       else
       {
         if ( LV.isTop() )
           continue;
 
-        InstsToRemove.push_back( Inst );
+        ReplaceInstWithConst.push_back( Inst );
       }
     }
   }
@@ -120,27 +119,23 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
     ClearBlock( BBsToEmpty.pop_back_val() );
 
   /* Replace conditional branches by unconditional branches. */
-  while ( ! BranchInstToReplace.empty() )
+  while ( ! ReplaceCondBranch.empty() )
   {
-    BranchInst *BInst = BranchInstToReplace.pop_back_val();
+    BranchInst *BInst = ReplaceCondBranch.pop_back_val();
     LatticeValue &LVCond = Solver.getLatticeValue( BInst->getCondition() );
 
     /* Create an unconditional branch. */
     auto BInstNew = BranchInst::Create(
         BInst->getSuccessor( LVCond.getConstant()->isZeroValue() ) );
 
-    /* Replace all uses of the conditional branch by the unconditional
-     * branch. */
-    BInst->replaceAllUsesWith( BInstNew );
-
-    /* Remove the conditional branch instruction. */
-    BInst->eraseFromParent();
+    /* Replace the conditional branch by it's unconditional equivalent. */
+    ReplaceInstWithInst( BInst, BInstNew );
   }
 
   /* Replace instructions by constants. */
-  while ( ! InstsToRemove.empty() )
+  while ( ! ReplaceInstWithConst.empty() )
   {
-    Instruction *Inst = InstsToRemove.pop_back_val();
+    Instruction *Inst = ReplaceInstWithConst.pop_back_val();
     LatticeValue &LV = Solver.getLatticeValue( Inst );
 
     Constant *Const = LV.isConstant() ?
@@ -154,9 +149,9 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
   }
 
   /* Replace CallInsts if possible. */
-  while ( ! CallInsts.empty() )
+  while ( ! ReplaceCallWithConst.empty() )
   {
-    CallInst *Call = CallInsts.pop_back_val();
+    CallInst *Call = ReplaceCallWithConst.pop_back_val();
     LatticeValue &LV = Solver.getLatticeValue( Call );
 
     if ( ! LV.isConstant() )
@@ -463,7 +458,8 @@ void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
    */
   LatticeValue &CondLV = getLatticeValue( I.getCondition() );
 
-  /* If the LV of the condition is BOTTOM, we assume the branch is never taken.
+  /* If the LV of the condition is BOTTOM, we assume the branch is never being
+   * evaluated.
    */
   if ( CondLV.isBottom() )
     return;
