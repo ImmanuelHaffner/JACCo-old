@@ -316,6 +316,12 @@ void SCCPSolver::visitCallInst( llvm::CallInst &I )
   if ( LV.isTop() )
     return;
 
+  /* For now, just always assume TOP.
+   * TODO Remove for inter-procedural SCCP.
+   */
+  LV.setTop();
+  return;
+
   Function *F = I.getCalledFunction();
 
   /* If the function is not a definition, skip it. */
