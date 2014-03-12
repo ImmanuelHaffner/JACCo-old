@@ -138,8 +138,6 @@ int main(int argc, char** const argv)
 
         verifyModule( CGF.M );
       }
-      else
-        Optimizer::runMem2Reg( CGF.M );
 
       /* Get the name of the output file. */
       std::string outname( name );
