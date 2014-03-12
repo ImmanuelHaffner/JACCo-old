@@ -123,7 +123,7 @@ void Decl::emit( CodeGenFunction &CGF, bool isGlobal /* = false */ ) const
         CGF.M,                                  /* Module & */
         type,                                   /* Type * */
         false,                                  /* bool isConstant */
-        GlobalValue::CommonLinkage,             /* LinkageType */
+        GlobalValue::ExternalLinkage,           /* LinkageType */
         Constant::getNullValue(type),           /* Constant * Initializer */
         id->tok.sym.str()                       /* const Twine &Name = "" */
         );
