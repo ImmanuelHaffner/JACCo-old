@@ -77,6 +77,10 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
       /* Remove all non-terminator instructions from the block. */
       ClearBlock( BB );
 
+      /* Remove this basic block from the set of predecessors for all its
+       * successors.  This will propagate removal of incoming edges for PHI
+       * nodes.
+       */
       TerminatorInst *TI = BB->getTerminator();
       for ( unsigned i = 0, e = TI->getNumSuccessors(); i != e; ++i )
       {
@@ -85,10 +89,14 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
           TI->getSuccessor( i )->removePredecessor( BB );
       }
 
+      /* Remove the terminator instruction from the basic block. */
       if ( ! TI->use_empty() )
         TI->replaceAllUsesWith( UndefValue::get( TI->getType() ) );
       TI->eraseFromParent();
 
+      /* If this is not the function's entry point, remove it.  Otherwise, make
+       * it undefined.
+       */
       if ( &F.front() != BB )
         BlocksToErase.push_back( BB );
       else
@@ -108,9 +116,12 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
         continue;
 
       LatticeValue &LV = Solver.getLatticeValue( Inst );
+
+      /* Skip TOP. */
       if ( LV.isTop() )
         continue;
 
+      /* Get a concrete value for the instruction. */
       Constant *Const = LV.isConstant() ?
         LV.getConstant() : UndefValue::get( Inst->getType() );
 
@@ -135,18 +146,31 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
       if ( ! I )
         continue;
 
+      /* Let the ConstantFoldTerminator take care of the basic block.  Returns
+       * true on success, false otherwise.
+       */
       bool Folded = ConstantFoldTerminator( I->getParent() );
+      /* Folding failed, so do it manually. */
       if ( ! Folded )
       {
+        /* Replace a terminator instruction by an unconditional branch to its
+         * first successor.
+         */
         TerminatorInst *TI = I->getParent()->getTerminator();
         BranchInst::Create( TI->getSuccessor( 0 ), TI );
 
+        /* Remove the current basic block from the set of predecessors for all
+         * its successors.
+         */
         for ( unsigned i = 1, e = TI->getNumSuccessors(); i != e; ++i )
           TI->getSuccessor( i )->removePredecessor( TI->getParent() );
 
+        /* Remove the terminator. */
         TI->eraseFromParent();
       }
     }
+
+    /* Remove the basic block from the function. */
     F.getBasicBlockList().erase( DeadBB );
   }
 
