@@ -99,7 +99,7 @@ Entity * PointerDeclarator::analyze( Env &env,
 
   // If the pointer declarator has no sub-declarator, we need a temporary entity
   // to ship the type information to the next upper declarator.
-  Entity * const entity = env.insert( "$" );
+  Entity * const entity = new Entity();
   entity->type = TypeFactory::getPtr( t );
   return entity;
 }
