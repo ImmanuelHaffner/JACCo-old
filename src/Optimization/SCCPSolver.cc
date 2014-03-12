@@ -13,33 +13,33 @@ using namespace Optimize;
 /// Removes all instructions from this basic block except for the terminator.
 static void ClearBlock( BasicBlock * const BB )
 {
-  if ( BB->begin()->isTerminator() )
+  if ( isa< TerminatorInst >( BB->begin() ) )
     return;
 
-  SmallVector< Instruction *, 8 > ToRemove;
+  Instruction *T = BB->getTerminator();
+  assert( T && "every basic block must have a terminator" );
 
-  /* Remember instructions to remove from the BB. */
-  for ( BasicBlock::iterator I = BB->begin();
-      (Instruction *) I != BB->getTerminator(); ++I )
-    ToRemove.push_back( I );
-
-  /* Remove instructions in reversed order. */
-  while ( ! ToRemove.empty() )
+  /* Keep removing the immediate predecessor instruction of the terminator,
+   * until the terminator is the last remaining instruction.
+   */
+  while ( T != BB->begin() )
   {
-    auto I = ToRemove.pop_back_val();
+    BasicBlock::iterator I = T;
+    Instruction *Inst = --I;
 
-    /* Before removing the instructions, replace its uses with 'undef'. */
-    if ( ! I->use_empty() )
-      I->replaceAllUsesWith( UndefValue::get( I->getType() ) );
+    if ( ! Inst->use_empty() )
+      Inst->replaceAllUsesWith( UndefValue::get( Inst->getType() ) );
 
-    /* Remove the instruction from its parent. */
-    BB->getInstList().erase( I );
+    BB->getInstList().erase( Inst );
   }
 }
 
 LatticeValue SCCPSolver::runOnFunction( Function &F,
     SmallVector< LatticeValue, 2 > *Args /* = NULL */ )
 {
+  Module * const M = F.getParent();
+  assert( M && "every function needs a module" );
+
   SCCPSolver Solver;
 
   /* Add first basic block to worklist. */
