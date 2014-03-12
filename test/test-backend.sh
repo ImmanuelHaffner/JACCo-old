@@ -19,8 +19,6 @@ do
     # increment TOTAL
     TOTAL=$(echo ${TOTAL} +1 | bc)
 
-    echo "==> testing ${TESTDIR}"
-
     # run the test for a bunch of files, that should be linked together
 
     # create a variable that holds the names of all files that shall be linked
@@ -135,8 +133,6 @@ do
 
       # prune name
       TESTFILE=$(basename "${TESTFILE}")
-
-      echo "==> testing ${TESTDIR}/${TESTFILE}"
 
       # get the name of the test file
       TESTNAME=$(basename "${TESTFILE}" "${SUFFIX}.c")
