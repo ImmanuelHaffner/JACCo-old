@@ -590,7 +590,7 @@ llvm::Value * PreDecExpr::emit( CodeGenFunction &CGF,
 
 llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
     bool
-#ifdef DEBUG
+#ifndef NDEBUG
     asLValue
 #endif
     /* = false */ ) const
@@ -615,7 +615,7 @@ llvm::Value * SizeofExpr::emit( CodeGenFunction &CGF,
 
 llvm::Value * SizeofTypeExpr::emit( CodeGenFunction &CGF,
     bool
-#ifdef DEBUG
+#ifndef NDEBUG
     asLValue
 #endif
     /* = false */ ) const
