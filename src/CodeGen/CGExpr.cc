@@ -123,7 +123,7 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
         /* Recursively emit code for the RHS. */
         CGF.Builder.SetInsertPoint( rhs );
         Value *rhsV = CGF.EvaluateExprAsBool( this->rhs->emit( CGF ) );
-        phi->addIncoming( rhsV, rhs );
+        phi->addIncoming( rhsV, CGF.Builder.GetInsertBlock() );
 
         /* Emit the end block to merge control flow. */
         CGF.EmitBlock( end );
@@ -151,7 +151,7 @@ llvm::Value * BinaryExpr::emit( CodeGenFunction &CGF,
         /* Recursively emit code for the RHS. */
         CGF.Builder.SetInsertPoint( rhs );
         Value *rhsV = CGF.EvaluateExprAsBool( this->rhs->emit( CGF ) );
-        phi->addIncoming( rhsV, rhs );
+        phi->addIncoming( rhsV, CGF.Builder.GetInsertBlock() );
 
         /* Emit the end block to merge control flow. */
         CGF.EmitBlock( end );
