@@ -18,13 +18,12 @@ static void ClearBlock( BasicBlock * const BB )
 
   SmallVector< Instruction *, 8 > ToRemove;
 
-  BasicBlock::iterator I = BB->getTerminator();
-  while ( I != BB->begin() )
-  {
-    Instruction *Inst = --I;
-    ToRemove.push_back( Inst );
-  }
+  /* Remember instructions to remove from the BB. */
+  for ( BasicBlock::iterator I = BB->begin();
+      (Instruction *) I != BB->getTerminator(); ++I )
+    ToRemove.push_back( I );
 
+  /* Remove instructions in reversed order. */
   while ( ! ToRemove.empty() )
     BB->getInstList().erase( ToRemove.pop_back_val() );
 }
