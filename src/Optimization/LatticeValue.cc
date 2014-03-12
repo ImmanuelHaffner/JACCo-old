@@ -6,6 +6,24 @@ using namespace llvm;
 using namespace Optimize;
 
 
+std::ostream & Optimize::operator<<( std::ostream &out, LatticeValue &LV )
+{
+  if ( LV.isTop() )
+    out << "TOP";
+  else if ( LV.isBottom() )
+    out << "BOTTOM";
+  else
+    out << "CONSTANT: " << LV.getConstant();
+
+  return out;
+}
+
+std::ostream & Optimize::operator<<( std::ostream &out,
+    LatticeValue * const LV )
+{
+  return out << *LV;
+}
+
 bool LatticeValue::setTop()
 {
   if ( isTop() )

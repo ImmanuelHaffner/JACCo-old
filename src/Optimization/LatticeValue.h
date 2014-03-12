@@ -2,7 +2,8 @@
 #define LATTICEVALUE_H
 
 
-#include <llvm/IR/Constant.h>
+#include <iostream>
+#include "llvm/IR/Constant.h"
 
 
 namespace C4
@@ -13,6 +14,10 @@ namespace C4
     {
       LatticeValue() : type( VT::BOTTOM ) {}
       ~LatticeValue() {}
+
+      friend std::ostream & operator<<( std::ostream &out, LatticeValue &LV );
+      friend std::ostream & operator<<( std::ostream &out,
+          LatticeValue * const LV );
 
       /// Sets this LatticeValue to TOP.
       ///
@@ -41,6 +46,9 @@ namespace C4
       llvm::Constant *constant = NULL;
     };
 
+    std::ostream & operator<<( std::ostream &out, LatticeValue &LV );
+    std::ostream & operator<<( std::ostream &out,
+        LatticeValue * const LV );
   }
 }
 
