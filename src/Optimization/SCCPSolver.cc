@@ -389,7 +389,7 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
       ++itBB )
   {
     /* If a block is not reachable, ignore it. */
-    if ( BBExecutable.count( *itBB ) )
+    if ( ! BBExecutable.count( *itBB ) )
       continue;
 
     /* Join the LatticeValue from the incoming edge with our loop-LV. */
