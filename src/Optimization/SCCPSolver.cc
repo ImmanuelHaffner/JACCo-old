@@ -3,6 +3,7 @@
 #include "llvm/IR/Value.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
+#include "llvm/Transforms/Utils/Local.h"
 
 
 using namespace C4;
@@ -62,72 +63,94 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
 
   Solver.solve();
 
-  /* Vectors to collect the things to remove or replace.  We need this, since
-   * iterators would be invalidated when removing instructions while iterating
-   * through their basic blocks.
-   */
-  SmallVector< Instruction *, 64 > ToReplace;
-  SmallVector< BasicBlock *, 8 > BBsToEmpty;
+  llvm::SmallVector< llvm::BasicBlock *, 64 > BlocksToErase;
 
   /* Now that we have solved SCCP, remove unreachable blocks and replace
    * instructions with their constants.
    * First, collect all unreachable BBs and all replacable instructions.
    */
-  for ( auto BB = F.begin(); BB != F.end(); ++BB )
+  for ( auto BB = F.begin(), E = F.end(); BB != E; ++BB )
   {
-    /* If the BB is unreachable, add it to the stack of BBs to clear. */
+    /* Check whether the block is reachable. */
     if ( ! Solver.BBExecutable.count( BB ) )
     {
-      BBsToEmpty.push_back( BB );
+      /* Remove all non-terminator instructions from the block. */
+      ClearBlock( BB );
+
+      TerminatorInst *TI = BB->getTerminator();
+      for ( unsigned i = 0, e = TI->getNumSuccessors(); i != e; ++i )
+      {
+        BasicBlock *Succ = TI->getSuccessor( i );
+        if ( ! Succ->empty() && isa< PHINode >( Succ->begin() ) )
+          TI->getSuccessor( i )->removePredecessor( BB );
+      }
+
+      if ( ! TI->use_empty() )
+        TI->replaceAllUsesWith( UndefValue::get( TI->getType() ) );
+      TI->eraseFromParent();
+
+      if ( &F.front() != BB )
+        BlocksToErase.push_back( BB );
+      else
+        new UnreachableInst( M->getContext(), BB );
+
       continue;
     }
 
-    /* Iterate over all instructions of the BB. */
-    for ( auto Inst = BB->begin(); Inst != BB->end(); ++Inst )
+    /* Now that we know the basic block is reachable, iterate over all
+     * instructions of the BB.
+     */
+    for ( BasicBlock::iterator BI = BB->begin(), E = BB->end(); BI != E; )
     {
+      Instruction *Inst = BI++;
+
+      if ( Inst->getType()->isVoidTy() || isa< TerminatorInst >( Inst ) )
+        continue;
+
       LatticeValue &LV = Solver.getLatticeValue( Inst );
       if ( LV.isTop() )
         continue;
 
-      ToReplace.push_back( Inst );
-    }
+      Constant *Const = LV.isConstant() ?
+        LV.getConstant() : UndefValue::get( Inst->getType() );
 
-    /*TerminatorInst *TI = BB->getTerminator();
-    for ( unsigned i = 0, e = TI->getNumSuccessors(); i != e; ++i ) {
-      BasicBlock *Succ = TI->getSuccessor( i );
-      if ( ! Succ->empty() && isa< PHINode >( Succ->begin() ) )
-        TI->getSuccessor( i )->removePredecessor( BB );
-    }
+      /* Replace all uses of the instruction. */
+      Inst->replaceAllUsesWith( Const );
 
-    if ( ! TI->use_empty() )
-      TI->replaceAllUsesWith( UndefValue::get( TI->getType() ) );
-    
-    TI->eraseFromParent();*/
+      /* Remove the instruction. */
+      Inst->eraseFromParent();
+    }
   }
 
-  /* Clear unreachable basic blocks. */
-  while ( ! BBsToEmpty.empty() )
-    ClearBlock( BBsToEmpty.pop_back_val() );
-
-  /* Replace instructions by constants. */
-  while ( ! ToReplace.empty() )
+  /* Process unreachable basic blocks. */
+  for ( unsigned i = 0, e = BlocksToErase.size(); i != e; ++i )
   {
-    Instruction *Inst = ToReplace.pop_back_val();
-    LatticeValue &LV = Solver.getLatticeValue( Inst );
+    BasicBlock *DeadBB = BlocksToErase[i];
+    for ( Value::use_iterator UI = DeadBB->use_begin(), UE = DeadBB->use_end();
+        UI != UE; )
+    {
+      Instruction *I = dyn_cast< Instruction >( *UI );
+      do { ++UI; } while ( UI != UE && *UI == I );
 
-    /* Skip calls with LV BOTTOM. */
-    if ( ! LV.isConstant() && isa< CallInst >( Inst ) )
-      continue;
+      if ( ! I )
+        continue;
 
-    Constant *Const = LV.isConstant() ?
-      LV.getConstant() : UndefValue::get( Inst->getType() );
+      bool Folded = ConstantFoldTerminator( I->getParent() );
+      if ( ! Folded )
+      {
+        TerminatorInst *TI = I->getParent()->getTerminator();
+        BranchInst::Create( TI->getSuccessor( 0 ), TI );
 
-    /* Replace all uses of the instruction. */
-    Inst->replaceAllUsesWith( Const );
+        for ( unsigned i = 1, e = TI->getNumSuccessors(); i != e; ++i )
+          TI->getSuccessor( i )->removePredecessor( TI->getParent() );
 
-    /* Remove the instruction. */
-    Inst->eraseFromParent();
+        TI->eraseFromParent();
+      }
+    }
+    F.getBasicBlockList().erase( DeadBB );
   }
+
+  BlocksToErase.clear();
 
   /* Compute the LV for the return of the funtion. */
   LatticeValue RV;
