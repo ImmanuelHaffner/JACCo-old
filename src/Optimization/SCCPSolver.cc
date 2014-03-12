@@ -237,10 +237,12 @@ void SCCPSolver::addToWorkList( BasicBlock * const BB )
     /* If the basic block was already reachable, update incoming edges of
      * all successing phi nodes.
      */
-    PHINode *PN;
-    for ( BasicBlock::iterator I = BB->begin(); PN = dyn_cast< PHINode >( I );
-        ++I )
-      visitPHINode( *PN );
+    for ( BasicBlock::iterator I = BB->begin(); ; ++I )
+      if ( PHINode * const Phi = dyn_cast< PHINode >( I ) )
+        visitPHINode( *Phi );
+      else
+        /* PHINodes must be in the beginning of a basic block. */
+        break;
   }
 }
 
@@ -250,13 +252,6 @@ void SCCPSolver::addToWorkList( BasicBlock * const BB )
 //  Visit Methods
 //
 //===----------------------------------------------------------------------===//
-
-void SCCPSolver::visitBasicBlock( llvm::BasicBlock &BB )
-{
-  /* Add all instructions in this BB to the worklist */
-  for ( auto Inst = BB.begin(); Inst != BB.end(); ++Inst )
-    addToWorkList( Inst );
-}
 
 void SCCPSolver::visitBinaryOperator( llvm::BinaryOperator &I )
 {
