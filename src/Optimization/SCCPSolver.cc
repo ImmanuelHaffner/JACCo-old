@@ -115,21 +115,9 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
     }
   }
 
-  /* Replace instructions by constants. */
-  while ( ! InstsToRemove.empty() )
-  {
-    Instruction *Inst = InstsToRemove.pop_back_val();
-    LatticeValue &LV = Solver.getLatticeValue( Inst );
-
-    Constant *Const = LV.isConstant() ?
-      LV.getConstant() : UndefValue::get( Inst->getType() );
-
-    /* Replace all uses of the instruction. */
-    Inst->replaceAllUsesWith( Const );
-
-    /* Remove the instruction. */
-    Inst->eraseFromParent();
-  }
+  /* Clear unreachable basic blocks. */
+  while ( ! BBsToEmpty.empty() )
+    ClearBlock( BBsToEmpty.pop_back_val() );
 
   /* Replace conditional branches by unconditional branches. */
   while ( ! BranchInstToReplace.empty() )
@@ -149,6 +137,23 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
     BInst->eraseFromParent();
   }
 
+  /* Replace instructions by constants. */
+  while ( ! InstsToRemove.empty() )
+  {
+    Instruction *Inst = InstsToRemove.pop_back_val();
+    LatticeValue &LV = Solver.getLatticeValue( Inst );
+
+    Constant *Const = LV.isConstant() ?
+      LV.getConstant() : UndefValue::get( Inst->getType() );
+
+    /* Replace all uses of the instruction. */
+    Inst->replaceAllUsesWith( Const );
+
+    /* Remove the instruction. */
+    Inst->eraseFromParent();
+  }
+
+  /* Replace CallInsts if possible. */
   while ( ! CallInsts.empty() )
   {
     CallInst *Call = CallInsts.pop_back_val();
