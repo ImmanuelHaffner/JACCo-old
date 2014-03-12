@@ -42,7 +42,7 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
       Solver.ValueMap[ AI ].setTop();
   else
   {
-    assert( F.getNumOperands() == Args->size() &&
+    assert( F.getArgumentList().size() == Args->size() &&
         "incorrect amount of arguments" );
 
     auto LV = Args->begin();
