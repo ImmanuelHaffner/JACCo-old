@@ -28,16 +28,28 @@ static void ClearBlock( BasicBlock * const BB )
     BB->getInstList().erase( ToRemove.pop_back_val() );
 }
 
-void SCCPSolver::runOnFunction( Function &F )
+LatticeValue SCCPSolver::runOnFunction( Function &F,
+    SmallVector< LatticeValue, 2 > *Args /* = NULL */ )
 {
   SCCPSolver Solver;
 
   /* Add first basic block to worklist. */
   Solver.addToWorkList( F.begin() );
 
-  /* Consider all arguments as top. */
-  for ( Function::arg_iterator AI = F.arg_begin(); AI != F.arg_end(); ++AI )
-    Solver.markTop(AI);
+  /* Initialize all arguments. */
+  if ( NULL == Args )
+    for ( Function::arg_iterator AI = F.arg_begin(); AI != F.arg_end(); ++AI )
+      Solver.ValueMap[ AI ].setTop();
+  else
+  {
+    assert( F.getNumOperands() == Args->size() &&
+        "incorrect amount of arguments" );
+
+    auto LV = Args->begin();
+    for ( Function::arg_iterator AI = F.arg_begin(); AI != F.arg_end();
+        ++AI, ++LV )
+      Solver.ValueMap[ AI ] = *LV;
+  }
 
   Solver.solve();
 
@@ -46,6 +58,7 @@ void SCCPSolver::runOnFunction( Function &F )
    * through their basic blocks.
    */
   SmallVector< Instruction *, 64 > InstsToRemove;
+  SmallVector< CallInst *, 64 > CallInsts;
   SmallVector< BranchInst *, 64 > BranchInstToReplace;
   SmallVector< BasicBlock *, 8 > BBsToEmpty;
 
@@ -85,11 +98,20 @@ void SCCPSolver::runOnFunction( Function &F )
 
         BranchInstToReplace.push_back( BInst );
       }
+      else if ( auto *Call = dyn_cast< CallInst >( Inst ) )
+      {
+        if ( LV.isTop() )
+          continue;
 
-      if ( LV.isTop() )
-        continue;
+        CallInsts.push_back( Call );
+      }
+      else
+      {
+        if ( LV.isTop() )
+          continue;
 
-      InstsToRemove.push_back( Inst );
+        InstsToRemove.push_back( Inst );
+      }
     }
   }
 
@@ -106,7 +128,7 @@ void SCCPSolver::runOnFunction( Function &F )
     Inst->replaceAllUsesWith( Const );
 
     /* Remove the instruction. */
-    Inst->removeFromParent();
+    Inst->eraseFromParent();
   }
 
   /* Replace conditional branches by unconditional branches. */
@@ -124,12 +146,31 @@ void SCCPSolver::runOnFunction( Function &F )
     BInst->replaceAllUsesWith( BInstNew );
 
     /* Remove the conditional branch instruction. */
-    BInst->removeFromParent();
+    BInst->eraseFromParent();
+  }
+
+  while ( ! CallInsts.empty() )
+  {
+    CallInst *Call = CallInsts.pop_back_val();
+    LatticeValue &LV = Solver.getLatticeValue( Call );
+
+    if ( ! LV.isConstant() )
+      continue;
+
+    Call->replaceAllUsesWith( LV.getConstant() );
+    Call->eraseFromParent();
   }
 
   /* Clear unreachable basic blocks. */
   while ( ! BBsToEmpty.empty() )
     ClearBlock( BBsToEmpty.pop_back_val() );
+
+  LatticeValue RV;
+  for ( auto I = Solver.ReturnValues.begin(); I != Solver.ReturnValues.end();
+      ++I )
+    RV.join( **I );
+
+  return RV;
 }
 
 void SCCPSolver::solve()
@@ -164,11 +205,6 @@ void SCCPSolver::solve()
 //  Helper Methods
 //
 //===----------------------------------------------------------------------===//
-
-void SCCPSolver::markTop( llvm::Value *V )
-{
-  ValueMap[ V ].setTop();
-}
 
 LatticeValue & SCCPSolver::getLatticeValue( Value * const V )
 {
@@ -287,9 +323,16 @@ void SCCPSolver::visitCallInst( llvm::CallInst &I )
   if ( LV.isTop() )
     return;
 
-  /* Always assume top */
-  LV.setTop();
-  addToWorkList( &I );
+  Function *F = I.getCalledFunction();
+  if ( F->isDeclaration() )
+    return;
+
+  SmallVector< LatticeValue, 2 > Args;
+  for ( unsigned i = 0; i < I.getNumArgOperands(); ++i )
+    Args.push_back( getLatticeValue( I.getArgOperand( i ) ) );
+
+  if ( LV.join( SCCPSolver::runOnFunction( *I.getCalledFunction(), &Args ) ) )
+    addToWorkList( &I );
 }
 
 void SCCPSolver::visitCastInst( llvm::CastInst &I )
@@ -433,7 +476,7 @@ void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
   addToWorkList( I.getSuccessor( CondLV.getConstant()->isZeroValue() ) );
 }
 
-void SCCPSolver::visitReturnInst( llvm::ReturnInst & )
+void SCCPSolver::visitReturnInst( llvm::ReturnInst &I )
 {
-  /* nothing to do here... */
+  ReturnValues.insert( & getLatticeValue( &I ) );
 }

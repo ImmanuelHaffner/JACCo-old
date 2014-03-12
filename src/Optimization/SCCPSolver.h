@@ -2,6 +2,7 @@
 #define SCCPVISITOR_H
 
 
+#include <vector>
 #include "llvm/IR/Module.h"                 /* Module */
 #include "llvm/InstVisitor.h"
 #include "llvm/ADT/DenseMap.h"
@@ -20,13 +21,13 @@ namespace C4
     {
       SCCPSolver() {}
 
-      static void runOnFunction( llvm::Function &F );
+      static LatticeValue runOnFunction( llvm::Function &F,
+          llvm::SmallVector< LatticeValue, 2 > *Args = NULL );
 
       /// Finad a fixed point for SCCP and the given function.
       ///
       /// \param F the function a SCCP fixed point should be computed for
       void solve();
-
 
       private:
       friend class llvm::InstVisitor< SCCPSolver >;
@@ -39,11 +40,6 @@ namespace C4
       //  These methods provide some routines for SCCP.
       //
       //===----------------------------------------------------------------===//
-
-      /// Marks the given value as TOP.
-      ///
-      /// \param V the value to mark as TOP
-      void markTop( llvm::Value *V );
 
       /// Returns the lattice value of the corresponding value. Inserts it
       /// into the ValueMap if not already there.
@@ -72,21 +68,22 @@ namespace C4
       //
       //===----------------------------------------------------------------===//
 
-      void visitBasicBlock( llvm::BasicBlock &BB );
-      void visitBinaryOperator( llvm::BinaryOperator &I );
-      void visitCallInst( llvm::CallInst &I );
-      void visitCastInst( llvm::CastInst &I );
-      void visitICmpInst( llvm::ICmpInst &I );
-      void visitLoadInst( llvm::LoadInst &I );
-      void visitStoreInst( llvm::StoreInst &I );
-      void visitPHINode( llvm::PHINode &I );
-      void visitBranchInst( llvm::BranchInst &I );
-      void visitReturnInst( llvm::ReturnInst &I );
+      virtual void visitBasicBlock( llvm::BasicBlock &BB );
+      virtual void visitBinaryOperator( llvm::BinaryOperator &I );
+      virtual void visitCallInst( llvm::CallInst &I );
+      virtual void visitCastInst( llvm::CastInst &I );
+      virtual void visitICmpInst( llvm::ICmpInst &I );
+      virtual void visitLoadInst( llvm::LoadInst &I );
+      virtual void visitStoreInst( llvm::StoreInst &I );
+      virtual void visitPHINode( llvm::PHINode &I );
+      virtual void visitBranchInst( llvm::BranchInst &I );
+      virtual void visitReturnInst( llvm::ReturnInst &I );
 
       llvm::SmallVector< llvm::BasicBlock *, 64 >  BBWorklist;
       llvm::SmallVector< llvm::Value *, 64 > InstrTopWorklist;
       llvm::SmallVector< llvm::Value *, 64 > InstrWorklist;
       llvm::SmallPtrSet< llvm::BasicBlock *, 8 > BBExecutable;
+      llvm::SmallPtrSet< LatticeValue *, 2 > ReturnValues;
       ValueMap_t ValueMap;
     };
   }
