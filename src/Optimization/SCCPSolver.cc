@@ -392,6 +392,18 @@ void SCCPSolver::visitPHINode( llvm::PHINode &I )
     if ( ! BBExecutable.count( *itBB ) )
       continue;
 
+    /* Check if incoming edge comes from a conditional branch */
+    BranchInst *BI = dyn_cast< BranchInst >( ( *itBB )->getTerminator() );
+    if ( BI->isConditional() )
+    {
+      /* Check if condition can hold */
+      LatticeValue LVC = getLatticeValue( BI->getCondition() );
+      if ( LVC.isBottom() || ( LVC.isConstant() &&
+        BI->getSuccessor( LVC.getConstant()->isZeroValue() == I.BasicBlockVal ) ) )
+        continue;
+    }
+
+
     /* Join the LatticeValue from the incoming edge with our loop-LV. */
     LV.join( getLatticeValue( I.getIncomingValueForBlock( *itBB ) ) );
   }
