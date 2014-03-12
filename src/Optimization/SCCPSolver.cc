@@ -91,6 +91,18 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
 
       ToReplace.push_back( Inst );
     }
+
+    /*TerminatorInst *TI = BB->getTerminator();
+    for ( unsigned i = 0, e = TI->getNumSuccessors(); i != e; ++i ) {
+      BasicBlock *Succ = TI->getSuccessor( i );
+      if ( ! Succ->empty() && isa< PHINode >( Succ->begin() ) )
+        TI->getSuccessor( i )->removePredecessor( BB );
+    }
+
+    if ( ! TI->use_empty() )
+      TI->replaceAllUsesWith( UndefValue::get( TI->getType() ) );
+    
+    TI->eraseFromParent();*/
   }
 
   /* Clear unreachable basic blocks. */
@@ -220,6 +232,16 @@ void SCCPSolver::addToWorkList( BasicBlock * const BB )
 {
   if ( BBExecutable.insert( BB ) )
     BBWorklist.push_back( BB );
+  else
+  {
+    /* If the basic block was already reachable, update incoming edges of
+     * all successing phi nodes.
+     */
+    PHINode *PN;
+    for ( BasicBlock::iterator I = BB->begin(); PN = dyn_cast< PHINode >( I );
+        ++I )
+      visitPHINode( *PN );
+  }
 }
 
 
