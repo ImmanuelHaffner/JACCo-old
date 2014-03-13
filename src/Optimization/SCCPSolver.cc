@@ -4,6 +4,7 @@
 #include "llvm/IR/Constants.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include "llvm/Transforms/Utils/Local.h"
+#include "llvm/Support/CFG.h"
 
 
 using namespace C4;
@@ -175,6 +176,15 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
   }
 
   BlocksToErase.clear();
+
+  /* Iterate over all basic blocks and try to merge them into their predecessor.
+   */
+  llvm::SmallVector< llvm::BasicBlock *, 4 > WorkList;
+  for ( Function::iterator BI = F.begin(), E = F.end(); BI != E; )
+  {
+    BasicBlock *BB = BI++;
+    MergeBlockIntoPredecessor( BB );
+  }
 
   /* Compute the LV for the return of the funtion. */
   LatticeValue RV;
