@@ -179,20 +179,21 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
 
   /* Iterate over all basic blocks and try to merge them into their predecessor.
    */
-  llvm::SmallVector< llvm::BasicBlock *, 4 > WorkList;
   for ( Function::iterator BI = F.begin(), E = F.end(); BI != E; )
   {
     BasicBlock *BB = BI++;
-    MergeBlockIntoPredecessor( BB );
+    if ( &F.front() == BB )
+      continue;
+
+    if ( ! MergeBlockIntoPredecessor( BB ) )
+    {
+      if ( pred_begin( BB ) == pred_end( BB ) )
+        DeleteDeadBlock( BB );
+    }
   }
 
-  /* Compute the LV for the return of the funtion. */
-  LatticeValue RV;
-  for ( auto I = Solver.ReturnValues.begin(); I != Solver.ReturnValues.end();
-      ++I )
-    RV.join( **I );
-
-  return RV;
+  /* We just have to return something. */
+  return LatticeValue();
 }
 
 void SCCPSolver::solve()
