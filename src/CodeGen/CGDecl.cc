@@ -10,6 +10,8 @@
 #include "CodeGen.h"
 
 #include <cstring>
+#include "llvm/Support/CFG.h"
+#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include "../Support/Symbol.h"
 #include "../AST/Decl.h"
 #include "../AST/Stmt.h"
@@ -179,11 +181,16 @@ void FunctionDef::emit( CodeGenFunction &CGF, bool /* = false */ ) const
 
   if ( ! curBB->getTerminator() )
   {
-    /* Return the return value, or void. */
-    if ( type->getReturnType()->isVoidTy() )
-      CGF.Builder.CreateRetVoid();
+    if ( pred_begin( curBB ) == pred_end( curBB ) )
+      CGF.Builder.CreateUnreachable();
     else
-      CGF.Builder.CreateRet( Constant::getNullValue( type->getReturnType() ) );
+    {
+      /* Return the return value, or void. */
+      if ( type->getReturnType()->isVoidTy() )
+        CGF.Builder.CreateRetVoid();
+      else
+        CGF.Builder.CreateRet( Constant::getNullValue( type->getReturnType() ) );
+    }
   }
 
   /* Remove the function as current parent and its return value from CGF. */
