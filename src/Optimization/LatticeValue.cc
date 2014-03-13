@@ -84,3 +84,14 @@ bool LatticeValue::join( LatticeValue const &Other )
   /* The constants are not equal, therefore this will become TOP. */
   return setTop();
 }
+
+void LatticeValue::dump() const
+{
+  if ( isTop() )
+    std::cerr << "TOP";
+  else if ( isBottom() )
+    std::cerr << "BOTTOM";
+  else
+    std::cerr << "CONSTANT: " << getConstant();
+  std::cerr << std::endl;
+}

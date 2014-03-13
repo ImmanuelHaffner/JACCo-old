@@ -33,6 +33,8 @@ namespace C4
 
       inline llvm::Constant * getConstant() const { return constant; }
 
+      void dump() const;
+
       private:
       enum class VT
       {
