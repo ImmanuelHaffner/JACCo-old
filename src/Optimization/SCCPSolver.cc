@@ -12,6 +12,11 @@ using namespace llvm;
 using namespace Optimize;
 
 
+/// Records the number of currently active SCCP instances.
+static unsigned numInstances = 0;
+/// Defines the maximal amount of SCCP solvers that can be active at once.
+static unsigned const MAX_NUM_INSTANCES = 4;
+
 /// Removes all instructions from this basic block except for the terminator.
 static void ClearBlock( BasicBlock * const BB )
 {
@@ -39,6 +44,11 @@ static void ClearBlock( BasicBlock * const BB )
 LatticeValue SCCPSolver::runOnFunction( Function &F,
     SmallVector< LatticeValue, 2 > *Args /* = NULL */ )
 {
+  if ( numInstances == MAX_NUM_INSTANCES )
+    return LatticeValue();
+
+  ++numInstances;
+
   Module * const M = F.getParent();
   assert( M && "every function needs a module" );
 
@@ -63,6 +73,22 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
   }
 
   Solver.solve();
+
+  if ( numInstances-- > 1 )
+  {
+    /* Compute the LV for the return of the funtion. */
+    LatticeValue RV;
+    for ( auto I = Solver.ReturnValues.begin(); I != Solver.ReturnValues.end();
+        ++I )
+      RV.join( **I );
+
+    /* The result of a function call cannot be BOTTOM.  Promote it to TOP in
+     * such a case.
+     */
+    if ( RV.isBottom() )
+      RV.setTop();
+    return RV;
+  }
 
   llvm::SmallVector< llvm::BasicBlock *, 64 > BlocksToErase;
 
@@ -113,10 +139,10 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
     {
       Instruction *Inst = BI++;
 
+      LatticeValue &LV = Solver.getLatticeValue( Inst );
+
       if ( Inst->getType()->isVoidTy() || isa< TerminatorInst >( Inst ) )
         continue;
-
-      LatticeValue &LV = Solver.getLatticeValue( Inst );
 
       /* Skip TOP. */
       if ( LV.isTop() )
@@ -193,7 +219,9 @@ LatticeValue SCCPSolver::runOnFunction( Function &F,
   }
 
   /* We just have to return something. */
-  return LatticeValue();
+  LatticeValue LV;
+  LV.setTop();
+  return LV;
 }
 
 void SCCPSolver::solve()
@@ -262,10 +290,6 @@ LatticeValue & SCCPSolver::getLatticeValue( Value * const V )
 
 void SCCPSolver::notifyUses( Value * const V )
 {
-  /* NOTE: To only notify the reachable instructions, we can compute the
-   * intersection of the keys of the ValueMap and the uses of the value V.
-   */
-
   for ( auto U = V->use_begin(); U != V->use_end(); ++U )
     if ( Instruction *UI = dyn_cast< Instruction >( *U ) )
       if ( BBExecutable.count( UI->getParent() ) )
@@ -348,22 +372,38 @@ void SCCPSolver::visitCallInst( llvm::CallInst &I )
   if ( LV.isTop() )
     return;
 
-  /* For now, just always assume TOP.
-   * TODO Remove for inter-procedural SCCP.
-   */
-  LV.setTop();
-  return;
-
   Function *F = I.getCalledFunction();
 
-  /* If the function is not a definition, skip it. */
-  if ( F->isDeclaration() )
+  /* If we have a global variable or a function declaration, skip. */
+  if ( F == 0 || F->isDeclaration() )
+  {
+    LV.setTop();
     return;
+  }
 
   /* Collect the arguments for the function call. */
   SmallVector< LatticeValue, 2 > Args;
+  unsigned numTopArgs = 0;
   for ( unsigned i = 0; i < I.getNumArgOperands(); ++i )
-    Args.push_back( getLatticeValue( I.getArgOperand( i ) ) );
+  {
+    LatticeValue &LVArg = getLatticeValue( I.getArgOperand( i ) );
+
+    /* IF at least one argument is BOTTOM, assume the call is never taken. */
+    if ( LVArg.isBottom() )
+      return;
+
+    if ( LVArg.isTop() )
+      ++numTopArgs;
+
+    Args.push_back( LVArg );
+  }
+
+  /* If all arguments are TOP, assume TOP. */
+  if ( I.getNumArgOperands() == numTopArgs )
+  {
+    LV.setTop();
+    return;
+  }
 
   if ( LV.join( SCCPSolver::runOnFunction( *I.getCalledFunction(), &Args ) ) )
     addToWorkList( &I );
@@ -434,6 +474,9 @@ void SCCPSolver::visitLoadInst( llvm::LoadInst &I )
   /* Always assume top */
   LV.setTop();
   addToWorkList( &I );
+
+  /* If we have a store, stay on the safe side an assume top as return value. */
+  ReturnValues.insert( &LV );
 }
 
 void SCCPSolver::visitStoreInst( llvm::StoreInst &I )
@@ -445,6 +488,9 @@ void SCCPSolver::visitStoreInst( llvm::StoreInst &I )
   /* Always assume top */
   LV.setTop();
   addToWorkList( &I );
+
+  /* If we have a store, stay on the safe side an assume top as return value. */
+  ReturnValues.insert( &LV );
 }
 
 void SCCPSolver::visitPHINode( llvm::PHINode &I )
@@ -536,5 +582,13 @@ void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
 
 void SCCPSolver::visitReturnInst( llvm::ReturnInst &I )
 {
-  ReturnValues.insert( & getLatticeValue( &I ) );
+  LatticeValue &LV = getLatticeValue( &I );
+  if ( LV.isTop() )
+    return;
+  LV.setTop();
+
+  if ( I.getReturnValue() == NULL )
+    ReturnValues.insert( &LV );
+  else
+    ReturnValues.insert( & getLatticeValue( I.getReturnValue() ) );
 }
