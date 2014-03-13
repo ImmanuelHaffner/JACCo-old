@@ -582,13 +582,9 @@ void SCCPSolver::visitBranchInst( llvm::BranchInst &I )
 
 void SCCPSolver::visitReturnInst( llvm::ReturnInst &I )
 {
-  LatticeValue &LV = getLatticeValue( &I );
-  if ( LV.isTop() )
-    return;
-  LV.setTop();
-
   if ( I.getReturnValue() == NULL )
-    ReturnValues.insert( &LV );
-  else
-    ReturnValues.insert( & getLatticeValue( I.getReturnValue() ) );
+    return;
+
+  LatticeValue &LVRet = getLatticeValue( I.getReturnValue() );
+  ReturnValues.insert( &LVRet );
 }
