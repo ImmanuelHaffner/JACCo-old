@@ -468,29 +468,25 @@ void SCCPSolver::visitICmpInst( llvm::ICmpInst &I )
 void SCCPSolver::visitLoadInst( llvm::LoadInst &I )
 {
   LatticeValue &LV = getLatticeValue( &I );
-  if ( LV.isTop() )
-    return;
-
-  /* Always assume top */
-  LV.setTop();
-  addToWorkList( &I );
 
   /* If we have a store, stay on the safe side an assume top as return value. */
   ReturnValues.insert( &LV );
+
+  /* Always assume top */
+  if ( LV.setTop() )
+    addToWorkList( &I );
 }
 
 void SCCPSolver::visitStoreInst( llvm::StoreInst &I )
 {
   LatticeValue &LV = getLatticeValue( &I );
-  if ( LV.isTop() )
-    return;
-
-  /* Always assume top */
-  LV.setTop();
-  addToWorkList( &I );
 
   /* If we have a store, stay on the safe side an assume top as return value. */
   ReturnValues.insert( &LV );
+
+  /* Always assume top */
+  if ( LV.setTop() )
+    addToWorkList( &I );
 }
 
 void SCCPSolver::visitPHINode( llvm::PHINode &I )
