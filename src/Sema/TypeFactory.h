@@ -22,7 +22,7 @@ namespace C4
 {
   namespace Sema
   {
-    /// Defines the hash values for unique types.
+    /// Defines the hash values for basic types.
     enum HashCode
     {
       HASH_Void = 3,
