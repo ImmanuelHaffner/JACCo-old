@@ -63,7 +63,7 @@ namespace C4
       //  Visit Methods
       //
       //  The visit methods implement the transfer function for the LLVM
-      //  instructions and basiv blocks.  If the LatticeValue of an instruction
+      //  instructions and basic blocks.  If the LatticeValue of an instruction
       //  changed, adds the instruction or basic block to a work list.
       //
       //===----------------------------------------------------------------===//
